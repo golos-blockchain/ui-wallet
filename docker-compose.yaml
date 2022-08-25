@@ -1,0 +1,17 @@
+version: "3"
+services:
+
+  web:
+    image: golosblockchain/web-ui:latest
+    restart: always
+    build: .
+    volumes:
+      - ./config/default.json:/var/app/config/default.json
+      - ./config/blacklist.json:/var/app/config/blacklist.json
+    ports:
+      - "8080:8080"
+    environment:
+      SDC_CLIENT_WEBSOCKET_URL: https://apibeta.golos.today
+      SDC_SERVER_WEBSOCKET_URL: wss://apibeta.golos.today/ws
+      
+  # other parameters in config/custom-environment-variables.json

@@ -1,0 +1,42 @@
+.Author__dropdown {
+  width: 290px;
+  min-height: 108px;
+
+  .Userpic_parent {
+    margin-right: 1rem;
+    float: left;
+  }
+
+  .Author__name {
+    text-decoration: none;
+    display: block;
+    font-size: 110%;
+    color: #444;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .Author__username {
+    text-decoration: none;
+    font-size: 90%;
+    color: #666;
+  }
+
+  .Author__bio {
+    clear: both;
+    font-size: 90%;
+    padding-top: 15px;
+  }
+
+  .Author__gender {
+    margin-left: 0.25rem;
+    svg {
+      fill: #0078C4;
+    }
+  }
+}
+
+.Author__write {
+  fill: #999;
+  margin-left: 3px;
+}

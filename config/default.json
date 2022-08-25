@@ -1,0 +1,67 @@
+{
+  "google_analytics_id": "UA-146157213-1",
+  "helmet": {
+    "directives": {
+      "defaultSrc": "'self'",
+      "childSrc": "'self' *.a-ads.com www.youtube.com w.soundcloud.com player.vimeo.com www.google.com coub.com *.yandex.ru vk.com login.vk.com ok.com rutube.ru",
+      "scriptSrc": "'self' 'unsafe-inline' 'unsafe-eval' app.sharpay.io www.google-analytics.com",
+      "styleSrc": "'self' 'unsafe-inline' fonts.googleapis.com",
+      "imgSrc": "* data:",
+      "fontSrc": "data: fonts.gstatic.com",
+      "connectSrc": "'self' api.imgur.com wss://apibeta.golos.today *.golos.today golos.app *.golos.app app.sharpay.io www.google-analytics.com cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/",
+      "frameAncestors": "'none'"
+    }
+  },
+  "hide_comment_neg_rep": false,
+  "show_adv_banners": true,
+  "add_notify_site": {
+    "show": false,
+    "id": 145678655,
+    "link": "/@lex/obmen-lichnymi-soobsheniyami-i-nachalo-dlya-golos-messenger",
+    "title": "Обмен личными сообщениями и начало для Golos Messenger"
+  },
+  "server_session_secret": "exiKdyF+IwRIXJDmtGIl4vWUz4i3eVSISpfZoeYc0s4=", // Generated via Node - crypto.randomBytes(32).toString('base64')
+  "session_cookie_key": "gls.session",
+  "session_key": "golos",
+  "site_domain": "beta.golos.today",
+  "ws_connection_client": "wss://apibeta.golos.today/ws",
+  "ws_connection_server": "wss://apibeta.golos.today/ws",
+  "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
+  "images": {
+    "img_proxy_prefix": "https://devimages.golos.today",
+    "img_proxy_backup_prefix": "https://steemitimages.com",
+    "upload_image": "https://api.imgur.com/3/image",
+    "client_id": "6c09ebf8c548126"
+  },
+  "blogs_service": {
+    "host": "https://beta.golos.today"
+  },
+  "auth_service": {
+    "host": "https://dev.golos.app",
+    "custom_client": "blogs"
+  },
+  "notify_service": {
+    "host": "https://devnotify.golos.app"
+  },
+  "messenger_service": {
+    "host": "https://devchat.golos.app"
+  },
+  "elastic_search": {
+    "url": "https://devsearch.golos.today",
+    "login": "golosclient",
+    "password": "golosclient"
+  },
+  "apidex_service": {
+    "host": "https://devapi-dex.golos.app"
+  },
+  "hidden_assets": {
+    "RUDEX": true,
+    "PRIZM": true
+  },
+  "forums": {
+    "white_list": ["fm-golostalk", "fm-prizmtalk", "fm-graphenetalks"],
+    "fm-golostalk": {"domain": "golostalk.com"},
+    "fm-prizmtalk": {"domain": "prizmtalk.com"},
+    "fm-graphenetalks": {"domain": "forum.gph.ai"}
+  }
+}
