@@ -10,7 +10,6 @@ import staticCache from 'koa-static-cache';
 import useRedirects from './redirects';
 import useGeneralApi from './api/general';
 import useUserJson from './json/user_json';
-import usePostJson from './json/post_json';
 import isBot from 'koa-isbot';
 import session from './utils/cryptoSession';
 import csrf from 'koa-csrf';
@@ -74,39 +73,24 @@ app.use(function*(next) {
         return;
       }
     }
-    // redirect to home page/feed if known account
+    // redirect to account page if known account
     if (this.method === 'GET' && this.url === '/' && this.session.a) {
         this.status = 302;
-        this.redirect(`/@${this.session.a}/feed`);
+        this.redirect(`/@${this.session.a}`);
         return;
     }
     // normalize user name url from cased params
     if (
         this.method === 'GET' &&
-            (routeRegex.UserProfile1.test(this.url) ||
-                routeRegex.PostNoCategory.test(this.url))
+            (routeRegex.UserProfile1.test(this.url))
     ) {
         const p = this.originalUrl.toLowerCase();
-		let userCheck = "";
-		if (routeRegex.Post.test(this.url)) {
-			userCheck = p.split("/")[2].slice(1);
-		} else {
-			userCheck = p.split("/")[1].slice(1);
-		}
+		let userCheck = p.split("/")[1].slice(1)
 		if ($STM_Config.blocked_users.includes(userCheck)) {
 			console.log('Illegal content user found blocked', `@${userCheck}`);
 			this.status = 451;
 			return;
 		}
-        if (p !== this.originalUrl) {
-            this.status = 301;
-            this.redirect(p);
-            return;
-        }
-    }
-    // normalize top category filtering from cased params
-    if (this.method === 'GET' && routeRegex.CategoryFilters.test(this.url)) {
-        const p = this.originalUrl.toLowerCase();
         if (p !== this.originalUrl) {
             this.status = 301;
             this.redirect(p);
@@ -174,7 +158,6 @@ app.use(function*(next) {
 
 useRedirects(app);
 useUserJson(app);
-usePostJson(app);
 useGeneralApi(app);
 
 // helmet wants some things as bools and some as lists, makes config difficult.

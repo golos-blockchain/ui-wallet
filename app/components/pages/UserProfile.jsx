@@ -173,10 +173,7 @@ export default class UserProfile extends React.Component {
         accountname = accountname.toLowerCase();
         const username = current_user ? current_user.get('username') : null
         // const gprops = this.props.global.getIn( ['props'] ).toJS();
-        if( !section ) section = 'blog';
-
-        // @user/'posts' is deprecated in favor of 'comments' as of oct-2016 (#443)
-        if( section == 'posts' ) section = 'comments';
+        if( !section ) section = 'transfers';
 
         // const isMyAccount = current_user ? current_user.get('username') === accountname : false;
 
@@ -264,7 +261,7 @@ export default class UserProfile extends React.Component {
         // const global_status = this.props.global.get('status');
 
         let rewardsClass = '', walletClass = '';
-        if( section === 'transfers' ) {
+        if (!section || section === 'transfers') {
             // transfers, check if url has query params
             const { location: { query } } = this.props;
             const {to, amount, token, memo} = query;
@@ -333,90 +330,6 @@ export default class UserProfile extends React.Component {
                     />
                     { isMyAccount && <div><MarkNotificationRead fields='donate,donate_msgs' account={account.name} /></div> }
                 </div>
-        }
-        else if( section === 'followers' ) {
-            if (followers && followers.has('blog_result')) {
-                tab_content = <div>
-                    <UserList
-                        title={tt('user_profile.followers')}
-                        account={account}
-                        users={followers.get('blog_result')} />
-                    { isMyAccount && <div><MarkNotificationRead fields='send,receive' account={account.name} /></div>}
-                    </div>
-            }
-        }
-        else if( section === 'followed' ) {
-            if (following && following.has('blog_result')) {
-                tab_content = <UserList
-                    title={tt('user_profile.followed')}
-                    account={account}
-                    users={following.get('blog_result')}
-                    />
-            }
-        }
-        else if( section === 'settings' ) {
-            tab_content = <Settings routeParams={this.props.routeParams} />
-        }
-        else if( section === 'comments') {
-           if( account.comments )
-           {
-                let posts = accountImm.get('posts') || accountImm.get('comments');
-                if (!fetching && (posts && !posts.size)) {
-                    tab_content = <Callout>{tt('user_profile.user_hasnt_made_any_posts_yet', {name: accountname})}</Callout>;
-                }
-           }
-           else {
-              tab_content = (<center><LoadingIndicator type='circle' /></center>);
-           }
-        } else if(!section || section === 'blog') {
-            if (account.blog) {
-                let posts = accountImm.get('blog');
-                const emptyText = isMyAccount ? <div>
-                    {tt('submit_a_story.you_hasnt_started_bloggin_yet')}<br /><br />
-                    <Link to='/submit'>{tt('g.submit_a_story')}</Link><br />
-                    <a href='/welcome'>{tt('submit_a_story.welcome_to_the_blockchain')}</a>
-                </div>:
-                    tt('user_profile.user_hasnt_started_bloggin_yet', {name: accountname});
-
-                if (!fetching && (posts && !posts.size)) {
-                    tab_content = <Callout>{emptyText}</Callout>;
-                }
-            } else {
-                tab_content = (<center><LoadingIndicator type='circle' /></center>);
-            }
-        }
-        else if( (section === 'recent-replies')) {
-            if (account.recent_replies) {
-                let posts = accountImm.get('recent_replies');
-                if (!fetching && (posts && !posts.size)) {
-                    tab_content = <Callout>{tt('user_profile.user_hasnt_had_any_replies_yet', {name: accountname}) + '.'}</Callout>;
-                }
-          } else {
-              tab_content = (<center><LoadingIndicator type='circle' /></center>);
-          }
-        }
-        else if( (section === 'reputation')) {
-            tab_content = (
-                <div>
-                    <ReputationHistory
-                        account={account}
-                        current_user={current_user}
-                        loading={fetching}
-                    />
-                </div>
-            );
-        }
-        else if( (section === 'mentions')) {
-            tab_content = (
-                <div>
-                    <Mentions
-                        account={account}
-                        current_user={current_user}
-                        loading={fetching}
-                    />
-                    { isMyAccount && <div><MarkNotificationRead fields='mention' account={account.name} /></div> }
-                </div>
-            );
         }
         else if( (section === 'filled-orders')) {
             tab_content = (
@@ -506,7 +419,7 @@ export default class UserProfile extends React.Component {
         const top_menu = <div className='row UserProfile__top-menu'>
             <div className='columns'>
                 <div className='UserProfile__menu menu' style={{flexWrap: 'wrap'}}>
-                    <Link className='UserProfile__menu-item' to={`/@${accountname}`} activeClassName='active'>{tt('g.blog')}</Link>
+                    <Link className='UserProfile__menu-item' to={`/@${accountname}/fff`} activeClassName='active'>{tt('g.blog')}</Link>
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/comments`} activeClassName='active'>{tt('g.comments')}</Link>
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/recent-replies`} activeClassName='active'>
                         {tt('g.replies')} {isMyAccount && <NotifiCounter fields='comment_reply' />}
@@ -533,7 +446,7 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>
                     <div className='UserProfile__filler' />
                     <div>
-                        <a href={`/@${accountname}/transfers`} className={`${walletClass} UserProfile__menu-item`} onClick={e => { e.preventDefault(); browserHistory.push(e.target.pathname); return false; }}>
+                        <a href={`/@${accountname}`} className={`${walletClass} UserProfile__menu-item`} onClick={e => { e.preventDefault(); browserHistory.push(e.target.pathname); return false; }}>
                             {tt('g.wallet')} {isMyAccount && <NotifiCounter fields='send,receive' />}
                         </a>
                         {isMyAccount ?

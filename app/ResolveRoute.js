@@ -1,18 +1,13 @@
 export const routeRegex = {
-    PostsIndex: /^\/(@[\w\.\d-]+)\/feed\/?$/,
     UserProfile1: /^\/(@[\w\.\d-]+)\/?$/,
-    UserProfile2: /^\/(@[\w\.\d-]+)\/(blog|posts|comments|transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|reputation|mentions|filled-orders|permissions|created|recent-replies|feed|password|witness|followed|followers|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
+    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness)\/??(?:&?[^=&]*=[^=&]*)*$/,
     UserProfile3: /^\/(@[\w\.\d-]+)\/[\w\.\d-]+/,
     UserAssetEndPoints: /^\/(@[\w\.\d-]+)\/assets\/([\w\d.-]+)\/(update|transfer)$/,
-    UserEndPoints: /^(blog|posts|comments|transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|reputation|mentions|filled-orders|permissions|created|recent-replies|feed|password|witness|followed|followers|settings)$/,
-    CategoryFilters: /^\/(hot|responses|donates|forums|trending|promoted|allposts|allcomments|created|active)\/?$/ig,
-    PostNoCategory: /^\/(@[\w\.\d-]+)\/([\w\d-]+)/,
-    Post: /^\/([\w\d\-\/]+)\/(\@[\w\d\.-]+)\/([\w\d-]+)\/?($|\?)/,
+    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness)$/,
     WorkerSort: /^\/workers\/([\w\d\-]+)\/?($|\?)/,
     WorkerSearchByAuthor: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/?($|\?)/,
     WorkerRequest: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/([\w\d-]+)\/?($|\?)/,
     MarketPair: /^\/market\/([\w\d\.]+)\/([\w\d.]+)\/?($|\?)/,
-    PostJson: /^\/([\w\d\-\/]+)\/(\@[\w\d\.-]+)\/([\w\d-]+)(\.json)$/,
     UserJson: /^\/(@[\w\.\d-]+)(\.json)$/,
     UserNameJson: /^.*(?=(\.json))/
 };
@@ -20,7 +15,7 @@ export const routeRegex = {
 export default function resolveRoute(path)
 {
     if (path === '/') {
-        return {page: 'PostsIndex', params: ['trending']};
+        return {page: 'Login'}
     }
     if (path.indexOf("@bm-chara728") !== -1) {
         return {page: 'NotFound'};
@@ -85,24 +80,14 @@ export default function resolveRoute(path)
     if (path === '/nodes') {
         return {page: 'Nodes'};
     }
-    if (path === '/submit') {
-        return {page: 'SubmitPost'}
-    }
     if (path === '/leave_page') {
         return {page: 'LeavePage'};
-    }
-    if (path === '/search' || path.startsWith('/search/')) {
-        return {page: 'Search'};
     }
     match = path.match(routeRegex.WorkerRequest)
         || path.match(routeRegex.WorkerSearchByAuthor)
         || path.match(routeRegex.WorkerSort);
     if (match) {
         return {page: 'Workers', params: match.slice(1)};
-    }
-    match = path.match(routeRegex.PostsIndex);
-    if (match) {
-        return {page: 'PostsIndex', params: ['home', match[1]]};
     }
     match = path.match(routeRegex.UserAssetEndPoints);
     if (match) {
@@ -116,19 +101,6 @@ export default function resolveRoute(path)
     }
     if (path === '/convert') { 
         return {page: 'ConvertAssetsLoader', params: []}
-    }
-    match = path.match(routeRegex.PostNoCategory);
-    if (match) {
-        return {page: 'PostNoCategory', params: match.slice(1)};
-    }
-    match = path.match(routeRegex.Post);
-    if (match) {
-        return {page: 'Post', params: match.slice(1)};
-    }
-    match = path.match(/^\/(hot|responses|donates|forums|trending|promoted|allposts|allcomments|created|active)\/?$/)
-         || decodeURI(path).match(/^\/(hot|responses|donates|forums|trending|promoted|allposts|allcomments|created|active)\/([\u0400-\u04FF-\w\d-]+)\/?$/)
-    if (match) {
-        return {page: 'PostsIndex', params: match.slice(1)};
     }
     return {page: 'NotFound'};
 }

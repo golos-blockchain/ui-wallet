@@ -81,31 +81,11 @@ export function* fetchState(location_change_action) {
         const state = {}
         state.current_route = location
         state.content = {}
-        state.prev_posts = []
         state.assets = {}
         state.worker_requests = {}
-        state.minused_accounts = {}
         state.accounts = {}
 
-        const authorsForCheck = new Set() // if not blocked by current user
-        const checkAuthor = (author) => authorsForCheck.add(author)
-
         let accounts = new Set()
-
-        const getPost = () => {
-            const check = parts.length === 3 && parts[1] && parts[1][0] == '@';
-            if (!check) return false;
-            const [category, account, permlink] = parts;
-            return {category, account: account.substr(1), permlink};
-        }
-        const getComment = () => {
-            const checkParent = parts.length === 4 && parts[1] && parts[1][0] == '@';
-            if (!checkParent) return false;
-            let [parent_permlink, account] = parts[2].split('#');
-            const checkComment = account.length && account[0] == '@';
-            if (!checkComment) return false;
-            return {category: parts[0], account: account.substr(1), permlink: parts[3]};
-        }
 
         if (parts[0][0] === '@') {
             const uname = parts[0].substr(1)
@@ -113,11 +93,50 @@ export function* fetchState(location_change_action) {
             state.accounts[uname] = account
             
             if (account) {
-                state.accounts[uname].tags_usage = yield call([api, api.getTagsUsedByAuthorAsync], uname)
-                state.accounts[uname].guest_bloggers = yield call([api, api.getBlogAuthorsAsync], uname)
-
                 switch (parts[1]) {
+                    case 'create-asset':
+                    case 'assets':
+                        state.assets = (yield call([api, api.getAccountsBalancesAsync], [uname]))[0]
+                        const my_assets = yield call([api, api.getAssetsAsync], '', [], '', 5000)
+                        my_assets.forEach(ma => {
+                            const sym = ma.supply.split(' ')[1]
+                            const precision = ma.supply.split(' ')[0].split('.')[1].length
+
+                            if (sym in state.assets) {
+                                state.assets[sym].my = true
+                            } else {
+                                state.assets[sym] = {
+                                    balance: '0.' + '0'.repeat(precision) + ' ' + sym,
+                                    tip_balance: '0.' + '0'.repeat(precision) + ' ' + sym
+                                }
+                            }
+
+                            state.assets[sym] = {...state.assets[sym], ...ma, precision}
+
+                            if (ma.creator == uname) {
+                                state.assets[sym].my = true
+                            }
+                        })
+
+                        state.cprops = yield call([api, api.getChainPropertiesAsync])
+                    break
+
+                    case 'invites':
+                        state.cprops = yield call([api, api.getChainPropertiesAsync])
+                    break
+
+                    case 'filled-orders':
+                        const fohistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['fill_order']});
+                        account.filled_orders = [];
+                        fohistory.forEach(operation => {
+                            const op = operation[1].op;
+                            if (op[0] === 'fill_order') {
+                                state.accounts[uname].filled_orders.push(operation);
+                            }
+                        });
+                    break
                     case 'transfers':
+                    default:
                         const history = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['donate', 'transfer', 'author_reward', 'curation_reward', 'transfer_to_tip', 'transfer_from_tip', 'transfer_to_vesting', 'withdraw_vesting', 'asset_issue', 'invite', 'transfer_to_savings', 'transfer_from_savings', 'convert_sbd_debt', 'convert', 'fill_convert_request', 'interest', 'worker_reward', 'account_freeze', 'unwanted_cost', 'unlimit_cost']})
                         account.transfer_history = []
                         account.other_history = []
@@ -153,233 +172,9 @@ export function* fetchState(location_change_action) {
                             }
                         })
                     break
-
-                    case 'create-asset':
-                    case 'assets':
-                        state.assets = (yield call([api, api.getAccountsBalancesAsync], [uname]))[0]
-                        const my_assets = yield call([api, api.getAssetsAsync], '', [], '', 5000)
-                        my_assets.forEach(ma => {
-                            const sym = ma.supply.split(' ')[1]
-                            const precision = ma.supply.split(' ')[0].split('.')[1].length
-
-                            if (sym in state.assets) {
-                                state.assets[sym].my = true
-                            } else {
-                                state.assets[sym] = {
-                                    balance: '0.' + '0'.repeat(precision) + ' ' + sym,
-                                    tip_balance: '0.' + '0'.repeat(precision) + ' ' + sym
-                                }
-                            }
-
-                            state.assets[sym] = {...state.assets[sym], ...ma, precision}
-
-                            if (ma.creator == uname) {
-                                state.assets[sym].my = true
-                            }
-                        })
-
-                        state.cprops = yield call([api, api.getChainPropertiesAsync])
-                    break
-
-                    case 'invites':
-                        state.cprops = yield call([api, api.getChainPropertiesAsync])
-                    break
-
-                    case 'recent-replies':
-                        const replies = yield call([api, api.getRepliesByLastUpdateAsync], uname, '', 50, constants.DEFAULT_VOTE_LIMIT, 0, ['fm-'],
-                            prefs(uname, curUser))
-                        state.accounts[uname].recent_replies = []
-
-                        replies.forEach(reply => {
-                            const link = `${reply.author}/${reply.permlink}`
-                            state.content[link] = reply
-                            checkAuthor(reply.author)
-                            state.accounts[uname].recent_replies.push(link)
-                        })
-                    break
-
-                    case 'posts':
-                    case 'comments':
-                        const filter_tags = curUser ? ['test'] : getFilterTags()
-                        const comments = yield call([api, api.getDiscussionsByCommentsAsync], { start_author: uname, limit: 20, filter_tag_masks: ['fm-'], filter_tags })
-                        state.accounts[uname].comments = []
-
-                        comments.forEach(comment => {
-                            const link = `${comment.author}/${comment.permlink}`
-                            state.content[link] = comment
-                            state.accounts[uname].comments.push(link)
-                        })
-                    break
-
-                    case 'feed':
-                        const feedEntries = yield call([api, api.getFeedEntriesAsync], uname, 0, 20, ['fm-'])
-                        state.accounts[uname].feed = []
-
-                        for (let key in feedEntries) {
-                            const { author, permlink } = feedEntries[key]
-                            const link = `${author}/${permlink}`
-                            state.accounts[uname].feed.push(link)
-                            state.content[link] = yield call([api, api.getContentAsync], author, permlink, constants.DEFAULT_VOTE_LIMIT)
-
-                            checkAuthor(author)
-
-                            if (feedEntries[key].reblog_by.length > 0) {
-                                state.content[link].first_reblogged_by = feedEntries[key].reblog_by[0]
-                                state.content[link].reblogged_by = feedEntries[key].reblog_by
-                                state.content[link].first_reblogged_on = feedEntries[key].reblog_on
-                            }
-                        }
-                    break
-
-                    case 'reputation':
-                        const rhistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['account_reputation']});
-                        account.reputation_history = [];
-                        rhistory.forEach(operation => {
-                            const op = operation[1].op;
-                            if (op[0] === 'account_reputation' && op[1].author === uname) {
-                                state.accounts[uname].reputation_history.push(operation);
-                            }
-                        });
-                    break
-
-                    case 'mentions':
-                        const mhistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['comment_mention']});
-                        account.mentions = [];
-                        mhistory.forEach(operation => {
-                            const op = operation[1].op;
-                            if (op[0] === 'comment_mention' && op[1].mentioned === uname) {
-                                state.accounts[uname].mentions.push(operation);
-                            }
-                        });
-                    break
-
-                    case 'filled-orders':
-                        const fohistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['fill_order']});
-                        account.filled_orders = [];
-                        fohistory.forEach(operation => {
-                            const op = operation[1].op;
-                            if (op[0] === 'fill_order') {
-                                state.accounts[uname].filled_orders.push(operation);
-                            }
-                        });
-                    break
-
-                    case 'settings':
-                        yield fork(listBlockings, uname)
-                    break
-
-                    case 'blog':
-                    default:
-                        const blogEntries = yield call([api, api.getBlogEntriesAsync], uname, 0, 20, ['fm-'])
-                        state.accounts[uname].blog = []
-
-                        let pinnedPosts = getPinnedPosts(account)
-                        blogEntries.unshift(...pinnedPosts)
-
-                        for (let key in blogEntries) {
-                            const { author, permlink } = blogEntries[key]
-                            const link = `${author}/${permlink}`
-
-                            state.content[link] = yield call([api, api.getContentAsync], author, permlink, constants.DEFAULT_VOTE_LIMIT)
-                            state.accounts[uname].blog.push(link)
-                        
-                            if (blogEntries[key].reblog_on !== '1970-01-01T00:00:00') {
-                                state.content[link].first_reblogged_on = blogEntries[key].reblog_on
-                            }
-                        }
-                    break
                 }
             }
 
-        } else if (getPost() || getComment()) {
-            const {account, category, permlink} = getPost() || getComment();
-
-            const curl = `${account}/${permlink}`
-            state.content[curl] = yield call([api, api.getContentAsync], account, permlink, constants.DEFAULT_VOTE_LIMIT)
-            const search = window.location.search
-            if (search) {
-                yield stateSetVersion(state.content[curl], search)
-            }
-            accounts.add(account)
-            checkAuthor(account)
-
-            state.content[curl].donate_list = [];
-            if (state.content[curl].donates != '0.000 GOLOS') {
-                const donates = yield call([api, api.getDonatesAsync], false, {author: account, permlink: permlink}, '', '', 20, 0, true)
-                state.content[curl].donate_list = donates;
-            }
-            state.content[curl].donate_uia_list = [];
-            if (state.content[curl].donates_uia != 0) {
-                state.content[curl].donate_uia_list = yield call([api, api.getDonatesAsync], true, {author: account, permlink: permlink}, '', '', 20, 0, true)
-            }
-            state.content[curl].confetti_active = false
-
-            yield put(GlobalReducer.actions.receiveState(state))
-
-            let replies = [];
-            if ($STM_Config.hide_comment_neg_rep) {
-                replies =  yield call([api, api.getAllContentRepliesAsync], account, permlink, constants.DEFAULT_VOTE_LIMIT, 0, [], [], true, null, prefs([], [account, curUser]))
-            } else {
-                replies =  yield call([api, api.getAllContentRepliesAsync], account, permlink, constants.DEFAULT_VOTE_LIMIT, 0, [], [], false, null, prefs([], [account, curUser]))
-            }
-
-            for (let key in replies) {
-                let reply = replies[key]
-                const link = `${reply.author}/${reply.permlink}`
-
-                accounts.add(reply.author)
-                checkAuthor(reply.author)
- 
-                state.content[link] = reply
-                if (reply.parent_permlink === permlink) {
-                    state.content[curl].replies.push(link)
-                }
-                state.content[link].donate_list = [];
-                if (state.content[link].donates != '0.000 GOLOS') {
-                    const donates =  yield call([api, api.getDonatesAsync], false, {author: reply.author, permlink: reply.permlink}, '', '', 20, 0, true)
-                    state.content[link].donate_list = donates;
-                }
-                state.content[link].donate_uia_list = [];
-                if (state.content[link].donates_uia != 0) {
-                    state.content[link].donate_uia_list = yield call([api, api.getDonatesAsync], true, {author: reply.author, permlink: reply.permlink}, '', '', 20, 0, true)
-                }
-                state.content[link].confetti_active = false
-            }
-
-            let args = { truncate_body: 128, select_categories: [category], filter_tag_masks: ['fm-'],
-                filter_tags: getFilterTags(),
-                prefs: prefs(curUser) };
-            let prev_posts = yield call([api, api[PUBLIC_API.created]], {limit: 4, start_author: account, start_permlink: permlink, select_authors: [account], ...args});
-            prev_posts = prev_posts.slice(1);
-            let p_ids = [];
-            for (let p of prev_posts) {
-                p_ids.push(p.author + p.permlink);
-            }
-            if (prev_posts.length < 3) {
-                let trend_posts = yield call([api, api[PUBLIC_API.trending]], {limit: 4, ...args});
-                for (let p of trend_posts) {
-                    if (p.author === account && p.permlink === permlink) continue;
-                    if (p_ids.includes(p.author + p.permlink)) continue;
-                    prev_posts.push(p);
-                    p_ids.push(p.author + p.permlink);
-                }
-            }
-            if (prev_posts.length < 3) {
-                delete args.select_categories;
-                let author_posts = yield call([api, api[PUBLIC_API.author]], {limit: 4, select_authors: [account], ...args});
-                for (let p of author_posts) {
-                    if (p.author === account && p.permlink === permlink) continue;
-                    if (p_ids.includes(p.author + p.permlink)) continue;
-                    prev_posts.push(p);
-                }
-            }
-            state.prev_posts = prev_posts.slice(0, 3);
-
-            if (curUser) {
-                state.assets = (yield call([api, api.getAccountsBalancesAsync], [curUser]))[0]
-            }
-
-            console.log('Full post load');
         } else if (parts[0] === 'witnesses' || parts[0] === '~witnesses') {
             state.witnesses = {};
 
@@ -419,24 +214,6 @@ export function* fetchState(location_change_action) {
                     state.worker_requests[url].myVote = (myVote && myVote.voter == curUser) ? myVote : null
                 }
             }
-        } else if (parts[0] === 'minused_accounts') {
-            const mhistory = yield call([api, api.getAccountHistoryAsync], 'null', -1, 1000, {select_ops: ['minus_reputation']});
-            state.minused_accounts = [];
-            mhistory.forEach(operation => {
-                const op = operation[1].op;
-                if (op[0] === 'minus_reputation' && op[1].author !== 'null') {
-                    state.minused_accounts.push(operation);
-                }
-            });
-        } else if (Object.keys(PUBLIC_API).includes(parts[0])) {
-
-            yield call(fetchData, {payload: { order: parts[0], category : tag }})
-
-        } else if (parts[0] == 'tags') {
-            const tags = {}
-            const trending_tags = yield call([api, api.getTrendingTagsAsync], '', 250)
-            trending_tags.forEach (tag => tags[tag.name] = tag)
-            state.tags = tags
         }
 
         if (accounts.size > 0) {
@@ -448,10 +225,6 @@ export function* fetchState(location_change_action) {
             }
         }
     
-        if (curUser && authorsForCheck.size) {
-            yield fork(getBlockings, curUser, [...authorsForCheck])
-        }
-
         yield put(GlobalReducer.actions.receiveState(state))
         yield put({type: 'FETCH_DATA_END'})
     } catch (error) {

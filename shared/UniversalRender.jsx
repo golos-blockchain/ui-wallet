@@ -145,17 +145,11 @@ export async function serverRender({
             }
         }
 
-        if (!url.match(routeRegex.PostsIndex) && !url.match(routeRegex.UserProfile1) && !url.match(routeRegex.UserProfile2) && !url.match(routeRegex.UserAssetEndPoints) && url.match(routeRegex.PostNoCategory)) {
-            const params = url.substr(2, url.length - 1).split("/");
-            const content = await api.getContent(params[0], params[1].split('?')[0]);
-            if (content.author && content.permlink) { // valid short post url
-                onchain.content[url.substr(2, url.length - 1)] = content;
-            } else { // protect on invalid user pages (i.e /user/transferss)
-                return {
-                    title: 'Page Not Found - ' + APP_NAME,
-                    statusCode: 404,
-                    body: renderToString(<NotFound />)
-                };
+        if (!url.match(routeRegex.UserProfile1) && !url.match(routeRegex.UserProfile2) && !url.match(routeRegex.UserAssetEndPoints)) {
+            return {
+                title: 'Page Not Found - ' + APP_NAME,
+                statusCode: 404,
+                body: renderToString(<NotFound />)
             }
         }
 
@@ -172,6 +166,7 @@ export async function serverRender({
             }
         }*/
     } catch (e) {
+        console.error(e)
         // Ensure 404 page when username not found
         if (location.match(routeRegex.UserProfile1)) {
             console.error('User/not found: ', location);
