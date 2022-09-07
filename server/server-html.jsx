@@ -2,12 +2,13 @@ import React from 'react';
 import { LIQUID_TOKEN } from '../app/client_config';
 import config from 'config';
 
-export default function ServerHTML({ body, assets, locale, title, meta, analytics, relativeSrc }) {
+export default function ServerHTML({ body, assets, locale, title, meta, analytics, relativeSrc, offchain }) {
     let page_title = title;
     const fixSrc = (src) => {
         if (!relativeSrc) return src
         if (src[0] === '/') return src.substring(1)
     }
+    const iniState = { offchain }
     return (
         <html>
         <head>
@@ -66,6 +67,8 @@ export default function ServerHTML({ body, assets, locale, title, meta, analytic
         </head>
         <body>
             <div id="content" dangerouslySetInnerHTML={ { __html: body } }></div>
+
+            <script dangerouslySetInnerHTML={{ __html: 'window.$glsIniState = ' + JSON.stringify(iniState) }} />
 
             {/* javascripts */}
             {/* (usually one for each "entry" in webpack configuration) */}

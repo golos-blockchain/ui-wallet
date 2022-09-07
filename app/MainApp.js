@@ -3,9 +3,10 @@ import golos from 'golos-lib-js'
 import tt from 'counterpart'
 
 import * as api from 'app/utils/APIWrapper'
-import getState from 'app/utils/StateBuilder'
 import { checkUpdates } from './appUpdater'
 require('app/cookieHelper')
+
+// Currently it is broken
 
 const appConfig = window.appSettings.load()
 

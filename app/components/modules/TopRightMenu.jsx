@@ -145,8 +145,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         </li>}
     </LinkWithDropdown>;
 
-    const estimateOutputAmount = calculateEstimateOutput({ account, price_per_golos, savings_withdraws, globalprops })
-    const estimateOutput = <LocalizedCurrency amount={estimateOutputAmount} />
+    const estimateOutputAmount = globalprops ? calculateEstimateOutput({ account, price_per_golos, savings_withdraws, globalprops }) : null
+    const estimateOutput = estimateOutput ? <LocalizedCurrency amount={estimateOutputAmount} /> : null
 
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [

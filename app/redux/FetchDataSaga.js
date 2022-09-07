@@ -84,6 +84,7 @@ export function* fetchState(location_change_action) {
         state.assets = {}
         state.worker_requests = {}
         state.accounts = {}
+        state.props = yield call([api, api.getDynamicGlobalProperties])
 
         let accounts = new Set()
 

@@ -66,9 +66,10 @@ class UserWallet extends React.Component {
 
         const {showDeposit, depositType, toggleDivestError} = this.state
         const { showConvertDialog, price_per_golos, savings_withdraws, account, current_user, } = this.props;
-        const gprops = this.props.gprops.toJS();
 
-        if (!account) return null;
+        if (!account || !this.props.gprops) return null;
+
+        const gprops = this.props.gprops.toJS();
         const vesting_steem = vestsToSteem(account.get('vesting_shares'), gprops);
         const received_vesting_shares = vestsToSteem(account.get('received_vesting_shares'), gprops);
         const delegated_vesting_shares = vestsToSteem(account.get('delegated_vesting_shares'), gprops);
@@ -492,7 +493,7 @@ export default connect(
         }
         const savings_withdraws = state.user.get('savings_withdraws')
         const gprops = state.global.get('props');
-        const sbd_interest = gprops.get('sbd_interest_rate')
+        const sbd_interest = gprops ? gprops.get('sbd_interest_rate') : 0
         const cprops = state.global.get('cprops');
 
         return {
