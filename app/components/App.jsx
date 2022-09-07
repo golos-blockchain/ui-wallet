@@ -22,7 +22,6 @@ import MiniHeader from '@modules/MiniHeader';
 import golos from 'golos-lib-js';
 import { session, pageSession } from 'golos-lib-js/lib/auth';
 import tt from 'counterpart';
-import PageViewsCounter from '@elements/PageViewsCounter';
 import DialogManager from 'app/components/elements/common/DialogManager';
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
@@ -411,7 +410,6 @@ class App extends React.Component {
                 <Modals />
                 <DialogManager />
                 {process.env.BROWSER ? <TooltipManager /> : null}
-                <PageViewsCounter hidden/>
                 <GlobalStyle />
                 {process.env.IS_APP ? <URLLoader /> : null}
             </div>

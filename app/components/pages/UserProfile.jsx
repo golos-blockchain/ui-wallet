@@ -18,16 +18,12 @@ import Invites from 'app/components/elements/Invites';
 import PasswordReset from 'app/components/elements/PasswordReset';
 import UserWallet from 'app/components/modules/UserWallet';
 import WitnessProps from 'app/components/modules/WitnessProps';
-import Settings from 'app/components/modules/Settings';
 import DonatesFrom from 'app/components/modules/DonatesFrom';
 import DonatesTo from 'app/components/modules/DonatesTo';
 import CurationRewards from 'app/components/modules/CurationRewards';
 import AuthorRewards from 'app/components/modules/AuthorRewards';
 import ReputationHistory from 'app/components/modules/ReputationHistory'
-import Mentions from 'app/components/modules/Mentions'
 import FilledOrders from 'app/components/modules/FilledOrders'
-import UserList from 'app/components/elements/UserList';
-import Follow from 'app/components/elements/Follow';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
@@ -453,10 +449,6 @@ export default class UserProfile extends React.Component {
                             <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>{tt('navigation.market2')} <NotifiCounter fields="fill_order" /></Link>
                             : null
                         }
-                        {isMyAccount ?
-                            <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active'>{tt('g.settings')}</Link>
-                            : null
-                        }
                     </div>
                 </div>
             </div>
@@ -484,7 +476,6 @@ export default class UserProfile extends React.Component {
                         <div className='UserProfile__buttons-wrapper'>
                             <div className='UserProfile__buttons'>
                                 {(msgsHost() && (!username || username !== accountname)) ? <a href={msgsLink(accountname)} target='_blank' rel='noopener noreferrer'><label className='button slim hollow secondary '>{tt('g.write_message')}</label></a> : null}
-                                <Follow follower={username} following={accountname} />
                             </div>
                         </div>
 
@@ -519,9 +510,6 @@ export default class UserProfile extends React.Component {
                                     </a>
                                 </div> : null}
                             </p>
-                        </div>
-                        <div className='UserProfile__buttons-mobile'>
-                            <Follow follower={username} following={accountname} what='blog' />
                         </div>
                     </div>
                 </div>}

@@ -35,19 +35,6 @@ export const FIRST_DATE = new Date(Date.UTC(2016, 7, 1)); //1 september
 // ignore special tags, dev-tags, partners tags
 export const IGNORE_TAGS = ['test', 'onlyblog']
 export const SELECT_TAGS_KEY = 'gls.select.tags'
-export const PUBLIC_API = {
-  created:         'getDiscussionsByCreatedAsync',
-  hot:             'getDiscussionsByHotAsync',
-  trending:        'getDiscussionsByTrendingAsync',
-  promoted:        'getDiscussionsByPromotedAsync',
-  active:          'getDiscussionsByActiveAsync',
-  responses:       'getDiscussionsByChildrenAsync',
-  donates:         'getDiscussionsByDonatesAsync',
-  forums:          'getAllDiscussionsByActiveAsync',
-  allposts:        'getDiscussionsByPayoutAsync',
-  allcomments:     'getDiscussionsByPayoutAsync',
-  author:          'getDiscussionsByBlogAsync',
-}
 
 export const SEO_TITLE = 'Блокчейн Голос'
 export const USER_GENDER = ['undefined', 'male', 'female']

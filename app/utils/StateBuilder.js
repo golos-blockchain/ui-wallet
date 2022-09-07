@@ -1,4 +1,4 @@
-import { PUBLIC_API, CATEGORIES } from 'app/client_config';
+import { CATEGORIES } from 'app/client_config';
 import { contentPrefs as prefs } from 'app/utils/Allowance'
 import { getPinnedPosts, getMutedInNew } from 'app/utils/NormalizeProfile';
 import { reveseTag, prepareTrendingTags, getFilterTags } from 'app/utils/tags';

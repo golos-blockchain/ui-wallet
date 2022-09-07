@@ -6,7 +6,6 @@ import tt from 'counterpart';
 import { LinkWithDropdown } from 'react-foundation-components/lib/global/dropdown'
 
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
-import Follow from 'app/components/elements/Follow';
 import Icon from 'app/components/elements/Icon';
 import {authorNameAndRep} from 'app/utils/ComponentFormatters';
 import { getGameLevel } from 'app/utils/GameUtils'
@@ -111,11 +110,6 @@ class Author extends React.Component {
                 @{author}
             </Link>
             {!name ? genderIcon : null}
-            <div>
-                <Follow className="float-right" follower={username} following={author} what="blog"
-                        showFollow={follow} showMute={mute} donateUrl={donateUrl}
-                        />
-            </div>
 
             <div className="Author__bio">
                 {about}

@@ -1,5 +1,4 @@
 import { api, config } from 'golos-lib-js'
-import { PUBLIC_API } from 'app/client_config'
 
 export function getDynamicGlobalProperties() {
     return api.getDynamicGlobalPropertiesAsync()
@@ -91,12 +90,6 @@ export function getAllContentReplies(author, permlink, voteLimit, prefs) {
 
 export function getDonates(uia, target, from, to, voteLimit, offset) {
     return api.getDonatesAsync(uia, target, from, to, voteLimit, offset, true)
-}
-
-export function gedDiscussionsBy(type, args) {
-    if (type === 'forums')
-        return api[PUBLIC_API[type]](...args)
-    return api[PUBLIC_API[type]](args)
 }
 
 export function getActiveVotesAsync(account, permlink) {
