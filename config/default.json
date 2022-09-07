@@ -21,8 +21,8 @@
     "title": "Обмен личными сообщениями и начало для Golos Messenger"
   },
   "server_session_secret": "exiKdyF+IwRIXJDmtGIl4vWUz4i3eVSISpfZoeYc0s4=", // Generated via Node - crypto.randomBytes(32).toString('base64')
-  "session_cookie_key": "gls.session",
-  "session_key": "golos",
+  "session_cookie_key": "gls.wallet.session",
+  "session_key": "goloswallet",
   "site_domain": "beta.golos.today",
   "ws_connection_client": "wss://apibeta.golos.today/ws",
   "ws_connection_server": "wss://apibeta.golos.today/ws",
