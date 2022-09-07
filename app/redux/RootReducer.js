@@ -11,7 +11,10 @@ import {contentStats, fromJSGreedy} from 'app/utils/StateFunctions'
 
 function initReducer(reducer, type) {
     return (state, action) => {
-        if(!state) return reducer(state, action);
+        if(!state) {
+            state = reducer(state, action)
+            return state
+        }
 
         // @@redux/INIT server and client init
         if (action.type === ActionTypes.INIT || action.type === '@@INIT') {

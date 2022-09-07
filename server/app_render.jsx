@@ -5,9 +5,7 @@ import stringToStream from 'string-to-stream';
 import multiStream from 'multistream';
 import { ServerStyleSheet } from 'styled-components'
 import ServerHTML from './server-html';
-import { serverRender } from '../shared/UniversalRender';
 import secureRandom from 'secure-random';
-import ErrorPage from 'server/server-error';
 import {
   DEFAULT_LANGUAGE, LANGUAGES, LOCALE_COOKIE_KEY,
   SELECT_TAGS_KEY
@@ -36,7 +34,11 @@ async function appRender(ctx) {
         };
 
         const start = new Date()
-        const {
+        const title = 'Golos Wallet'
+        const body = ''
+        const meta = []
+        const statusCode = 200
+        /*const {
           body,
           title,
           statusCode,
@@ -46,10 +48,10 @@ async function appRender(ctx) {
           store,
           offchain,
           ErrorPage,
-        });
+        });*/
 
         // Assets name are found in `webpack-stats` file
-        const assets_filename = process.env.NODE_ENV === 'production' ? 'tmp/webpack-isotools-assets-prod.json' : 'tmp/webpack-isotools-assets-dev.json';
+        const assets_filename = process.env.NODE_ENV === 'production' ? 'tmp/assets.json' : 'tmp/assets-dev.json'
         const assets = require(assets_filename);
 
         // Don't cache assets name on dev
@@ -61,7 +63,7 @@ async function appRender(ctx) {
             google_analytics_id: $STM_Config.google_analytics_id,
         };
 
-        const props = { body, assets, title, meta, analytics};
+        const props = { body, assets, title, meta, analytics, offchain};
         const sheet = new ServerStyleSheet()
         const jsx = sheet.collectStyles(<ServerHTML {...props} />)
         const stream = sheet.interleaveWithNodeStream(renderToNodeStream(jsx))

@@ -3,7 +3,7 @@ import * as golos from 'golos-lib-js';
 
 import './assets/stylesheets/app.scss';
 import plugins from 'app/utils/JsPlugins';
-import { clientRender } from 'shared/UniversalRender';
+import renderWrapper from 'app/renderWrapper'
 import { serverApiRecordEvent } from 'app/utils/ServerApiClient';
 
 // window.onerror = error => {
@@ -31,7 +31,7 @@ export default async function renderApp(initialState) {
     }
 
     try {
-        clientRender(initialState)
+        renderWrapper(initialState)
     } catch (error) {
         console.error(error)
         serverApiRecordEvent('client_error', error)

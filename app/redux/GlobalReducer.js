@@ -8,7 +8,13 @@ const emptyContentMap = Map(emptyContent);
 
 export default createModule({
     name: 'global',
-    initialState: Map({ status: {} }),
+    initialState: Map({
+        status: Map({}),
+        assets: Map({}),
+        worker_requests: Map({}),
+        accounts: Map({}),
+        witnesses: Map({})
+    }),
     transformations: [
         {
             action: 'SET_COLLAPSED',
