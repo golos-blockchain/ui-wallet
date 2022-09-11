@@ -116,7 +116,7 @@
             text-shadow: none;
         }
 
-        min-height: 155px;
+        min-height: 100px;
     }
     h1 {
         padding-top: 20px;
@@ -164,28 +164,6 @@
         margin-top: 0.5rem;
         a:hover {
             text-decoration: underline;
-        }
-    }
-
-    .UserProfile__stats {
-        margin-bottom: 5px;
-        padding-bottom: 5px;
-        font-size: 90%;
-
-        a {
-            @include hoverUnderline;
-            vertical-align: middle;
-	    }
-
-        > span {
-            padding: 0px 10px;
-            border-left: 1px solid #CCC;
-            &:first-child {border-left: none;}
-        }
-
-        .NotifiCounter {
-            position: relative;
-            top: -5px;
         }
     }
 }

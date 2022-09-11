@@ -17,6 +17,7 @@ import { LIQUID_TICKER, DEBT_TICKER } from 'app/client_config';
 import LocalizedCurrency from 'app/components/elements/LocalizedCurrency';
 import { vestsToSteem, toAsset } from 'app/utils/StateFunctions';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
+import { blogsUrl, } from 'app/utils/blogsUtils'
 import { msgsHost, msgsLink, } from 'app/utils/ExtLinkUtils';
 
 const defaultNavigate = (e) => {
@@ -62,19 +63,19 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const scn = vertical ? '' : 'show-for-medium';
     const nav = navigate || defaultNavigate;
     const topbutton = <li className={lcn + ' submit-story'}>
-        <Link to='/services' className='button small topbutton'>
+        <Link to='/services' className='button small topbutton hollow'>
             <Icon name="new/monitor" size="0_95x" />{tt('g.topbutton')}
         </Link>
     </li>;
-    const submitStory = <li className={scn + ' submit-story'}>
-        <a href="/submit" onClick={nav} className={'button small topbutton alert'}>
-            <Icon name="new/add" size="0_95x" />{tt('g.submit_a_story')}
+    const goBlogs = <li className={scn + ' submit-story'}>
+        <a href={blogsUrl()} className={'button small topbutton'}>
+            <Icon name="new/add" size="0_95x" />{tt('g.go_blogs')}
         </a>
     </li>;
-    const submitStoryPencil = <li className="hide-for-medium submit-story-pencil">
-        <Link to="/submit" className="button small alert">
+    const goBlogsPencil = <li className="hide-for-medium submit-story-pencil">
+        <a href={blogsUrl()} className="button small">
             <Icon name="new/add" size="0_95x" />
-        </Link>
+        </a>
     </li>;
     const feedLink = `/@${username}/feed`;
     const repliesLink = `/@${username}/recent-replies`;
@@ -87,14 +88,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const ordersLink = `/@${username}/filled-orders`;
 
     const faqItem = <li className={scn}>
-        <Link to="/faq" title={tt('navigation.faq')}><Icon name="info_o" size="1_5x" />
-        </Link>
-      </li>
-    ;
-
-    const searchItem = <li className={scn}>
-        <Link to="/search" title={tt('navigation.search')}><Icon name="new/search" size="1_25x" />
-        </Link>
+        <a href={blogsUrl('/faq')} title={tt('navigation.faq')}><Icon name="info_o" size="1_5x" />
+        </a>
       </li>
     ;
 
@@ -172,11 +167,10 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             <ul className={mcn + mcl}>
                 <LocaleSelect />
                 {faqItem}
-                {searchItem}
                 <li className="delim show-for-medium" />
                 {topbutton}
-                {submitStory}
-                {!vertical && submitStoryPencil}
+                {goBlogs}
+                {!vertical && goBlogsPencil}
                 <li className="delim show-for-medium" />
                 <LinkWithDropdown
                     closeOnClickOutside
@@ -223,7 +217,6 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         <ul className={mcn + mcl}>
             <LocaleSelect />
             {faqItem}
-            {searchItem}
             <li className="delim show-for-medium" />
             {!probablyLoggedIn && !externalTransfer && <li className={scn}>
               <a href="/login.html" onClick={showLogin} className={!vertical && 'button small violet hollow'}>{tt('g.login')}</a>

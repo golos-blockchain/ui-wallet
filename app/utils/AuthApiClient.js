@@ -16,7 +16,7 @@ export const authUrl = (pathname) => {
     try {
         return new URL(pathname, $STM_Config.auth_service.host).toString();
     } catch (err) {
-        console.error(authUrl, err)
+        console.error('authUrl', err)
         return ''
     }
 };
