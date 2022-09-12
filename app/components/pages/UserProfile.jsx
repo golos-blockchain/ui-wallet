@@ -212,7 +212,6 @@ export default class UserProfile extends React.Component {
         let rep = golos.formatter.reputation(account.reputation, true);
         rep = parseFloat(rep.toFixed(3));
 
-        let repPanel = null;
         let cannotUpvote = false;
         let cannotDownvote = false;
         let upvoteRep = this.upvoteRep;
@@ -234,16 +233,6 @@ export default class UserProfile extends React.Component {
             if (cannotDownvote) {
                 downvoteRep = (e) => { e.preventDefault(); };
             }
-            repPanel = (<span className='UserProfile__rep-panel'>
-                {this.state.repLoading &&
-                                    (<LoadingIndicator type='circle' />)}
-                {!this.state.repLoading && <a href='#' onClick={upvoteRep} className={'UserProfile__rep-btn-up' + (cannotUpvote ? ' disabled' : '')} title={cannotUpvote || tt('g.upvote')}>
-                    <Icon size='1_5x' name='chevron-up-circle' />
-                </a>}
-                {!this.state.repLoading && <a href='#' onClick={downvoteRep} className={'UserProfile__rep-btn-down' + (cannotDownvote ? ' disabled' : '')} title={cannotDownvote || tt('g.flag')}>
-                    <Icon size='1_25x' name='chevron-down-circle' />
-                </a>}
-            </span>);
         }
 
         let level = null
@@ -274,7 +263,6 @@ export default class UserProfile extends React.Component {
                 { isMyAccount && <div><MarkNotificationRead fields='send,receive' account={account.name} /></div> }
                 </div>;
         } else if( section === 'assets' ) {
-            walletClass = 'active'
             tab_content = <div>
                  <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
@@ -286,7 +274,6 @@ export default class UserProfile extends React.Component {
                 {action === 'transfer' && <TransferAsset account={accountImm} symbol={id.toUpperCase()} />}
                 </div>
         } else if( section === 'create-asset' && isMyAccount ) {
-            walletClass = 'active'
             tab_content = <div>
                  <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
@@ -340,7 +327,6 @@ export default class UserProfile extends React.Component {
             );
         }
         else if( section === 'permissions' && isMyAccount ) {
-            walletClass = 'active'
             tab_content = <div>
                  <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
@@ -350,7 +336,6 @@ export default class UserProfile extends React.Component {
                 </div>;
         } 
         else if( section === 'invites' && isMyAccount ) {
-            walletClass = 'active'
             tab_content = <div>
                  <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
@@ -359,7 +344,6 @@ export default class UserProfile extends React.Component {
                 </div>;
         } 
         else if( section === 'password' ) {
-            walletClass = 'active'
             tab_content = <div>
                     <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
@@ -415,14 +399,21 @@ export default class UserProfile extends React.Component {
         const top_menu = <div className='row UserProfile__top-menu'>
             <div className='columns'>
                 <div className='UserProfile__menu menu' style={{flexWrap: 'wrap'}}>
-                    <Link className='UserProfile__menu-item' to={`/@${accountname}/fff`} activeClassName='active'>{tt('g.blog')}</Link>
-                    <Link className='UserProfile__menu-item' to={`/@${accountname}/comments`} activeClassName='active'>{tt('g.comments')}</Link>
-                    <Link className='UserProfile__menu-item' to={`/@${accountname}/recent-replies`} activeClassName='active'>
-                        {tt('g.replies')} {isMyAccount && <NotifiCounter fields='comment_reply' />}
+                    <Link className={`UserProfile__menu-item ${walletClass}`} to={`/@${accountname}`}>
+                        {tt('g.balances')}
                     </Link>
-                    {msgsHost() ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()}>
-                        {tt('g.messages')} {isMyAccount && <NotifiCounter fields='message' />}
-                    </a> : null}
+                    <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
+                        {tt('g.assets')}
+                    </Link>
+                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
+                        {tt('g.invites')}
+                    </Link>}
+                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/permissions`} activeClassName='active'>
+                        {tt('g.permissions')}
+                    </Link>}
+                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/password`} activeClassName='active'>
+                        {tt('g.password')}
+                    </Link>}
                     <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
@@ -442,9 +433,6 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>
                     <div className='UserProfile__filler' />
                     <div>
-                        <a href={`/@${accountname}`} className={`${walletClass} UserProfile__menu-item`} onClick={e => { e.preventDefault(); browserHistory.push(e.target.pathname); return false; }}>
-                            {tt('g.wallet')} {isMyAccount && <NotifiCounter fields='send,receive' />}
-                        </a>
                         {isMyAccount ?
                             <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>{tt('navigation.market2')} <NotifiCounter fields="fill_order" /></Link>
                             : null
@@ -486,7 +474,6 @@ export default class UserProfile extends React.Component {
                             {!this.state.repLoading && <Link to={`/@${account.name}/reputation`}>
                                 <span className='UserProfile__rep UserProfile__rep-btn' title={tt('user_profile.this_is_users_reputations_score_it_is_based_on_history_of_votes', {name: accountname})}>({rep})</span>
                             </Link>}
-                            {repPanel}
                             {level}
                         </h1>
 
