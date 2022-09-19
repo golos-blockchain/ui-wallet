@@ -398,7 +398,7 @@ class App extends React.Component {
                 {noHeader ? null : (miniHeader ? <MiniHeader /> : <Header />)}
                 <div className={cn('App__content' +
                     (noHeader ? ' no-header' : ''), {
-                    'App__content_hide-sub-menu': true,
+                    'App__content_hide-sub-menu': false,
                 })}>
                     {welcome_screen}
                     {callout}

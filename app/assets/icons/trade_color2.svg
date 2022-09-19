@@ -1,0 +1,11 @@
+<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 32 32">
+ <g>
+  <title>Layer 1</title>
+  <rect opacity="undefined" stroke="null" fill="#2670b8" x="10.00015" y="10" width="4" height="14" id="svg_6"/>
+  <rect opacity="undefined" fill="#2670b8" x="21.99985" y="4.062" width="3.9374" height="19.90572" id="svg_7" stroke="null"/>
+  <rect fill="#f51f1f" x="15.99997" y="16.06231" width="3.96875" height="7.93769" id="svg_8" stroke="null"/>
+  <path fill="#f51f1f" d="m4.00033,18.08309l4,0l0,5.96899l-4,0l0,-5.96899z" id="svg_9"/>
+  <path fill="#f51f1f" d="m0.01714,26.04946l32.00875,0l0,3.88257l-32.00875,0l0,-3.88257z" id="svg_10"/>
+ </g>
+
+</svg>

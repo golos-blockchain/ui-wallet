@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Link } from 'react-router';
 import {connect} from 'react-redux';
-import TopRightMenu from 'app/components/modules/TopRightMenu';
-import Icon from 'app/components/elements/Icon.jsx';
-import resolveRoute from 'app/ResolveRoute';
-import DropdownMenu from 'app/components/elements/DropdownMenu';
-import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
-import HorizontalMenu from 'app/components/elements/HorizontalMenu';
-import normalizeProfile from 'app/utils/NormalizeProfile';
-import tt from 'counterpart';
-import {detransliterate, capitalizeFirstLetter} from 'app/utils/ParsersAndFormatters';
-import {APP_NAME_UP, APP_ICON, SEO_TITLE} from 'app/client_config';
+import tt from 'counterpart'
+
+import TopRightMenu from 'app/components/modules/TopRightMenu'
+import Icon from 'app/components/elements/Icon'
+import resolveRoute from 'app/ResolveRoute'
+import DropdownMenu from 'app/components/elements/DropdownMenu'
+import CMCBar from 'app/components/elements/market/CMCBar'
+import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
+import normalizeProfile from 'app/utils/NormalizeProfile'
+import { detransliterate, capitalizeFirstLetter, } from 'app/utils/ParsersAndFormatters'
+import { APP_NAME_UP, APP_ICON, SEO_TITLE, } from 'app/client_config'
 
 function sortOrderToLink(so, topic, account) {
     // to prevent probmes check if topic is not the same as account name
@@ -199,6 +200,14 @@ class Header extends React.Component {
                         </div>
                         <div className="columns shrink">
                             <TopRightMenu {...this.props} />
+                        </div>
+                    </div>
+                </div>
+                <div className={'Header__sub-nav show-for-medium hide-for-small ' + (this.state.subheader_hidden ? ' hidden' : '')}>
+                    <div className="row">
+                        <div className="columns">
+                            <span className="question"><a target="_blank" rel="noopener noreferrer" href="https://golos.chatbro.com"><Icon name="new/telegram" />&nbsp;&nbsp;{tt('g.to_ask')}</a></span>
+                            <CMCBar />
                         </div>
                     </div>
                 </div>

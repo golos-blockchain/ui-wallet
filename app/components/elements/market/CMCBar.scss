@@ -1,0 +1,35 @@
+.CMCBar {
+    margin-top: 7px;
+    color: #2572ba;
+
+    .CMCBar__icon {
+        vertical-align: top;
+        margin-top: 3px;
+    }
+
+    .CMCBar_header {
+        margin-left: 0.5rem;
+    }
+
+    .CMCBar__price {
+        margin-right: 1rem;
+    }
+
+    .CMCBar__price-usd {
+        margin-right: 1rem;
+        @include themify($themes) {
+            color: themed('textColorSecondary');
+        }
+    }
+
+    .CMCBar__link-parent {
+        font-size: 80%;
+        vertical-align: top;
+
+        .CMCBar__link {
+            margin-top: 2px;
+            display: inline-block;
+        }
+    }
+}
+

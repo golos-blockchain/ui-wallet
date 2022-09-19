@@ -164,6 +164,57 @@ ul > li.Header__top-logo > a {
   transition: none;
 }
 
+.Header__sub-nav {
+  position: relative;
+  padding: 0;
+
+  @include themify($themes) {
+    background-color: themed('summaryBackgroundColor');
+  }
+
+  transition: all .3s;
+  z-index: -1;
+  height: 2.5rem;
+
+  li {
+    line-height: 1rem;
+    padding: 1.2rem 0 1.2rem 0;
+    margin: 0 0 0 2rem;
+    }
+  // No margin adjustments for first child element in menu items
+  li:first-child {
+    margin: 0 0 0 0;
+  }
+
+  li > a {
+    @include themify($themes) {
+      color: themed('textColorSecondary');
+    }
+
+    font-size: 1rem;
+    line-height: 0;
+    padding: 0;
+
+    .caret-down {
+      margin-left: 0.24rem;
+    }
+  }
+  .caret-down {
+    fill: $dark-gray;
+  }
+
+  li.active a {
+    @include themify($themes) {
+      color: themed('textColorPrimary');
+    }
+  }
+}
+
+
+.Header__sub-nav.hidden {
+  margin-top: -42px;
+}
+
 .Header__topic {
   background-color: $white;
   line-height: 1.5rem;
