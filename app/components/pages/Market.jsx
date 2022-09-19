@@ -251,8 +251,9 @@ class Market extends Component {
 
         const user = this.props.user;
         const ticker0 = this.props.ticker;
-        if (ticker0 !== undefined) {
-            let { base, quote } = this.props.feed;
+        const { feed } = this.props
+        if (ticker0 !== undefined && feed) {
+            let { base, quote } = feed
 
             ticker = {
                 latest1: parseFloat(ticker0.latest1),
@@ -587,6 +588,9 @@ class Market extends Component {
 export default connect(
     state => {
         const username = state.user.getIn(['current', 'username']);
+        const assets = state.market.get('assets') || null
+        let feed = state.global.get('feed_price')
+        feed = feed ? feed.toJS() : null
         return {
             orderbook: state.market.get('orderbook'),
             open_orders: process.env.BROWSER
@@ -596,12 +600,10 @@ export default connect(
             account: username
                 ? state.global.getIn(['accounts', username])
                 : null,
-            assets: (process.env.BROWSER && state.market.get('assets'))
-                ? state.market.get('assets')
-                : null,
+            assets,
             history: state.market.get('history'),
             user: username,
-            feed: state.global.get('feed_price').toJS(),
+            feed,
         };
     },
     dispatch => ({

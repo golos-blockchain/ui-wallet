@@ -96,13 +96,7 @@ class Header extends React.Component {
                 if(prefix == 'trending') prefix = tt('header_jsx.trending')
                 if(prefix == 'donates') prefix = tt('header_jsx.donates')
                 if(prefix == 'forums') prefix = tt('header_jsx.forums')
-                if(prefix == 'allposts') {
-                    page_title = tt('header_jsx.all_posts');
-                } else if(prefix == 'allcomments') {
-                    page_title = tt('header_jsx.all_comments');
-                } else {
-                    page_title = `${prefix} ${topic}${type}`;
-                }
+                page_title = `${prefix} ${topic}${type}`
             }
         } else if (route.page === 'Post') {
             sort_order = '';

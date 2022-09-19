@@ -8,6 +8,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Tooltip from 'app/components/elements/Tooltip';
 import Memo from 'app/components/elements/Memo'
 import {numberWithCommas, vestsToSp} from 'app/utils/StateFunctions'
+import { blogsUrl } from 'app/utils/blogsUtils'
 import { msgsLink } from 'app/utils/ExtLinkUtils'
 import { VEST_TICKER } from 'app/client_config';
 
@@ -92,7 +93,9 @@ class TransferHistoryRow extends React.Component {
                     description_start += tt('transferhistoryrow_jsx.from') + data.from;
                 }
                 description_start += tt('transferhistoryrow_jsx.for');
-                link = target.author + '/' + target.permlink;
+                linkTitle = target.author + '/' + target.permlink
+                link = blogsUrl(linkTitle)
+                linkExternal = true
                 target_hint += data.memo.app;
             } else if (target.nonce && target.from && target.to) {
                 description_start += data.amount

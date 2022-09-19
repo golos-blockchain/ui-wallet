@@ -8,6 +8,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Author from 'app/components/elements/Author';
 import WorkerRequestVoting from 'app/components/elements/workers/WorkerRequestVoting'
 import Icon from 'app/components/elements/Icon';
+import { blogsUrl } from 'app/utils/blogsUtils'
 import { formatDecimal, formatAsset, ERR, assetToLong } from 'app/utils/ParsersAndFormatters';
 
 class ViewWorkerRequest extends React.Component {
@@ -111,7 +112,7 @@ class ViewWorkerRequest extends React.Component {
 
     return(
       <div>
-        <h5><a target="_blank" rel="noopener noreferrer" href={"/@" + request.post.author + "/" + request.post.permlink}><Icon name="extlink" size="1_5x" /> 
+        <h5><a target='_blank' rel='noopener noreferrer' href={blogsUrl('/@' + request.post.author + '/' + request.post.permlink)}><Icon name='extlink' size='1_5x' /> 
           {request.post.title}
         </a></h5>
         <hr/>

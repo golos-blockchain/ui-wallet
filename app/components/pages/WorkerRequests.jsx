@@ -7,12 +7,14 @@ import Reveal from 'react-foundation-components/lib/global/reveal';
 import { connect } from 'react-redux';
 import { Link, browserHistory} from 'react-router';
 import { FormattedPlural } from 'react-intl';
+
 import Icon from 'app/components/elements/Icon';
 import Button from 'app/components/elements/Button';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Tooltip from 'app/components/elements/Tooltip';
 import Author from 'app/components/elements/Author';
 import DropdownMenu from 'app/components/elements/DropdownMenu';
+import { blogsUrl } from 'app/utils/blogsUtils'
 import { formatAsset, formatDecimal, longToAsset, ERR } from 'app/utils/ParsersAndFormatters';
 import { vestsToSteem, numberWithCommas } from 'app/utils/StateFunctions';
 import AddEditWorkerRequest from './AddEditWorkerRequest';
@@ -46,6 +48,22 @@ class WorkerRequests extends React.Component {
     };
 
   componentDidMount() {
+    this.init()
+  }
+
+  componentWillUnmount() {
+  }
+
+  componentDidUpdate(prevProps) {
+    const { gprops } = this.props
+    if (!prevProps.gprops) {
+      this.init()
+    }
+  }
+
+  init = () => {
+    const { gprops } = this.props
+    if (!gprops) return
     let new_state = {
       showViewRequest: false,
       current_author: '',
@@ -65,9 +83,6 @@ class WorkerRequests extends React.Component {
     }, () => {
       this.loadMore();
     });
-  }
-
-  componentWillUnmount() {
   }
 
   loadMore = async () => {
@@ -338,7 +353,7 @@ class WorkerRequests extends React.Component {
         <a target="_blank" href="https://t.me/golosworkers" className="golos-btn btn-secondary btn-round" style={{ float: 'right', marginTop: '0.75rem' }}><Icon name="new/telegram" /> {tt('workers.chat_workers')}</a>
         <div><h2>{tt('workers.worker_proposals')}</h2></div>
         <div className="column secondary">
-          {tt('workers.workers_info')} <a href="/@lex/interfeis-dlya-zayavok-vorkerov">{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
+          {tt('workers.workers_info')} <a href={blogsUrl('/@lex/interfeis-dlya-zayavok-vorkerov')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' />
           <hr />
         </div>
         <Button onClick={this.createRequest} round="true" type="primary">+ {tt('workers.create_request')}</Button>

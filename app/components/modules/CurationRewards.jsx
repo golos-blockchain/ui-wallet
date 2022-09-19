@@ -1,14 +1,16 @@
 /* eslint react/prop-types: 0 */
-import React from 'react';
-import { Link } from 'react-router';
+import React from 'react'
+import { Link } from 'react-router'
 import {connect} from 'react-redux'
-import TransferHistoryRow from 'app/components/cards/TransferHistoryRow';
+import tt from 'counterpart'
+
+import TransferHistoryRow from 'app/components/cards/TransferHistoryRow'
+import { blogsUrl, } from 'app/utils/blogsUtils'
 import {numberWithCommas, vestsToSp, assetFloat} from 'app/utils/StateFunctions'
-import tt from 'counterpart';
-import Callout from 'app/components/elements/Callout';
-import Icon from 'app/components/elements/Icon';
-import { LIQUID_TICKER, VEST_TICKER } from 'app/client_config';
-import { Asset } from 'golos-lib-js/lib/utils';
+import Callout from 'app/components/elements/Callout'
+import Icon from 'app/components/elements/Icon'
+import { LIQUID_TICKER, VEST_TICKER } from 'app/client_config'
+import { Asset } from 'golos-lib-js/lib/utils'
 
 class CurationRewards extends React.Component {
     state = { historyIndex: 0 }
@@ -125,7 +127,16 @@ class CurationRewards extends React.Component {
         return (<div className="UserWallet">
             <div className="row">
                 <div className="column small-12">
-                    <span style={{float: 'right', fontSize: '85%'}}><a href="/allposts"><Icon name="hf/hf18" size="2x" /> {tt('g.posts')}</a> {tt('g.and')} <a href="/allcomments">{tt('g.comments')}</a> {tt('g.sorted_by_payouts')}</span>
+                    <span style={{float: 'right', fontSize: '85%'}}>
+                        <a href={blogsUrl('/allposts')}>
+                            <Icon name="hf/hf18" size="2x" /> {tt('g.posts')}
+                        </a>
+                        {' '}{tt('g.and')}{' '}
+                        <a href={blogsUrl('/allcomments')}>
+                            {tt('g.comments')}
+                        </a>
+                        {' '}{tt('g.sorted_by_payouts')}
+                    </span>
                     <h4 className="uppercase">{tt('g.curation_rewards')}</h4>
                 </div>
             </div>

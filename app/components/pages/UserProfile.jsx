@@ -38,7 +38,6 @@ import MarkNotificationRead from 'app/components/elements/MarkNotificationRead';
 import NotifiCounter from 'app/components/elements/NotifiCounter';
 import DateJoinWrapper from 'app/components/elements/DateJoinWrapper';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
-import WalletSubMenu from 'app/components/elements/WalletSubMenu';
 import Userpic from 'app/components/elements/Userpic';
 import Callout from 'app/components/elements/Callout';
 import normalizeProfile, { getLastSeen } from 'app/utils/NormalizeProfile';
@@ -264,7 +263,6 @@ export default class UserProfile extends React.Component {
                 </div>;
         } else if( section === 'assets' ) {
             tab_content = <div>
-                 <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
                 <br />
                 {!action && <Assets account={accountImm} isMyAccount={isMyAccount}
@@ -275,7 +273,6 @@ export default class UserProfile extends React.Component {
                 </div>
         } else if( section === 'create-asset' && isMyAccount ) {
             tab_content = <div>
-                 <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
                 <br />
                 <CreateAsset account={accountImm} />
@@ -328,7 +325,6 @@ export default class UserProfile extends React.Component {
         }
         else if( section === 'permissions' && isMyAccount ) {
             tab_content = <div>
-                 <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
                 <br />
                 <UserKeys account={accountImm} />
@@ -337,7 +333,6 @@ export default class UserProfile extends React.Component {
         } 
         else if( section === 'invites' && isMyAccount ) {
             tab_content = <div>
-                 <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
                 <br />
                 <Invites account={accountImm} />
@@ -345,7 +340,6 @@ export default class UserProfile extends React.Component {
         } 
         else if( section === 'password' ) {
             tab_content = <div>
-                    <WalletSubMenu account_name={account.name} isMyAccount={isMyAccount} />
 
                     <br />
                     <PasswordReset account={accountImm} />

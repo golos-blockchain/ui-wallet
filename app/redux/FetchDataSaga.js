@@ -85,6 +85,7 @@ export function* fetchState(location_change_action) {
         state.worker_requests = {}
         state.accounts = {}
         state.props = yield call([api, api.getDynamicGlobalProperties])
+        state.feed_price = yield call([api, api.getCurrentMedianHistoryPrice])
 
         let accounts = new Set()
 

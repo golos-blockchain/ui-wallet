@@ -15,7 +15,6 @@ import Reveal from 'react-foundation-components/lib/global/reveal';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
 import {numberWithCommas, toAsset, vestsToSteem, accuEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
-import WalletSubMenu from 'app/components/elements/WalletSubMenu';
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -277,12 +276,7 @@ class UserWallet extends React.Component {
             this.props.showOpenOrders({ sym, });
         };
 
-        return (<div className="UserWallet">
-            <div className="row">
-                <div className="columns small-10 medium-12 medium-expand">
-                    <WalletSubMenu account_name={account.get('name')} isMyAccount={isMyAccount} />
-                </div>
-            </div>
+        return (<div className="UserWallet top-margin">
 
             {accountIdleness && <Callout>
                 <div align="center">{tt('userwallet_jsx.account_idleness')}. <a target="_blank" href="https://wiki.golos.id/users/update#ponizhenie-sily-golosa-pri-neaktivnosti">{tt('g.more_hint')} <Icon name="extlink" /></a>
