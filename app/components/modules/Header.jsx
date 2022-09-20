@@ -81,46 +81,16 @@ class Header extends React.Component {
         let user_name = null;
         let page_name = null;
 
-        if (route.page === 'PostsIndex') {
-            sort_order = route.params[0] || '';
-            if (sort_order === 'home') {
-                page_title = tt('header_jsx.home')
-                const account_name = route.params[1];
-                if (current_account_name && account_name.indexOf(current_account_name) === 1)
-                    home_account = true;
-            } else {
-                const type = tt('g.posts');
-                const topic = (route.params.length > 1 ? detransliterate(route.params[1]) + ' ' : '')
-                topic_original_link = route.params[1]
-                let prefix = route.params[0];
-                if(prefix == 'created') prefix = tt('header_jsx.created')
-                if(prefix == 'responses') prefix = tt('header_jsx.responses')
-                if(prefix == 'trending') prefix = tt('header_jsx.trending')
-                if(prefix == 'donates') prefix = tt('header_jsx.donates')
-                if(prefix == 'forums') prefix = tt('header_jsx.forums')
-                page_title = `${prefix} ${topic}${type}`
-            }
-        } else if (route.page === 'Post') {
-            sort_order = '';
-            topic = route.params[0];
-        } else if (route.page == 'SubmitPost') {
-            page_title = tt('header_jsx.create_a_post');
+        if (route.page === 'Login') {
+            page_title = tt('g.login')
         } else if (route.page == 'ChangePassword') {
             page_title = tt('header_jsx.change_account_password');
-        } else if (route.page === 'MinusedAccounts') {
-            page_title = tt('minused_accounts_jsx.title');
         } else if (route.page === 'UserProfile') {
             user_name = route.params[0].slice(1);
             const acct_meta = this.props.account_meta.getIn([user_name]);
             const name = acct_meta ? normalizeProfile(acct_meta.toJS()).name : null;
             const user_title = name ? `${name} (@${user_name})` : user_name;
             page_title = user_title;
-            if(route.params[1] === "followers"){
-                page_title = tt('header_jsx.people_following') + " " + user_title;
-            }
-            if(route.params[1] === "followed"){
-                page_title = tt('header_jsx.people_followed_by') + " " + user_title;
-            }
             if(route.params[1] === "curation-rewards"){
                 page_title = tt('header_jsx.curation_rewards_by') + " " + user_title;
             }
@@ -135,10 +105,6 @@ class Header extends React.Component {
             }
             if(route.params[1] === "recent-replies"){
                 page_title = tt('header_jsx.replies_to') + " " + user_title;
-            }
-            // @user/"posts" is deprecated in favor of "comments" as of oct-2016 (#443)
-            if(route.params[1] === "posts" || route.params[1] === "comments"){
-                page_title = tt('header_jsx.comments_by') + " " + user_title;
             }
         } else if (route.page === 'ConvertAssetsLoader') {
             page_title = tt('g.convert_assets')
@@ -156,31 +122,6 @@ class Header extends React.Component {
         const logo_link = route.params && route.params.length > 1 && this.last_sort_order ? '/' + this.last_sort_order : (current_account_name ? `/@${current_account_name}` : '/');
         let topic_link = topic ? <Link to={`/${this.last_sort_order || 'hot'}/${topic_original_link}`}>{detransliterate(topic)}</Link> : null;
 
-        const sort_orders = [
-            ['created', tt('g.new')],
-            ['responses', tt('main_menu.discussion')],
-            ['trending', tt('main_menu.trending')],
-            ['donates', tt('main_menu.donates')],
-            ['forums', tt('main_menu.forums')]
-        ];
-        if (current_account_name) sort_orders.unshift(['home', tt('header_jsx.home')]);
-        const sort_order_menu = sort_orders.filter(so => so[0] !== sort_order).map(so => ({link: sortOrderToLink(so[0], topic_original_link, current_account_name), value: capitalizeFirstLetter(so[1])}));
-        const selected_sort_order = sort_orders.find(so => so[0] === sort_order);
-
-        const sort_orders_horizontal = [
-            ['created', tt('g.new')],
-            ['responses', tt('main_menu.discussion')],
-            ['trending', tt('main_menu.trending')],
-            ['donates', tt('main_menu.donates')],
-            ['forums', tt('main_menu.forums')]
-        ];
-        if (current_account_name) sort_orders_horizontal.unshift(['home', tt('header_jsx.home')]);
-        const sort_order_menu_horizontal = sort_orders_horizontal.map(so => {
-                let active = (so[0] === sort_order);
-                if (so[0] === 'home' && sort_order === 'home' && !home_account) active = false;
-                return {link: sortOrderToLink(so[0], topic_original_link, current_account_name), value: so[1], active};
-            });
-
         return (
             <header className="Header noPrint">
                 <div className="Header__top header">
@@ -197,7 +138,6 @@ class Header extends React.Component {
                                     <Link to={logo_link}>{APP_NAME_UP}<span className="beta">wallet</span></Link>
                                 </li>
                                 <CMCSmall className='show-for-small-only' />
-                                {selected_sort_order && <DropdownMenu className="Header__sort-order-menu show-for-small-only" items={sort_order_menu} selected={selected_sort_order[1]} el="li" />}
                             </ul>
                         </div>
                         <div className="columns shrink">

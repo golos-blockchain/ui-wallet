@@ -374,7 +374,7 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
         // Does not need to be fatal
         console.error('Server Login Error', error);
     }
-    if (afterLoginRedirectToWelcome) browserHistory.push('/welcome');
+    if (afterLoginRedirectToWelcome) browserHistory.push('/@' + username)
 }
 
 function* saveLogin_localStorage() {

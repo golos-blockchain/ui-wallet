@@ -80,7 +80,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const feedLink = blogsUrl(`/@${username}/feed`)
     const repliesLink = blogsUrl(`/@${username}/recent-replies`)
     const walletLink = `/@${username}/transfers`;
-    const accountLink = `/@${username}`;
+    const blogLink = blogsUrl(`/@${username}`)
     const mentionsLink = blogsUrl(`/@${username}/mentions`)
     const donatesLink = `/@${username}/donates-to`;
     const messagesLink = msgsHost() ? msgsLink() : '';
@@ -103,10 +103,16 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
     const registerUrl = authRegisterUrl() + (invite ? ('?invite=' + invite) : '');
 
+    const isLoginPage = window.location.pathname === '/login' || window.location.pathname === '/'
+
     const additional_menu = []
     if (!loggedIn) {
+        if (!isLoginPage) {
+            additional_menu.push(
+                { link: '/login.html', onClick: showLogin, value: tt('g.login'), className: 'show-for-small-only' },
+            )
+        }
         additional_menu.push(
-            { link: '/login.html', onClick: showLogin, value: tt('g.login'), className: 'show-for-small-only' },
             { link: registerUrl,
                 onClick: (e) => {
                     e.preventDefault();
@@ -118,7 +124,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     additional_menu.push(
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
         { link: '/market/GOLOS/GBG', icon: 'trade', value: tt("navigation.market") },
-        { link: blogsUrl('/services'), icon: 'new/monitor', value: tt("navigation.services") },
+        { link: blogsUrl('/services'), icon: 'new/monitor', value: tt("navigation.services"), target: 'blank' },
         { link: '/search', icon: 'new/search', value: tt("navigation.search") },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },
         { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses"), target: 'blank' },
@@ -145,12 +151,12 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [
             {link: feedLink, icon: 'new/home', value: tt('g.feed'), addon: <NotifiCounter fields="feed" />},
-            {link: accountLink, icon: 'new/blogging', value: tt('g.blog')},
+            {link: blogLink, icon: 'new/blogging', value: tt('g.blog')},
             {link: repliesLink, icon: 'new/answer', value: tt('g.replies'), addon: <NotifiCounter fields="comment_reply" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
                 null),
-            {link: mentionsLink, icon: 'new/mention', value: tt('g.mentions'), addon: <NotifiCounter fields="mention" />},
+            {link: mentionsLink, icon: 'new/mention', value: tt('g.mentions'), addon: <NotifiCounter fields="mention" />, },
             {link: donatesLink, icon: 'editor/coin', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive" />},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
@@ -177,7 +183,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                     dropdownContent={<VerticalMenu className={'VerticalMenu_nav-profile'} items={user_menu} title={estimateOutput} />}
                 >
                     {!vertical && <li className={'Header__profile'}>
-                        <a href={accountLink} title={username} onClick={e => e.preventDefault()}>
+                        <a href={walletLink} title={username} onClick={e => e.preventDefault()}>
                             <Userpic account={username} showProgress={true} votingPower={account.get('voting_power')} progressClass="hide-for-large" />
                             <div className={'NavProfile show-for-large'}>
                                 <div className={'NavProfile__name'}>{username}</div>
@@ -216,8 +222,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             <LocaleSelect />
             {faqItem}
             <li className="delim show-for-medium" />
-            {!probablyLoggedIn && !externalTransfer && <li className={scn}>
-              <a href="/login.html" onClick={showLogin} className={!vertical && 'button small violet hollow'}>{tt('g.login')}</a>
+            {!probablyLoggedIn && !isLoginPage && !externalTransfer && <li className={scn}>
+              <a href="/login" onClick={showLogin} className={!vertical && 'button small violet hollow'}>{tt('g.login')}</a>
             </li>}
             {!probablyLoggedIn && <li className={scn}>
               <a href={registerUrl} className={!vertical && 'button small alert'}>{tt('g.sign_up')}</a>

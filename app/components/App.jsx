@@ -338,45 +338,6 @@ class App extends React.Component {
             }
         }
 
-        let welcome_screen = null;
-        if (ip && new_visitor && this.state.showBanner) {
-            welcome_screen = (
-                <div className="welcomeWrapper">
-                    <div className="welcomeBanner">
-                        <CloseButton
-                            onClick={() => this.setState({ showBanner: false })}
-                        />
-                        <div className="text-center">
-                            <br />
-                            <h2>
-                                {tt('submit_a_story.welcome_to_the_blockchain')}
-                            </h2>
-                            <h4>
-                                {tt(
-                                    'submit_a_story.your_voice_is_worth_something'
-                                )}
-                            </h4>
-                            <br />
-                            <a className="button" href={authRegisterUrl() + (invite ? ("?invite=" + invite) : "")}>
-                                {' '}
-                                <b>{tt('navigation.sign_up')}</b>{' '}
-                            </a>
-                            &nbsp; &nbsp; &nbsp;
-                            <a
-                                className="button hollow uppercase"
-                                href="/start"
-                                onClick={this.learnMore}
-                            >
-                                {' '}
-                                <b>{tt('submit_a_story.learn_more')}</b>{' '}
-                            </a>
-                            <br />
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
         const themeClass = nightmodeEnabled ? ' theme-dark' : ' theme-light';
 
         const isApp = process.env.IS_APP && location.pathname.startsWith('/__app_')
@@ -400,7 +361,6 @@ class App extends React.Component {
                     (noHeader ? ' no-header' : ''), {
                     'App__content_hide-sub-menu': false,
                 })}>
-                    {welcome_screen}
                     {callout}
                     {children}
                     {noFooter ? null : <Footer />}

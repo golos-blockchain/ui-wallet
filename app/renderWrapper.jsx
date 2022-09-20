@@ -42,7 +42,6 @@ const onRouterError = (error) => {
 };
 
 export default async function renderWrapper(initialState) {
-    console.log('is', initialState)
     const store = createStore(rootReducer, initialState, middleware);
     sagaMiddleware.run(rootSaga)
 

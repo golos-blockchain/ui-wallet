@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import is from 'styled-is';
 import tt from 'counterpart';
 
-import { checkMobileDevice } from 'src/app/helpers/browser';
+import { checkMobileDevice } from 'golos-ui/browserUtils';
 
 const Progress = styled.div`
     position: absolute;

@@ -6,6 +6,7 @@ import { Asset } from 'golos-lib-js/lib/utils';
 import Icon from 'app/components/elements/Icon';
 import Userpic from 'app/components/elements/Userpic';
 import iconCross from 'app/assets/icons/cross.svg';
+import { blogsUrl } from 'app/utils/blogsUtils'
 import { msgsLink } from 'app/utils/ExtLinkUtils'
 
 const actionStyle = {
@@ -78,7 +79,7 @@ const comment = (scope, type, op) => {
         } else {
             message = tt('notify_content.reply_post');
         }
-        url = `/@${parent_author}/recent-replies`;
+        url = blogsUrl(`/@${parent_author}/recent-replies`)
     } else if (scope === 'mention') {
         icon = 'notification/mention';
         if (parent_author) {
@@ -86,7 +87,7 @@ const comment = (scope, type, op) => {
         } else {
             message = tt('notify_content.mention_post');
         }
-        url = `/@${mentioned}/mentions`;
+        url = blogsUrl(`/@${mentioned}/mentions`)
     } else {
         return null;
     }

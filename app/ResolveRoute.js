@@ -14,32 +14,17 @@ export const routeRegex = {
 
 export default function resolveRoute(path)
 {
-    if (path === '/') {
+    if (path === '/' || path === '/login') {
         return {page: 'Login'}
     }
     if (path.indexOf("@bm-chara728") !== -1) {
         return {page: 'NotFound'};
     }
-    if (path === '/welcome') {
-        return {page: 'Welcome'}
-    }
-    if (path === '/start'){
-        return {page: 'Start'}
-    }
     if (path === '/exchanges'){
         return {page: 'Exchanges'}
     }
-    if (path === '/faq') {
-        return {page: 'Faq'};
-    }
-    if (path === '/login.html') {
-        return {page: 'Login'};
-    }
     if (path === '/xss/test' && process.env.NODE_ENV === 'development') {
         return {page: 'XSSTest'};
-    }
-    if (path.match(/^\/tags\/?/)) {
-        return {page: 'Tags'};
     }
     if (path === '/change_password') {
         return {page: 'ChangePassword'};
@@ -56,9 +41,6 @@ export default function resolveRoute(path)
     }
     if (path === '/workers') {
         return {page: 'Workers'};
-    }
-    if (path === '/minused_accounts') {
-        return {page: 'MinusedAccounts'};
     }
     if (process.env.IS_APP) {
         if (path === '/__app_goto_url') {

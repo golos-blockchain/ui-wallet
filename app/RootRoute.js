@@ -1,4 +1,5 @@
 import App from 'app/components/App';
+import Login from 'app/components/pages/Login'
 import resolveRoute from './ResolveRoute';
 
 export default {
@@ -6,38 +7,16 @@ export default {
     component: App,
     getChildRoutes(nextState, cb) {
         const route = resolveRoute(nextState.location.pathname);
-        if (route.page === 'Welcome') {
-            cb(null, [
-                {
-                    path: 'welcome',
-                    component: process.env.BROWSER
-                        ? require('@pages/WelcomeLoader').default
-                        : require('@pages/Welcome').default,
-                },
-            ]);
-        } else if (route.page === 'Start') {
-            cb(null, [require('@pages/Start')]);
+        if (route.page === 'Login') {
+            cb(null, [require('@pages/Login')]);
         } else if (route.page === 'Exchanges') {
             cb(null, [require('@pages/Exchanges')]);
-        } else if (route.page === 'Faq') {
-            cb(null, [
-                {
-                    path: 'faq',
-                    component: process.env.BROWSER
-                        ? require('@pages/FaqLoader').default
-                        : require('@pages/Faq').default,
-                },
-            ]);
-        } else if (route.page === 'Login') {
-            cb(null, [require('@pages/Login')]);
         } else if (route.page === 'ChangePassword') {
             cb(null, [require('@pages/ChangePasswordPage')]);
         } else if (route.page === 'Witnesses') {
             cb(null, [require('@pages/WitnessesLoader')]);
         } else if (route.page === 'Workers') {
             cb(null, [require('@pages/WorkersLoader')]);
-        } else if (route.page === 'MinusedAccounts') {
-            cb(null, [require('@pages/MinusedAccounts')]);
         } else if (route.page === 'AppGotoURL') {
             cb(null, [require('@pages/app/AppGotoURL')]);
         } else if (route.page === 'AppSplash') {
@@ -50,8 +29,6 @@ export default {
             cb(null, [require('@pages/NodesLoader')]);
         } else if (route.page === 'LeavePage') {
             cb(null, [require('@pages/LeavePage')]);
-        } else if (route.page === 'Search') {
-            cb(null, [require('@pages/Search')]);
         } else if (route.page === 'UserProfile') {
             cb(null, [require('@pages/UserProfile')]);
         } else if (route.page === 'ConvertAssetsLoader') {
@@ -64,7 +41,7 @@ export default {
             ]);
         }
     },
-    //indexRoute: {
-    //    component: PostsIndex.component,
-    //},
+    indexRoute: {
+        component: Login.component,
+    },
 };

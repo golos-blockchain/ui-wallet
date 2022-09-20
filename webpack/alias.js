@@ -11,7 +11,7 @@ module.exports = {
     assets: resolvePath('assets'),
     db: path.join(__dirname, '..', 'db'),
     shared: path.join(__dirname, '..', 'shared'),
-    'golos-ui': path.join(__dirname, '..', 'src/app/components/golos-ui'),
+    'golos-ui': resolvePath('components', 'elements', 'golos-ui'),
     '@elements': resolvePath('components', 'elements'),
     '@modules': resolvePath('components', 'modules'),
     '@pages': resolvePath('components', 'pages'),
