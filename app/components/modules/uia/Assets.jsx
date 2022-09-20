@@ -6,6 +6,7 @@ import tt from 'counterpart';
 import { Asset } from 'golos-lib-js/lib/utils';
 
 import ConvertAssetsBtn from 'app/components/elements/market/ConvertAssetsBtn'
+import { blogsUrl } from 'app/utils/blogsUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import {longToAsset} from 'app/utils/ParsersAndFormatters';
 import g from 'app/redux/GlobalReducer'
@@ -250,7 +251,7 @@ class Assets extends Component {
         return (<div>
             <div className="row">
                 <div className="column secondary">
-                    {tt('assets_jsx.assets_info')} <a href="/@allforyou/torguem-na-vnutrennei-birzhe-golosa">{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
+                    {tt('assets_jsx.assets_info')} <a href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
                 <hr />
                 </div>
             </div>

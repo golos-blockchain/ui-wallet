@@ -12,7 +12,8 @@ import {PrivateKey} from 'golos-lib-js/lib/auth/ecc';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Icon from 'app/components/elements/Icon';
-import { authRegisterUrl, } from 'app/utils/AuthApiClient';
+import { authRegisterUrl, } from 'app/utils/AuthApiClient'
+import { blogsUrl, } from 'app/utils/blogsUtils'
 
 class CreateInvite extends Component {
     static propTypes = {
@@ -197,7 +198,7 @@ class CreateInvite extends Component {
             <form onSubmit={this.handleSubmitForm}>
                 <div className="row">
                     <div className="column small-10 secondary">
-                        {tt('invites_jsx.create_invite_info')} <a href="/@lex/cheki-kak-instrument-peredachi-tokenov">{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
+                        {tt('invites_jsx.create_invite_info')} <a href={blogsUrl('/@lex/cheki-kak-instrument-peredachi-tokenov')}>{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
                     <hr />
                     </div>
                 </div>

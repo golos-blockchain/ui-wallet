@@ -6,7 +6,7 @@ import tt from 'counterpart'
 
 import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 
-class CMCBar extends React.Component {
+class CMCSmall extends React.Component {
     state = {
         loaded: false
     }
@@ -59,10 +59,13 @@ class CMCBar extends React.Component {
 
     render() {
         const { loaded, failed, price_usd, price_rub, page_url, price_change, mouse } = this.state
+
+        const className = 'CMCSmall ' + (this.props.className || '')
+
         if (!loaded) {
-            return (<div class="CMCBar">
-                    <div className="CMCBar__inner">
-                        <div className='CMCBar__inner2' style={{ 'justify-content': 'center' }} >
+            return (<div className={className}>
+                    <div className="CMCSmall__inner">
+                        <div className='CMCSmall__inner2' style={{ 'justify-content': 'center' }} >
                             {!failed ?
                                 <LoadingIndicator type='circle' size='25px' /> :
                                 null}
@@ -71,36 +74,19 @@ class CMCBar extends React.Component {
                 </div>)
         }
 
-        const header = (price_rub || price_usd) ? 
-            <span className='CMCBar_header'>
-                <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
-                    {'1 GOLOS = '}
-                </a>
-            </span> : null
-
-        return (<div className="CMCBar" onMouseMove={this.mouseEnter} onMouseOut={this.mouseOut}>
+        return (<div className={className} onMouseMove={this.mouseEnter} onMouseOut={this.mouseOut}>
             <span style={{ fontSize: '16px' }}>
                 <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
-                    <Icon name={mouse ? 'trade_color2' : 'trade_color1'} className='CMCBar__icon' />
+                    <Icon name={mouse ? 'trade_color2' : 'trade_color1'} className='CMCSmall__icon' />
                 </a>
-                {header}
-                <span className="CMCBar__price">
+                <span className="CMCSmall__price">
                     <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
                         {price_rub ? price_rub.toFixed(6) + ' ₽' : null} 
-                    </a>            
-                    <span className="CMCBar__price-change">
-                        {(price_change && price_change.toFixed) ? <span style={{ color: price_change < 0 ? '#d94040' : '#009600' }}>{' '}({price_change.toFixed(2)}%)</span> : null}
-                    </span>
-                </span>   
-                <span className="CMCBar__price-usd">
-                    {price_usd ? price_usd.toFixed(6) + ' $' : null}
-                </span>
-                <span className="CMCBar__link-parent">
-                    <a href="/exchanges" className="CMCBar__link">{tt('g.buy_or_sell')}</a>
+                    </a>
                 </span>
             </span>
             </div>)
     }
 }
 
-export default CMCBar
+export default CMCSmall

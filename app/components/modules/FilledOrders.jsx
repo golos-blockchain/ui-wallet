@@ -3,10 +3,12 @@ import { Link } from 'react-router';
 import golos from 'golos-lib-js';
 import { Asset } from 'golos-lib-js/lib/utils';
 import tt from 'counterpart';
+
 import Icon from 'app/components/elements/Icon';
 import Callout from 'app/components/elements/Callout';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Tooltip from 'app/components/elements/Tooltip';
+import { blogsUrl } from 'app/utils/blogsUtils'
 
 class FilledOrders extends Component {
     constructor(props) {
@@ -81,7 +83,7 @@ class FilledOrders extends Component {
                 </span>
                 <h4 className='uppercase'>{tt('filled_orders_jsx.title')}</h4>
                 <div className="column secondary">
-                    {tt('filled_orders_jsx.orders_info')} <a href="/@allforyou/torguem-na-vnutrennei-birzhe-golosa">{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" /><br /><br />
+                    {tt('filled_orders_jsx.orders_info')} <a href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' /><br /><br />
                 </div>
                 {history.length ? (<table>
                     <tbody>

@@ -9,6 +9,7 @@ import Icon from 'app/components/elements/Icon'
 import resolveRoute from 'app/ResolveRoute'
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import CMCBar from 'app/components/elements/market/CMCBar'
+import CMCSmall from 'app/components/elements/market/CMCSmall'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import normalizeProfile from 'app/utils/NormalizeProfile'
 import { detransliterate, capitalizeFirstLetter, } from 'app/utils/ParsersAndFormatters'
@@ -17,7 +18,7 @@ import { APP_NAME_UP, APP_ICON, SEO_TITLE, } from 'app/client_config'
 function sortOrderToLink(so, topic, account) {
     // to prevent probmes check if topic is not the same as account name
     if ('@' + account == topic) topic = ''
-    if (so === 'home') return '/@' + account + '/feed';
+    if (so === 'home') return '/@' + account
     if (topic) return `/${so}/${topic}`;
     return `/${so}`;
 }
@@ -152,7 +153,7 @@ class Header extends React.Component {
 
         if (process.env.BROWSER && (route.page !== 'Post' && route.page !== 'PostNoCategory')) document.title = page_title + ' | ' + SEO_TITLE;
 
-        const logo_link = route.params && route.params.length > 1 && this.last_sort_order ? '/' + this.last_sort_order : (current_account_name ? `/@${current_account_name}/feed` : '/');
+        const logo_link = route.params && route.params.length > 1 && this.last_sort_order ? '/' + this.last_sort_order : (current_account_name ? `/@${current_account_name}` : '/');
         let topic_link = topic ? <Link to={`/${this.last_sort_order || 'hot'}/${topic_original_link}`}>{detransliterate(topic)}</Link> : null;
 
         const sort_orders = [
@@ -195,6 +196,7 @@ class Header extends React.Component {
                                 <li className="Header__top-steemit show-for-large noPrint">
                                     <Link to={logo_link}>{APP_NAME_UP}<span className="beta">wallet</span></Link>
                                 </li>
+                                <CMCSmall className='show-for-small-only' />
                                 {selected_sort_order && <DropdownMenu className="Header__sort-order-menu show-for-small-only" items={sort_order_menu} selected={selected_sort_order[1]} el="li" />}
                             </ul>
                         </div>

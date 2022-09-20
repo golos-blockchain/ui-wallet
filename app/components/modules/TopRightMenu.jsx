@@ -63,9 +63,9 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const scn = vertical ? '' : 'show-for-medium';
     const nav = navigate || defaultNavigate;
     const topbutton = <li className={lcn + ' submit-story'}>
-        <Link to='/services' className='button small topbutton hollow'>
+        <a href={blogsUrl('/services')} className='button small topbutton hollow'>
             <Icon name="new/monitor" size="0_95x" />{tt('g.topbutton')}
-        </Link>
+        </a>
     </li>;
     const goBlogs = <li className={scn + ' submit-story'}>
         <a href={blogsUrl()} className={'button small topbutton'}>
@@ -77,12 +77,11 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             <Icon name="new/add" size="0_95x" />
         </a>
     </li>;
-    const feedLink = `/@${username}/feed`;
-    const repliesLink = `/@${username}/recent-replies`;
+    const feedLink = blogsUrl(`/@${username}/feed`)
+    const repliesLink = blogsUrl(`/@${username}/recent-replies`)
     const walletLink = `/@${username}/transfers`;
-    const settingsLink = `/@${username}/settings`;
     const accountLink = `/@${username}`;
-    const mentionsLink = `/@${username}/mentions`;
+    const mentionsLink = blogsUrl(`/@${username}/mentions`)
     const donatesLink = `/@${username}/donates-to`;
     const messagesLink = msgsHost() ? msgsLink() : '';
     const ordersLink = `/@${username}/filled-orders`;
@@ -119,7 +118,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     additional_menu.push(
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
         { link: '/market/GOLOS/GBG', icon: 'trade', value: tt("navigation.market") },
-        { link: '/services', icon: 'new/monitor', value: tt("navigation.services") },
+        { link: blogsUrl('/services'), icon: 'new/monitor', value: tt("navigation.services") },
         { link: '/search', icon: 'new/search', value: tt("navigation.search") },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },
         { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses"), target: 'blank' },
@@ -155,7 +154,6 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             {link: donatesLink, icon: 'editor/coin', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive" />},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
-            {link: settingsLink, icon: 'new/setting', value: tt('g.settings')},            
             loggedIn ?
                 {link: '#', icon: 'new/logout', onClick: logout, value: tt('g.logout')} :
                 {link: '#', onClick: showLogin, value: tt('g.login')}

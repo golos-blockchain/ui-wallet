@@ -19,8 +19,6 @@ export default {
             cb(null, [require('@pages/Start')]);
         } else if (route.page === 'Exchanges') {
             cb(null, [require('@pages/Exchanges')]);
-        } else if (route.page === 'Services') {
-            cb(null, [require('@pages/Services')]);
         } else if (route.page === 'Faq') {
             cb(null, [
                 {

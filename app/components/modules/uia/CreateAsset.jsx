@@ -1,18 +1,20 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import tt from 'counterpart'
+import {api} from 'golos-lib-js'
+import {connect} from 'react-redux'
+import { browserHistory } from 'react-router'
+
+import { blogsUrl } from 'app/utils/blogsUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import {countDecimals, formatAsset, formatAmount} from 'app/utils/ParsersAndFormatters';
 import g from 'app/redux/GlobalReducer'
-import {connect} from 'react-redux';
-import { browserHistory } from 'react-router';
 import transaction from 'app/redux/Transaction'
 import user from 'app/redux/User';
-import tt from 'counterpart';
 import Icon from 'app/components/elements/Icon';
 import reactForm from 'app/utils/ReactForm';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import Slider from 'golos-ui/Slider';
-import {api} from 'golos-lib-js';
 
 class CreateAsset extends Component {
     static propTypes = {
@@ -197,7 +199,7 @@ class CreateAsset extends Component {
             <form onSubmit={this.handleSubmitForm}>
                 <div className="row">
                     <div className="column small-10">
-                        <span className="float-right secondary" style={{marginTop: '0.5rem' }}><a target="_blank" href="/@allforyou/sozdaem-i-ispolzuem-uia-na-golose">Подробнее о создании UIA актива</a> <Icon name="extlink" size="1_5x" /></span>
+                        <span className='float-right secondary' style={{marginTop: '0.5rem' }}><a target='_blank' href={blogsUrl('/@allforyou/sozdaem-i-ispolzuem-uia-na-golose')}>Подробнее о создании UIA актива</a> <Icon name='extlink' size='1_5x' /></span>
                         <h4>{tt('assets_jsx.create_asset')}</h4>
                     </div>
                 </div>

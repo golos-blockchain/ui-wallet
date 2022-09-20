@@ -29,9 +29,6 @@ export default function resolveRoute(path)
     if (path === '/exchanges'){
         return {page: 'Exchanges'}
     }
-    if (path === '/services'){
-        return {page: 'Services'}
-    }
     if (path === '/faq') {
         return {page: 'Faq'};
     }

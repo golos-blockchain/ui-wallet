@@ -1,5 +1,7 @@
 import React from 'react';
-import tt from 'counterpart';
+import tt from 'counterpart'
+
+import { blogsUrl } from 'app/utils/blogsUtils'
 import Icon from 'app/components/elements/Icon'
 
 class Exchanges extends React.Component {
@@ -27,11 +29,11 @@ class Exchanges extends React.Component {
                                 <a target="_blank" href="https://rudex.org/"><img src={require("app/assets/images/exchanges/rudex.png")} width="275" /></a>
                                 </div>
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
-                                    <a target="_blank" href="/@allforyou/golos-delistyat-s-kuny-perekhodim-na-rudex">{tt('exchanges_jsx.guide_user')}</a> <Icon name="extlink" />
+                                    <a target="_blank" href={blogsUrl('/@allforyou/golos-delistyat-s-kuny-perekhodim-na-rudex')}>{tt('exchanges_jsx.guide_user')}</a> <Icon name='extlink' />
                                     <br /><br />
                                     <a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.USDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.BTC" className="button">GOLOS-BTC</a>&nbsp;&nbsp;<a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.BTS" className="button">GOLOS-BTS</a>
                                     <br />
-                                    <a target="_blank" href="/@alex-pu/dexbot-na-vps-v-dokere-dlya-babushek">Настройка</a> и <a target="_blank" href="/@alex-pu/dexbot-best-long-term-strategy">стратегии</a> по торговому боту DEXbot, <a target="_blank" href="https://github.com/golos-blockchain/libs/wiki">примеры</a> биржевых операций.
+                                    <a target="_blank" href={blogsUrl('/@alex-pu/dexbot-na-vps-v-dokere-dlya-babushek')}>Настройка</a> и <a target="_blank" href={blogsUrl('/@alex-pu/dexbot-best-long-term-strategy')}>стратегии</a> по торговому боту DEXbot, <a target="_blank" href="https://github.com/golos-blockchain/libs/wiki">примеры</a> биржевых операций.
                                 </div>
                             </div>
                         </div>
@@ -53,7 +55,7 @@ class Exchanges extends React.Component {
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
                                     <a target="_blank" href="https://coins.black/xchange_SBERRUB_to_GLS/?summ=1000&schet2=&lock2=true" className="button">{tt('g.buy')} GOLOS</a>
                                     <br />{tt('exchanges_jsx.other_options')}<br />
-                                    <a target="_blank" href="/@on0tole/pryamaya-pokupka-tokenov-golos-za-rubli-i-ne-tolko">{tt('g.more_hint')}</a> <Icon name="extlink" />
+                                    <a target="_blank" href={blogsUrl('/@on0tole/pryamaya-pokupka-tokenov-golos-za-rubli-i-ne-tolko')}>{tt('g.more_hint')}</a> <Icon name="extlink" />
                                 </div>
                             </div>
                         </div>
@@ -73,10 +75,10 @@ class Exchanges extends React.Component {
                                 <a target="_blank" href="https://dex.golos.app"><img src={require("app/assets/images/exchanges/golosdex.png")} width="285" /></a>
                                 </div>
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
-                                    <p><a target="_blank" href="/@allforyou/torguem-na-vnutrennei-birzhe-golosa">Внутренняя биржа</a> и <a target="_blank" href="/convert">обменник</a>, на которых возможно покупать/продавать токены GOLOS через<br/> альтернативные шлюзы, напр. к <small>USDT, LTC, DASH, TRON, DOGE</small> и другим активам...</p>
-                                    <p><Icon name="line" /> <a target="_blank" href="/@ecurrex-ru/ymrub-umer-da-zdravstvuet-ymrub"><small>YM</small>RUB</a> <small>(эквивалент рубля, ADVcash / PAYEER / Qiwi)</small>, обсуждение шлюза <a target="_blank" href="https://golostalk.com/services/@ecurrex-ru/ecurrex-tokeny-ymxxx">на форуме</a></p>                                    
-                                    <p><Icon name="line" /> <a target="_blank" href="/@ecurrex-ru/novyi-shlyuz-litecoin-ymltc"><small>YM</small>LTC</a>, <a target="_blank" href="/@ecurrex-ru/anons-shlyuza-dash"><small>YM</small>DASH</a>, <a target="_blank" href="/@ecurrex-ru/anons-shlyuzov-dlya-hive-i-steem"><small>YM</small>HIVE и <small>YM</small>STEEM</a>, <a target="_blank" href="/@ecurrex-ru/prizm-na-golose"><small>YM</small>PZM</a> от эмитента <a href="/@ecurrex-ru">@ecurrex-ru</a></p>                                    
-                                    <p><Icon name="line" /> <a target="_blank" href="/@ecurrex-ru/anons-novye-shlyuzy-tron-trx-i-usdt-trc-20"><small>YM</small>USDT</a> <small> TRC-20 (позволяющий вести обмен через популярные биржи)</small></p>
+                                    <p><a target="_blank" href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>Внутренняя биржа</a> и <a target="_blank" href="/convert">обменник</a>, на которых возможно покупать/продавать токены GOLOS через<br/> альтернативные шлюзы, напр. к <small>USDT, LTC, DASH, TRON, DOGE</small> и другим активам...</p>
+                                    <p><Icon name="line" /> <a target="_blank" href={blogsUrl('/@ecurrex-ru/ymrub-umer-da-zdravstvuet-ymrub')}><small>YM</small>RUB</a> <small>(эквивалент рубля, ADVcash / PAYEER / Qiwi)</small>, обсуждение шлюза <a target="_blank" href="https://golostalk.com/services/@ecurrex-ru/ecurrex-tokeny-ymxxx">на форуме</a></p>                                    
+                                    <p><Icon name="line" /> <a target="_blank" href={blogsUrl('/@ecurrex-ru/novyi-shlyuz-litecoin-ymltc')}><small>YM</small>LTC</a>, <a target="_blank" href="/@ecurrex-ru/anons-shlyuza-dash"><small>YM</small>DASH</a>, <a target="_blank" href={blogsUrl('/@ecurrex-ru/anons-shlyuzov-dlya-hive-i-steem')}><small>YM</small>HIVE и <small>YM</small>STEEM</a>, <a target="_blank" href={blogsUrl('/@ecurrex-ru/prizm-na-golose')}><small>YM</small>PZM</a> от эмитента <a href="/@ecurrex-ru">@ecurrex-ru</a></p>                                    
+                                    <p><Icon name="line" /> <a target="_blank" href={blogsUrl('/@ecurrex-ru/anons-novye-shlyuzy-tron-trx-i-usdt-trc-20')}><small>YM</small>USDT</a> <small> TRC-20 (позволяющий вести обмен через популярные биржи)</small></p>
                                     <p><b>Новый интерфейс</b> на <a target="_blank" href="https://dex.golos.app">dex.golos.app</a> или <a target="_blank" href="https://gls.exchange">gls.exchange</a>, прежний доступен <a href="/market">здесь</a>.</p>
                                 </div>
                             </div>
@@ -97,7 +99,7 @@ class Exchanges extends React.Component {
                                 <a target="_blank" href="https://www.minter.network/"><img src={require("app/assets/images/exchanges/minter.png")} width="210" /></a>
                                 </div>
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
-                                    <a target="_blank" href="/@denis-skripnik/glsmp">{tt('g.more_hint')}</a> <Icon name="extlink" />
+                                    <a target="_blank" href={blogsUrl('/@denis-skripnik/glsmp')}>{tt('g.more_hint')}</a> <Icon name="extlink" />
                                     <br /><br />
                                     <a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/BIP" className="button">GOLOS-BIP</a>&nbsp;&nbsp;<a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/USDTE" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/BNB" className="button">GOLOS-BNB</a>
                                 </div>
@@ -119,7 +121,7 @@ class Exchanges extends React.Component {
                                 <a target="_blank" href="https://steem-engine.net/"><img src={require("app/assets/images/exchanges/steemengine.png")} width="182" /></a>
                                 </div>
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
-                                    <a target="_blank" href="/@allforyou/zavodim-i-vyvodim-golosa-s-birzhi-steem-engine">{tt('exchanges_jsx.guide_user')}</a> <Icon name="extlink" />
+                                    <a target="_blank" href={blogsUrl('/@allforyou/zavodim-i-vyvodim-golosa-s-birzhi-steem-engine')}>{tt('exchanges_jsx.guide_user')}</a> <Icon name="extlink" />
                                     <br /><br />
                                     <a target="_blank" href="https://steem-engine.net/?p=market&t=GOLOSP" className="button">GOLOS-STEEM</a>
                                 </div>

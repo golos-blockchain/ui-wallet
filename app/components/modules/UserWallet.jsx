@@ -15,6 +15,7 @@ import Reveal from 'react-foundation-components/lib/global/reveal';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
 import {numberWithCommas, toAsset, vestsToSteem, accuEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
+import { blogsUrl } from 'app/utils/blogsUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -448,7 +449,7 @@ class UserWallet extends React.Component {
 
             <div align="center">
                 <Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>
-                <span className="strike"><a target="_blank" href="/@allforyou/torguem-na-vnutrennei-birzhe-golosa">{tt('g.more_hint')}</a></span>
+                <span className='strike'><a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a></span>
             </div>
 
             <div className="row">
