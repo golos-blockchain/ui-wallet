@@ -8,7 +8,6 @@ import {authApiLogin, authApiLogout} from 'app/utils/AuthApiClient';
 import {notifyApiLogin, notifyApiLogout} from 'app/utils/NotifyApiClient';
 import {serverApiLogin, serverApiLogout} from 'app/utils/ServerApiClient';
 import {serverApiRecordEvent} from 'app/utils/ServerApiClient';
-import {loadFollows} from 'app/redux/FollowSaga'
 import {session, signData} from 'golos-lib-js/lib/auth'
 import {PrivateKey, Signature, hash} from 'golos-lib-js/lib/auth/ecc'
 import {api} from 'golos-lib-js'
@@ -128,7 +127,6 @@ function* usernamePasswordLogin(action) {
     const current = yield select(state => state.user.get('current'))
     if (current) {
         const username = current.get('username')
-        yield fork(loadFollows, "getFollowingAsync", username, 'blog')
         if (process.env.BROWSER) {
             //const notification_channel_created = yield select(state => state.user.get('notification_channel_created'))
             //if (!notification_channel_created) {

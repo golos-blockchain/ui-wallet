@@ -55,33 +55,16 @@ export default class UserProfile extends React.Component {
     }
 
     shouldComponentUpdate(np, ns) {
-        const {follow} = this.props;
-        const {follow_count} = this.props;
-
-        let followersLoading = false, npFollowersLoading = false;
-        let followingLoading = false, npFollowingLoading = false;
-
         const account = np.routeParams.accountname.toLowerCase();
-        if (follow) {
-            followersLoading = follow.getIn(['getFollowersAsync', account, 'blog_loading'], false);
-            followingLoading = follow.getIn(['getFollowingAsync', account, 'blog_loading'], false);
-        }
-        if (np.follow) {
-            npFollowersLoading = np.follow.getIn(['getFollowersAsync', account, 'blog_loading'], false);
-            npFollowingLoading = np.follow.getIn(['getFollowingAsync', account, 'blog_loading'], false);
-        }
 
         return (
             np.current_user !== this.props.current_user ||
             np.accounts.get(account) !== this.props.accounts.get(account) ||
             np.wifShown !== this.props.wifShown ||
             np.global_status !== this.props.global_status ||
-            ((npFollowersLoading !== followersLoading) && !npFollowersLoading) ||
-            ((npFollowingLoading !== followingLoading) && !npFollowingLoading) ||
             np.loading !== this.props.loading ||
             np.location.pathname !== this.props.location.pathname ||
             np.routeParams.accountname !== this.props.routeParams.accountname ||
-            np.follow_count !== this.props.follow_count ||
             ns.repLoading !== this.state.repLoading
         )
     }
@@ -160,7 +143,7 @@ export default class UserProfile extends React.Component {
 
     render() {
         const {
-            props: {current_user, current_account, wifShown, global_status, follow},
+            props: {current_user, current_account, wifShown, global_status, },
             onPrint
         } = this;
         let { accountname, section, id, action } = this.props.routeParams;
@@ -188,22 +171,6 @@ export default class UserProfile extends React.Component {
             return <div className='UserProfile'>
                 <div className='UserProfile__center'>{tt('user_profile.unknown_account')}</div>
             </div>
-        }
-        const followers = follow && follow.getIn(['getFollowersAsync', accountname]);
-        const following = follow && follow.getIn(['getFollowingAsync', accountname]);
-
-        // instantiate following items
-        let totalCounts = this.props.follow_count;
-        let followerCount = 0;
-        let followingCount = 0;
-
-        if (totalCounts && accountname) {
-            totalCounts = totalCounts.get(accountname);
-            if (totalCounts) {
-                totalCounts    = totalCounts.toJS();
-                followerCount  = totalCounts.follower_count;
-                followingCount = totalCounts.following_count;
-            }
         }
 
         const isMyAccount = username === account.name;
@@ -531,8 +498,6 @@ module.exports = {
                 loading: state.app.get('loading'),
                 global_status: state.global.get('status'),
                 accounts: state.global.get('accounts'),
-                follow: state.global.get('follow'),
-                follow_count: state.global.get('follow_count')
             };
         },
         dispatch => ({

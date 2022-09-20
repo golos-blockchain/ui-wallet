@@ -37,10 +37,7 @@ const hook = {
     preBroadcast_donate,
     preBroadcast_vote,
     preBroadcast_account_witness_vote,
-    preBroadcast_custom_json,
-    preBroadcast_account_setup,
     error_vote,
-    error_custom_json,
     // error_account_update,
     error_account_witness_vote,
     accepted_comment,
@@ -98,75 +95,6 @@ function* preBroadcast_account_witness_vote({operation, username}) {
     if (!operation.account) operation.account = username
     const {account, witness, approve} = operation
     yield put(g.actions.updateAccountWitnessVote({account, witness, approve}))
-    return operation
-}
-
-function* preBroadcast_custom_json({operation}) {
-    const json = JSON.parse(operation.json)
-    if(operation.id === 'follow') {
-        try {
-            if(json[0] === 'follow') {
-                const {follower, following, what: [action]} = json[1]
-                yield put(g.actions.update({
-                    key: ['follow', 'getFollowingAsync', follower],
-                    notSet: Map(),
-                    updater: m => {
-                        //m = m.asMutable()
-                        if(action == null) {
-                            m = m.update('blog_result', Set(), r => r.delete(following))
-                        } else if(action === 'blog') {
-                            m = m.update('blog_result', Set(), r => r.add(following))
-                        }
-                        m = m.set('blog_count', m.get('blog_result', Set()).size)
-                        return m//.asImmutable()
-                    }
-                }))
-            }
-        } catch(e) {
-            console.error('TransactionSaga unrecognized follow custom_json format', operation.json);
-        }
-    }
-    return operation
-}
-
-function* preBroadcast_account_setup({operation}) {
-    for (let setting of operation.settings) {
-        if (setting[0] === 0) { // block
-            const block_setting = setting[1]
-
-            if (block_setting.block) {
-                const key = ['follow', 'getFollowingAsync',
-                        operation.account, 'blog_result']
-                yield put(g.actions.update({
-                    key,
-                    notSet: Map(),
-                    updater: m => {
-                        m = m.delete(block_setting.account)
-                        return m
-                    }
-                }))
-            }
-
-            yield put({
-                type: 'global/UPDATE',
-                payload: {
-                    key: ['block', 'blocking', operation.account],
-                    notSet: Map(),
-                    updater: m => {
-                        m = m.update('result', Set(), res => {
-                            if (block_setting.block) {
-                                res = res.add(block_setting.account)
-                            } else {
-                                res = res.delete(block_setting.account)
-                            }
-                            return res
-                        })
-                        return m
-                    }
-                }
-            })
-        }
-    }
     return operation
 }
 
@@ -506,15 +434,6 @@ function createPatch(text1, text2) {
     return patch
 }
 
-function* error_custom_json({operation: {id, required_posting_auths}}) {
-    if(id === 'follow') {
-        const follower = required_posting_auths[0]
-        yield put(g.actions.update({
-            key: ['follow', 'getFollowingAsync', follower, 'loading'],
-            updater: () => null
-        }))
-    }
-}
 function* error_vote({operation: {author, permlink}}) {
     yield put(g.actions.remove({key: `transaction_vote_active_${author}_${permlink}`}));
     yield call(getContent, {author, permlink}); // unvote

@@ -3,7 +3,6 @@ import cookie from "react-cookie";
 import {config, api} from 'golos-lib-js';
 
 import { getPinnedPosts, getMutedInNew } from 'app/utils/NormalizeProfile';
-import {loadFollows, fetchFollowCount} from 'app/redux/FollowSaga';
 import { getBlockings, listBlockings } from 'app/redux/BlockingSaga'
 import { contentPrefs as prefs } from 'app/utils/Allowance'
 import {getContent} from 'app/redux/SagaShared';
@@ -11,7 +10,6 @@ import GlobalReducer from './GlobalReducer';
 import constants from './constants';
 import { reveseTag, getFilterTags } from 'app/utils/tags';
 import { CATEGORIES, SELECT_TAGS_KEY, DEBT_TOKEN_SHORT, LIQUID_TICKER } from 'app/client_config';
-import { SearchRequest, searchData, stateSetVersion } from 'app/utils/SearchClient'
 
 export function* fetchDataWatches () {
     yield fork(watchLocationChange);
@@ -47,9 +45,6 @@ export function* fetchState(location_change_action) {
     const m = pathname.match(/^\/@([a-z0-9\.-]+)/)
     if(m && m.length === 2) {
         const username = m[1]
-        yield fork(fetchFollowCount, username)
-        yield fork(loadFollows, "getFollowersAsync", username, 'blog')
-        yield fork(loadFollows, "getFollowingAsync", username, 'blog')
         if (curUser) {
             yield fork(getBlockings, curUser, [username])
         }

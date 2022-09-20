@@ -61,15 +61,7 @@ export default createModule({
                         );
                     }
                 }
-                let res = state.mergeDeep(payload);
-                let con = res.get('content').withMutations(con => {
-                    con.forEach((cc, key) => {
-                        if (!payload.hasIn(['content', key, 'versions'])) {
-                            con.deleteIn([key, 'versions'])
-                        }
-                    })
-                })
-                res = res.set('content', con)
+                let res = state.mergeDeep(payload)
                 return res
             },
         },
@@ -526,14 +518,6 @@ export default createModule({
                     ['accounts', account, `${type}_vesting`],
                     fromJS(vesting_delegations)
                 ),
-        },
-        {
-            action: 'FETCH_VERSIONS',
-            reducer: state => state, // saga
-        },
-        {
-            action: 'SHOW_VERSION',
-            reducer: state => state, // saga
         },
     ],
 });
