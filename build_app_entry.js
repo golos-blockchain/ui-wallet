@@ -4,8 +4,8 @@ const fs = require('fs')
 const fse = require('fs-extra')
 import ServerHTML from './server/server-html';
 
-const assets_filename = process.env.NODE_ENV === 'production' ? './tmp/webpack-isotools-assets-prod.json' : './tmp/webpack-isotools-assets-dev.json';
-const assets = require(assets_filename);
+const assets_filename = process.env.NODE_ENV === 'production' ? './tmp/assets.json' : './tmp/assets-dev.json'
+const assets = require(assets_filename)
 
 let destDir
 const argv = process.argv
