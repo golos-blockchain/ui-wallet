@@ -63,13 +63,7 @@ async function initState() {
         showNodeError()
     }, 30000)
 
-    let onchain
     let nodeError = null
-    try {
-        onchain = await getState(api, pathname, initialState.offchain)
-    } catch (error) {
-        nodeError = error
-    }
 
     clearTimeout(splashTimeout)
     closeSplash()
@@ -79,12 +73,10 @@ async function initState() {
         throw nodeError
     }
 
-    return onchain
+    return initialState
 }
 
-initState().then((onchain) => {
-    initialState.global = onchain
-
+initState().then((initialState) => {
     if (!window.Intl) {
         require.ensure(
             ['intl/dist/Intl'],
