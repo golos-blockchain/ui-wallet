@@ -2,7 +2,6 @@ import 'whatwg-fetch';
 import * as golos from 'golos-lib-js';
 
 import './assets/stylesheets/app.scss';
-import plugins from 'app/utils/JsPlugins';
 import renderWrapper from 'app/renderWrapper'
 import { serverApiRecordEvent } from 'app/utils/ServerApiClient';
 
@@ -20,7 +19,6 @@ export default async function renderApp(initialState) {
     if (config.chain_id)
         golos.config.set('chain_id', config.chain_id)
     window.$STM_Config = config;
-    plugins(config);
 
     if (initialState.offchain.serverBusy) {
         window.$STM_ServerBusy = true;

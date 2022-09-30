@@ -1,19 +1,16 @@
 {
-  "google_analytics_id": "UA-146157213-1",
   "helmet": {
     "directives": {
       "defaultSrc": "'self'",
-      "childSrc": "'self' *.a-ads.com www.youtube.com w.soundcloud.com player.vimeo.com www.google.com coub.com *.yandex.ru vk.com login.vk.com ok.com rutube.ru",
-      "scriptSrc": "'self' 'unsafe-inline' 'unsafe-eval' app.sharpay.io www.google-analytics.com",
+      "childSrc": "'self' www.google.com *.yandex.ru",
+      "scriptSrc": "'self' 'unsafe-inline' 'unsafe-eval'",
       "styleSrc": "'self' 'unsafe-inline' fonts.googleapis.com",
       "imgSrc": "* data:",
       "fontSrc": "data: fonts.gstatic.com",
-      "connectSrc": "'self' api.imgur.com wss://apibeta.golos.today *.golos.today golos.app *.golos.app app.sharpay.io www.google-analytics.com cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/",
+      "connectSrc": "'self' api.imgur.com wss://apibeta.golos.today *.golos.today golos.app *.golos.app",
       "frameAncestors": "'none'"
     }
   },
-  "hide_comment_neg_rep": false,
-  "show_adv_banners": true,
   "add_notify_site": {
     "show": false,
     "id": 145678655,
@@ -46,22 +43,11 @@
   "messenger_service": {
     "host": "https://devchat.golos.app"
   },
-  "elastic_search": {
-    "url": "https://devsearch.golos.today",
-    "login": "golosclient",
-    "password": "golosclient"
-  },
   "apidex_service": {
-    "host": "https://devapi-dex.golos.app"
+    "host": "https://api-dex.golos.app"
   },
   "hidden_assets": {
     "RUDEX": true,
     "PRIZM": true
-  },
-  "forums": {
-    "white_list": ["fm-golostalk", "fm-prizmtalk", "fm-graphenetalks"],
-    "fm-golostalk": {"domain": "golostalk.com"},
-    "fm-prizmtalk": {"domain": "prizmtalk.com"},
-    "fm-graphenetalks": {"domain": "forum.gph.ai"}
   }
 }

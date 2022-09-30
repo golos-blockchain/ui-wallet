@@ -50,28 +50,6 @@ class Exchanges extends React.Component {
                         <div className='column large-12 medium-12 small-12'>
                             <div className='row'>
                                 <div className='column large-12 medium-12 small-12' align='center'>
-                                <a target="_blank" href="https://coins.black/"><img src={require("app/assets/images/exchanges/coinsblack.png")} width="275" /></a>
-                                </div>
-                                <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
-                                    <a target="_blank" href="https://coins.black/xchange_SBERRUB_to_GLS/?summ=1000&schet2=&lock2=true" className="button">{tt('g.buy')} GOLOS</a>
-                                    <br />{tt('exchanges_jsx.other_options')}<br />
-                                    <a target="_blank" href={blogsUrl('/@on0tole/pryamaya-pokupka-tokenov-golos-za-rubli-i-ne-tolko')}>{tt('g.more_hint')}</a> <Icon name="extlink" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='column large-12 medium-12 small-12'>
-                            <hr/>
-                        </div>
-                    </div>
-                </div>
-                <div className='landing-exchanges-block'>
-                    <div className='column large-12 medium-12 small-12'>
-                        <div className='column large-12 medium-12 small-12'>
-                            <hr/>
-                        </div>
-                        <div className='column large-12 medium-12 small-12'>
-                            <div className='row'>
-                                <div className='column large-12 medium-12 small-12' align='center'>
                                 <a target="_blank" href="https://dex.golos.app"><img src={require("app/assets/images/exchanges/golosdex.png")} width="285" /></a>
                                 </div>
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>

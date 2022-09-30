@@ -22,7 +22,6 @@ class AppSettings extends React.Component {
         cfg.images.use_img_proxy = data.use_img_proxy
         cfg.auth_service.host = data.auth_service
         cfg.notify_service.host = data.notify_service
-        cfg.elastic_search.url = data.elastic_search
         window.appSettings.save(cfg)
     }
 
@@ -37,7 +36,6 @@ class AppSettings extends React.Component {
             use_img_proxy: $STM_Config.images.use_img_proxy,
             auth_service: $STM_Config.auth_service.host,
             notify_service: $STM_Config.notify_service.host,
-            elastic_search: $STM_Config.elastic_search.url,
         }
         this.initialValues = initialValues
     }

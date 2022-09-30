@@ -123,11 +123,11 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     }
     additional_menu.push(
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
-        { link: '/market/GOLOS/GBG', icon: 'trade', value: tt("navigation.market") },
+        { link: '/market', icon: 'trade', value: tt("navigation.market") },
         { link: blogsUrl('/services'), icon: 'new/monitor', value: tt("navigation.services"), target: 'blank' },
-        { link: '/search', icon: 'new/search', value: tt("navigation.search") },
+        { link: blogsUrl('/search'), icon: 'new/search', value: tt("navigation.search"), target: 'blank' },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },
-        { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses"), target: 'blank' },
+        { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses") },
         { link: '/workers', icon: 'voters', value: tt("navigation.workers") },
         { link: 'https://wiki.golos.id/', icon: 'new/wikipedia', value: tt("navigation.wiki"), target: 'blank' },
         { link: 'https://explorer.golos.id/', icon: 'cog', value: tt("navigation.explorer"), target: 'blank' } 

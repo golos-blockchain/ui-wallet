@@ -85,12 +85,6 @@ app.use(function*(next) {
             (routeRegex.UserProfile1.test(this.url))
     ) {
         const p = this.originalUrl.toLowerCase();
-		let userCheck = p.split("/")[1].slice(1)
-		if ($STM_Config.blocked_users.includes(userCheck)) {
-			console.log('Illegal content user found blocked', `@${userCheck}`);
-			this.status = 451;
-			return;
-		}
         if (p !== this.originalUrl) {
             this.status = 301;
             this.redirect(p);
