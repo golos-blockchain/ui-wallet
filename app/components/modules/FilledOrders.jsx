@@ -76,7 +76,7 @@ class FilledOrders extends Component {
         return (
             <div>
                 <span style={{float: 'right', fontSize: '85%', marginLeft: '20px'}}>
-                    <a href='/market/GOLOS/GBG' className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
+                    <a href='/market' className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
                 </span>
                 <span style={{float: 'right', fontSize: '85%'}}>
                     <a href='/convert' className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
@@ -92,7 +92,7 @@ class FilledOrders extends Component {
                 </table>) : null}
                 {!history.length ? (<Callout>{tt('filled_orders_jsx.empty_NAME', {
                     NAME: account ? account.name : '',
-                })}<a href='/market/GOLOS/GBG'>{tt('filled_orders_jsx.empty2')}</a>.</Callout>) : null}
+                })}<a href='/market'>{tt('filled_orders_jsx.empty2')}</a>.</Callout>) : null}
             </div>);
     }
 }

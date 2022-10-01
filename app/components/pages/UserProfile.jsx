@@ -369,12 +369,9 @@ export default class UserProfile extends React.Component {
                     {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
                         {tt('g.invites')}
                     </Link>}
-                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/permissions`} activeClassName='active'>
-                        {tt('g.permissions')}
-                    </Link>}
-                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/password`} activeClassName='active'>
-                        {tt('g.password')}
-                    </Link>}
+                    {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
+                        {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
+                    </Link> : null}
                     <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
@@ -394,10 +391,12 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>
                     <div className='UserProfile__filler' />
                     <div>
-                        {isMyAccount ?
-                            <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>{tt('navigation.market2')} <NotifiCounter fields="fill_order" /></Link>
-                            : null
-                        }
+                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/permissions`} activeClassName='active'>
+                        {tt('g.permissions')}
+                    </Link>}
+                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/password`} activeClassName='active'>
+                        {tt('g.password')}
+                    </Link>}                        
                     </div>
                 </div>
             </div>
@@ -432,9 +431,7 @@ export default class UserProfile extends React.Component {
                             <Userpic account={account.name} hideIfDefault />
                             {name || account.name}{' '}
 
-                            {!this.state.repLoading && <Link to={`/@${account.name}/reputation`}>
-                                <span className='UserProfile__rep UserProfile__rep-btn' title={tt('user_profile.this_is_users_reputations_score_it_is_based_on_history_of_votes', {name: accountname})}>({rep})</span>
-                            </Link>}
+                            {!this.state.repLoading && <span className='UserProfile__rep UserProfile__rep-btn' title={tt('user_profile.this_is_users_reputations_score_it_is_based_on_history_of_votes', {name: accountname})}>({rep})</span>}
                             {level}
                         </h1>
 

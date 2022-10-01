@@ -287,7 +287,7 @@ class UserWallet extends React.Component {
 
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {TIP_TOKEN.toUpperCase()}<br />
+                    {TIP_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#tip-balans">(?)</a></small></span><br />
                     <span className="secondary">{tt('tips_js.tip_balance_hint')}</span>
                 </div>
                 <div className="column small-12 medium-4">
@@ -309,7 +309,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {VESTING_TOKEN.toUpperCase()}<br />
+                    {VESTING_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#sila-golosa">(?)</a></small></span><br />
                     <span className="secondary">{powerTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}
                     <Link to="/workers">{tt('userwallet_jsx.worker_foundation')}</Link> | {tt('userwallet_jsx.top_dpos')} <a target="_blank" rel="noopener noreferrer" href="https://dpos.space/golos/top/gp">dpos.space <Icon name="extlink" /></a> {tt('g.and')} <a target="_blank" rel="noopener noreferrer" href="https://pisolog.net/stats/accounts/allaccounts">pisolog.net <Icon name="extlink" /></a></span>
                 </div>
@@ -347,7 +347,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {LIQUID_TOKEN.toUpperCase()}<br />
+                    {LIQUID_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#golos">(?)</a></small></span><br />
                     <span className="secondary">{steemTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}</span>
                 </div>
                 <div className="column small-12 medium-4">
@@ -381,7 +381,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {DEBT_TOKEN.toUpperCase()}<br />
+                    {DEBT_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#zolotoi">(?)</a></small></span><br />
                     <span className="secondary">{sbdMessage}</span>
                 </div>
                 <div className="column small-12 medium-4">
@@ -412,7 +412,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {tt('userwallet_jsx.savings')}<br />
+                    {tt('userwallet_jsx.savings')} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#seif">(?)</a></small></span><br />
                     <span className="secondary">{tt('transfer_jsx.balance_subject_to_3_day_withdraw_waiting_period')}</span>
                 </div>
                 <div className="column small-12 medium-4">
@@ -449,7 +449,6 @@ class UserWallet extends React.Component {
 
             <div align="center">
                 <Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>
-                <span className='strike'><a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a></span>
             </div>
 
             <div className="row">

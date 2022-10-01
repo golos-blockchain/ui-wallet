@@ -1,6 +1,5 @@
 {
   "desktop": {
-    "hide_comment_neg_rep": false,
     "site_domain": "golos.id",
     "another_domains": [
       "golos.in",
@@ -28,11 +27,6 @@
     "messenger_service": {
       "host": "app://chat.golos.app"
     },
-    "elastic_search": {
-      "url": "https://search.golos.today",
-      "login": "golosclient",
-      "password": "golosclient"
-    },
     "apidex_service": {
       "host": "https://api-dex.golos.app"
     },
@@ -42,12 +36,6 @@
     },
     "app_updater": {
       "host": "https://files.golos.app"
-    },
-    "forums": {
-      "white_list": ["fm-golostalk", "fm-prizmtalk", "fm-graphenetalks"],
-      "fm-golostalk": {"domain": "golostalk.com"},
-      "fm-prizmtalk": {"domain": "prizmtalk.com"},
-      "fm-graphenetalks": {"domain": "forum.gph.ai"}
     }
   }
 }

@@ -14,8 +14,6 @@ const initialState = {
     offchain: {
         config: {
             ...appConfig,
-            blocked_users: [],
-            blocked_posts: [],
             add_notify_site: {}
         },
         flash: {

@@ -50,11 +50,7 @@ const availableDomains = [
     't.me',
     'twitter.com',
     'vk.com',
-    'facebook.com',
-    'instagram.com',
     'coinmarketcap.com',
-    'sharpay.io',
-    'coins.black',
     'golos.chatbro.com',
     'yandex.ru',
     'google.com'
@@ -105,15 +101,11 @@ class App extends React.Component {
 
     componentDidMount() {
         if (process.env.BROWSER) {
-            console.log('ui-blogs version:', $STM_Config.ui_version);
+            console.log('ui-wallet version:', $STM_Config.ui_version);
         }
 
         const { nightmodeEnabled } = this.props;
         this.toggleBodyNightmode(nightmodeEnabled);
-
-        if (process.env.BROWSER) {
-            localStorage.removeItem('autopost') // July 14 '16 compromise, renamed to autopost2
-        }
 
         this.props.loginUser();
         this.props.loadExchangeRates();
@@ -315,14 +307,9 @@ class App extends React.Component {
                                     this.closeBox($STM_Config.add_notify_site);
                                 }}
                             />
-                            {$STM_Config.add_notify_site.new_tab ? 
-                                <a className="link" href={notifyLink} target='_blank'>
-                                    <Icon className="logo-icon" name={APP_ICON} /> {notifyTitle}
-                                </a>
-                                :
-                                <Link className="link" to={notifyLink}>
-                                    <Icon className="logo-icon" name={APP_ICON} /> {notifyTitle}
-                                </Link>}
+                            <a className="link" href={notifyLink} target='_blank'>
+                                <Icon className="logo-icon" name={APP_ICON} /> {notifyTitle}
+                            </a>
                         </div>
                     </div>
                 </div>

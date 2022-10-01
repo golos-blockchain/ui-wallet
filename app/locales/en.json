@@ -348,7 +348,7 @@
     "for_the_post": "for the post",    
     "night_mode": "Night Mode",
     "social_network": "Social network",
-    "about_project": "Golos.id — social platform and blogger community, developed on the GOLOS blockchain"
+    "about_project": "Golos Wallet - is a decentralized service based on the GOLOS blockchain"
   },
   "exchanges_jsx": {
     "title": "Buying and selling tokens",
@@ -385,7 +385,7 @@
     "sign_up": "Sign Up",
     "welcome": "Welcome",
     "feedback": "Feedback",
-    "search": "Search by content",
+    "search": "Search by blogs",
     "services": "Services, games, bots",
     "wiki": "Documentation (Wiki)",
     "faq": "FAQ",
@@ -894,7 +894,7 @@
     "tokens_worth_about_AMOUNT_of_LIQUID_TOKEN": "Tokens worth about %(TOKEN_WORTH)s in %(LIQUID_TICKER)s.",
     "influence_tokens_which_give_you_more_control_over": "The more Golos Power you have, the higher the percentage goes to the TIP balance and the higher the impact on the project development by selecting delegates and supporting applications for funding from the workers foundation.",
     "the_more_you_hold_the_more_you_influence_post_rewards": "The more you hold the more you influence post rewards and earn for accurate voting.",
-    "vesting_emission_per_day": "~ %(EMISSION_STAKE)s daily",
+    "vesting_emission_per_day": "+ %(EMISSION_STAKE)s daily",
     "vesting_emission_per_day_title": "Amount that, depending on the Golos Power, is transferred daily to the TIP balance\n(your share of the blockchain token issue per day)",
     "the_estimated_value_is_based_on_an_average_value_of_steem_in_US_dollars": "The estimated cost is calculated on an 7-day average cost of %(LIQUID_TOKEN)s.",
     "VESTING_TOKEN_is_non_transferrable_and_requires_convert_back_to_LIQUID_TOKEN": "%(VESTING_TOKEN2)s is non-transferrable and requires 1 month (4 payments) to convert back to %(LIQUID_TOKEN)s.",

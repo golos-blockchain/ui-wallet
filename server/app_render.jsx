@@ -59,11 +59,7 @@ async function appRender(ctx) {
             delete require.cache[require.resolve(assets_filename)];
         }
 
-        const analytics = {
-            google_analytics_id: $STM_Config.google_analytics_id,
-        };
-
-        const props = { body, assets, title, meta, analytics, offchain};
+        const props = { body, assets, title, meta, offchain};
         const sheet = new ServerStyleSheet()
         const jsx = sheet.collectStyles(<ServerHTML {...props} />)
         const stream = sheet.interleaveWithNodeStream(renderToNodeStream(jsx))
