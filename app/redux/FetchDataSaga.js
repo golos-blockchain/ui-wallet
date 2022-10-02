@@ -180,6 +180,7 @@ export function* fetchState(location_change_action) {
             witnesses.forEach(witness => {
                 state.witnesses[witness.owner] = witness;
                 witnessIds.push(witness.id);
+                accounts.add(witness.owner)
             });
 
             const voteMap = yield call([api, api.getWitnessVotesAsync], witnessIds, 21, 0, '1.000 GOLOS');
