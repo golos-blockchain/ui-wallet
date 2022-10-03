@@ -2,7 +2,7 @@ import { Map, Set, List, fromJS, Iterable } from 'immutable';
 import createModule from 'redux-modules';
 import { emptyContent } from 'app/redux/EmptyState';
 import constants from './constants';
-import { contentStats, fromJSGreedy } from 'app/utils/StateFunctions';
+import { fromJSGreedy } from 'app/utils/StateFunctions';
 
 const emptyContentMap = Map(emptyContent);
 
@@ -43,15 +43,6 @@ export default createModule({
             reducer: (state, action) => {
                 let payload = fromJS(action.payload);
                 if (payload.has('content')) {
-                    const content = payload.get('content').withMutations(c => {
-                        c.forEach((cc, key) => {
-                            cc = emptyContentMap.mergeDeep(cc);
-                            const stats = fromJS(contentStats(cc));
-                            c.setIn([key, 'stats'], stats);
-                        });
-                    });
-                    payload = payload.set('content', content);
-
                     // TODO reserved words used in account names, find correct solution
                     if (!Map.isMap(payload.get('accounts'))) {
                         const accounts = payload.get('accounts');
@@ -145,7 +136,6 @@ export default createModule({
                     c = emptyContentMap.mergeDeep(c);
                     c = c.delete('active_votes');
                     c = c.mergeDeep(content);
-                    c = c.set('stats', fromJS(contentStats(c)));
                     return c;
                 });
             },
@@ -367,20 +357,6 @@ export default createModule({
                     }
                 });
 
-                newState = newState.updateIn(['content'], content =>
-                    content.withMutations(content => {
-                        for (let value of data) {
-                            content.set(
-                                `${value.author}/${value.permlink}`,
-                                fromJS({
-                                    ...value,
-                                    stats: contentStats(value),
-                                })
-                            );
-                        }
-                    })
-                );
-
                 newState = newState.updateIn(
                     ['status', category || '', order],
                     () => {
@@ -414,24 +390,6 @@ export default createModule({
                                 }
                             }
                         })
-                );
-
-                newState = newState.updateIn(['content'], content =>
-                    content.withMutations(map => {
-                        for (let value of data) {
-                            const key = `${value.author}/${value.permlink}`;
-
-                            if (!map.has(key)) {
-                                map.set(
-                                    key,
-                                    fromJS({
-                                        ...value,
-                                        stats: contentStats(value),
-                                    })
-                                );
-                            }
-                        }
-                    })
                 );
 
                 return newState;

@@ -4729,10 +4729,15 @@ core-js@^2.4.0, core-js@^2.5.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
-core-js@^3.0.4, core-js@^3.17.3, core-js@^3.19.1, core-js@^3.22.1, core-js@^3.6.0, core-js@^3.6.5, core-js@^3.8.2, core-js@^3.8.3:
+core-js@^3.0.4, core-js@^3.19.1, core-js@^3.22.1, core-js@^3.6.0, core-js@^3.6.5, core-js@^3.8.2, core-js@^3.8.3:
   version "3.25.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.25.0.tgz#be71d9e0dd648ffd70c44a7ec2319d039357eceb"
   integrity sha512-CVU1xvJEfJGhyCpBrzzzU1kjCfgsGUxhEvwUV2e/cOedYWHdmluamx+knDnmhqALddMG16fZvIqvs9aijsHHaA==
+
+core-js@^3.17.3:
+  version "3.25.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.25.5.tgz#e86f651a2ca8a0237a5f064c2fe56cef89646e27"
+  integrity sha512-nbm6eZSjm+ZuBQxCUPQKQCoUEfFOXjUZ8dTTyikyKaWrTYmAVbykQfwsKE5dBK88u3QCkCrzsx/PPlKfhsvgpw==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -7304,10 +7309,10 @@ globule@^1.0.0:
     lodash "^4.17.21"
     minimatch "~3.0.2"
 
-golos-lib-js@^0.9.43:
-  version "0.9.43"
-  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.43.tgz#2a0a67910c1255779a77cf72c4324258cb657a87"
-  integrity sha512-Usryzw8ukVQ3eniCW4bNIgQXe6/96Em7mqdd32ueyorCC0Unej0YLFd36kHiT9VuYvc9NSb3Un+GqjomdRARZg==
+golos-lib-js@^0.9.45:
+  version "0.9.45"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.45.tgz#63276e8eb495b7d6353607ec074447f93e3a60ca"
+  integrity sha512-L5V4oLOHviqko3x7aaod5wbtE7fF164EjtPxoBvnYWcy5PhAReMiXM6v4l2uXhZyR1Z06b5O/ceNvLqAD5ZnHQ==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"

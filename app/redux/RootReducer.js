@@ -7,7 +7,7 @@ import marketReducerModule from './MarketReducer';
 import user from './User';
 import transaction from './Transaction';
 import offchain from './Offchain';
-import {contentStats, fromJSGreedy} from 'app/utils/StateFunctions'
+import { fromJSGreedy } from 'app/utils/StateFunctions'
 
 function initReducer(reducer, type) {
     return (state, action) => {

@@ -1,7 +1,6 @@
 import extractContent from 'app/utils/ExtractContent';
 import {objAccessor} from 'app/utils/Accessors';
 import normalizeProfile from 'app/utils/NormalizeProfile';
-import { contentStats, } from 'app/utils/StateFunctions';
 import {
     SEO_TITLE,
     APP_DOMAIN,
@@ -35,19 +34,6 @@ export default function extractMeta(chain_data, rp) {
         const profile = normalizeProfile(author);
         if (content && content.id !== '0.0.0') { // API currently returns 'false' data with id 0.0.0 for posts that do not exist
             const d = extractContent(objAccessor, content, false);
-
-            const { hide, isOnlyapp, isOnlyblog } = contentStats(content)
-            if (hide || isOnlyapp || isOnlyblog) {
-                metas.push({name: 'robots', content: 'noindex, nofollow'});
-                return metas;
-            }
-            if (isOnlyapp && !process.env.IS_APP) {
-                d.title = ''
-                d.desc = ''
-                d.author = ''
-                delete d.image_link
-                d.link = '/@/'
-            }
 
             const url = 'https://' + APP_DOMAIN + d.link;
             const title = d.title + ' | ' + SEO_TITLE;

@@ -1,10 +1,11 @@
 import { fork, call, put, select, takeEvery } from 'redux-saga/effects';
 import {Set, Map, fromJS, List} from 'immutable'
-import user from 'app/redux/User'
-import {getAccount} from 'app/redux/SagaShared'
 import {PrivateKey} from 'golos-lib-js/lib/auth/ecc';
 import {api} from 'golos-lib-js';
-import {pageSession} from 'golos-lib-js/lib/auth';
+
+import { getAccount } from 'app/redux/SagaShared'
+import user from 'app/redux/User'
+import session from 'app/utils/session'
 
 // operations that require only posting authority
 const postingOps = Set(`vote, comment, delete_comment, custom_json, account_metadata, donate, worker_request_vote, account_setup`.trim().split(/,\s*/))
@@ -105,8 +106,9 @@ export function* findSigningKey({opType, username, password}) {
     else {
         authTypes = 'active, owner'
         if (location.pathname.startsWith('/market')) {
-            const saved = pageSession.load();
-            if (saved) return saved[1];
+            const curr = session.load().currentName
+            const saved = session.loadTemp().getVal(curr, 'active')
+            if (saved) return saved
         }
     }
     authTypes = authTypes.split(', ')
