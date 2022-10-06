@@ -83,7 +83,7 @@ class FilledOrders extends Component {
                 </span>
                 <h4 className='uppercase'>{tt('filled_orders_jsx.title')}</h4>
                 <div className="column secondary">
-                    {tt('filled_orders_jsx.orders_info')} <a href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' /><br /><br />
+                    {tt('filled_orders_jsx.orders_info')} <a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' /><br /><br />
                 </div>
                 {history.length ? (<table>
                     <tbody>
