@@ -9,6 +9,8 @@ const defaultState = fromJS({
     show_transfer_modal: false,
     show_convert_assets_modal: false,
     show_open_orders_modal: false,
+    show_change_account_modal: false,
+    show_add_account_modal: false,
     pub_keys_used: null,
     locale: DEFAULT_LANGUAGE,
     nightmodeEnabled: false,
@@ -93,8 +95,16 @@ export default createModule({
         { action: 'SHOW_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', true)  },
         { action: 'HIDE_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', false) },
         { action: 'SET_OPEN_ORDERS_DEFAULTS', reducer: (state, {payload}) => state.set('open_orders_defaults', fromJS(payload)) },
+        { action: 'SHOW_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', true) },
+        { action: 'HIDE_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', false) },
+        { action: 'SHOW_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', true) },
+        { action: 'HIDE_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', false) },
         {
             action: 'USERNAME_PASSWORD_LOGIN',
+            reducer: state => state, // saga
+        },
+        {
+            action: 'CHANGE_ACCOUNT',
             reducer: state => state, // saga
         },
         {

@@ -20,6 +20,7 @@ const icons = new Map([
     ['github', require('app/assets/icons/github.svg')],
     ['linkedin', require('app/assets/icons/linkedin.svg')],
     ['pencil', require('app/assets/icons/pencil.svg')],
+    ['person', require('app/assets/icons/person.svg')],
     ['vk', require('app/assets/icons/vk.svg')],
     ['link', require('app/assets/icons/link.svg')],
     ['clock', require('app/assets/icons/clock.svg')],

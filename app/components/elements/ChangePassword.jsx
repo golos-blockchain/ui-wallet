@@ -101,7 +101,7 @@ class ChangePassword extends React.Component {
             const { onClose, } = this.props;
             if (onClose) onClose();
             notify('Password Updated');
-            window.location = `/login.html#account=${accountName}&msg=passwordupdated`;
+            window.location = `/#account=${accountName}&msg=passwordupdated`;
         };
         const error = (e) => {
             this.setState({ error: e, });

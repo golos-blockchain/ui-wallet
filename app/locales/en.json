@@ -145,6 +145,7 @@
     "loading": "Loading",
     "login": "Login",
     "logout": "Logout",
+    "change_acc": "Change Account",
     "mentions": "Mentions",
     "memo": "Memo",
     "messages": "Messages",
@@ -335,6 +336,7 @@
     "update_your_password": "update your password",
     "enter_username": "Enter your username",
     "password_or_wif": "Password or WIF",
+    "password_or_posting": "Password or posting key",
     "requires_auth_key": "This operation requires your %(authType)s key (or use your master password)",
     "keep_me_logged_in": "Keep me logged in",
     "donate": "Donate",
@@ -1063,6 +1065,10 @@
     "sign_up_now_to_receive": "Sign up now to receive ",
     "free_money": "FREE MONEY!",
     "join_our": "Join our"
+  },
+  "change_account_jsx": {
+    "add_account": "Add Account",
+    "logout_all": "Log out all accounts"
   },
   "mobilevalidation_js": {
     "not_be_empty": "not be empty",

@@ -1,7 +1,6 @@
 /* eslint react/prop-types: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
-import {pageSession} from 'golos-lib-js/lib/auth';
 import {PrivateKey, PublicKey} from 'golos-lib-js/lib/auth/ecc'
 import transaction from 'app/redux/Transaction'
 import g from 'app/redux/GlobalReducer'
@@ -14,6 +13,7 @@ import tt from 'counterpart';
 import { APP_DOMAIN } from 'app/client_config';
 import { translateError } from 'app/utils/ParsersAndFormatters';
 import { authUrl, authRegisterUrl, } from 'app/utils/AuthApiClient';
+import session from 'app/utils/session'
 
 class LoginForm extends Component {
 
@@ -350,7 +350,9 @@ export default connect(
                 const {type, operation, trx, successCallback, errorCallback} = loginBroadcastOperation.toJS()
                 const authSaver = () => {
                     if (!/^vote|comment/.test(type) && location.pathname.startsWith('/market')) {
-                        pageSession.save(password, username, 'active');
+                        session.loadTemp()
+                            .addKey(username, 'active', password)
+                            .save()
                     }
                     successCallback();
                 };
