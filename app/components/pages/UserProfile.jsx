@@ -22,7 +22,6 @@ import DonatesFrom from 'app/components/modules/DonatesFrom';
 import DonatesTo from 'app/components/modules/DonatesTo';
 import CurationRewards from 'app/components/modules/CurationRewards';
 import AuthorRewards from 'app/components/modules/AuthorRewards';
-import ReputationHistory from 'app/components/modules/ReputationHistory'
 import FilledOrders from 'app/components/modules/FilledOrders'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'

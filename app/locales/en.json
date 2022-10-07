@@ -11,51 +11,12 @@
     "TOKEN_WORTH": "~1 mg of gold",
     "TIP_TOKEN": "TIP balance"
   },
-  "search": {
-    "placeholder": "Search for posts and comments",
-    "results": "Results: ",
-    "where_posts": "In posts",
-    "where_comments": "In comments",
-    "where_anywhere": "Everywhere",
-    "alltime": "For all time",
-    "search_in": "Search with ",
-    "author": "Author",
-    "tags": "Tags",
-    "yandex": "Yandex",
-    "or": " or ",
-    "google": "Google"
-  },
   "reputation_panel_jsx": {
     "cannot_vote_neg_rep": "You cannot upvote/downvote account reputations, because your reputation is negative",
     "cannot_downvote_lower_rep_ACCOUNT_NAME": "You cannot downvote @%(ACCOUNT_NAME)s, because your reputation is lesser than their",
     "confirm_title": "Account Voting",
     "confirm_upvote_ACCOUNT_NAME": "Are you sure you want to upvote @%(ACCOUNT_NAME)s? It will be saved in their reputation history.",
     "confirm_downvote_ACCOUNT_NAME": "Are you sure you want to downvote @%(ACCOUNT_NAME)s? It will be saved in their reputation history."
-  },
-  "reputation_history_jsx": {
-    "rating": "Rating",
-    "top": "tops of changes",
-    "reputation": "reputation",
-    "title": "Reputation History",
-    "upvoted": " increased your reputation by ",
-    "downvoted": " decreased your reputation by ",
-    "empty_NAME": "There are no yet operations with %(NAME)s's  reputation."
-  },
-  "minused_accounts_jsx": {
-    "title": "Accounts With Negative Reputation",
-    "stats": "Voting by reputation from the profile",
-    "changes": "Tops of reputation changes for the week",
-    "description": "There are accounts, whose reputation was downvoted recently.",
-    "row_text": " downvoted by ",
-    "empty": "No downvoted accounts yet.",
-    "link_title": "Downvoted Users"
-  },
-  "mentions_jsx": {
-    "empty_NAME": "No %(NAME)s mentions yet.",
-    "mention_NAME": " has mentioned %(NAME)s in a ",
-    "mention_post": "post ",
-    "mention_comment": "comment ",
-    "you": "you"
   },
   "filled_orders_jsx": {
     "title": "Filled market orders",
@@ -395,32 +356,6 @@
     "sale_agreement": "Sale Agreement",
     "telegram_support": "%(APP_NAME_UP)s Support"
   },
-  "main_menu": {
-    "hot": "hot",
-    "trending": "trending",
-    "donates": "donates",
-    "forums": "forums",
-    "payout_time": "payout time",
-    "active": "active",
-    "discussion": "discussion",
-    "responses": "responses",
-    "popular": "popular"
-  },
-  "submit_a_story": {
-    "title": "Title",
-    "editor": "editor",
-    "update_post": "Update Post",
-    "markdown_is_supported": "Styling with Markdown is supported",
-    "markdown_not_supported": "Markdown is not supported here",
-    "welcome_to_the_blockchain": "Welcome to the Golos!",
-    "you_hasnt_started_bloggin_yet":  "Looks like you hasn't started blogging yet!",
-    "your_voice_is_worth_something": "decentralized blog platform on a public blockchain",
-    "learn_more": "Learn More",
-    "get_sp_when_sign_up": "Get %(signupBonus)s of %(VESTING_TOKEN)s when you sign up today.",
-    "get_sp_when_sign_up1": "Get ",
-    "get_sp_when_sign_up2": " %(VESTING_TOKENS)s when you sign up today.",
-    "all_accounts_refunded": "All Recovered Accounts have been fully Refunded"
-  },
   "reply_editor": {
     "shorten_title": "Shorten title",
     "exceeds_maximum_length": "Exceeds maximum length (%(maxKb)sKB)",
@@ -596,11 +531,6 @@
     "replenish_golos_power": "Replenish your Golos Power",
     "replenish_golos_power_AMOUNT": " with %(AMOUNT)s to receive your curaton rewards."
   },
-  "post_jsx": {
-    "now_showing_comments_with_low_ratings": "Now showing comments with low ratings",
-    "sort_order": "Sort Order",
-    "comments_were_hidden_due_to_low_ratings": "Comments were hidden due to low ratings"
-  },
   "do_not_bother": {
     "title": "Do not bother",
     "desc": "Users with reputation lower than 65 will not write messages, comments, send donates and transfers to you",
@@ -623,35 +553,6 @@
     "active_desc": "Active Key: ",
     "owner_desc": "Owner Key: ",
     "memo_desc": "Memo Key: "
-  },
-  "voting_jsx": {
-    "stop_seeing_content_from_this_user": "Stop seeing content from this user",
-    "flagging_post_can_remove_rewards_the_flag_should_be_used_for_the_following": "Flagging a post can remove rewards and make this material less visible. Some common reasons to flag",
-    "disagreement_on_rewards": "Disagreement on rewards",
-    "fraud_or_plagiarism": "Fraud or Plagiarism",
-    "hate_speech_or_internet_trolling": "Hate Speech or Internet Trolling",
-    "intentional_miss_categorized_content_or_spam": "Intentional miss-categorized content or Spam",
-    "downvote": "Downvote",
-    "pending_payout": "Pending Payout",
-    "past_payouts": "Past Payouts",
-    "we_will_reset_curation_rewards_for_this_post": "will reset your curation rewards for this post",
-    "removing_your_vote": "Removing your vote",
-    "changing_to_an_upvote": "Changing to an Up-Vote",
-    "changing_to_a_downvote": "Changing to a Down-Vote",
-    "confirm_flag": "Confirm Flag",
-    "search": "Search",
-    "post_as": "Post as",
-    "trending_30_day": "trending (30 day)",
-    "potential_payout": "Potential Payout",
-    "boost_payments": "Boost Payments",
-    "payouts_declined": "Payouts from pool disabled",
-    "max_accepted_payout": "Max accepted payout",
-    "authors": "Authors",
-    "curators": "Curators",
-    "paste_a_youtube_or_vimeo_and_press_enter": "Paste a YouTube or Vimeo and press Enter",
-    "there_was_an_error_uploading_your_image": "There was an error uploading your image",
-    "raw_html": "Raw HTML",
-    "please_remove_following_html_elements": "Please remove the following HTML elements from your post: "
   },
   "witnesses_jsx": {
     "witness_info": "Witnesses - are users who are elected by the community vote and are engaged in supporting the nodes that ensure the operation of the blockchain and many other issues related to the development of the project.",
@@ -689,21 +590,6 @@
     "witness_proxy_set": "Set proxy",
     "witness_proxy_clear": "Clear proxy",
     "proxy_update_error": "Your proxy was not updated"
-  },
-  "votesandcomments_jsx": {
-    "no_responses_yet_click_to_respond": "No responses yet. Click to respond.",
-    "response_count": {
-      "zero": "no responses",
-      "one": "1 responses",
-      "other": "%(count)s responses"
-    },
-    "click_to_respond": "Click to respond",
-    "vote_count": {
-      "zero": "no votes",
-      "one": "1 vote",
-      "other": "%(count)s votes"
-    },
-    "account_frozen": "Deactivated due inactivity."
   },
   "assets_jsx": {
     "assets_info": "User Issued Assets (tokens) that can be exchanged, traded on an internal exchange, and used in various blockchain services.",
@@ -885,10 +771,6 @@
     "too_low_amount": "Too low amount.",
     "you_will_receive": "You will receive "
   },
-  "time_versions_jsx": {
-    "rev": "rev.",
-    "version_NUM": "(rev. %(NUM)s)"
-  },
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
@@ -907,53 +789,6 @@
     "confirm_phone": "Please verify your phone number",
     "authenticate_for_this_transaction": "Authenticate for this transaction",
     "login_to_your_APP_NAME_account": "Login to your %(APP_NAME)s Account"
-  },
-  "promote_post_jsx": {
-    "promote_post": "Promote Post",
-    "buy_gbg": "you can buy GBG on the",
-    "market": "internal market",
-    "spend_your_DEBT_TOKEN_to_advertise_this_post": "Spend your %(DEBT_TOKEN)s's to advertise this post in the promoted content section",
-    "to_promote_this_post_sent": "To advertise this post in TOP sent: ",
-    "remaining_to_promote": "Remaining to send: ",
-    "you_successfully_promoted_this_post": "You successfully promoted this post",
-    "leave_this_unchecked_to_receive_half_your_reward": "Leave this unchecked to receive 1/2 your reward in %(VESTING_TOKEN)s and 1/2 in %(DEBT_TOKEN)s",
-    "pay_me_100_in_VESTING_TOKEN": "Pay me 100%% in %(VESTING_TOKEN)s",
-    "this_post_was_hidden_due_to_low_ratings": "This post was hidden due to low ratings",
-    "reblogged_by": "Reblogged by",
-    "updated": "updated",
-    "created": "created",
-    "settings": "Settings",
-    "crowdsale": "Crowdsale",
-    "following": "Following"
-  },
-  "markdownviewer_jsx": {
-    "images_were_hidden_due_to_low_ratings": "Images were hidden due to low ratings."
-  },
-  "comment_jsx": {
-    "collapse_or_expand": "Collapse/Expand",
-    "reveal_comment": "Reveal comment",
-    "show_1_more_reply": "Show 1 more reply",
-    "show_N_more_replies": "Show %(N)s more replies",
-    "show_N_more_replies_2": "Show %(N)s more replies"
-  },
-  "poststub": {
-    "onlyblog": "This post is only for author's followers.",
-    "login": "Sign in",
-    "sign_up": "sign up",
-    "onlyapp": "This post is available only in GOLOS Blogs desktop application.",
-    "install": "Install application"
-  },
-  "postsummary_jsx": {
-    "resteemed": "Reposted",
-    "resteemed_by": "Reposted by",
-    "this_post_is": "This post is",
-    "you_can": "You can",
-    "reveal_it": "reveal it",
-    "adjust_your": "adjust your",
-    "display_preferences": "display preferences",
-    "create_an_account": "create an account",
-    "to_save_your_preferences": "to save your preferences",
-    "mute_in_new": "Hide in New"
   },
   "transferhistoryrow_jsx": {
     "to_savings": "to savings",
@@ -1282,9 +1117,6 @@
     "enter_body": "Write the post",
     "cant_ends_with_special_char": "Title ended with dot is a bad taste"
   },
-  "comment_editor": {
-    "cancel_comment": "Comment text will be erased. Are you sure?"
-  },
   "editor_toolbar": {
     "bold": "Toggle bold style",
     "italic": "Toggle italic style",
@@ -1324,27 +1156,6 @@
     "confirm_cancel_delegation": "Are you sure you want to cancel %(VESTING_TOKEN2)s delegation (you will receive tokens back during 7 days)?",
     "from": "From",
     "to": "To"
-  },
-  "faq_jsq": {
-    "page_title": "Frequently Asked Questions",
-    "page_description": "This page contains popular user questions and official Golos Blockchain communication channels.",
-    "telegram": "to ask",
-    "email": "email",
-    "wiki": "wiki golos",
-    "twitter": "twitter",
-    "blog": "news golos",
-    "official_channels": "Official channels",
-    "footer_message": "We will never ask for your private keys or money. If someone introduces themselves as members of the Golos Blockchain team and asks for such information, please contact us."
-  },
-  "services": {
-    "title_1": "Most popular services, games and bots",
-    "title_2": "which may be useful for interacting with the Golos blockchain",
-    "developer": "Developer",
-    "services": "Services",
-    "games": "Games",
-    "bots": "Bots",
-    "footer_1": "If there is not enough service/game/bot in the list, write to the Telegram chat",
-    "footer_2": "or add a post on the Golos"
   },
   "workers": {
     "workers_info": "For any work useful for the Golos Blockchain, you can get a reward by submitting an application, describing in detail what was done (development, design, advertising, documentation), anything if this initiative is supported by the community.",
@@ -1388,40 +1199,6 @@
     "voting_time": "Voting time (days)",
     "proposal_fee": "Will be debited",
     "worker_post": "worker request"
-  },
-  "emoji_i18n": {
-    "categoriesLabel": "Categories",
-    "emojiUnsupportedMessage": "Your browser does not support color emoji.",
-    "favoritesLabel": "Favorites",
-    "loadingMessage": "Loading…",
-    "networkErrorMessage": "Could not load emoji. Try refreshing.",
-    "regionLabel": "Emoji picker",
-    "searchDescription": "When search results are available, press up or down to select and enter to choose.",
-    "searchLabel": "Search",
-    "searchResultsLabel": "Search results",
-    "skinToneDescription": "When expanded, press up or down to select and enter to choose.",
-    "skinToneLabel": "Choose a skin tone (currently {skinTone})",
-    "skinTonesLabel": "Skin tones",
-    "skinTones": [
-      "Default",
-      "Light",
-      "Medium-Light",
-      "Medium",
-      "Medium-Dark",
-      "Dark"
-    ],
-    "categories": {
-        "custom": "Custom",
-        "smileys-emotion": "Smileys and emoticons",
-        "people-body": "People and body",
-        "animals-nature": "Animals and nature",
-        "food-drink": "Food and drink",
-        "travel-places": "Travel and places",
-        "activities": "Activities",
-        "objects": "Objects",
-        "symbols": "Symbols",
-        "flags": "Flags"
-    }
   },
   "notify_content": {
     "send_AMOUNT": "You transferred %(AMOUNT)s to",

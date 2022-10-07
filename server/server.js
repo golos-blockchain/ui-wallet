@@ -130,7 +130,7 @@ app.use(
     mount('/robots.txt', function*() {
         this.set('Cache-Control', 'public, max-age=86400000');
         this.type = 'text/plain';
-        this.body = 'User-agent: *\nHost: https://golos.id\nSitemap: https://golos.id/sitemap.xml';
+        this.body = 'User-agent: *';
     })
 );
 
@@ -170,7 +170,6 @@ if (env === 'production') {
 app.use(favicon(path.join(__dirname, '../app/assets/images/favicons/favicon.ico')));
 app.use(mount('/favicons', staticCache(path.join(__dirname, '../app/assets/images/favicons'), cacheOpts)));
 app.use(mount('/images', staticCache(path.join(__dirname, '../app/assets/images'), cacheOpts)));
-app.use(mount('/sitemap.xml', staticCache(path.join(__dirname, '../app/assets/sitemap.xml'), cacheOpts)));
 app.use(isBot());
 
 // Proxy asset folder to webpack development server in development mode

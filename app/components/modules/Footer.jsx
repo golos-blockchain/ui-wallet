@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import tt from 'counterpart';
 import { api } from 'golos-lib-js';
 import Icon from 'app/components/elements/Icon';
+import { blogsUrl, } from 'app/utils/blogsUtils'
 
 class Footer extends React.Component {
     state = {
@@ -117,7 +118,7 @@ class Footer extends React.Component {
                     <div className="row" id="footer">                    
                         {this._renderMenus(menuItems)}
 
-                        <div><a target='_blank' href='https://golos.id/ru--golos/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev'><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a></div>
+                        <div><a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a></div>
 
                     </div>
                 </div>
