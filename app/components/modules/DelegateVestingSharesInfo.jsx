@@ -155,6 +155,7 @@ export default connect(
 
             dispatch(transaction.actions.broadcastOperation({
                 type: 'delegate_vesting_shares',
+                username: delegator,
                 operation: {
                     delegator,
                     delegatee,

@@ -133,23 +133,16 @@ function* usernamePasswordLogin(action) {
     if (current) {
         const username = current.get('username')
         if (process.env.BROWSER) {
-            //const notification_channel_created = yield select(state => state.user.get('notification_channel_created'))
-            //if (!notification_channel_created) {
-            const { onUserLogin } = PushNotificationSaga;
-            yield call(onUserLogin, { username });
-            //}
+            const { onUserLogin } = PushNotificationSaga
+            yield call(onUserLogin, { username })
         }
     }
 }
 
-// const isHighSecurityOperations = ['transfer', 'transfer_to_vesting', 'withdraw_vesting',
-//     'limit_order_create', 'limit_order_cancel', 'account_update', 'account_witness_vote']
-
-
 const clean = (value) => value == null || value === '' || /null|undefined/.test(value) ? undefined : value
 
 function* usernamePasswordLogin2({payload: {username, password, saveLogin,
-        operationType /*high security*/, afterLoginRedirectToWelcome
+        operationType, highSecurityLogin, afterLoginRedirectToWelcome
 }}) {
     // login, using saved password
     let autopost, memoWif, login_owner_pubkey, login_wif_owner_pubkey
@@ -182,12 +175,6 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
         // "alice/active" will login only with Alices active key
         [username, userProvidedRole] = username.split('/')
     }
-
-    const pathname = yield select(state => state.global.get('pathname'))
-    const highSecurityLogin =
-        // /owner|active/.test(userProvidedRole) ||
-        // isHighSecurityOperations.indexOf(operationType) !== -1 ||
-        highSecurityPages.find(p => p.test(pathname)) != null
 
     const isRole = (role, fn) => (!userProvidedRole || role === userProvidedRole ? fn() : undefined)
 
@@ -229,7 +216,7 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
     let authority = yield select(state => state.user.getIn(['authority', username]))
     const hasActiveAuth = authority.get('active') === 'full'
     // Forbid loging in with active key
-    if(!operationType) {
+    if(!operationType && !highSecurityLogin) {
         const accountName = account.get('name')
         authority = authority.set('active', 'none')
         yield put(user.actions.setAuthority({accountName, auth: authority}))
@@ -261,6 +248,8 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
     if (authority.get('posting') !== 'full')
         private_keys = private_keys.remove('posting_private')
 
+    const pathname = yield select(state => state.global.get('pathname'))
+    
     if((!highSecurityLogin || authority.get('active') !== 'full') && !pathname.endsWith('/permissions'))
         private_keys = private_keys.remove('active_private')
 

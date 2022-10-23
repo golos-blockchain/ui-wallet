@@ -419,6 +419,7 @@ export default connect(
                     extensions,
                     __config,
                 },
+                username: delegator,
                 confirm,
                 successCallback: success,
                 errorCallback,
