@@ -78,7 +78,7 @@ class AddAccount extends React.Component {
                     <ErrorMessage name='username' component='div' className='error' />
 
                     <div>
-                        <Field type='password' name='password' className='input-group-field' required placeholder={tt('g.password_or_posting')} autoComplete='off'
+                        <Field type='password' name='password' className='input-group-field' required placeholder={tt('loginform_jsx.password_or_KEY_TYPE', { KEY_TYPE: 'posting'})} autoComplete='off'
                             disabled={isSubmitting}
                              />
                     </div>

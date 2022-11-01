@@ -377,6 +377,7 @@ export default connect(
                 transaction.actions.broadcastOperation({
                     type: 'limit_order_create',
                     operation,
+                    username: owner,
                     confirm,
                     warning,
                     successCallback: () => {

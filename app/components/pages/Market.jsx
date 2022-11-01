@@ -640,6 +640,7 @@ export default connect(
                         owner,
                         orderid,
                     },
+                    username: owner,
                     confirm,
                     successCallback: () => {
                         successCallback(successMessage);
@@ -667,6 +668,7 @@ export default connect(
                 transaction.actions.broadcastOperation({
                     type: 'limit_order_cancel_ex',
                     operation,
+                    username: owner,
                     confirm,
                     successCallback: () => {
                         successCallback();
@@ -696,6 +698,7 @@ export default connect(
                 transaction.actions.broadcastOperation({
                     type: 'limit_order_cancel',
                     trx: OPERATIONS,
+                    username: owner,
                     confirm,
                     successCallback: () => {
                         successCallback();

@@ -172,7 +172,9 @@ export default connect(
                 successCallback()
             }
 
-            const options = {type: 'feed_publish', operation, successCallback: success, errorCallback}
+            const options = {type: 'feed_publish', operation,
+                username: operation.publisher,
+                successCallback: success, errorCallback}
             dispatch(transaction.actions.broadcastOperation(options))
         },
         updateWitness: ({successCallback, errorCallback, ...operation}) => {
@@ -181,7 +183,9 @@ export default connect(
                 successCallback()
             }
 
-            const options = {type: 'witness_update', operation, successCallback: success, errorCallback}
+            const options = {type: 'witness_update', operation,
+                username: operation.owner,
+                successCallback: success, errorCallback}
             dispatch(transaction.actions.broadcastOperation(options))
         },
         feedsNodes: (username) => {

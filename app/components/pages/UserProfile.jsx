@@ -515,6 +515,7 @@ module.exports = {
                 dispatch(transaction.actions.broadcastOperation({
                     type: 'withdraw_vesting',
                     operation: {account, vesting_shares},
+                    username: account,
                     errorCallback,
                     successCallback: successCallbackWrapper,
                 }))

@@ -105,16 +105,17 @@ export default connect(
                 payload: {},
             })
         },
-        cancelWithdraw: (fro, request_id, success, errorCallback) => {
+        cancelWithdraw: (from, request_id, success, errorCallback) => {
             const confirm = tt('savingswithdrawhistory_jsx.cancel_this_withdraw_request')
             const successCallback = () => {
                 // refresh transfer history
-                dispatch({type: 'FETCH_STATE', payload: {pathname: `@${fro}/transfers`}})
+                dispatch({type: 'FETCH_STATE', payload: {pathname: `@${from}/transfers`}})
                 success()
             }
             dispatch(transaction.actions.broadcastOperation({
                 type: 'cancel_transfer_from_savings',
-                operation: {from: fro, request_id},
+                operation: {from, request_id},
+                username: from,
                 confirm,
                 successCallback,
                 errorCallback

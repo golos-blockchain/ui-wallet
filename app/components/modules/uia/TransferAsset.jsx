@@ -167,7 +167,7 @@ export default connect(
 
             dispatch(transaction.actions.broadcastOperation({
                 type: 'asset_transfer',
-                accountName,
+                username: accountName,
                 operation,
                 successCallback: success,
                 errorCallback

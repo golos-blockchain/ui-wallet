@@ -234,6 +234,7 @@ export default connect(
                     amount,
                     __config: {title: tt('converttosteem_jsx.confirm_title')}
                 },
+                username: owner,
                 confirm: conf + '?',
 
                 successCallback: () => {

@@ -163,7 +163,7 @@ export default connect(
 
             dispatch(transaction.actions.broadcastOperation({
                 type: 'invite_claim',
-                accountName,
+                username: accountName,
                 operation,
                 successCallback: success,
                 errorCallback

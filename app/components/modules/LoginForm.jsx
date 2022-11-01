@@ -141,6 +141,7 @@ class LoginForm extends Component {
         const disabled = submitting || !valid;
         const opType = loginBroadcastOperation ? loginBroadcastOperation.get('type') : null;
         let postType = "";
+        const authType = loginDefault && loginDefault.get('authType') 
         let isMemo = false;
         if (opType === "vote") {
             postType = tt('loginform_jsx.login_to_vote')
@@ -149,12 +150,11 @@ class LoginForm extends Component {
         } else if (loginBroadcastOperation) {
             // check for post or comment in operation
             postType = loginBroadcastOperation.getIn(['operation', 'title']) ? tt('loginform_jsx.login_to_post') : tt('loginform_jsx.login_to_comment');
-        } else if (loginDefault && loginDefault.get('authType') === 'memo') {
+        } else if (authType === 'memo') {
             isMemo = true;
             postType = tt('loginform_jsx.login_to_message');
         }
         const title = postType ? postType : tt('g.login');
-        const authType = /^vote|comment/.test(opType) ? tt('loginform_jsx.posting') : tt('loginform_jsx.active_or_owner');
         const submitLabel = loginBroadcastOperation ? tt('g.sign_in') : tt('g.login');
         const cancelIsRegister = loginDefault && loginDefault.get('cancelIsRegister');
         let error = password.touched && password.error ? password.error : this.props.login_error;
@@ -201,7 +201,8 @@ class LoginForm extends Component {
             <center>
             <form onSubmit={handleSubmit(({data}) => {
                 this.state.password.props.onChange('');
-                return dispatchSubmit(data, loginBroadcastOperation, afterLoginRedirectToWelcome)
+                const highSecurityLogin = authType === 'active'
+                return dispatchSubmit(data, loginBroadcastOperation, highSecurityLogin, afterLoginRedirectToWelcome)
             })}
                 onChange={this.props.clearError}
                 method="post"
@@ -215,12 +216,12 @@ class LoginForm extends Component {
                 {username.touched && username.blur && username.error ? <div className="error">{translateError(username.error)}&nbsp;</div> : null}
 
                 <div>
-                    <input type="password" required ref="pw" placeholder={tt('loginform_jsx.password_or_wif')} {...password.props} autoComplete="on" disabled={submitting} />
+                    <input type="password" required ref="pw" placeholder={tt('loginform_jsx.password_or_KEY_TYPE', { KEY_TYPE: (authType || 'posting') })} {...password.props} autoComplete="on" disabled={submitting} />
                     {error && <div className="error">{translateError(error)}&nbsp;</div>}
                     {error && password_info && <div className="warning">{password_info}&nbsp;</div>}
                 </div>
                 {loginBroadcastOperation && <div>
-                    <div className="info">{tt('loginform_jsx.this_operation_requires_your_key_or_master_password', {authType})}</div>
+                    <div className="info">{tt('loginform_jsx.this_operation_requires_your_key_or_master_password', { authType })}</div>
                 </div>}
                 {!loginBroadcastOperation && <div>
                     <label htmlFor="saveLogin">
@@ -239,12 +240,6 @@ class LoginForm extends Component {
                         {tt('g.sign_up')}
                     </a>}
                 </div>
-                {authType == 'Posting' &&
-                <div>
-                    <hr />
-                    <p>{tt('loginform_jsx.join_our')} <span className="free-slogan">{tt('loginform_jsx.amazing_community')}</span>{tt('loginform_jsx.to_comment_and_reward_others')}</p>
-                    <button type="button" className="button sign-up" onClick={this.SignUp}>{tt('loginform_jsx.sign_up_now_to_receive')}<span className="free-money">{tt('loginform_jsx.free_money')}</span></button>
-                </div>}
             </form>
         </center>
         );
@@ -343,25 +338,26 @@ export default connect(
 
     // mapDispatchToProps
     dispatch => ({
-        dispatchSubmit: (data, loginBroadcastOperation, afterLoginRedirectToWelcome) => {
+        dispatchSubmit: (data, loginBroadcastOperation, highSecurityLogin, afterLoginRedirectToWelcome) => {
             const {password, saveLogin} = data
             const username = data.username.trim().toLowerCase()
             if (loginBroadcastOperation) {
                 const {type, operation, trx, successCallback, errorCallback} = loginBroadcastOperation.toJS()
                 const authSaver = () => {
-                    if (!/^vote|comment/.test(type) && location.pathname.startsWith('/market')) {
+                    if (location.pathname.startsWith('/market')) {
+                        const [ name, role ] = username.split('/')
                         session.loadTemp()
-                            .addKey(username, 'active', password)
+                            .addKey(name, 'active', password)
                             .save()
                     }
-                    successCallback();
+                    if (successCallback) successCallback()
                 };
                 dispatch(transaction.actions.broadcastOperation({type, operation, trx, username, password, successCallback: authSaver, errorCallback}))
                 // Avoid saveLogin, this could be a user-provided content page and the login might be an active key.  Security will reject that...
-                dispatch(user.actions.usernamePasswordLogin({username, password, saveLogin: true, afterLoginRedirectToWelcome, operationType: type}))
+                dispatch(user.actions.usernamePasswordLogin({username, password, saveLogin: true, highSecurityLogin, afterLoginRedirectToWelcome, operationType: type}))
                 dispatch(user.actions.closeLogin())
             } else {
-                dispatch(user.actions.usernamePasswordLogin({username, password, saveLogin, afterLoginRedirectToWelcome}))
+                dispatch(user.actions.usernamePasswordLogin({username, password, saveLogin, highSecurityLogin, afterLoginRedirectToWelcome}))
             }
         },
         clearError: () => { if (hasError) dispatch(user.actions.loginError({error: null})) },

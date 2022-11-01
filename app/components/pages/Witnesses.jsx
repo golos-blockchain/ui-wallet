@@ -518,6 +518,7 @@ export default connect(
                     transaction.actions.broadcastOperation({
                         type: 'account_witness_vote',
                         operation: { account: username, witness, approve },
+                        username,
                     })
                 );
             },
@@ -527,6 +528,7 @@ export default connect(
                     transaction.actions.broadcastOperation({
                         type: 'account_witness_proxy',
                         operation: { account, proxy },
+                        username: account,
                         successCallback: () => {
                             dispatch(
                                 g.actions.updateAccountWitnessProxy({

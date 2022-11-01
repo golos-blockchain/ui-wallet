@@ -197,7 +197,9 @@ export default connect(
                 successCallback()
             }
 
-            const options = {type: 'feed_publish', operation, successCallback: success, errorCallback}
+            const options = {type: 'feed_publish', operation,
+                username: operation.publisher,
+                successCallback: success, errorCallback}
             dispatch(transaction.actions.broadcastOperation(options))
         },
     })

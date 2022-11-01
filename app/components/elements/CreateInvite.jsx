@@ -357,7 +357,7 @@ export default connect(
 
             dispatch(transaction.actions.broadcastOperation({
                 type: 'invite',
-                accountName,
+                username: accountName,
                 operation,
                 successCallback: success,
                 errorCallback
