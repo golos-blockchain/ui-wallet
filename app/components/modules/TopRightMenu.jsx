@@ -79,7 +79,6 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     </li>;
     const feedLink = blogsUrl(`/@${username}/feed`)
     const repliesLink = blogsUrl(`/@${username}/recent-replies`)
-    const discussionsLink = blogsUrl(`/@${username}/discussions`)
     const walletLink = `/@${username}/transfers`;
     const blogLink = blogsUrl(`/@${username}`)
     const mentionsLink = blogsUrl(`/@${username}/mentions`)
@@ -154,13 +153,13 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             {link: feedLink, icon: 'new/home', value: tt('g.feed'), addon: <NotifiCounter fields="feed" />},
             {link: blogLink, icon: 'new/blogging', value: tt('g.blog')},
             {link: repliesLink, icon: 'new/answer', value: tt('g.replies'), addon: <NotifiCounter fields="comment_reply" />},
-            {link: discussionsLink, icon: 'new/bell', value: tt('g.discussions'), addon: <NotifiCounter fields="subscriptions" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
                 null),
             {link: mentionsLink, icon: 'new/mention', value: tt('g.mentions'), addon: <NotifiCounter fields="mention" />, },
             {link: donatesLink, icon: 'editor/coin', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
-            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,fill_order" />},
+            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive" />},
+            {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             loggedIn ?
                 {link: '#', icon: 'new/logout', onClick: goChangeAccount, value: tt('g.change_acc')} :
                 {link: '#', onClick: showLogin, value: tt('g.login')}
