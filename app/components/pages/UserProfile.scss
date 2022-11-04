@@ -69,6 +69,11 @@
     color: $white;
     background-color: transparent;
     line-height: 1.5rem;
+    fill: $white;
+
+    .Icon > svg {
+      margin-bottom: 8px;
+    }
 
     &:hover {
         background-color: #555;
@@ -78,6 +83,7 @@
         z-index: 2;
         color: $black;
         font-weight: bold;
+        fill: $black;
     }
   }
 

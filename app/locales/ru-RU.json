@@ -232,6 +232,8 @@
     "password": "Пароль",
     "payouts": "Выплаты",
     "permissions": "Разрешения",
+    "keys": "Просмотр ключей",
+    "reset_password": "Сброс пароля",
     "invites": "Инвайт-чеки",
     "assets": "Активы UIA",
     "help_wallet": "Функции кошелька",

@@ -28,6 +28,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
 import { msgsHost, msgsLink } from 'app/utils/ExtLinkUtils'
+import { blogsUrl, } from 'app/utils/blogsUtils'
 import {isFetchingOrRecentlyUpdated} from 'app/utils/StateFunctions';
 import {repLog10} from 'app/utils/ParsersAndFormatters';
 import { proxifyImageUrl } from 'app/utils/ProxifyUrl';
@@ -211,7 +212,7 @@ export default class UserProfile extends React.Component {
 
         // const global_status = this.props.global.get('status');
 
-        let rewardsClass = '', walletClass = '';
+        let rewardsClass = '', walletClass = '', permissionsClass = '';
         if (!section || section === 'transfers') {
             // transfers, check if url has query params
             const { location: { query } } = this.props;
@@ -294,6 +295,7 @@ export default class UserProfile extends React.Component {
             );
         }
         else if( section === 'permissions' && isMyAccount ) {
+            permissionsClass = 'active';
             tab_content = <div>
 
                 <br />
@@ -309,6 +311,7 @@ export default class UserProfile extends React.Component {
                 </div>;
         } 
         else if( section === 'password' ) {
+            permissionsClass = 'active';
             tab_content = <div>
 
                     <br />
@@ -353,6 +356,11 @@ export default class UserProfile extends React.Component {
             {link: `/@${accountname}/curation-rewards`, label: tt('g.curation_rewards'), value: tt('g.curation_rewards')}
         ];
 
+        let permissionsMenu = [
+            {link: `/@${accountname}/permissions`, label: tt('g.keys'), value: tt('g.keys')},
+            {link: `/@${accountname}/password`, label: tt('g.reset_password'), value: tt('g.reset_password')}
+        ];
+
         // set account join date
         let accountjoin = account.created;
         const transferFromSteemToGolosDate = '2016-09-29T12:00:00';
@@ -375,6 +383,27 @@ export default class UserProfile extends React.Component {
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
+                    {isMyAccount && <LinkWithDropdown
+                        closeOnClickOutside
+                        dropdownPosition='bottom'
+                        dropdownAlignment={this.state.linksAlign}
+                        dropdownContent={
+                            <VerticalMenu items={permissionsMenu} />
+                        }
+                    >
+                        <a
+                            className={`${permissionsClass} UserProfile__menu-item`}
+                            ref={this._onLinkRef}
+                        >
+                            {tt('g.permissions')}
+                            <Icon name='dropdown-arrow' />
+                        </a>
+                    </LinkWithDropdown>}
+                    <div className='UserProfile__filler' />
+                    <div>
+                        {isMyAccount && <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
+                            {tt('g.blog')} <NotifiCounter fields='comment_reply,subscriptions' />
+                    </a>}
                     <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
@@ -392,16 +421,11 @@ export default class UserProfile extends React.Component {
                             <Icon name='dropdown-arrow' />
                         </a>
                     </LinkWithDropdown>
-                    <div className='UserProfile__filler' />
-                    <div>
-                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/permissions`} activeClassName='active'>
-                        {tt('g.permissions')}
-                    </Link>}
-                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/password`} activeClassName='active'>
-                        {tt('g.password')}
-                    </Link>}
-                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active'>
-                        {tt('g.settings')}
+                        {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
+                            <Icon name='new/envelope' /> <NotifiCounter fields='message' />
+                    </a> : null}
+                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
+                            <Icon name='new/setting' />
                     </Link>}
                     </div>
                 </div>
