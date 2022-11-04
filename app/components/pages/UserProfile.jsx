@@ -18,6 +18,7 @@ import Invites from 'app/components/elements/Invites';
 import PasswordReset from 'app/components/elements/PasswordReset';
 import UserWallet from 'app/components/modules/UserWallet';
 import WitnessProps from 'app/components/modules/WitnessProps';
+import Settings from 'app/components/modules/Settings';
 import DonatesFrom from 'app/components/modules/DonatesFrom';
 import DonatesTo from 'app/components/modules/DonatesTo';
 import CurationRewards from 'app/components/modules/CurationRewards';
@@ -266,6 +267,9 @@ export default class UserProfile extends React.Component {
                 incoming={true}
                 />
         }
+        else if( section === 'settings' ) {
+            tab_content = <Settings routeParams={this.props.routeParams} />
+        }
         else if( section === 'donates-to' ) {
             rewardsClass = 'active';
             tab_content = <div>
@@ -395,7 +399,10 @@ export default class UserProfile extends React.Component {
                     </Link>}
                         {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/password`} activeClassName='active'>
                         {tt('g.password')}
-                    </Link>}                        
+                    </Link>}
+                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active'>
+                        {tt('g.settings')}
+                    </Link>}
                     </div>
                 </div>
             </div>
