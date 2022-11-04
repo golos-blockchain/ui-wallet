@@ -1,9 +1,9 @@
 export const routeRegex = {
     UserProfile1: /^\/(@[\w\.\d-]+)\/?$/,
-    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness)\/??(?:&?[^=&]*=[^=&]*)*$/,
+    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
     UserProfile3: /^\/(@[\w\.\d-]+)\/[\w\.\d-]+/,
     UserAssetEndPoints: /^\/(@[\w\.\d-]+)\/assets\/([\w\d.-]+)\/(update|transfer)$/,
-    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness)$/,
+    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness|settings)$/,
     WorkerSort: /^\/workers\/([\w\d\-]+)\/?($|\?)/,
     WorkerSearchByAuthor: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/?($|\?)/,
     WorkerRequest: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/([\w\d-]+)\/?($|\?)/,

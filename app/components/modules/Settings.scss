@@ -1,0 +1,24 @@
+.Settings {
+  label {
+    text-transform: none !important;
+  }
+
+  .Notification_presets {
+    label {
+      margin-bottom: 10px;
+      cursor: pointer;
+
+      span {
+        margin-top: -2px;
+      }
+    }
+
+    .Icon {
+      margin-right: 8px;
+    }
+
+    input {
+      vertical-align: middle;
+    }
+  }
+}

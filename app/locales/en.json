@@ -127,6 +127,8 @@
     "password": "Password",
     "payouts": "Payouts",
     "permissions": "Permissions",
+    "keys": "Viewing keys",
+    "reset_password": "Password reset",
     "invites": "Invite checks",
     "assets": "UIA assets",
     "help_wallet": "Wallet functions",

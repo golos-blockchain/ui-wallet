@@ -14,7 +14,6 @@ import LocaleSelect from 'app/components/elements/LocaleSelect';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import NotifiCounter from 'app/components/elements/NotifiCounter';
 import { LIQUID_TICKER, DEBT_TICKER } from 'app/client_config';
-import LocalizedCurrency from 'app/components/elements/LocalizedCurrency';
 import { vestsToSteem, toAsset } from 'app/utils/StateFunctions';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { blogsUrl, } from 'app/utils/blogsUtils'
@@ -78,14 +77,13 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         </a>
     </li>;
     const feedLink = blogsUrl(`/@${username}/feed`)
-    const repliesLink = blogsUrl(`/@${username}/recent-replies`)
-    const discussionsLink = blogsUrl(`/@${username}/discussions`)
     const walletLink = `/@${username}/transfers`;
+    const uiaLink = `/@${username}/assets`;
+    const ordersLink = `/@${username}/filled-orders`;    
     const blogLink = blogsUrl(`/@${username}`)
-    const mentionsLink = blogsUrl(`/@${username}/mentions`)
     const donatesLink = `/@${username}/donates-to`;
     const messagesLink = msgsHost() ? msgsLink() : '';
-    const ordersLink = `/@${username}/filled-orders`;
+    const settingsLink = `/@${username}/settings`;
 
     const faqItem = <li className={scn}>
         <a href={blogsUrl('/faq')} title={tt('navigation.faq')}><Icon name="info_o" size="1_5x" />
@@ -146,21 +144,18 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         </li>}
     </LinkWithDropdown>;
 
-    const estimateOutputAmount = globalprops ? calculateEstimateOutput({ account, price_per_golos, savings_withdraws, globalprops }) : null
-    const estimateOutput = estimateOutput ? <LocalizedCurrency amount={estimateOutputAmount} /> : null
-
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [
             {link: feedLink, icon: 'new/home', value: tt('g.feed'), addon: <NotifiCounter fields="feed" />},
-            {link: blogLink, icon: 'new/blogging', value: tt('g.blog')},
-            {link: repliesLink, icon: 'new/answer', value: tt('g.replies'), addon: <NotifiCounter fields="comment_reply" />},
-            {link: discussionsLink, icon: 'new/bell', value: tt('g.discussions'), addon: <NotifiCounter fields="subscriptions" />},
+            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive" />},
+            {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
+            {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
+            {link: blogLink, icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,subscriptions,mention" />},
+            {link: donatesLink, icon: 'hf/hf8', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
                 null),
-            {link: mentionsLink, icon: 'new/mention', value: tt('g.mentions'), addon: <NotifiCounter fields="mention" />, },
-            {link: donatesLink, icon: 'editor/coin', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
-            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,fill_order" />},
+            {link: settingsLink, icon: 'new/setting', value: tt('g.settings')},
             loggedIn ?
                 {link: '#', icon: 'new/logout', onClick: goChangeAccount, value: tt('g.change_acc')} :
                 {link: '#', onClick: showLogin, value: tt('g.login')}
@@ -181,7 +176,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                     closeOnClickOutside
                     dropdownPosition="bottom"
                     dropdownAlignment="bottom"
-                    dropdownContent={<VerticalMenu className={'VerticalMenu_nav-profile'} items={user_menu} title={estimateOutput} />}
+                    dropdownContent={<VerticalMenu className={'VerticalMenu_nav-profile'} items={user_menu} />}
                 >
                     {!vertical && <li className={'Header__profile'}>
                         <a href={walletLink} title={username} onClick={e => e.preventDefault()}>
