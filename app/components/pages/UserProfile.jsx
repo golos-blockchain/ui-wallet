@@ -377,12 +377,12 @@ export default class UserProfile extends React.Component {
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
                         {tt('g.assets')}
                     </Link>
-                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
-                        {tt('g.invites')}
-                    </Link>}
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
+                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
+                        {tt('g.invites')}
+                    </Link>}
                     {isMyAccount && <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
@@ -396,13 +396,13 @@ export default class UserProfile extends React.Component {
                             ref={this._onLinkRef}
                         >
                             {tt('g.permissions')}
-                            <Icon name='dropdown-arrow' />
+                            <Icon name='dropdown-center' />
                         </a>
                     </LinkWithDropdown>}
                     <div className='UserProfile__filler' />
                     <div>
                         {isMyAccount && <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
-                            {tt('g.blog')} <NotifiCounter fields='comment_reply,subscriptions' />
+                            {tt('g.blog')} <NotifiCounter fields='comment_reply,subscriptions,mention' />
                     </a>}
                     <LinkWithDropdown
                         closeOnClickOutside
@@ -418,7 +418,7 @@ export default class UserProfile extends React.Component {
                         >
                             {tt('g.rewards')}
                             {isMyAccount && <NotifiCounter fields='donate,donate_msgs' />}
-                            <Icon name='dropdown-arrow' />
+                            <Icon name='dropdown-center' />
                         </a>
                     </LinkWithDropdown>
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
