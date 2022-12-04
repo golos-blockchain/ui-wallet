@@ -79,6 +79,7 @@ export function* fetchState(location_change_action) {
         state.assets = {}
         state.worker_requests = {}
         state.accounts = {}
+        state.witnesses = {}
         state.props = yield call([api, api.getDynamicGlobalProperties])
         state.feed_price = yield call([api, api.getCurrentMedianHistoryPrice])
 
@@ -131,6 +132,9 @@ export function* fetchState(location_change_action) {
                                 state.accounts[uname].filled_orders.push(operation);
                             }
                         });
+                    break
+                    case 'witness':
+                        state.witnesses[uname] = yield call([api, api.getWitnessByAccountAsync], uname)
                     break
                     case 'transfers':
                     default:
