@@ -1,6 +1,7 @@
 const path = require('path');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-// const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
+const webpack = require('webpack')
+
 const alias = require('./alias');
 
 module.exports = {
@@ -60,6 +61,12 @@ module.exports = {
                 },
             },
             { test: /\.md/, use: 'raw-loader' },
+            {
+                test: /\.m?js$/,
+                resolve: {
+                    fullySpecified: false,
+                }
+            },
         ],
     },
     plugins: [
@@ -67,13 +74,16 @@ module.exports = {
             format: 'Build [:bar] :percent (:elapsed seconds)',
             clear: false,
         }),
-        // new SpriteLoaderPlugin(),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+            Buffer: ['buffer', 'Buffer'],
+        }),
     ],
     optimization: {
         splitChunks: {
             chunks: 'all',
             cacheGroups: {
-                vendors: {
+                defaultVendors: {
                     test: /node_modules/,
                     enforce: true,
                 },
@@ -90,5 +100,6 @@ module.exports = {
         modules: [path.resolve(__dirname, '..'), 'node_modules'],
         extensions: ['.js', '.json', '.jsx', '.css', '.scss'],
         alias,
+        fallback: { "zlib": require.resolve("browserify-zlib") }
     },
 };

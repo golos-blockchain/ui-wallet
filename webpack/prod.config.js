@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const git = require('git-rev-sync');
 const baseConfig = require('./base.config');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
