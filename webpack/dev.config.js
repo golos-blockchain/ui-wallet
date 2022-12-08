@@ -1,5 +1,7 @@
+const path = require('path')
+
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const git = require('git-rev-sync');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const baseConfig = require('./base.config');
@@ -44,11 +46,13 @@ module.exports = merge(baseConfig, {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: () => [
-                                require('autoprefixer')({
-                                    browsers: ['> 1%', 'last 2 versions'],
-                                }),
-                            ],
+                            postcssOptions: {
+                                plugins: [
+                                    require('autoprefixer')({
+                                        browsers: ['> 1%', 'last 2 versions'],
+                                    })
+                                ]
+                            },
                             sourceMap: true,
                         },
                     },
@@ -57,15 +61,12 @@ module.exports = merge(baseConfig, {
             },
         ],
     },
-    serve: {
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'assets'),
+        },
+        compress: true,
         port: WEBPACK_PORT,
-        hot: {
-            port: 8090,
-            logLevel: 'warn',
-        },
-        dev: {
-            publicPath: '/assets/',
-            logLevel: 'warn',
-        },
+        hot: true,
     },
 });

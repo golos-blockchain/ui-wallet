@@ -30,27 +30,9 @@ module.exports = {
                     limit: 4096,
                 },
             },
-            // {
-            //     test: /\.svg$/,
-            //     exclude: /node_modules/,
-            //     use: [
-            //         {
-            //             loader: 'svg-sprite-loader',
-            //         },
-            //     ],
-            // },
             {
                 test: /\.svg$/,
-                use: [
-                    {
-                        loader: 'svg-inline-loader',
-                        options: {
-                            removeTags: true,
-                            removingTags: ['title', 'desc'],
-                            removeSVGTagAttrs: true,
-                        },
-                    }
-                ],
+                type: 'asset/source'
             },
             {
                 test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,

@@ -8,7 +8,6 @@ module.exports = {
     process: 'process/browser',
     stream: 'stream-browserify',
     react: path.join(__dirname, '../node_modules', 'react'),
-    src: path.join(__dirname, '..', 'src'),
     app: path.join(__dirname, '..', 'app'),
     assets: resolvePath('assets'),
     db: path.join(__dirname, '..', 'db'),
