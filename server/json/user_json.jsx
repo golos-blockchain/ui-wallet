@@ -7,14 +7,14 @@ export default function useUserJson(app) {
     const router = koa_router();
     app.use(router.routes());
 
-    router.get(routeRegex.UserJson, function *() {
+    router.get(routeRegex.UserJson, async (ctx) => {
         // validate and build user details in JSON
-        const segments = this.url.split('/');
+        const segments = ctx.url.split('/');
         const user_name = segments[1].match(routeRegex.UserNameJson)[0].replace('@', '');
         let user = "";
         let status = "";
 
-        const [chainAccount] = yield api.getAccountsAsync([user_name]);
+        const [chainAccount] = await api.getAccountsAsync([user_name]);
 
         if (chainAccount) {
             user = chainAccount;
@@ -29,6 +29,6 @@ export default function useUserJson(app) {
             status = "404";
         }
         // return response and status code
-        this.body = {user, status};
+        ctx.body = {user, status};
     });
 }

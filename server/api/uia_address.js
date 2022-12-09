@@ -4,31 +4,31 @@ import { rateLimitReq } from 'server/utils/misc'
 import fetchWithTimeout from 'shared/fetchWithTimeout'
 
 export default function useGetAddressHandler(app) {
-    app.get('/uia_address/:symbol/:account', function *() {
+    app.get('/uia_address/:symbol/:account', async (ctx) => {
         let symbol
         let accName
         const errResp = (errorName, logData, errorData) => {
             console.error('/uia_address', errorName, symbol, ...logData)
-            this.body = { status: 'err',
+            ctx.body = { status: 'err',
                 error: errorName,
                 symbol,
                 error_data: errorData,
             }
         }
         try {
-            if (rateLimitReq(this, this.req))
+            if (rateLimitReq(ctx, ctx.req))
                 return errResp('too_many_requests', [symbol + '/' + accName])
 
-            symbol = this.params.symbol
+            symbol = ctx.params.symbol
             if (!symbol)
                 return errResp('no_symbol_parameter_in_query')
 
-            accName = this.params.account
+            accName = ctx.params.account
             if (!accName)
                 return errResp('no_account_parameter_in_query')
             let accs
             try {
-                accs = yield api.getAccounts([accName])
+                accs = await api.getAccounts([accName])
             } catch (err) {
                 return errResp('blockchain_unavailable', [err])
             }
@@ -37,7 +37,7 @@ export default function useGetAddressHandler(app) {
 
             let assets;
             try {
-                assets = yield api.getAssetsAsync('', [
+                assets = await api.getAssetsAsync('', [
                     symbol,
                 ], '', '20', 'by_symbol_name')
             } catch (err) {
@@ -62,12 +62,12 @@ export default function useGetAddressHandler(app) {
 
             let resp
             try {
-                resp = yield fetchWithTimeout(apiURL, 10000)
+                resp = await fetchWithTimeout(apiURL, 10000)
             } catch (err) {
                 return errResp('cannot_connect_gateway', [meta.deposit, err])
             }
             try {
-                resp = yield resp.text()
+                resp = await resp.text()
             } catch (err) {
                 return errResp('cannot_get_address_from_gateway', [meta.deposit, err])
             }
@@ -80,7 +80,7 @@ export default function useGetAddressHandler(app) {
 
             if (!resp.address)
                 return errResp('no_address_field_in_response', [resp], resp)
-            this.body = {
+            ctx.body = {
                 status: 'ok',
                 address: resp.address,
             }

@@ -69,7 +69,6 @@ class App extends React.Component {
         return (
             p.location !== n.location ||
             p.visitor !== n.visitor ||
-            p.flash !== n.flash ||
             this.state !== nextState ||
             p.nightmodeEnabled !== n.nightmodeEnabled
         );
@@ -225,7 +224,6 @@ class App extends React.Component {
             location,
             params,
             children,
-            flash,
             new_visitor,
             nightmodeEnabled
         } = this.props;
@@ -239,30 +237,12 @@ class App extends React.Component {
             (params_keys.length === 2 &&
                 params_keys[0] === 'order' &&
                 params_keys[1] === 'category');
-        const alert = this.props.error || flash.get('alert');
-        const warning = flash.get('warning');
-        const success = flash.get('success');
         let callout = null;
         const notifyLink = $STM_Config.add_notify_site.link;
         const notifyTitle = $STM_Config.add_notify_site.title;
         const showInfoBox = $STM_Config.add_notify_site.show && this.isShowInfoBox($STM_Config.add_notify_site);
 
-        if (this.state.showCallout && (alert || warning || success)) {
-            callout = (
-                <div className="App__announcement row">
-                    <div className="column">
-                        <div className="callout">
-                            <CloseButton
-                                onClick={() =>
-                                    this.setState({ showCallout: false })
-                                }
-                            />
-                            <p>{alert || warning || success}</p>
-                        </div>
-                    </div>
-                </div>
-            );
-        } else if (this.state.showCallout && showInfoBox) {
+        if (this.state.showCallout && showInfoBox) {
             callout = (
                 <div className="App__announcement row">
                     <div className="column">
@@ -347,7 +327,6 @@ export default connect(
 
         return {
             error: state.app.get('error'),
-            flash: state.offchain.get('flash'),
             new_visitor:
                 !state.user.get('current') &&
                 !state.offchain.get('account') &&

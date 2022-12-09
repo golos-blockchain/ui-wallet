@@ -24,8 +24,7 @@ async function appRender(ctx) {
         } catch(e) {}
 
         const offchain = {
-            csrf: ctx.csrf,
-            flash: ctx.flash,
+            csrf: ctx.state._csrf,
             new_visit: ctx.session.new_visit,
             account: ctx.session.a,
             config: $STM_Config,
