@@ -24,25 +24,25 @@ module.exports = {
                 use: 'babel-loader',
             },
             {
-                test: /\.(jpe?g|png|gif)/,
-                loader: 'url-loader',
-                options: {
-                    limit: 4096,
-                },
-            },
-            {
                 test: /\.svg$/,
                 type: 'asset/source'
             },
             {
-                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                    outputPath: 'fonts/',
-                },
+                test: /\.(jpe?g|png|gif)/,
+                type: 'asset'
             },
-            { test: /\.md/, use: 'raw-loader' },
+            {
+                test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: '[name][ext]',
+                    outputPath: 'fonts/',
+                }
+            },
+            {
+                test: /\.md/,
+                type: 'asset/resource'
+            },
             {
                 test: /\.m?js$/,
                 resolve: {
