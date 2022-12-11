@@ -17,6 +17,26 @@ import { LANGUAGES, DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY, USER_GENDER } from 'app
 
 class Settings extends React.Component {
 
+    constructor(props) {
+        super()
+        this.initForm(props)
+    }
+
+    initForm(props) {
+        const cover_image = props.profile.cover_image_wallet || ''
+        reactForm({
+            instance: this,
+            name: 'accountSettings',
+            fields: ['cover_image'],
+            initialValues: { cover_image },
+            validation: values => ({
+                cover_image: values.cover_image && !/^https?:\/\//.test(values.cover_image) ? tt('settings_jsx.invalid_url') : null,
+            })
+        })
+        this.handleSubmitForm =
+            this.state.accountSettings.handleSubmit(args => this.handleSubmit(args))
+    }
+
     UNSAFE_componentWillMount() {
         const {accountname} = this.props
         const {vesting_shares} = this.props.account
@@ -71,6 +91,93 @@ class Settings extends React.Component {
         })
     }
 
+    onDropCover = (acceptedFiles, rejectedFiles) => {
+        if (!acceptedFiles.length) {
+            if (rejectedFiles.length) {
+                this.setState({progress: {error: tt('reply_editor.please_insert_only_image_files')}})
+                console.log('onDrop Rejected files: ', rejectedFiles)
+            }
+            return
+        }
+        const file = acceptedFiles[0]
+        this.uploadCover(file, file.name)
+    }
+
+    uploadCover = (file, name = '') => {
+        const {notify} = this.props
+        const {uploadImage} = this.props
+        this.setState({cImageUploading: true})
+        uploadImage(file, progress => {
+            if (progress.url) {
+                const {cover_image: {props: {onChange}}} = this.state
+                onChange(progress.url)
+            }
+            if (progress.error) {
+                const { error } = progress;
+                notify(error, 10000)
+            }
+            this.setState({ cImageUploading: false })
+        })
+    }
+
+    onOpenCoverClick = () => {
+        this.dropzoneCover.open();
+    }
+
+    handleSubmit = ({updateInitialValues}) => {
+        let {metaData} = this.props
+        if (!metaData) metaData = {}
+
+        if (typeof metaData === 'string' && metaData.localeCompare("{created_at: 'GENESIS'}") == 0) {
+            metaData = {}
+            metaData.created_at = 'GENESIS'
+        }
+
+        if(!metaData.profile) metaData.profile = {}
+        delete metaData.user_image; // old field... cleanup
+
+        const { cover_image } = this.state
+
+        metaData.profile.cover_image_wallet = cover_image.value
+
+        // Remove empty keys
+        if (!metaData.profile.cover_image_wallet) delete metaData.profile.cover_image_wallet
+
+        const {account, updateAccount} = this.props
+        this.setState({loading: true})
+        updateAccount({
+            json_metadata: JSON.stringify(metaData),
+            account: account.name,
+            memo_key: account.memo_key,
+            errorCallback: (e) => {
+                if (e === 'Canceled') {
+                    this.setState({
+                        loading: false,
+                        errorMessage: ''
+                    })
+                } else {
+                    console.log('updateAccount ERROR', e)
+                    this.setState({
+                        loading: false,
+                        changed: false,
+                        errorMessage: tt('g.server_returned_error')
+                    })
+                }
+            },
+            successCallback: () => {
+                this.setState({
+                    loading: false,
+                    changed: false,
+                    errorMessage: '',
+                    successMessage: tt('g.saved') + '!',
+                })
+                // remove successMessage after a while
+                setTimeout(() => this.setState({successMessage: ''}), 4000)
+                updateInitialValues()
+            }
+        })
+    }
+
     render() {
         const {state, props} = this
         
@@ -90,7 +197,61 @@ class Settings extends React.Component {
           mutedUIAlist.push(<p key={sym}>{sym}&nbsp;<a data-sym={sym} onClick={this.unmuteAsset}>X</a></p>)
         }
 
+        const { cover_image, cImageUploading } = this.state
+
+        const selectorStyleCover = cImageUploading ?
+            {
+                whiteSpace: `nowrap`,
+                display: `flex`,
+                alignItems: `center`,
+                padding: `0 6px`,
+                pointerEvents: `none`,
+                cursor: `default`,
+                opacity: `0.6`
+            } :
+            {
+                display: `flex`,
+                alignItems: `center`,
+                padding: `0 6px`
+            }
+
         return <div className="Settings">
+
+            <div className="row">
+                <form onSubmit={this.handleSubmitForm} className="small-12 medium-8 large-6 columns">
+                    <h3>{tt('settings_jsx.public_profile_settings')}</h3>
+                    <label>
+                    {tt('settings_jsx.cover_image_url')}
+                    <div style={{display: `flex`, alignItems: `stretch`, alignContent: `stretch`}}>
+                      <Dropzone style={{width: `100%`}}
+                                onDrop={this.onDropCover}
+                                className={'none'}
+                                disableClick multiple={false} accept="image/*"
+                                ref={(node) => { this.dropzoneCover = node; }}>
+                        <input ref={(r) => this.pCoverImageUrlInput = r}
+                               type="url" {...cover_image.props}
+                               autoComplete="off"
+                               disabled={cImageUploading}
+                        />
+                      </Dropzone>
+                      <a onClick={this.onOpenCoverClick}
+                         style={selectorStyleCover}>
+                        {cImageUploading ? `${tt(`user_saga_js.image_upload.uploading`)} ...` : tt(`g.upload`)}
+                      </a>
+                    </div>
+                  </label>
+                    <br />
+                    {state.loading && <span><LoadingIndicator type="circle" /><br /></span>}
+                    {!state.loading && <input type="submit" className="button" value={tt('settings_jsx.update')} disabled={disabled} />}
+                    {' '}{
+                            state.errorMessage
+                                ? <small className="error">{state.errorMessage}</small>
+                                : state.successMessage
+                                ? <small className="success uppercase">{state.successMessage}</small>
+                                : null
+                        }
+                </form>
+            </div>
             
             {mutedUIA && mutedUIA.length > 0 &&
                 <div className="row">
@@ -172,6 +333,12 @@ export default connect(
     },
     // mapDispatchToProps
     dispatch => ({
+        uploadImage: (file, progress) => {
+            dispatch({
+                type: 'user/UPLOAD_IMAGE',
+                payload: {file, progress},
+            })
+        },
         updateAccount: ({successCallback, errorCallback, ...operation}) => {
             const success = () => {
                 dispatch(user.actions.getAccount())

@@ -432,12 +432,13 @@ export default class UserProfile extends React.Component {
             </div>
          </div>;
 
-        const { name, location, about, website, cover_image } = normalizeProfile(account)
+        const { name, location, about, website, cover_image, cover_image_wallet } = normalizeProfile(account)
         const website_label = website ? website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') : null
 
         let cover_image_style = {}
-        if(cover_image) {
-            const cover_image_url = proxifyImageUrl(cover_image);
+        let cover_image_url = cover_image_wallet || cover_image
+        if (cover_image_url) {
+            cover_image_url = proxifyImageUrl(cover_image_url)
             cover_image_style = {backgroundImage: 'url(' + cover_image_url + ')'}
         }
 
