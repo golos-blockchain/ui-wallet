@@ -8,6 +8,7 @@ export const routeRegex = {
     WorkerSearchByAuthor: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/?($|\?)/,
     WorkerRequest: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/([\w\d-]+)\/?($|\?)/,
     MarketPair: /^\/market\/([\w\d\.]+)\/([\w\d.]+)\/?($|\?)/,
+    ConvertPair: /^\/convert\/([\w\d\.]+)\/([\w\d.]+)\/?($|\?)/,
     UserJson: /^\/(@[\w\.\d-]+)(\.json)$/,
     UserNameJson: /^.*(?=(\.json))/
 };
@@ -78,8 +79,12 @@ export default function resolveRoute(path)
     if (match) {
         return {page: 'UserProfile', params: match.slice(1)};
     }
-    if (path === '/convert') { 
-        return {page: 'ConvertAssetsLoader', params: []}
+    if (path === '/convert') {
+        return {page: 'ConvertAssetsLoader'};
+    }
+    match = path.match(routeRegex.ConvertPair);
+    if (match) { 
+        return {page: 'ConvertAssetsLoader', params: match.slice(1)}
     }
     return {page: 'NotFound'};
 }
