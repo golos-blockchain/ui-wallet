@@ -20,7 +20,7 @@ const startServer = () => {
     // merge env for the new process
     const env = {...process.env, NODE_ENV: 'development', BABEL_ENV: 'server'};
     // start the server procress
-    server = cp.fork(KOA_PATH, {env});
+    server = cp.fork('./node_modules/@babel/node/bin/babel-node', [KOA_PATH], {env})
     // when server is `online`
     server.once('message', (message) => {
         if (message.match(/^online$/)) {
@@ -42,7 +42,7 @@ const startServer = () => {
                 // Start watcher on server files and restart server on change
                 const server_path = path.join(__dirname, '../../server');
                 // const app_path = path.join(__dirname, '../../app');
-                watch([server_path], () => restartServer());
+                watch([server_path], { recursive: true }, () => restartServer());
             }
         }
     });

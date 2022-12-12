@@ -10,10 +10,9 @@ import staticCache from 'koa-static-cache';
 import useRedirects from './redirects';
 import useGeneralApi from './api/general';
 import useUserJson from './json/user_json';
-import isBot from 'koa-isbot';
+import isBot from './utils/isBot'
 import session from './utils/cryptoSession';
-import csrf from 'koa-csrf';
-import flash from 'koa-flash';
+import CSRF from './utils/csrf';
 import minimist from 'minimist';
 import config from 'config';
 import { routeRegex } from 'app/ResolveRoute';
@@ -37,9 +36,8 @@ session(app, {
     crypto_key,
     key: config.get('session_cookie_key')
 });
-csrf(app);
-// app.use(csrf.middleware);
-app.use(flash({ key: 'flash' }));
+
+app.use(new CSRF())
 
 function convertEntriesToArrays(obj) {
     return Object.keys(obj).reduce((result, key) => {
@@ -57,54 +55,54 @@ try {
 }
 
 // some redirects
-app.use(function*(next) {
-    if (messengerHost && (this.url === '/msgs' || this.url.startsWith('/msgs/'))) {
-        this.url = this.url.replace('/msgs', '') // only 1st occurence
-        this.url = new URL(this.url, messengerHost).toString()
-        this.redirect(this.url)
+app.use(async (ctx, next) => {
+    if (messengerHost && (ctx.url === '/msgs' || ctx.url.startsWith('/msgs/'))) {
+        ctx.url = ctx.url.replace('/msgs', '') // only 1st occurence
+        ctx.url = new URL(ctx.url, messengerHost).toString()
+        ctx.redirect(ctx.url)
         return
     }
     // normalize url for %40 opportunity for @ in posts
-    if (this.url.indexOf('%40') !== -1) {
-      const transfer = this.url.split("?")[0].split(`/`).includes(`transfers`);
+    if (ctx.url.indexOf('%40') !== -1) {
+      const transfer = ctx.url.split("?")[0].split(`/`).includes(`transfers`);
       if (!transfer) {
         //  fixme potential 500
-        this.redirect(decodeURIComponent(this.url));
+        ctx.redirect(decodeURIComponent(ctx.url));
         return;
       }
     }
     // redirect to account page if known account
-    if (this.method === 'GET' && this.url === '/' && this.session.a) {
-        this.status = 302;
-        this.redirect(`/@${this.session.a}`);
+    if (ctx.method === 'GET' && ctx.url === '/' && ctx.session.a) {
+        ctx.status = 302;
+        ctx.redirect(`/@${ctx.session.a}`);
         return;
     }
     // normalize user name url from cased params
     if (
-        this.method === 'GET' &&
-            (routeRegex.UserProfile1.test(this.url))
+        ctx.method === 'GET' &&
+            (routeRegex.UserProfile1.test(ctx.url))
     ) {
-        const p = this.originalUrl.toLowerCase();
-        if (p !== this.originalUrl) {
-            this.status = 301;
-            this.redirect(p);
+        const p = ctx.originalUrl.toLowerCase();
+        if (p !== ctx.originalUrl) {
+            ctx.status = 301;
+            ctx.redirect(p);
             return;
         }
     }
     // remember ch, cn, r url params in the session and remove them from url
-    if (this.method === 'GET' && /\?[^\w]*(ch=|cn=|r=)/.test(this.url)) {
-        let redir = this.url.replace(/((ch|cn|r)=[^&]+)/gi, r => {
+    if (ctx.method === 'GET' && /\?[^\w]*(ch=|cn=|r=)/.test(ctx.url)) {
+        let redir = ctx.url.replace(/((ch|cn|r)=[^&]+)/gi, r => {
             const p = r.split('=');
-            if (p.length === 2) this.session[p[0]] = p[1];
+            if (p.length === 2) ctx.session[p[0]] = p[1];
             return '';
         });
         redir = redir.replace(/&&&?/, '');
         redir = redir.replace(/\?&?$/, '');
-        console.log(`server redirect ${this.url} -> ${redir}`);
-        this.status = 302;
-        this.redirect(redir);
+        console.log(`server redirect ${ctx.url} -> ${redir}`);
+        ctx.status = 302;
+        ctx.redirect(redir);
     } else {
-        yield next;
+        await next()
     }
 });
 
@@ -122,32 +120,30 @@ if (env === 'production') {
     app.use(koa_logger());
 }
 
-app.use(helmet());
-
 app.use(mount('/static', staticCache(path.join(__dirname, '../app/assets/static'), cacheOpts)));
 
 app.use(
-    mount('/robots.txt', function*() {
-        this.set('Cache-Control', 'public, max-age=86400000');
-        this.type = 'text/plain';
-        this.body = 'User-agent: *';
+    mount('/robots.txt', (ctx) => {
+        ctx.set('Cache-Control', 'public, max-age=86400000');
+        ctx.type = 'text/plain';
+        ctx.body = 'User-agent: *';
     })
 );
 
 // set user's uid - used to identify users in logs and some other places
 // FIXME SECURITY PRIVACY cycle this uid after a period of time
-app.use(function*(next) {
-    if (! /(\.js(on)?|\.css|\.map|\.ico|\.png|\.jpe?g)$/.test(this.url)) {
-        const last_visit = this.session.last_visit;
-        this.session.last_visit = new Date().getTime() / 1000 | 0;
-        if (!this.session.uid) {
-            this.session.uid = secureRandom.randomBuffer(13).toString('hex');
-            this.session.new_visit = true;
+app.use(async (ctx, next) => {
+    if (! /(\.js(on)?|\.css|\.map|\.ico|\.png|\.jpe?g)$/.test(ctx.url)) {
+        const last_visit = ctx.session.last_visit;
+        ctx.session.last_visit = new Date().getTime() / 1000 | 0;
+        if (!ctx.session.uid) {
+            ctx.session.uid = secureRandom.randomBuffer(13).toString('hex');
+            ctx.session.new_visit = true;
         } else {
-            this.session.new_visit = this.session.last_visit - last_visit > 1800;
+            ctx.session.new_visit = ctx.session.last_visit - last_visit > 1800;
         }
     }
-    yield next;
+    await next()
 });
 
 useRedirects(app);
@@ -161,10 +157,15 @@ if (env === 'production') {
     const helmetConfig = {
         directives: convertEntriesToArrays(config.get('helmet.directives')),
         reportOnly: false,
-        setAllHeaders: true
     };
-    helmetConfig.directives.reportUri = '/api/v1/csp_violation';
-    app.use(helmet.contentSecurityPolicy(helmetConfig));
+    helmetConfig.directives.reportUri = '/api/csp_violation';
+    app.use(helmet({
+        contentSecurityPolicy: helmetConfig
+    }))
+} else {
+    app.use(helmet({
+        contentSecurityPolicy: false
+    }))
 }
 
 app.use(favicon(path.join(__dirname, '../app/assets/images/favicons/favicon.ico')));
@@ -190,12 +191,12 @@ if (env === 'development') {
 
 if (env !== 'test') {
     const appRender = require('./app_render');
-    app.use(function*() {
-        yield appRender(this);
-        // if (app_router.dbStatus.ok) recordWebEvent(this, 'page_load');
-        const bot = this.state.isBot;
+    app.use(async (ctx) => {
+        await appRender(ctx);
+        // if (app_router.dbStatus.ok) recordWebEvent(ctx, 'page_load');
+        const bot = ctx.isBot;
         if (bot) {
-            console.log(`[reqid ${this.request.header['x-request-id']}] ${this.method} ${this.originalUrl} ${this.status} (BOT '${bot}')`);
+            console.log(`[reqid ${ctx.request.header['x-request-id']}] ${ctx.method} ${ctx.originalUrl} ${ctx.status} (BOT '${bot}')`);
         }
     });
 

@@ -1,11 +1,10 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const git = require('git-rev-sync');
 const baseConfig = require('./base.config');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const ExportAssetsPlugin = require('./plugins/ExportAssetsPlugin');
+const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = merge(baseConfig, {
     mode: 'production',
@@ -37,11 +36,13 @@ module.exports = merge(baseConfig, {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: () => [
-                                require('autoprefixer')({
-                                    browsers: ['> 1%', 'last 2 versions'],
-                                }),
-                            ],
+                            postcssOptions: {
+                                plugins: [
+                                    require('autoprefixer')({
+                                        browsers: ['> 1%', 'last 2 versions'],
+                                    })
+                                ]
+                            },
                         },
                     },
                     'sass-loader',
@@ -50,18 +51,9 @@ module.exports = merge(baseConfig, {
         ],
     },
     optimization: {
+        minimize: true,
         minimizer: [
-            // in production mode webpack 4 use own uglify
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                sourceMap: false,
-            }),
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    safe: true,
-                }
-            }),
+            new TerserPlugin(),
         ],
     },
 });

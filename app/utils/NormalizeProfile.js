@@ -95,6 +95,7 @@ export default function normalizeProfile(account) {
         website,
         profile_image,
         cover_image,
+        cover_image_wallet,
     } = profile;
 
     name = truncate(name, 20);
@@ -119,6 +120,7 @@ export default function normalizeProfile(account) {
     if (profile_image && !/^https?:\/\//.test(profile_image))
         profile_image = null;
     if (cover_image && !/^https?:\/\//.test(cover_image)) cover_image = null;
+    if (cover_image_wallet && !/^https?:\/\//.test(cover_image_wallet)) cover_image_wallet = null
 
     return {
         name,
@@ -128,6 +130,7 @@ export default function normalizeProfile(account) {
         website,
         profile_image,
         cover_image,
+        cover_image_wallet
     };
 }
 
@@ -173,7 +176,7 @@ export function getMetadataReliably(json_metadata) {
         return json_metadata;
     try {
         const obj = JSON.parse(json_metadata);
-        return (typeof obj === 'object') ? obj : {};
+        return (typeof obj === 'object' && !Array.isArray(obj)) ? obj : {};
     } catch (e) {
         return {};
     }

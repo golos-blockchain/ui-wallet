@@ -5,7 +5,7 @@ import { Asset, AssetEditor, Price } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import { connect, } from 'react-redux'
 import { Map, } from 'immutable'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 import AssetBalance from 'app/components/elements/AssetBalance'
 import CMCValue from 'app/components/elements/market/CMCValue'
@@ -158,9 +158,13 @@ class ConvertAssets extends React.Component {
         return res
     }
 
-    onPairChange = async ({ event, sym1, asset1, sym2, asset2 }) => {
+    onPairChange = async ({ event, link, sym1, asset1, sym2, asset2 }) => {
         if (event) {
             event.preventDefault()
+            if (!this.props.isDialog) {
+                browserHistory.push(link)
+                return
+            }
         }
         if (this.state.canceled) {
             this.setState({ canceled: false })
@@ -426,7 +430,7 @@ class ConvertAssets extends React.Component {
     }
 
     render() {
-        const { direction } = this.props
+        const { direction, isDialog } = this.props
         const { loading, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning } = this.state
         if (loading) {
             return (<center>
@@ -447,6 +451,9 @@ class ConvertAssets extends React.Component {
                 <MarketPair assets={assets} itemsPerPage={8}
                     sym1={this.props.sellSym}
                     sym2={this.props.buySym}
+                    linkComposer={isDialog ? undefined : (sym1, sym2) => {
+                        return '/convert/' + sym1 + '/' + sym2
+                    }}
                     label1={tt('convert_assets_jsx.sell')}
                     label2={tt('convert_assets_jsx.buy')}
                     onChange={this.onPairChange} />
@@ -477,11 +484,16 @@ export default connect(
         const currentUser = state.user.getIn(['current'])
         const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')])
 
+        const isDialog = !!defaults.direction
+
+        const routeParams = ownProps.routeParams || {}
+
         return {
             ...ownProps,
-            sellSym: defaults.sellSym || undefined,
-            buySym: defaults.buySym || undefined,
+            sellSym: defaults.sellSym || routeParams.sym1 || undefined,
+            buySym: defaults.buySym || routeParams.sym2 || undefined,
             direction: defaults.direction || undefined,
+            isDialog,
             currentAccount,
         };
     },
