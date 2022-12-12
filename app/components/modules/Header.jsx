@@ -135,7 +135,7 @@ class Header extends React.Component {
                                     </Link>
                                 </li>
                                 <li className="Header__top-steemit show-for-large noPrint">
-                                    <Link to={logo_link}>{APP_NAME_UP}<span className="beta">wallet</span></Link>
+                                    <Link to={logo_link}>Wallet<span className="beta">golos blockchain</span></Link>
                                 </li>
                                 <CMCSmall className='show-for-small-only' />
                             </ul>

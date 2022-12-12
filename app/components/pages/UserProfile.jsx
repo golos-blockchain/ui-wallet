@@ -387,46 +387,35 @@ export default class UserProfile extends React.Component {
                         closeOnClickOutside
                         dropdownPosition='bottom'
                         dropdownAlignment={this.state.linksAlign}
-                        dropdownContent={
-                            <VerticalMenu items={permissionsMenu} />
-                        }
-                    >
-                        <a
-                            className={`${permissionsClass} UserProfile__menu-item`}
-                            ref={this._onLinkRef}
+                        dropdownContent={<VerticalMenu items={permissionsMenu} />}
                         >
-                            {tt('g.permissions')}
-                            <Icon name='dropdown-center' />
+                        <a className={`${permissionsClass} UserProfile__menu-item`} ref={this._onLinkRef}>
+                            {tt('g.permissions')} <Icon name='dropdown-center' />
                         </a>
                     </LinkWithDropdown>}
                     <div className='UserProfile__filler' />
                     <div>
-                        {isMyAccount && <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
-                            {tt('g.blog')} <NotifiCounter fields='comment_reply,subscriptions,mention' />
-                    </a>}
-                    <LinkWithDropdown
-                        closeOnClickOutside
-                        dropdownPosition='bottom'
-                        dropdownAlignment={this.state.linksAlign}
-                        dropdownContent={
-                            <VerticalMenu items={rewardsMenu} />
-                        }
-                    >
-                        <a
-                            className={`${rewardsClass} UserProfile__menu-item`}
-                            ref={this._onLinkRef}
-                        >
-                            {tt('g.rewards')}
-                            {isMyAccount && <NotifiCounter fields='donate,donate_msgs' />}
-                            <Icon name='dropdown-center' />
+                        <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
+                            {tt('g.blog')} {isMyAccount && <NotifiCounter fields='feed,comment_reply,subscriptions,mention' />}
                         </a>
-                    </LinkWithDropdown>
+                        <LinkWithDropdown
+                            closeOnClickOutside
+                            dropdownPosition='bottom'
+                            dropdownAlignment={this.state.linksAlign}
+                            dropdownContent={<VerticalMenu items={rewardsMenu} />}
+                            >
+                            <a className={`${rewardsClass} UserProfile__menu-item`} ref={this._onLinkRef}>
+                                {tt('g.rewards')}
+                                {isMyAccount && <NotifiCounter fields='donate,donate_msgs' />}
+                                <Icon name='dropdown-center' />
+                            </a>
+                        </LinkWithDropdown>
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
                             <Icon name='new/envelope' /> <NotifiCounter fields='message' />
-                    </a> : null}
+                        </a> : null}
                         {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
                             <Icon name='new/setting' />
-                    </Link>}
+                        </Link>}
                     </div>
                 </div>
             </div>

@@ -76,18 +76,22 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             <Icon name="new/add" size="0_95x" />
         </a>
     </li>;
-    const feedLink = blogsUrl(`/@${username}/feed`)
     const walletLink = `/@${username}/transfers`;
     const uiaLink = `/@${username}/assets`;
-    const ordersLink = `/@${username}/filled-orders`;    
-    const blogLink = blogsUrl(`/@${username}`)
+    const inviteLink = `/@${username}/invites`;
+    const ordersLink = `/@${username}/filled-orders`;
+    const blogLink = blogsUrl(`/@${username}`);
     const donatesLink = `/@${username}/donates-to`;
     const messagesLink = msgsHost() ? msgsLink() : '';
     const settingsLink = `/@${username}/settings`;
 
-    const faqItem = <li className={scn}>
-        <a href={blogsUrl('/faq')} title={tt('navigation.faq')}><Icon name="info_o" size="1_5x" />
-        </a>
+    const witnessItem = <li className={scn}>
+        <Link to="/~witnesses" title={tt('navigation.witnesses')}><Icon name="new/like" size="1_25x" /></Link>
+      </li>
+    ;
+
+    const marketItem = <li className={scn}>
+        <Link to="/market/GOLOS/YMUSDT" title={tt('navigation.market')}><Icon name="trade" size="1_5x" /></Link>
       </li>
     ;
 
@@ -146,11 +150,11 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [
-            {link: feedLink, icon: 'new/home', value: tt('g.feed'), addon: <NotifiCounter fields="feed" />},
             {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive" />},
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
-            {link: blogLink, icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,subscriptions,mention" />},
+            {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
+            {link: blogLink, icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="feed,comment_reply,subscriptions,mention" />},
             {link: donatesLink, icon: 'hf/hf8', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
@@ -166,7 +170,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         return (
             <ul className={mcn + mcl}>
                 <LocaleSelect />
-                {faqItem}
+                {marketItem}
+                {witnessItem}
                 <li className="delim show-for-medium" />
                 {topbutton}
                 {goBlogs}
@@ -216,7 +221,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     return (
         <ul className={mcn + mcl}>
             <LocaleSelect />
-            {faqItem}
+            {marketItem}
+            {witnessItem}
             <li className="delim show-for-medium" />
             {!probablyLoggedIn && !isLoginPage && !externalTransfer && <li className={scn}>
               <a href="/login" onClick={showLogin} className={!vertical && 'button small violet hollow'}>{tt('g.login')}</a>
