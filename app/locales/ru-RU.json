@@ -528,7 +528,7 @@
     "update_your_password": "обновить ваш пароль",
     "to_obtain_a_more_secure_set_of_keys": "и для получения безопасного набора ключей.",
     "this_password_is_bound_to_your_account_active_key": "Active-ключ не может быть использован для входа на сайт.",
-    "you_may_use_this_active_key_on_other_more": "Вы можете использовать его для подтверждения операций с токенами в кошельке или на бирже. Для входа на сайт используйте Posting-ключ или пароль.",
+    "you_may_use_this_active_key_on_other_more": "Вы можете использовать его для подтверждения операций с токенами. Для входа используйте Posting-ключ или пароль.",
     "you_account_has_been_successfully_created": "Ваш аккаунт был успешно создан!",
     "password_update_succes": "Пароль для %(accountName)s был успешно обновлен",
     "password_info": "Этот пароль или ключ был введён неправильно. Вероятно, есть ошибка при вводе данных.",
@@ -725,7 +725,7 @@
     "muted_uia": "Токены, скрытые на странице Активы UIA",
     "update": "Обновить",
     "profile_image_url": "Вставьте ссылку на фото профиля или загрузите его",
-    "cover_image_url": "Вставьте ссылку на обложку или загрузите её",
+    "cover_image_url": "Вставьте ссылку на обложку кошелька или загрузите её",
     "default_voting_power_tip": "Сумма вознаграждения",
     "profile_name": "Отображаемое имя",
     "profile_gender": {

@@ -57,12 +57,16 @@ class TransferHistoryRow extends React.Component {
 
         else if( type === 'curation_reward' ) {
             description_start += `${curation_reward} ${VESTING_TOKENS}` + tt('transferhistoryrow_jsx.for');
-            link = data.comment_author + "/" + data.comment_permlink;
+            linkTitle = '@' + data.comment_author + '/' + data.comment_permlink;
+            link = blogsUrl(linkTitle)
+            linkExternal = true
         }
 
         else if (type === 'author_reward') {
             description_start += `${author_reward} ${VESTING_TOKENS}` + tt('transferhistoryrow_jsx.for');
-            link = data.author + "/" + data.permlink;
+            linkTitle = '@' + data.author + '/' + data.permlink;
+            link = blogsUrl(linkTitle)
+            linkExternal = true
         }
 
         else if (type === 'donate' && context == 'ref') {
@@ -93,7 +97,7 @@ class TransferHistoryRow extends React.Component {
                     description_start += tt('transferhistoryrow_jsx.from') + data.from;
                 }
                 description_start += tt('transferhistoryrow_jsx.for');
-                linkTitle = target.author + '/' + target.permlink
+                linkTitle = '@' + target.author + '/' + target.permlink
                 link = blogsUrl(linkTitle)
                 linkExternal = true
                 target_hint += data.memo.app;
