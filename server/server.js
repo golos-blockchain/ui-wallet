@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import Koa from 'koa';
+import compress from 'koa-compress'
 import mount from 'koa-mount';
 import helmet from 'koa-helmet';
 import koa_logger from 'koa-logger';
@@ -110,7 +111,19 @@ app.use(async (ctx, next) => {
 if (env === 'production') {
     app.use(require('koa-conditional-get')());
     app.use(require('koa-etag')());
-    app.use(require('koa-compressor')());
+    app.use(compress({
+        filter: (content_type) => {
+            return /text/i.test(content_type)
+        },
+        threshold: 2048,
+        gzip: {
+            flush: require('zlib').constants.Z_SYNC_FLUSH,
+        },
+        deflate: {
+            flush: require('zlib').constants.Z_SYNC_FLUSH,
+        },
+        br: false,
+    }))
 }
 
 // Logging
