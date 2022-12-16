@@ -171,7 +171,7 @@ if (env === 'production') {
         directives: convertEntriesToArrays(config.get('helmet.directives')),
         reportOnly: false,
     };
-    helmetConfig.directives.reportUri = '/api/csp_violation';
+    helmetConfig.directives.reportUri = '/api/v1/csp_violation'
     app.use(helmet({
         contentSecurityPolicy: helmetConfig
     }))
