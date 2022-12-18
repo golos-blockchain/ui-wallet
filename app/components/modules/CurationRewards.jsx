@@ -10,7 +10,7 @@ import {numberWithCommas, vestsToSp, assetFloat} from 'app/utils/StateFunctions'
 import Callout from 'app/components/elements/Callout'
 import Icon from 'app/components/elements/Icon'
 import { LIQUID_TICKER, VEST_TICKER } from 'app/client_config'
-import { Asset } from 'golos-lib-js/lib/utils'
+import { Asset, Price } from 'golos-lib-js/lib/utils'
 
 class CurationRewards extends React.Component {
     state = { historyIndex: 0 }
@@ -52,14 +52,19 @@ class CurationRewards extends React.Component {
         const VESTING_TOKENS = tt('token_names.VESTING_TOKENS')
 
         const {state: {historyIndex}} = this
-        const { account, current_user, cprops, gprops, } = this.props;
+        const { account, current_user, cprops, gprops, feed_price, } = this.props;
 
         let gpDeficit = '';
         if (account.vesting_shares && gprops && cprops) {
             let gpExists = this.effectiveVestingShares(account, gprops.toJS());
             let gpMin = cprops.get('min_golos_power_to_curate');
             if (gpMin) {
-                gpMin = Asset(gpMin);
+                gpMin = Asset(gpMin)
+                if (feed_price && feed_price.has('base')) {
+                    // feed_price can have 0.000 if no feed
+                    const gbgPrice = Price(feed_price.toJS())
+                    gpMin = gpMin.mul(gbgPrice)
+                }
                 if (gpExists.amount < gpMin.amount) {
                     gpDeficit = gpMin.amount - gpExists.amount;
                     gpDeficit = Asset(gpDeficit, 3, 'GOLOS').toString();
@@ -209,11 +214,13 @@ export default connect(
     (state, ownProps) => {
         const gprops = state.global.get('props');
         const cprops = state.global.get('cprops');
+        const feed_price = state.global.get('feed_price')
         return {
             state,
             ...ownProps,
             gprops,
             cprops,
+            feed_price
         }
     }
 )(CurationRewards)

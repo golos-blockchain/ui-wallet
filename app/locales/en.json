@@ -9,7 +9,8 @@
     "DEBT_TOKEN": "GOLD BACKED GOLOS",
     "DEBT_TOKENS": "GOLD BACKED GOLOS",
     "TOKEN_WORTH": "~1 mg of gold",
-    "TIP_TOKEN": "TIP balance"
+    "TIP_TOKEN": "TIP balance",
+    "CLAIM_TOKEN": "CLAIM balance"
   },
   "reputation_panel_jsx": {
     "cannot_vote_neg_rep": "You cannot upvote/downvote account reputations, because your reputation is negative",
@@ -303,6 +304,7 @@
     "keep_me_logged_in": "Keep me logged in",
     "donate": "Donate",
     "donate_support": "Support",
+    "claim": "Claim",
     "received_vesting": "%(VESTING_TOKEN)s delegated to this account",
     "delegated_vesting": "%(VESTING_TOKEN)s delegated from this account",    
     "load_more": "Load more",
@@ -774,6 +776,9 @@
   },
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
+    "claim_balance_hint_SUBTRACT_DAILY": "If you will add %(SUBTRACT)s into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "claim_balance_hint_enough_REQUIRED": "Your Golos Power was not enough to receive emission (required at least %(REQUIRED)s). Emission for that time period is collected on your CLAIM-balance. Now you can claim it on your TIP-balance.",
+    "claim_expiration_hint": "The tokens request window will end",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
     "LIQUID_TOKEN_can_be_converted_to_VESTING_TOKEN_in_a_process_called_powering_up": "For example, converted to Golos Power or sent to the TIP balance for rewards.",
     "tokens_worth_about_AMOUNT_of_LIQUID_TOKEN": "Tokens worth about %(TOKEN_WORTH)s in %(LIQUID_TICKER)s.",
@@ -1017,6 +1022,7 @@
     "transfer_to_savings": "Transfer to Savings",
     "power_up": "Power Up",
     "transfer_to_tip": "Transfer to TIP balance",
+    "claim": "Claim to TIP balance",
     "donate": "Donate",
     "power_down": "Power Down",
     "market": "Market",
