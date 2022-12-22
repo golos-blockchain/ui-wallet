@@ -10,22 +10,28 @@ import {
     numberWithCommas,
     vestsToSp,
     assetFloat,
-    vestsToSteem
+    vestsToSteem,
+    steemToVests
 } from 'app/utils/StateFunctions';
+
+const REMAIN = 10
 
 class Powerdown extends React.Component {
     constructor(props, context) {
         super(props, context);
-        let new_withdraw;
+        let new_withdraw
+        const remain = steemToVests(REMAIN, this.props.gprops)
         if (props.to_withdraw - props.withdrawn > 0) {
             new_withdraw = props.to_withdraw - props.withdrawn;
         } else {
-            new_withdraw = props.available_shares;
+            new_withdraw = props.available_shares
         }
+        new_withdraw = Math.max(new_withdraw - remain, 0)
         this.state = {
             broadcasting: false,
             manual_entry: false,
             new_withdraw,
+            remain
         };
     }
 
@@ -40,6 +46,7 @@ class Powerdown extends React.Component {
         const {
             broadcasting,
             new_withdraw,
+            remain,
             manual_entry
         } = this.state;
 
@@ -113,6 +120,12 @@ class Powerdown extends React.Component {
             );
         }
 
+        if (REMAIN) {
+            notes.push(<li key="remain">
+                {tt('powerdown_jsx.bandwidth_REMAIN', { REMAIN })}
+            </li>)
+        }
+
         if (delegated_vesting_shares !== 0) {
             const AMOUNT = formatSp(delegated_vesting_shares);
             notes.push(
@@ -141,7 +154,7 @@ class Powerdown extends React.Component {
                 <Slider
                     value={new_withdraw}
                     step={0.000001}
-                    max={vesting_shares - delegated_vesting_shares}
+                    max={vesting_shares - delegated_vesting_shares - remain}
                     format={formatSp}
                     onChange={sliderChange}
                 />
