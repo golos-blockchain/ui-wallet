@@ -1217,7 +1217,8 @@
     "delegating": "Вы делегировали %(AMOUNT)s %(LIQUID_TICKER)s. Эти токены заблокированы, в случае отмены делегирования они вернутся на баланс через 7 дней.",
     "per_week": "Это ~%(AMOUNT)s %(LIQUID_TICKER)s в неделю (в течение 4 недель).",
     "warning": "Оставлять меньше чем %(AMOUNT)s %(LIQUID_TICKER)s не рекомендуется, т.к. это может остановить все транзакции с использованием это аккаунта.",
-    "error": "Не удалось уменьшить Силу Голоса (ERROR: %(MESSAGE)s)"
+    "error": "Не удалось уменьшить Силу Голоса (ERROR: %(MESSAGE)s)",
+    "bandwidth_REMAIN": "%(REMAIN)s GOLOS останутся на балансе, чтобы вы могли отправлять операции в блокчейн."
   },
   "delegate_vesting_shares_info_jsx": {
     "confirm_title": "Отмена делегирования %(VESTING_TOKENS)s",
