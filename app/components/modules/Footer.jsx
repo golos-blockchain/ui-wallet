@@ -117,9 +117,9 @@ class Footer extends React.Component {
                 <div className="Footer__menus">
                     <div className="row" id="footer">                    
                         {this._renderMenus(menuItems)}
-
-                        <div><a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a></div>
-
+                        <div>
+                            {Math.random() > 0.5 ? (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a>) : (<a target='_blank' href='https://chat.golos.app'><img src={require('app/assets/images/banners/messenger.png')} width='800' height='100' /></a>)}
+                        </div>
                     </div>
                 </div>
                 <div className="Footer__description">

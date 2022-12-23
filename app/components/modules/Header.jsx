@@ -122,12 +122,6 @@ class Header extends React.Component {
         const logo_link = route.params && route.params.length > 1 && this.last_sort_order ? '/' + this.last_sort_order : (current_account_name ? `/@${current_account_name}` : '/');
         let topic_link = topic ? <Link to={`/${this.last_sort_order || 'hot'}/${topic_original_link}`}>{detransliterate(topic)}</Link> : null;
 
-        const now = new Date()
-        const nowMonth = now.getMonth() + 1
-        const nowDay = now.getDate()
-        const christmas = (nowMonth === 12 && nowDay >= 15)
-            || (nowMonth === 1 && nowDay <= 15)
-
         return (
             <header className="Header noPrint">
                 <div className="Header__top header">
@@ -135,11 +129,7 @@ class Header extends React.Component {
                         <div className="columns">
                             <ul className="menu">
                                 <li className="Header__top-logo">
-                                    <Link to={logo_link}>
-                                        {christmas ?
-                                            <img src={require('app/assets/images/logo-ng3.png')} width='50' height='50' /> :
-                                            <Icon name={APP_ICON} size="2x" />}
-                                    </Link>
+                                    <Link to={logo_link}><img src={$STM_Config.logo} width='48' height='48' /></Link>
                                 </li>
                                 <li className="Header__top-steemit show-for-large noPrint">
                                     <Link to={logo_link}><img src={require('app/assets/images/logo-title1.png')} width='132' height='48' /></Link>

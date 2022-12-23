@@ -8,7 +8,7 @@ class ConvertAssetsLoader extends React.Component {
     render() {
         const { currentAccount, routeParams } = this.props
         if (!currentAccount) {
-            return <div>{tt('convert_assets_jsx.please_authorize')}</div>
+            return <div style={{ padding: '2rem', textAlign: 'center' }}><h4>{tt('convert_assets_jsx.please_authorize')}</h4></div>
         }
         return (<div>
                 <div style={{ padding: '1rem', maxWidth: '50rem', margin: 'auto' }}>

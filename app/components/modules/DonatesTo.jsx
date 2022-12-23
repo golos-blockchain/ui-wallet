@@ -86,10 +86,10 @@ class DonatesTo extends React.Component {
                     {/** history */}
                     <span style={{float: 'right', fontSize: '85%'}} title={tt('g.referral_link_title')}>
                         <Icon name="hf/hf5" size="2x" />
-                        {' '}{tt('g.referral_link')}{' (?) - '}
-                        <Link to={refUrl}>
-                            {refUrl}
-                        </Link>
+                        {' '}{tt('g.referral_link')}{' - '}
+                        <span style={{border: '1px solid lightgray', padding: '5px', borderRadius: '3px'}}>
+                            <a target="_blank" href={refUrl}>{refUrl}</a>
+                        </span>
                         <CopyToClipboard text={refUrl}>
                             <span style={{cursor: 'pointer'}}>
                                 <Icon name="copy" size="2x" />

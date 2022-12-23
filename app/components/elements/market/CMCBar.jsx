@@ -86,14 +86,14 @@ class CMCBar extends React.Component {
                 {header}
                 <span className="CMCBar__price">
                     <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
-                        {price_rub ? price_rub.toFixed(6) + ' ₽' : null} 
+                        {price_rub ? price_rub.toFixed(5) + ' ₽' : null} 
                     </a>            
                     <span className="CMCBar__price-change">
                         {(price_change && price_change.toFixed) ? <span style={{ color: price_change < 0 ? '#d94040' : '#009600' }}>{' '}({price_change.toFixed(2)}%)</span> : null}
                     </span>
                 </span>   
                 <span className="CMCBar__price-usd">
-                    {price_usd ? price_usd.toFixed(6) + ' $' : null}
+                    {price_usd ? price_usd.toFixed(5) + ' $' : null}
                 </span>
                 <span className="CMCBar__link-parent">
                     <a href="/exchanges" className="CMCBar__link">{tt('g.buy_or_sell')}</a>

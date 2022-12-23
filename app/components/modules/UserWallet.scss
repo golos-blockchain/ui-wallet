@@ -17,6 +17,16 @@
 .UserWallet__dropdown {
 }
 
+.emission_per_day {
+  display: inline-block;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  border-radius: 3px;
+  color: white;
+  background-color: #4caf50;
+}
+
 // protect for foundation bug for collapsed state drop-downs
 @media only screen and (max-width: 40em) {
     .Wallet_dropdown {
