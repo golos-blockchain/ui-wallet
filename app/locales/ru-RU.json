@@ -804,7 +804,12 @@
     "confirm_email": "Подтвердить email",
     "confirm_phone": "Пожалуйста подтвердите ваш телефон",
     "authenticate_for_this_transaction": "Авторизуйтесь для этой транзакции",
-    "login_to_your_APP_NAME_account": "Зайдите в ваш %(APP_NAME)s аккаунт"
+    "login_to_your_APP_NAME_account": "Зайдите в ваш %(APP_NAME)s аккаунт",
+    "savings_interest_PER_MONTH": "+ %(PER_MONTH)s ежемесячно",
+    "savings_interest": "Сумма, которая будет поступать каждый месяц, если вы будете хранить такую сумму GBG в сейфе",
+    "savings_interest_zero": "Выплаты за хранение в сейфе отключены.",
+    "savings_interest_debt": "Долг GBG не позволяет нам сейчас делать выплаты за хранение GBG в сейфе.",
+    "savings_interest_gp_AMOUNT": "Не хватает %(AMOUNT)s Силы Голоса, чтобы получать выплаты за GBG."
   },
   "transfer_jsx": {
     "amount_is_in_form": "Сумма должна быть в формате 99999.999",
@@ -1032,6 +1037,15 @@
     "hist_invite2": " на ",
     "hist_claimed": "Погашен чек "
   },
+  "power_calc_jsx": {
+    "title": "Калькулятор доходности",
+    "if_increase_gp_for": "Увеличив Силу Голоса на",
+    "you_will_achieve": "вы станете получать",
+    "daily": "ежедневно",
+    "to_achieve_level": "Для получения уровня:",
+    "not_enough": "не хватает",
+    "apr": "За год без учета сложного процента увеличение "
+  },
   "userkeys_jsx": {
     "public": "Эта заметка является публичной",
     "private": "Эта заметка является приватной",
@@ -1044,6 +1058,8 @@
     "the_memo_key_is_used_to_create_and_read_memos": "Memo-ключ для зашифрованных заметок и обмена сообщениями через мессенджер."
   },
   "userwallet_jsx": {
+    "apr_gbg": "Годовая процентная ставка на GBG",
+    "apr_gp": "Годовая процентная ставка на Силу Голоса",
     "conversion_complete_tip": "Завершается",
     "in_conversion": "%(amount)s на конвертации",
     "transfer_to_savings": "Перевести в сейф",

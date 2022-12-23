@@ -23,12 +23,16 @@ export function vestsToSp(state, vesting_shares) {
     return steem_power
 }
 
-export function vestsToSteem (vestingShares, gprops) {
+export function vestsToSteemFloat (vestingShares, gprops) {
     const { total_vesting_fund_steem, total_vesting_shares } = gprops
     const totalVestingFundSteem = toAsset(total_vesting_fund_steem).amount
     const totalVestingShares = toAsset(total_vesting_shares).amount
+    return (totalVestingFundSteem * (vestingShares / totalVestingShares)).toFixed(3)
+}
+
+export function vestsToSteem (vestingShares, gprops) {
     const vesting_shares = toAsset(vestingShares).amount
-    return (totalVestingFundSteem * (vesting_shares / totalVestingShares)).toFixed(3)
+    return vestsToSteemFloat(vesting_shares, gprops)
 }
 
 export function steemToVests(steem, gprops) {
@@ -72,14 +76,25 @@ export function fromJSGreedy(js) {
       Seq(js).map(fromJSGreedy).toMap();
 }
 
+export function emissionVestingShares(accountObj) {
+    const acc = accountObj.toJS ? accountObj.toJS() : accountObj
+    const vs = toAsset(acc.vesting_shares).amount
+        - toAsset(acc.emission_delegated_vesting_shares).amount
+        + toAsset(acc.emission_received_vesting_shares).amount
+    return vs
+}
+
+export function vsEmissionPerDay(gpropsObj, vsFloat, addFloat = 0) {
+    const gprops = gpropsObj.toJS ? gpropsObj.toJS() : gpropsObj
+    const total = toAsset(gprops.total_vesting_shares).amount + addFloat
+    let emission = toAsset(gprops.accumulative_emission_per_day).amount * (vsFloat + addFloat) / total
+    return emission
+}
+
 export function accuEmissionPerDay(accountObj, gpropsObj, addFloat = 0) {
     const acc = accountObj.toJS ? accountObj.toJS() : accountObj
     const gprops = gpropsObj.toJS ? gpropsObj.toJS() : gpropsObj
-    let vs = toAsset(acc.vesting_shares).amount
-        - toAsset(acc.emission_delegated_vesting_shares).amount
-        + toAsset(acc.emission_received_vesting_shares).amount
-        + addFloat
-    const total = toAsset(gprops.total_vesting_shares).amount + addFloat
-    let emission = toAsset(gprops.accumulative_emission_per_day).amount * vs / total
+    let vs = emissionVestingShares(acc)
+    const emission = vsEmissionPerDay(gpropsObj, vs, addFloat)
     return emission
 }

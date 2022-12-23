@@ -1,6 +1,12 @@
 import tt from 'counterpart'
 import { toAsset, vestsToSteem } from 'app/utils/StateFunctions'
 
+const getImageUrl = (imgs ,smallIcon) => {
+    let url = '/images/gamefication/' + imgs[smallIcon ? 0 : imgs.length - 1]
+    //url = proxifyImageUrl(url, '48x48')
+    return url
+}
+
 export function getGameLevel(account, gprops, smallIcon = false) {
     let levels = [
       {"power_from": 0.000, "imgs": ["1.png", "1big.png"],
@@ -28,16 +34,18 @@ export function getGameLevel(account, gprops, smallIcon = false) {
     let url = null
     let title = null
     let levelName = null
+    let nextLevels = []
     try {
         let accountJS = account.toJS()
         let gpropsJS = gprops.toJS()
 
+        const total = toAsset(gpropsJS.total_vesting_fund_steem).amount
         let vestingSteem = vestsToSteem(accountJS.vesting_shares, gpropsJS);
         vestingSteem = parseInt(vestingSteem)
         //const receivedSteem = vestsToSteem(accountJS.received_vesting_shares, gpropsJS);
         //const delegatedSteem = vestsToSteem(accountJS.delegated_vesting_shares, gpropsJS);
         //const effectiveSteem = parseInt(vestingSteem) + parseInt(receivedSteem) - parseInt(delegatedSteem);
-        let pct = vestingSteem * 100 / toAsset(gpropsJS.total_vesting_fund_steem).amount
+        let pct = vestingSteem * 100 / total
 
         let nextLevel
 
@@ -47,13 +55,17 @@ export function getGameLevel(account, gprops, smallIcon = false) {
                 break
             }
             nextLevel = levels[i]
+            const extraLevelData = { ...nextLevel }
+            extraLevelData.golos_power_from = total * extraLevelData.power_from / 100
+            extraLevelData.golos_power_diff = Math.max(1, extraLevelData.golos_power_from - vestingSteem + 1)
+            extraLevelData.imageUrl = getImageUrl(extraLevelData.imgs, smallIcon)
+            nextLevels.unshift(extraLevelData)
         }
         if (!level) {
             level = levels[0]
         }
 
-        url = '/images/gamefication/' + level.imgs[smallIcon ? 0 : level.imgs.length - 1]
-        //url = proxifyImageUrl(url, '48x48')
+        url = getImageUrl(level.imgs, smallIcon)
 
         const locale = tt.getLocale().startsWith('ru') ? 0 : 1
 
@@ -70,7 +82,7 @@ export function getGameLevel(account, gprops, smallIcon = false) {
 
         if (nextLevel) {
             let nextName = nextLevel.title[locale]
-            const nextGP = toAsset(gpropsJS.total_vesting_fund_steem).amount * nextLevel.power_from / 100
+            const nextGP = total * nextLevel.power_from / 100
             const diffGP = nextGP - vestingSteem
             title += tt('user_profile.next_game_level', {
                 LEVEL: nextName,
@@ -86,7 +98,8 @@ export function getGameLevel(account, gprops, smallIcon = false) {
             levelUrl: url,
             levelTitle: title,
             levelName,
-            level
+            level,
+            nextLevels
         }
     }
     return {}
