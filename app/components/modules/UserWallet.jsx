@@ -304,7 +304,10 @@ class UserWallet extends React.Component {
         const sbdMessage = <span>{tt('userwallet_jsx.tokens_worth_about_1_of_LIQUID_TICKER', {TOKEN_WORTH, LIQUID_TICKER, sbdInterest})}</span>
 
         let EMISSION_STAKE = accuEmissionPerDay(account, gprops)
-        EMISSION_STAKE = numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER;
+        // fix because payments are per hour
+        if ((EMISSION_STAKE / 24) < 0.001) {
+            EMISSION_STAKE = 0
+        }
 
         const vesting_withdraw_rate_str = vestsToSteem(account.get('vesting_withdraw_rate'), gprops);
 
@@ -324,16 +327,16 @@ class UserWallet extends React.Component {
         let SUBTRACT
         if (vesting_steem >= min_gp_to_curate) {
             claim_hint = tt('tips_js.claim_balance_hint_enough_REQUIRED', {
-                REQUIRED: min_gp_to_curate.toString() + ' ' + LIQUID_TICKER
+                REQUIRED: (min_gp_to_curate + 0.001).toFixed(3) + ' ' + LIQUID_TICKER
             })
         } else {
-            const subtract = min_gp_to_curate - vesting_steem
+            const subtract = min_gp_to_curate - vesting_steem + 0.001
             SUBTRACT = subtract.toFixed(3) + ' ' + LIQUID_TICKER
             const { rub_per_golos } = this.state
             if (rub_per_golos) {
                 SUBTRACT += ' (~' + (subtract * rub_per_golos).toFixed(2) + ' RUB)'
             }
-            let DAILY = accuEmissionPerDay(account, gprops, parseFloat(steemToVests(subtract, gprops)))
+            let DAILY = vsEmissionPerDay(gprops, 0, parseFloat(steemToVests(subtract, gprops)))
             DAILY = numberWithCommas(DAILY.toFixed(3)) + ' ' + LIQUID_TICKER
             claim_hint = tt('tips_js.claim_balance_hint_SUBTRACT_DAILY', {
                 SUBTRACT,
@@ -344,14 +347,14 @@ class UserWallet extends React.Component {
 
         const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')} className='limit-width'>
             <small>
-                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE})}
+                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
             </small>
         </LiteTooltip>
 
         // general APR, for 10.000 GOLOS Golos Power
         let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
         aprTIP = <small>
-            <div><LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_per_day' + (aprTIP ? '' : ' gray')}>
+            <div><LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_per_day' + (EMISSION_STAKE ? '' : ' gray')}>
             {'APR ~' + aprTIP.toFixed(2) + ' %'}
             </span></LiteTooltip></div>
         </small>
@@ -639,7 +642,7 @@ export default connect(
             let min_gbg = cprops.get('min_golos_power_to_emission')
             if (min_gbg) {
                 min_gbg = parseFloat(min_gbg)
-                min_gp_to_curate = min_gbg / price_per_golos
+                min_gp_to_curate = min_gbg / price_per_golos + 0.001
             }
         }
 
