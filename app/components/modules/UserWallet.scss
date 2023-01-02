@@ -17,14 +17,47 @@
 .UserWallet__dropdown {
 }
 
-.emission_per_day {
-  display: inline-block;
-  padding: 2px 4px;
-  border: 1px solid transparent;
-  font-size: 12px;
-  border-radius: 3px;
-  color: white;
-  background-color: #4caf50;
+.PowerCalc {
+    cursor: pointer;
+
+    .Icon {
+        vertical-align: top;
+        padding-top: 3px;
+        margin-right: 5px;
+    }
+
+    &:not(.disabled) {
+        path {
+            fill: #0078C4;
+        }
+    }
+}
+
+.Wallet__claim_button {
+    margin-bottom: 0px;
+}
+
+.emission_apr {
+    cursor: pointer;
+    vertical-align: top;
+    padding: 1px 2px;
+    margin-top: 2px;
+    display: inline-block;
+    margin-right: 5px;
+    border: 1px solid transparent;
+    font-size: 11px;
+    border-radius: 3px;
+    color: white;
+    background-color: #4caf50;
+
+    &.gbg {
+        cursor: default;
+    }
+
+    &.gray {
+        color: gray;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 }
 
 // protect for foundation bug for collapsed state drop-downs

@@ -14,6 +14,7 @@ import AddAccount from 'app/components/modules/AddAccount'
 import user from 'app/redux/User';
 import tr from 'app/redux/Transaction';
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
+import PowerCalc from 'app/components/modules/PowerCalc'
 import Powerdown from 'app/components/modules/Powerdown';
 import OpenOrders from 'app/components/modules/OpenOrders';
 
@@ -28,10 +29,12 @@ class Modals extends React.Component {
         show_powerdown_modal: PropTypes.bool,
         show_change_account_modal: PropTypes.bool,
         show_add_account_modal: PropTypes.bool,
+        show_power_calc_modal: PropTypes.bool,
         hideLogin: PropTypes.func.isRequired,
         hideConfirm: PropTypes.func.isRequired,
         hideTransfer: PropTypes.func.isRequired,
         hidePowerdown: PropTypes.func.isRequired,
+        hidePowerCalc: PropTypes.func.isRequired,
         notifications: PropTypes.object,
         removeNotification: PropTypes.func,
         show_open_orders_modal: PropTypes.bool,
@@ -58,6 +61,7 @@ class Modals extends React.Component {
             show_powerdown_modal,
             show_change_account_modal,
             show_add_account_modal,
+            show_power_calc_modal,
             hideLogin,
             hideTransfer,
             hideConvertAssets,
@@ -65,6 +69,7 @@ class Modals extends React.Component {
             hideConfirm,
             hideChangeAccount,
             hideAddAccount,
+            hidePowerCalc,
             notifications,
             removeNotification,
             show_open_orders_modal,
@@ -114,6 +119,10 @@ class Modals extends React.Component {
                     <CloseButton onClick={hideAddAccount} />
                     <AddAccount />
                 </Reveal>}
+                {show_power_calc_modal && <Reveal onHide={hidePowerCalc} show={show_power_calc_modal}>
+                    <CloseButton onClick={hidePowerCalc} />
+                    <PowerCalc />
+                </Reveal>}
                 <NotificationStack
                     style={false}
                     notifications={notifications_array}
@@ -134,6 +143,7 @@ export default connect(
             show_confirm_modal: state.transaction.get('show_confirm_modal'),
             show_transfer_modal: state.user.get('show_transfer_modal'),
             show_convert_assets_modal: state.user.get('show_convert_assets_modal'),
+            show_power_calc_modal: state.user.get('show_power_calc_modal'),
             show_powerdown_modal: state.user.get('show_powerdown_modal'),
             show_change_account_modal: state.user.get('show_change_account_modal'),
             show_add_account_modal: state.user.get('show_add_account_modal'),
@@ -157,6 +167,10 @@ export default connect(
         hideConvertAssets: e => {
             if (e) e.preventDefault();
             dispatch(user.actions.hideConvertAssets())
+        },
+        hidePowerCalc: e => {
+            if (e) e.preventDefault()
+            dispatch(user.actions.hidePowerCalc())
         },
         hidePowerdown: e => {
             if (e) e.preventDefault();

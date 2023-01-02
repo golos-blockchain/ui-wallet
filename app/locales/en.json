@@ -709,6 +709,15 @@
     "hist_invite2": " with ",
     "hist_claimed": "Claimed invite check "
   },
+  "power_calc_jsx": {
+    "title": "Yield calc",
+    "if_increase_gp_for": "If you increase your Golos Power for",
+    "you_will_achieve": "you will achieve",
+    "daily": "daily",
+    "to_achieve_level": "To achieve level:",
+    "not_enough_AMOUNT": "not enough",
+    "apr": "Annually you will receive "
+  },
   "userkeys_jsx": {
     "public": "Public",
     "private": "Private",
@@ -789,7 +798,12 @@
     "confirm_email": "Confirm Email",
     "confirm_phone": "Please verify your phone number",
     "authenticate_for_this_transaction": "Authenticate for this transaction",
-    "login_to_your_APP_NAME_account": "Login to your %(APP_NAME)s Account"
+    "login_to_your_APP_NAME_account": "Login to your %(APP_NAME)s Account",
+    "savings_interest_PER_MONTH": "+ %(PER_MONTH)s monthly",
+    "savings_interest": "Interest per month, if you will store this GBG amount in the savings",
+    "savings_interest_zero": "Savings interest payments are disabled at now.",
+    "savings_interest_debt": "GBG debt do not allows us to pay GBG savings interest.",
+    "savings_interest_gp_AMOUNT": "It is not enough %(AMOUNT)s Golos Power, to receive GBG interest payments."
   },
   "transferhistoryrow_jsx": {
     "to_savings": "to savings",
@@ -1012,6 +1026,8 @@
     "verified_exchange_liquid_only": "You may exchange tokens from GOLOS balance only."
   },
   "userwallet_jsx": {
+    "apr_gbg": "Annual percent rate for GBG",
+    "apr_gp": "Annual percent rate for Golos Power",
     "conversion_complete_tip": "Will complete on",
     "in_conversion": "%(amount)s in conversion",
     "transfer_to_savings": "Transfer to Savings",

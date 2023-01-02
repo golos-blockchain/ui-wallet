@@ -11,6 +11,7 @@ const defaultState = fromJS({
     show_open_orders_modal: false,
     show_change_account_modal: false,
     show_add_account_modal: false,
+    show_power_calc_modal: false,
     pub_keys_used: null,
     locale: DEFAULT_LANGUAGE,
     nightmodeEnabled: false,
@@ -99,6 +100,9 @@ export default createModule({
         { action: 'HIDE_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', false) },
         { action: 'SHOW_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', true) },
         { action: 'HIDE_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', false) },
+        { action: 'SHOW_POWER_CALC', reducer: state => state.set('show_power_calc_modal', true) },
+        { action: 'HIDE_POWER_CALC', reducer: state => state.set('show_power_calc_modal', false) },
+        { action: 'SET_POWER_CALC_DEFAULTS', reducer: (state, {payload}) => state.set('power_calc_defaults', fromJS(payload)) },
         {
             action: 'USERNAME_PASSWORD_LOGIN',
             reducer: state => state, // saga

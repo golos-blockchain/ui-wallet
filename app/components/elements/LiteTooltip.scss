@@ -1,0 +1,26 @@
+.react-tooltip-lite {
+  background: #333;
+  color: white;
+  font-size: 75%;
+  padding: 5px !important;
+  max-width: 350px !important;
+}
+
+.limit-width {
+  .react-tooltip-lite {
+    max-width: 300px !important;
+  }
+}
+
+.react-tooltip-lite a {
+  color: #86b0f4;
+  text-decoration: none;
+}
+
+.react-tooltip-lite a:hover {
+  color: #4286f4;
+}
+
+.react-tooltip-lite-arrow {
+  border-color: #333;
+}
