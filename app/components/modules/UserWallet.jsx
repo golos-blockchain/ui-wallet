@@ -13,6 +13,7 @@ import TransactionError from 'app/components/elements/TransactionError';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Reveal from 'react-foundation-components/lib/global/reveal';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
+import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDay, vsEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
@@ -34,7 +35,22 @@ class UserWallet extends React.Component {
         this.shouldComponentUpdate = shouldComponentUpdate(this, 'UserWallet');
     }
 
+    loadPriceIfNeed = async () => {
+        const { account } = this.props
+        if (!account || this.state.rub_per_golos) {
+            return
+        }
+        const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
+        if (accumulative_balance_steem) {
+            const pr = await apidexGetPrices('GOLOS')
+            this.setState({
+                rub_per_golos: pr.price_rub
+            })
+        }
+    }
+
     componentDidMount() {
+        this.loadPriceIfNeed()
       //todo make transfer call a member? since code is repeated in some places
       const callTransfer = ({ to, amount, token, memo}) => {
       // immediate transfer processing (e.g. from foreign link)
@@ -54,6 +70,12 @@ class UserWallet extends React.Component {
       if (immediate) callTransfer({ to, amount, token, memo})
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.account && this.props.account) {
+            this.loadPriceIfNeed()
+        }
+    }
+
     render() {
         const LIQUID_TOKEN = tt('token_names.LIQUID_TOKEN')
         const LIQUID_TOKEN_UPPERCASE = tt('token_names.LIQUID_TOKEN_UPPERCASE')
@@ -64,6 +86,7 @@ class UserWallet extends React.Component {
         const VESTING_TOKENS = tt('token_names.VESTING_TOKENS')
         const TOKEN_WORTH = tt('token_names.TOKEN_WORTH')
         const TIP_TOKEN = tt('token_names.TIP_TOKEN')
+        const CLAIM_TOKEN = tt('token_names.CLAIM_TOKEN')
 
         const {showDeposit, depositType, toggleDivestError} = this.state
         const { showConvertDialog, price_per_golos, savings_withdraws, account, current_user, } = this.props;
@@ -149,6 +172,12 @@ class UserWallet extends React.Component {
             this.props.showDelegatedVesting(name, type)
         }
 
+        const claim = (amount, e) => {
+            e.preventDefault()
+            const name = account.get('name')
+            this.props.claim(name, amount)
+        }
+
         // Sum savings withrawals
         let savings_pending = 0, savings_sbd_pending = 0;
         if(savings_withdraws) {
@@ -186,6 +215,7 @@ class UserWallet extends React.Component {
         }, [])
 
         const tip_balance_steem = parseFloat(account.get('tip_balance').split(' ')[0]);
+        const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
         const balance_steem = parseFloat(account.get('balance').split(' ')[0]);
         const saving_balance_steem = parseFloat(savings_balance.split(' ')[0]);
         const divesting = parseFloat(account.get('vesting_withdraw_rate').split(' ')[0]) > 0.000000;
@@ -214,6 +244,10 @@ class UserWallet extends React.Component {
             { value: tt('g.transfer'), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'TIP to Account' ) },
             { value: tt('userwallet_jsx.power_up'), link: '#', onClick: showTransfer.bind( this, VEST_TICKER, 'TIP to Vesting' ) },
         ]
+        let claim_menu = [
+            { value: tt('userwallet_jsx.claim'), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'Claim' ) },
+            { value: tt('userwallet_jsx.power_up'), link: '#', onClick: showTransfer.bind( this, VEST_TICKER, 'Claim' ) },
+        ]
         let steem_menu = [
             { value: tt('g.transfer'), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'Transfer to Account' ) },
             { value: tt('userwallet_jsx.transfer_to_tip'), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'Transfer to TIP' ) },
@@ -240,6 +274,7 @@ class UserWallet extends React.Component {
 
         const steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         const steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        const steem_claim_balance_str = numberWithCommas(accumulative_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         const power_balance_str = numberWithCommas(vesting_steem) + ' ' + LIQUID_TICKER;
         const savings_balance_str = numberWithCommas(saving_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         const sbd_balance_str = numberWithCommas(sbd_balance.toFixed(3)) + ' ' + DEBT_TICKER;
@@ -269,7 +304,10 @@ class UserWallet extends React.Component {
         const sbdMessage = <span>{tt('userwallet_jsx.tokens_worth_about_1_of_LIQUID_TICKER', {TOKEN_WORTH, LIQUID_TICKER, sbdInterest})}</span>
 
         let EMISSION_STAKE = accuEmissionPerDay(account, gprops)
-        EMISSION_STAKE = numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER;
+        // fix because payments are per hour
+        if ((EMISSION_STAKE / 24) < 0.001) {
+            EMISSION_STAKE = 0
+        }
 
         const vesting_withdraw_rate_str = vestsToSteem(account.get('vesting_withdraw_rate'), gprops);
 
@@ -281,6 +319,30 @@ class UserWallet extends React.Component {
         const showPowerCalc = (e) => {
             e.preventDefault()
             this.props.showPowerCalc({ account: account.get('name') })
+        }
+
+        const { min_gp_to_curate } = this.props
+        let claim_disabled = false
+        let claim_hint
+        let SUBTRACT
+        if (vesting_steem >= min_gp_to_curate) {
+            claim_hint = tt('tips_js.claim_balance_hint_enough_REQUIRED', {
+                REQUIRED: (min_gp_to_curate + 0.001).toFixed(3) + ' ' + LIQUID_TICKER
+            })
+        } else {
+            const subtract = min_gp_to_curate - vesting_steem + 0.001
+            SUBTRACT = subtract.toFixed(3) + ' ' + LIQUID_TICKER
+            const { rub_per_golos } = this.state
+            if (rub_per_golos) {
+                SUBTRACT += ' (~' + (subtract * rub_per_golos).toFixed(2) + ' RUB)'
+            }
+            let DAILY = vsEmissionPerDay(gprops, 0, parseFloat(steemToVests(subtract, gprops)))
+            DAILY = numberWithCommas(DAILY.toFixed(3)) + ' ' + LIQUID_TICKER
+            claim_hint = tt('tips_js.claim_balance_hint_SUBTRACT_DAILY', {
+                SUBTRACT,
+                DAILY
+            })
+            claim_disabled = true
         }
 
         const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')}>
@@ -315,18 +377,86 @@ class UserWallet extends React.Component {
 
         return (<div className="UserWallet top-margin">
 
+        const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')} className='limit-width'>
+            <small>
+                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
+            </small>
+        </LiteTooltip>
+
+        // general APR, for 10.000 GOLOS Golos Power
+        let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
+        aprTIP = <small>
+            <div><LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_per_day' + (EMISSION_STAKE ? '' : ' gray')}>
+            {'APR ~' + aprTIP.toFixed(2) + ' %'}
+            </span></LiteTooltip></div>
+        </small>
+
+        let gbgPerMonth = sbd_balance_savings / 12
+        let gbgTip = ''
+        let gbgAprTip = tt('userwallet_jsx.apr_gbg')
+        if (vesting_steem < min_gp_to_curate) {
+            gbgPerMonth = 0
+            gbgTip = tt('tips_js.savings_interest_gp_AMOUNT', { AMOUNT: SUBTRACT })
+        } else if (gprops.is_forced_min_price) {
+            gbgPerMonth = 0
+            sbdInterest = 0
+            gbgTip = tt('tips_js.savings_interest_debt')
+            gbgAprTip = gbgTip
+        } else if (sbdInterest === 0) {
+            gbgPerMonth = 0
+            sbdInterest = 0
+            gbgTip = tt('tips_js.savings_interest_zero')
+            gbgAprTip = gbgTip
+        } else {
+            gbgPerMonth = (gbgPerMonth * sbdInterest / 100).toFixed(3)
+            gbgTip = tt('tips_js.savings_interest')
+        }
+
+        return (<div className="UserWallet top-margin">
             {accountIdleness && <Callout>
                 <div align="center">{tt('userwallet_jsx.account_idleness')}. <a target="_blank" href="https://wiki.golos.id/users/update#ponizhenie-sily-golosa-pri-neaktivnosti">{tt('g.more_hint')} <Icon name="extlink" /></a>
                 <br /><Icon name="golos" size="2x" /><br />
                 Рекомендуем прочитать и об <a target="_blank" href="https://wiki.golos.id/users/update">изменениях</a> на Голосе за последнее время...</div>
             </Callout>}
 
+            {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
+                <div className="column small-12 medium-8">
+                    {CLAIM_TOKEN.toUpperCase()}<br />
+                    <span className="secondary">{claim_hint}</span>
+                </div>
+                <div className="column small-12 medium-4">
+                    {isMyAccount
+                        ? <FoundationDropdownMenu
+                            className="Wallet__claim_dropdown"
+                            dropdownPosition="bottom"
+                            dropdownAlignment="right"
+                            label={steem_claim_balance_str}
+                            menu={claim_menu}
+                        />
+                        : steem_claim_balance_str
+                    }
+                    <div>{isMyAccount ? <button
+                        className="Wallet__claim_button button tiny"
+                        disabled={claim_disabled}
+                        onClick={claim.bind(this, account.get('accumulative_balance'))}
+                    >
+                        {tt('g.claim')}
+                    </button> : null}</div>
+                    {emissionStake}
+                    {aprTIP}
+                </div>
+            </div> : null}
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
                     {TIP_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#tip-balans">(?)</a></small></span><br />
                     <span className="secondary">{tt('tips_js.tip_balance_hint')}</span>
                 </div>
                 <div className="column small-12 medium-4">
+                    <LiteTooltip t={tt('power_calc_jsx.title')}>
+                        <span className='PowerCalc' onClick={showPowerCalc}>
+                            <Icon name='hf/hf8' />
+                        </span>
+                    </LiteTooltip>
                     {isMyAccount
                         ? <FoundationDropdownMenu
                             className="Wallet_dropdown"
@@ -338,7 +468,7 @@ class UserWallet extends React.Component {
                         : steem_tip_balance_str
                     }
                     <br/>
-                    {emissionStake}
+                    {!accumulative_balance_steem ? emissionStake : null}
                 </div>
             </div>
             <div className="UserWallet__balance row zebra">
@@ -533,7 +663,16 @@ export default connect(
         const savings_withdraws = state.user.get('savings_withdraws')
         const gprops = state.global.get('props');
         const sbd_interest = gprops ? gprops.get('sbd_interest_rate') : 0
-        const cprops = state.global.get('cprops');
+        const cprops = state.global.get('cprops')
+
+        let min_gp_to_curate = 0
+        if (price_per_golos) {
+            let min_gbg = cprops.get('min_golos_power_to_emission')
+            if (min_gbg) {
+                min_gbg = parseFloat(min_gbg)
+                min_gp_to_curate = min_gbg / price_per_golos + 0.001
+            }
+        }
 
         return {
             ...ownProps,
@@ -541,7 +680,8 @@ export default connect(
             savings_withdraws,
             sbd_interest,
             gprops,
-            cprops
+            cprops,
+            min_gp_to_curate
         }
     },
     // mapDispatchToProps
@@ -569,6 +709,25 @@ export default connect(
         showPowerCalc: ({ account }) => {
             dispatch(user.actions.setPowerCalcDefaults({ account }))
             dispatch(user.actions.showPowerCalc())
+        },
+        claim: (username, amount) => {
+            const successCallback = () => {
+                // refresh transfer history
+                dispatch({type: 'FETCH_STATE', payload: {pathname: `@${username}/transfers`}})
+            }
+            const errorCallback = (estr) => {
+                alert(estr);
+            }
+
+            let operation = {from: username, to: username, amount, memo: '', to_vesting: false};
+
+            dispatch(transaction.actions.broadcastOperation({
+                type: 'claim',
+                username,
+                operation,
+                successCallback,
+                errorCallback
+            }))
         }
     })
 )(UserWallet)

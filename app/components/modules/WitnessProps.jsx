@@ -63,7 +63,8 @@ class WitnessProps extends React.Component {
             ['unlimit_operation_cost', 'golos'],
         ],
         [
-            ['min_golos_power_to_curate', 'golos'],
+            ['min_golos_power_to_curate', 'gbg'],
+            ['min_golos_power_to_emission', 'gbg'],
             ['curation_reward_curve', ['bounded','linear','square_root']],
             ['min_curation_percent'],
             ['max_curation_percent'],

@@ -9,7 +9,8 @@
     "DEBT_TOKEN": "Золотой",
     "DEBT_TOKENS": "Золотые",
     "TOKEN_WORTH": "~1 мг золота",
-    "TIP_TOKEN": "TIP-баланс"
+    "TIP_TOKEN": "TIP-баланс",
+    "CLAIM_TOKEN": "CLAIM-баланс"
   },
   "authorrewards_jsx": {
     "estimated_author_rewards_last_week": "Оценочные авторские вознаграждения за неделю",
@@ -413,6 +414,7 @@
     "keep_me_logged_in": "Оставить меня залогиненным",
     "donate": "Отблагодарить",
     "donate_support": "Поддержать",
+    "claim": "Получить",
     "received_vesting": "%(VESTING_TOKEN)s делегированная на этот аккаунт",
     "delegated_vesting": "%(VESTING_TOKEN)s делегированная с этого аккаунта",
     "load_more": "Показать еще",
@@ -466,7 +468,8 @@
     "convert_fee_percent": "Процент комиссии по внутренней конвертации GOLOS в GBG",
     "negrep_posting_window": "Длительность интервала для постов/комментариев/голосования пользователей с отрицательной репутацией (минуты)",
     "negrep_posting_per_window": "Количество постов/комментариев/апвоутов за интервал",
-    "min_golos_power_to_curate": "Минимальная сумма СГ, с которой пользователь начнёт получать процент за курирование контента",
+    "min_golos_power_to_curate": "Минимальная сумма СГ (в GBG), с которой пользователь начнёт получать процент за курирование контента",
+    "min_golos_power_to_emission": "Минимальная сумма СГ (в GBG), с которой пользователь начнёт получать долю от эмиссии на TIP-баланс",
     "unwanted_operation_cost": "Плата за отправку нежелательных операций (если получатель заблокировал отправителя или выбрал Не беспокоить)",
     "unlimit_operation_cost": "Плата за отправку операций при отрицательной репутации, за обход лимитов post/comment/vote-window"
   },
@@ -783,6 +786,9 @@
   },
   "tips_js": {
     "tip_balance_hint": "Для вознаграждений пользователей, и на который получаете вознаграждения сами. Токены с него можно также отправить на увеличение Силы Голоса.",
+    "claim_balance_hint_SUBTRACT_DAILY": "Добавив %(SUBTRACT)s в Силу Голоса, вы сможете ежедневно и автоматически получать долю от эмиссии (+%(DAILY)s) на TIP-баланс.",
+    "claim_balance_hint_enough_REQUIRED": "Ваша Сила Голоса была недостаточна для получения эмиссии (надо не менее %(REQUIRED)s). Эмиссия за этот период собрана на ваш CLAIM-баланс. Вы можете получить ее на TIP-баланс.",
+    "claim_expiration_hint": "Окно востребования токенов закончится",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Торгуемые токены, которые могут быть переданы в любой момент.",
     "LIQUID_TOKEN_can_be_converted_to_VESTING_TOKEN_in_a_process_called_powering_up": "Например, сконвертированы в %(VESTING_TOKEN2)s, отправлены на TIP-баланс для вознаграждений или биржу.",
     "tokens_worth_about_AMOUNT_of_LIQUID_TOKEN": "Перемещаемые цифровые токены, цена которых всегда равна %(amount)s в %(LIQUID_TOKEN)s.",
@@ -1059,6 +1065,7 @@
     "transfer_to_savings": "Перевести в сейф",
     "power_up": "Увеличить Силу Голоса",
     "transfer_to_tip": "Пополнить TIP-баланс",
+    "claim": "Пополнить TIP-баланс",
     "donate": "Отблагодарить",
     "transfer_to_liquid": "Пополнить основной баланс",
     "power_down": "Уменьшить Силу Голоса",
