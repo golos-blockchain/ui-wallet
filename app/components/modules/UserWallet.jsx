@@ -347,49 +347,15 @@ class UserWallet extends React.Component {
 
         const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')}>
             <a href="#" onClick={showPowerCalc}><small>
-                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE})}
+                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
             </small></a>
         </LiteTooltip>
 
         // general APR, for 10.000 GOLOS Golos Power
         let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
-        aprTIP = <LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_apr' + (aprTIP ? '' : ' gray')} onClick={showPowerCalc}>
+        aprTIP = <LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_apr' + (EMISSION_STAKE ? '' : ' gray')} onClick={showPowerCalc}>
             {'APR ' + aprTIP.toFixed(2) + ' %'}
             </span></LiteTooltip>
-
-        let gbgPerMonth = sbd_balance_savings / 12
-        let gbgTip = ''
-        let gbgAprTip = tt('userwallet_jsx.apr_gbg')
-        if (gprops.is_forced_min_price) {
-            gbgPerMonth = 0
-            sbdInterest = 0
-            gbgTip = tt('tips_js.savings_interest_debt')
-            gbgAprTip = gbgTip
-        } else if (sbdInterest === 0) {
-            gbgPerMonth = 0
-            sbdInterest = 0
-            gbgTip = tt('tips_js.savings_interest_zero')
-            gbgAprTip = gbgTip
-        } else {
-            gbgPerMonth = (gbgPerMonth * sbdInterest / 100).toFixed(3)
-            gbgTip = tt('tips_js.savings_interest')
-        }
-
-        return (<div className="UserWallet top-margin">
-
-        const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')} className='limit-width'>
-            <small>
-                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
-            </small>
-        </LiteTooltip>
-
-        // general APR, for 10.000 GOLOS Golos Power
-        let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
-        aprTIP = <small>
-            <div><LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_per_day' + (EMISSION_STAKE ? '' : ' gray')}>
-            {'APR ~' + aprTIP.toFixed(2) + ' %'}
-            </span></LiteTooltip></div>
-        </small>
 
         let gbgPerMonth = sbd_balance_savings / 12
         let gbgTip = ''
@@ -443,7 +409,6 @@ class UserWallet extends React.Component {
                         {tt('g.claim')}
                     </button> : null}</div>
                     {emissionStake}
-                    {aprTIP}
                 </div>
             </div> : null}
             <div className="UserWallet__balance row">
