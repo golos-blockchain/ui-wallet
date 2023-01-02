@@ -396,7 +396,7 @@ export default class UserProfile extends React.Component {
                     <div className='UserProfile__filler' />
                     <div>
                         <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
-                            {tt('g.blog')} {isMyAccount && <NotifiCounter fields='feed,comment_reply,subscriptions,mention' />}
+                            {tt('g.blog')} {isMyAccount && <NotifiCounter fields='comment_reply,mention' />}
                         </a>
                         <LinkWithDropdown
                             closeOnClickOutside

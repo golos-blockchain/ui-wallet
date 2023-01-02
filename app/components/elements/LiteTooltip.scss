@@ -3,12 +3,13 @@
   color: white;
   font-size: 75%;
   padding: 5px !important;
+  max-width: 350px !important;
 }
 
 .limit-width {
   .react-tooltip-lite {
     max-width: 300px !important;
-  } 
+  }
 }
 
 .react-tooltip-lite a {

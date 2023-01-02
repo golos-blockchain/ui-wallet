@@ -1,8 +1,12 @@
 {
+  "site_domain": "beta.golos.today",
+  "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
+  "ws_connection_client": "wss://apibeta.golos.today/ws",
+  "ws_connection_server": "wss://apibeta.golos.today/ws",  
   "helmet": {
     "directives": {
       "defaultSrc": "'self'",
-      "childSrc": "'self' www.google.com *.yandex.ru",
+      "childSrc": "'self'",
       "scriptSrc": "'self' 'unsafe-inline' 'unsafe-eval'",
       "styleSrc": "'self' 'unsafe-inline' fonts.googleapis.com",
       "imgSrc": "* data:",
@@ -11,19 +15,16 @@
       "frameAncestors": "'none'"
     }
   },
-  "add_notify_site": {
-    "show": false,
-    "id": 145678655,
-    "link": "/@lex/obmen-lichnymi-soobsheniyami-i-nachalo-dlya-golos-messenger",
-    "title": "Обмен личными сообщениями и начало для Golos Messenger"
-  },
   "server_session_secret": "exiKdyF+IwRIXJDmtGIl4vWUz4i3eVSISpfZoeYc0s4=", // Generated via Node - crypto.randomBytes(32).toString('base64')
   "session_cookie_key": "gls.wallet.session",
   "session_key": "goloswallet",
-  "site_domain": "beta.golos.today",
-  "ws_connection_client": "wss://apibeta.golos.today/ws",
-  "ws_connection_server": "wss://apibeta.golos.today/ws",
-  "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
+  "logo": "https://i.imgur.com/UQz7tKn.png",
+  "add_notify_site": {
+    "show": false,
+    "id": 1,
+    "link": "/@lex/obmen-lichnymi-soobsheniyami-i-nachalo-dlya-golos-messenger",
+    "title": "Обмен личными сообщениями и начало для Golos Messenger"
+  },
   "images": {
     "img_proxy_prefix": "https://devimages.golos.today",
     "img_proxy_backup_prefix": "https://steemitimages.com",
@@ -33,6 +34,9 @@
   "blogs_service": {
     "host": "https://beta.golos.today"
   },
+  "messenger_service": {
+    "host": "https://devchat.golos.app"
+  },
   "auth_service": {
     "host": "https://dev.golos.app",
     "custom_client": "blogs"
@@ -40,14 +44,16 @@
   "notify_service": {
     "host": "https://devnotify.golos.app"
   },
-  "messenger_service": {
-    "host": "https://devchat.golos.app"
-  },
   "apidex_service": {
     "host": "https://api-dex.golos.app"
   },
   "hidden_assets": {
     "RUDEX": true,
-    "PRIZM": true
+    "PRIZM": true,
+    "YMZEC": true,
+    "YMWMZ": true,
+    "YMXMR": true,
+    "YMDASH": true,
+    "YMBTC": true
   }
 }

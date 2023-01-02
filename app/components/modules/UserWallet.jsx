@@ -272,11 +272,11 @@ class UserWallet extends React.Component {
         ]
         const isWithdrawScheduled = new Date(account.get('next_vesting_withdrawal') + 'Z').getTime() > Date.now()
 
-        const steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TOKEN_UPPERCASE;
-        const steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TOKEN_UPPERCASE;
-        const steem_claim_balance_str = numberWithCommas(accumulative_balance_steem.toFixed(3)) + ' ' + LIQUID_TOKEN_UPPERCASE
-        const power_balance_str = numberWithCommas(vesting_steem) + ' ' + LIQUID_TOKEN_UPPERCASE;
-        const savings_balance_str = numberWithCommas(saving_balance_steem.toFixed(3)) + ' ' + LIQUID_TOKEN_UPPERCASE;
+        const steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        const steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        const steem_claim_balance_str = numberWithCommas(accumulative_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        const power_balance_str = numberWithCommas(vesting_steem) + ' ' + LIQUID_TICKER;
+        const savings_balance_str = numberWithCommas(saving_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         const sbd_balance_str = numberWithCommas(sbd_balance.toFixed(3)) + ' ' + DEBT_TICKER;
         const savings_sbd_balance_str = numberWithCommas(sbd_balance_savings.toFixed(3)) + ' ' + DEBT_TICKER;
 
@@ -287,7 +287,7 @@ class UserWallet extends React.Component {
         const total_received_vesting_shares_str = `${numberWithCommas(total_received_vesting_shares)} ${LIQUID_TICKER}`;
         const total_delegated_vesting_shares_str = `${numberWithCommas(total_delegated_vesting_shares)} ${LIQUID_TICKER}`;
 
-        const steem_orders_balance_str = numberWithCommas(steemOrders.toFixed(3)) + ' ' + LIQUID_TOKEN_UPPERCASE;
+        const steem_orders_balance_str = numberWithCommas(steemOrders.toFixed(3)) + ' ' + LIQUID_TICKER;
         const sbd_orders_balance_str = numberWithCommas(sbdOrders.toFixed(3)) + ' ' + DEBT_TICKER;
 
         const steemTip = tt('tips_js.tradeable_tokens_that_may_be_transferred_anywhere_at_anytime') + ' ' + tt('tips_js.LIQUID_TOKEN_can_be_converted_to_VESTING_TOKEN_in_a_process_called_powering_up', {LIQUID_TOKEN, VESTING_TOKEN2, VESTING_TOKENS});
@@ -344,6 +344,38 @@ class UserWallet extends React.Component {
             })
             claim_disabled = true
         }
+
+        const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')}>
+            <a href="#" onClick={showPowerCalc}><small>
+                {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE})}
+            </small></a>
+        </LiteTooltip>
+
+        // general APR, for 10.000 GOLOS Golos Power
+        let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
+        aprTIP = <LiteTooltip t={tt('userwallet_jsx.apr_gp')}><span className={'emission_apr' + (aprTIP ? '' : ' gray')} onClick={showPowerCalc}>
+            {'APR ' + aprTIP.toFixed(2) + ' %'}
+            </span></LiteTooltip>
+
+        let gbgPerMonth = sbd_balance_savings / 12
+        let gbgTip = ''
+        let gbgAprTip = tt('userwallet_jsx.apr_gbg')
+        if (gprops.is_forced_min_price) {
+            gbgPerMonth = 0
+            sbdInterest = 0
+            gbgTip = tt('tips_js.savings_interest_debt')
+            gbgAprTip = gbgTip
+        } else if (sbdInterest === 0) {
+            gbgPerMonth = 0
+            sbdInterest = 0
+            gbgTip = tt('tips_js.savings_interest_zero')
+            gbgAprTip = gbgTip
+        } else {
+            gbgPerMonth = (gbgPerMonth * sbdInterest / 100).toFixed(3)
+            gbgTip = tt('tips_js.savings_interest')
+        }
+
+        return (<div className="UserWallet top-margin">
 
         const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')} className='limit-width'>
             <small>
@@ -437,16 +469,16 @@ class UserWallet extends React.Component {
                     }
                     <br/>
                     {!accumulative_balance_steem ? emissionStake : null}
-                    {!accumulative_balance_steem ? aprTIP : null}
                 </div>
             </div>
             <div className="UserWallet__balance row zebra">
-                <div className="column small-12 medium-8">
+                <div className="column small-12 medium-8">                    
                     {VESTING_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#sila-golosa">(?)</a></small></span><br />
                     <span className="secondary">{powerTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}
                     <Link to="/workers">{tt('userwallet_jsx.worker_foundation')}</Link> | {tt('userwallet_jsx.top_dpos')} <a target="_blank" rel="noopener noreferrer" href="https://dpos.space/golos/top/gp">dpos.space <Icon name="extlink" /></a> {tt('g.and')} <a target="_blank" rel="noopener noreferrer" href="https://pisolog.net/stats/accounts/allaccounts">pisolog.net <Icon name="extlink" /></a></span>
                 </div>
                 <div className="column small-12 medium-4">
+                    {aprTIP}
                     {isMyAccount
                         ? <FoundationDropdownMenu
                             className="Wallet_dropdown"
@@ -560,6 +592,11 @@ class UserWallet extends React.Component {
                         : savings_balance_str
                     }
                     <br />
+                    <LiteTooltip t={gbgAprTip}>
+                        <span className={'emission_apr gbg' + (gbgPerMonth ? '' : ' gray')}>
+                            {'APR ' + sbdInterest.toFixed(2) + ' %'}
+                        </span>
+                    </LiteTooltip>
                     {isMyAccount
                         ? <FoundationDropdownMenu
                             className="Wallet_dropdown"
@@ -570,20 +607,11 @@ class UserWallet extends React.Component {
                           />
                         : savings_sbd_balance_str
                     }
-                    <small><div><LiteTooltip t={gbgTip} className='limit-width'>
-                        <span>
+                    <div><LiteTooltip t={gbgTip}>
+                        <small>
                             {tt('tips_js.savings_interest_PER_MONTH', { PER_MONTH: gbgPerMonth + ' GBG' })}
-                        </span>
-                    </LiteTooltip></div></small>
-                    <small>
-                        <div>
-                            <LiteTooltip t={gbgAprTip}>
-                                <span className={'emission_per_day' + (gbgPerMonth ? '' : ' gray')}>
-                                    {'APR ' + sbdInterest.toFixed(2) + ' %'}
-                                </span>
-                            </LiteTooltip>
-                        </div>
-                    </small>
+                        </small>
+                    </LiteTooltip></div>
                 </div>
             </div>
             <div className="UserWallet__balance row">
@@ -595,7 +623,7 @@ class UserWallet extends React.Component {
             </div>
 
             <div align="center">
-                <Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>
+                {Math.random() > 0.5 ? (<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>) : (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a>)}
             </div>
 
             <div className="row">

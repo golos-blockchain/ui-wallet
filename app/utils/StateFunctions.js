@@ -80,7 +80,7 @@ export function emissionVestingShares(accountObj) {
     const acc = accountObj.toJS ? accountObj.toJS() : accountObj
     const vs = toAsset(acc.vesting_shares).amount
         - toAsset(acc.emission_delegated_vesting_shares).amount
-        + toAsset(acc.emission_received_vesting_shares).amount
+        + toAsset(acc.emission_received_vesting_shares).amount 
     return vs
 }
 

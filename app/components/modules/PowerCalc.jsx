@@ -76,8 +76,8 @@ class PowerCalc extends React.Component {
 
         let increaseRub, willAchieveRub
         if (rub_per_golos) {
-            increaseRub = '(' + (am * rub_per_golos).toFixed(2) + ' RUB)'
-            willAchieveRub = '(' + (willAchieve * rub_per_golos).toFixed(2) + ' RUB)'
+            increaseRub = '~' + (am * rub_per_golos).toFixed(2) + ' RUB'
+            willAchieveRub = '(~' + (willAchieve * rub_per_golos).toFixed(2) + ' RUB)'
         }
 
         willAchieve = Asset(willAchieve * 1000, 3, 'GOLOS')
@@ -89,7 +89,7 @@ class PowerCalc extends React.Component {
 
         let counter = 0
         const levels = this.state.nextLevels.map(level => {
-            const imgSize = '16px'
+            const imgSize = '24px'
             return {
                 key: level.title[1],
                 value: level.title[1],
@@ -136,7 +136,7 @@ class PowerCalc extends React.Component {
             <div className="row">
                 <div className='column small-12'>
                     {tt('power_calc_jsx.you_will_achieve')}
-                    <b>{' ~' +willAchieve.floatString + ' ' + willAchieveRub + ' '}</b>
+                    <b>{' ' +willAchieve.floatString + ' ' + willAchieveRub + ' '}</b>
                     {tt('power_calc_jsx.daily')}.<br/>
                     <span style={{ fontSize: '80%' }}>
                         {tt('power_calc_jsx.apr') + ' ~' + aprAmount.toString() + ' (APR ' + apr + '%)'}
@@ -153,13 +153,13 @@ class PowerCalc extends React.Component {
                         el='div'
                         items={levels}
                         className='PowerCalc__levels'>
-                        <img src={nearestLevel.imageUrl} style={{ width: '16px', height: '16px' }} />
+                        <img src={nearestLevel.imageUrl} style={{ width: '48px', height: '48px' }} />
                         <span style={{ marginLeft: '0.5rem' }}>{nearestLevel.title[0]}</span>
                     </DropdownMenu>
                 </div>
-                <div className='column small-12' style={{ marginTop: '1.6rem' }}>
+                <div className='column small-12' style={{ marginTop: '3rem' }}>
                     {tt('power_calc_jsx.not_enough')}
-                    <b>{' ~' + nearestLevel.golos_power_diff.toFixed(3) + ' GOLOS.'}</b>
+                    <b>{' ~' + nearestLevel.golos_power_diff.toFixed(3) + ' GOLOS'}</b>
                 </div>
             </div> : null}
         </div>

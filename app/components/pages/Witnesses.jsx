@@ -223,7 +223,7 @@ class Witnesses extends Component {
                     </td>
                     <td>{witness_thread}</td>
                     <td style={{ textAlign: 'center' }}>{missed}</td>
-                    <td>{lastBlock}</td>
+                    <td><a target="_blank" href={`https://explorer.golos.id/#block/` + lastBlock}>{lastBlock}</a></td>
                     <td>
                         <div style={{ fontSize: '.9rem' }}>
                             {priceFeed.get('quote')}
