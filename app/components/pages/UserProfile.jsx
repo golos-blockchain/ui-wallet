@@ -28,7 +28,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
 import { msgsHost, msgsLink } from 'app/utils/ExtLinkUtils'
-import { blogsUrl, } from 'app/utils/blogsUtils'
+import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import {isFetchingOrRecentlyUpdated} from 'app/utils/StateFunctions';
 import {repLog10} from 'app/utils/ParsersAndFormatters';
 import { proxifyImageUrl } from 'app/utils/ProxifyUrl';
@@ -395,7 +395,7 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>}
                     <div className='UserProfile__filler' />
                     <div>
-                        <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname}>
+                        <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
                             {tt('g.blog')} {isMyAccount && <NotifiCounter fields='comment_reply,mention' />}
                         </a>
                         <LinkWithDropdown

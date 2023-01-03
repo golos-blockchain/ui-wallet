@@ -16,7 +16,7 @@ import NotifiCounter from 'app/components/elements/NotifiCounter';
 import { LIQUID_TICKER, DEBT_TICKER } from 'app/client_config';
 import { vestsToSteem, toAsset } from 'app/utils/StateFunctions';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
-import { blogsUrl, } from 'app/utils/blogsUtils'
+import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import { msgsHost, msgsLink, } from 'app/utils/ExtLinkUtils';
 
 const defaultNavigate = (e) => {
@@ -62,17 +62,17 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const scn = vertical ? '' : 'show-for-medium';
     const nav = navigate || defaultNavigate;
     const topbutton = <li className={lcn + ' submit-story'}>
-        <a href={blogsUrl('/services')} className='button small topbutton hollow'>
+        <a href={blogsUrl('/services')} target={blogsTarget()} className='button small topbutton hollow'>
             <Icon name="new/monitor" size="0_95x" />{tt('g.topbutton')}
         </a>
     </li>;
     const goBlogs = <li className={scn + ' submit-story'}>
-        <a href={blogsUrl()} className={'button small topbutton'}>
+        <a href={blogsUrl()} target={blogsTarget()} className={'button small topbutton'}>
             <Icon name="new/add" size="0_95x" />{tt('g.go_blogs')}
         </a>
     </li>;
     const goBlogsPencil = <li className="hide-for-medium submit-story-pencil">
-        <a href={blogsUrl()} className="button small">
+        <a href={blogsUrl()} target={blogsTarget()} className="button small">
             <Icon name="new/add" size="0_95x" />
         </a>
     </li>;
@@ -127,8 +127,8 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     additional_menu.push(
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
         { link: '/market', icon: 'trade', value: tt("navigation.market") },
-        { link: blogsUrl('/services'), icon: 'new/monitor', value: tt("navigation.services") },
-        { link: blogsUrl('/search'), icon: 'new/search', value: tt("navigation.search") },
+        { link: blogsUrl('/services'), target: blogsTarget(), icon: 'new/monitor', value: tt("navigation.services") },
+        { link: blogsUrl('/search'), target: blogsTarget(), icon: 'new/search', value: tt("navigation.search") },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },
         { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses") },
         { link: '/workers', icon: 'voters', value: tt("navigation.workers") },
@@ -154,7 +154,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
-            {link: blogLink, icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention" />},
+            {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention" />},
             {link: donatesLink, icon: 'hf/hf8', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :

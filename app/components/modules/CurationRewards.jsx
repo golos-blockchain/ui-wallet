@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import tt from 'counterpart'
 
 import TransferHistoryRow from 'app/components/cards/TransferHistoryRow'
-import { blogsUrl, } from 'app/utils/blogsUtils'
+import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import {numberWithCommas, vestsToSp, assetFloat} from 'app/utils/StateFunctions'
 import Callout from 'app/components/elements/Callout'
 import Icon from 'app/components/elements/Icon'
@@ -133,11 +133,11 @@ class CurationRewards extends React.Component {
             <div className="row">
                 <div className="column small-12">
                     <span style={{float: 'right', fontSize: '85%'}}>
-                        <a href={blogsUrl('/allposts')}>
+                        <a href={blogsUrl('/allposts')} target={blogsTarget()}>
                             <Icon name="hf/hf18" size="2x" /> {tt('g.posts')}
                         </a>
                         {' '}{tt('g.and')}{' '}
-                        <a href={blogsUrl('/allcomments')}>
+                        <a href={blogsUrl('/allcomments')} target={blogsTarget()}>
                             {tt('g.comments')}
                         </a>
                         {' '}{tt('g.sorted_by_payouts')}
