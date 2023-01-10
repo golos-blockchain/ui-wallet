@@ -6,7 +6,7 @@ import { Asset } from 'golos-lib-js/lib/utils';
 import Icon from 'app/components/elements/Icon';
 import Userpic from 'app/components/elements/Userpic';
 import iconCross from 'app/assets/icons/cross.svg';
-import { blogsUrl } from 'app/utils/blogsUtils'
+import { blogsUrl, blogsTarget } from 'app/utils/blogsUtils'
 import { msgsLink } from 'app/utils/ExtLinkUtils'
 
 const actionStyle = {
@@ -100,14 +100,14 @@ const comment = (scope, type, op) => {
                 </span>
             </div>
             <div className='NotificationContent__container_center'>
-                <Link to={url}>
+                <a href={url} target={blogsTarget()}>
                     <span className='NotificationContent__action_source'>
                         {author}
                         <span style={{ color: '#919191', fontWeight: '450', }}>
                             {message}.
                         </span>
                     </span>
-                </Link>
+                </a>
             </div>
         </div>
     );

@@ -12,3 +12,10 @@ export function blogsUrl(pathname = '') {
         return ''
     }
 }
+
+export function blogsTarget() {
+    if (process.env.IS_APP) {
+        return '_blank'
+    } 
+    return undefined
+}

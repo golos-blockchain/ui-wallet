@@ -631,7 +631,7 @@ export default connect(
         const cprops = state.global.get('cprops')
 
         let min_gp_to_curate = 0
-        if (price_per_golos) {
+        if (price_per_golos && cprops) {
             let min_gbg = cprops.get('min_golos_power_to_emission')
             if (min_gbg) {
                 min_gbg = parseFloat(min_gbg)

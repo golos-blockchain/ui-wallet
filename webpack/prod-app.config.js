@@ -1,10 +1,11 @@
 const webpack = require('webpack');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const path = require('path');
 const git = require('git-rev-sync');
 let prodConfig = require('./prod.config');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
 
+delete prodConfig.entry
 delete prodConfig.optimization.minimizer
 
 module.exports = merge(prodConfig, {
@@ -30,12 +31,9 @@ module.exports = merge(prodConfig, {
         path: path.resolve(__dirname, '../dist/electron/assets'),
     },
     optimization: {
+        minimize: true,
         minimizer: [
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    safe: true,
-                }
-            }),
+            new TerserPlugin(),
         ],
     },
 });
