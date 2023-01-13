@@ -192,6 +192,12 @@ export function* fetchState(location_change_action) {
                 let voteList = voteMap[witness.id];
                 state.witnesses[witness.owner].vote_list = voteList || [];
             });
+        } else if (parts[0] === 'nodes') {
+            const witnesses = yield call([api, api.getWitnessesByVoteAsync], '', 100)
+            witnesses.forEach(witness => {
+                state.witnesses[witness.owner] = witness
+                accounts.add(witness.owner)
+            })
         }  else if (parts[0] === 'workers') {
             accounts.add('workers');
             state.cprops = yield call([api, api.getChainPropertiesAsync])
