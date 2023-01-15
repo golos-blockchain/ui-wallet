@@ -7,11 +7,20 @@ import tt from 'counterpart';
 import WitnessSettings from 'app/components/elements/WitnessSettings';
 
 class WitnessProps extends React.Component {
-    
+    state = {}
+
     constructor(props) {
         super();
-        this.initForm(props);
+        if (props.witness_obj) {
+            this.initForm(props)
+        }
         //this.shouldComponentUpdate = shouldComponentUpdate(this, 'WitnessProps');
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.witness_obj && this.props.witness_obj) {
+            this.initForm(this.props)
+        }
     }
 
     wprops_19 = [
@@ -147,7 +156,7 @@ class WitnessProps extends React.Component {
         props.comments_per_window = parseInt(props.comments_per_window);
         updateChainProperties({
             owner: account.name,
-            props: [7, props],
+            props: [8, props],
             errorCallback: (e) => {
                 if (e === 'Canceled') {
                     this.setState({
@@ -184,6 +193,8 @@ class WitnessProps extends React.Component {
         //const username = current_user ? current_user.get('username') : null
 
         const {state} = this
+
+        if (!this.state.witnessProps) return null
         
         const {submitting, valid, touched} = this.state.witnessProps;
         const disabled = state.loading || submitting || !valid || !touched
