@@ -44,9 +44,7 @@ async function initState() {
 
     const { pathname } = window.location
     if (pathname.startsWith('/__app_')) {
-        return {
-            content: {}
-        }
+        return initialState
     }
 
     try {
