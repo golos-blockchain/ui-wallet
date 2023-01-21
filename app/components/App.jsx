@@ -40,8 +40,6 @@ const availableDomains = [
     'golos.app',
     'gls.exchange',
     'golostalk.com',
-    'prizmtalk.com',
-    'gph.ai',
     'golos.cf',
     'dpos.space',
     'pisolog.net',
@@ -52,6 +50,7 @@ const availableDomains = [
     'vk.com',
     'coinmarketcap.com',
     'golos.chatbro.com',
+    'ecurrex.ru',
     'yandex.ru',
     'google.com'
 ];

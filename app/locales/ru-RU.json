@@ -10,7 +10,7 @@
     "DEBT_TOKENS": "Золотые",
     "TOKEN_WORTH": "~1 мг золота",
     "TIP_TOKEN": "TIP-баланс",
-    "CLAIM_TOKEN": "CLAIM-баланс"
+    "CLAIM_TOKEN": "Накопительный баланс"
   },
   "authorrewards_jsx": {
     "estimated_author_rewards_last_week": "Оценочные авторские вознаграждения за неделю",
@@ -786,7 +786,7 @@
   },
   "tips_js": {
     "tip_balance_hint": "Для вознаграждений пользователей, и на который получаете вознаграждения сами. Токены с него можно также отправить на увеличение Силы Голоса.",
-    "claim_balance_hint_SUBTRACT_DAILY": "Добавив %(SUBTRACT)s в Силу Голоса, вы сможете ежедневно и автоматически получать долю от эмиссии (+%(DAILY)s) на TIP-баланс.",
+    "claim_balance_hint_SUBTRACT_DAILY": "Добавив %(SUBTRACT)s в Силу Голоса, вы сможете востребовать накопленое и получать долю от эмиссии (+%(DAILY)s) на TIP-баланс автоматически.",
     "claim_balance_hint_enough_REQUIRED": "Ваша Сила Голоса была недостаточна для получения эмиссии (надо не менее %(REQUIRED)s). Эмиссия за этот период собрана на ваш CLAIM-баланс. Вы можете получить ее на TIP-баланс.",
     "claim_expiration_hint": "Окно востребования токенов закончится",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Торгуемые токены, которые могут быть переданы в любой момент.",
