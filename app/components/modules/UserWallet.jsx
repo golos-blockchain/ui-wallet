@@ -417,11 +417,6 @@ class UserWallet extends React.Component {
                     <span className="secondary">{tt('tips_js.tip_balance_hint')}</span>
                 </div>
                 <div className="column small-12 medium-4">
-                    <LiteTooltip t={tt('power_calc_jsx.title')}>
-                        <span className='PowerCalc' onClick={showPowerCalc}>
-                            <Icon name='hf/hf8' />
-                        </span>
-                    </LiteTooltip>
                     {isMyAccount
                         ? <FoundationDropdownMenu
                             className="Wallet_dropdown"
