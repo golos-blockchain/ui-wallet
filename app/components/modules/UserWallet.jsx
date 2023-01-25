@@ -391,23 +391,16 @@ class UserWallet extends React.Component {
                     <span className="secondary">{claim_hint}</span>
                 </div>
                 <div className="column small-12 medium-4">
-                    {isMyAccount
-                        ? <FoundationDropdownMenu
-                            className="Wallet__claim_dropdown"
-                            dropdownPosition="bottom"
-                            dropdownAlignment="right"
-                            label={steem_claim_balance_str}
-                            menu={claim_menu}
-                        />
-                        : steem_claim_balance_str
-                    }
-                    <div>{isMyAccount ? <button
+                    {steem_claim_balance_str}
+                    <div>{isMyAccount ? (<LiteTooltip t={tt('tips_js.claim_min_gp_AMOUNT', { AMOUNT: SUBTRACT })}>
+                    <button
                         className="Wallet__claim_button button tiny"
                         disabled={claim_disabled}
                         onClick={claim.bind(this, account.get('accumulative_balance'))}
                     >
                         {tt('g.claim')}
-                    </button> : null}</div>
+                    </button>
+                    </LiteTooltip>) : null}</div>
                     {emissionStake}
                 </div>
             </div> : null}

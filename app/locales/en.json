@@ -319,7 +319,7 @@
   "exchanges_jsx": {
     "title": "Buying and selling tokens",
     "temporarily_disabled": "Token deposit/withdraw is temporarily disabled",
-    "guide_user": "Instructions for the exchange",
+    "guide_user": "Instructions for exchanging tokens from",
     "pause": "Tokens input/output is temporarily suspended...",
     "total_supply": "Information about the total supply of tokens",
     "other_options": "for RUB / UAH / USD and many other options",
@@ -808,7 +808,8 @@
     "savings_interest": "Interest per month, if you will store this GBG amount in the savings",
     "savings_interest_zero": "Savings interest payments are disabled at now.",
     "savings_interest_debt": "GBG debt do not allows us to pay GBG savings interest.",
-    "savings_interest_gp_AMOUNT": "It is not enough %(AMOUNT)s Golos Power, to receive GBG interest payments."
+    "savings_interest_gp_AMOUNT": "It is not enough %(AMOUNT)s Golos Power, to receive GBG interest payments.",
+    "claim_min_gp_AMOUNT": "There is not enough %(AMOUNT)s in the Golos Power of the vote to withdraw tokens from the claim-balance."
   },
   "transferhistoryrow_jsx": {
     "to_savings": "to savings",
