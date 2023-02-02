@@ -385,6 +385,8 @@ class UserWallet extends React.Component {
                 Рекомендуем прочитать и об <a target="_blank" href="https://wiki.golos.id/users/update">изменениях</a> на Голосе за последнее время...</div>
             </Callout>}
 
+            <TransactionError opType="withdraw_vesting" />
+
             {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
                     {CLAIM_TOKEN.toUpperCase()}<br />
@@ -461,6 +463,7 @@ class UserWallet extends React.Component {
                                 </LiteTooltip>
                             </div>
                         ) : null}
+                    {isWithdrawScheduled && <div><small><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;{vesting_withdraw_rate_str} {LIQUID_TICKER}&nbsp;<TimeAgoWrapper date={account.get('next_vesting_withdrawal')} /></small></div>}
                 </div>
             </div>
             <div className="UserWallet__balance row">
@@ -567,13 +570,6 @@ class UserWallet extends React.Component {
                     </LiteTooltip></div>
                 </div>
             </div>
-            <div className="UserWallet__balance row">
-                <div className="column small-12">
-                    {isWithdrawScheduled && <span style={{fontSize: "90%"}}><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;<b>{vesting_withdraw_rate_str} {LIQUID_TICKER}</b>&nbsp;{tt('userwallet_jsx.next_power_down_is_scheduled')}&nbsp;<TimeAgoWrapper date={account.get('next_vesting_withdrawal')} />.</span> }
-                    {/*toggleDivestError && <div className="callout alert">{toggleDivestError}</div>*/}
-                    <TransactionError opType="withdraw_vesting" />
-                </div>
-            </div>
 
             <div align="center">
                 {Math.random() > 0.5 ? (<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>) : (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a>)}
@@ -590,7 +586,7 @@ class UserWallet extends React.Component {
             <div className="row">
                 <div className="column small-12">
                     {/** history */}
-                    <span className="secondary" style={{ float: 'right' }}><Icon name="new/search" /> {tt('userwallet_jsx.history_viewing')}: <a target="_blank" rel="noopener noreferrer" href={"https://golos.cf/@" + account.get('name')}>golos.cf <Icon name="extlink" /></a> / <a target="_blank" href={"https://explorer.golos.id/#account/" + account.get('name')}>explorer <Icon name="extlink" /></a></span>
+                    <span className="secondary" style={{ float: 'right' }}><Icon name="new/search" /> {tt('userwallet_jsx.history_viewing')}: <a target="_blank" href={"https://explorer.golos.id/#account/" + account.get('name')}>explorer <Icon name="extlink" /></a> / <a target="_blank" rel="noopener noreferrer" href={"https://golos.cf/@" + account.get('name')}>golos.cf <Icon name="extlink" /></a></span>
                     <h4>{tt('userwallet_jsx.history')}</h4>
                     <table>
                         <tbody>

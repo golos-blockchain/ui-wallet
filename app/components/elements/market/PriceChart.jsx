@@ -85,8 +85,8 @@ class PriceChart extends React.Component {
         candleSeries.applyOptions({
             priceFormat: {
                 type: 'price',
-                precision: 3,
-                minMove: 0.001
+                precision: 4,
+                minMove: 0.0001
             },
             lastValueVisible: true
         });
@@ -146,7 +146,7 @@ class PriceChart extends React.Component {
         candleSeries.setData(data);
 
         this.chart.timeScale().setVisibleLogicalRange({
-            from: data.length - 45,
+            from: data.length - 30,
             to: data.length,
         });
     }

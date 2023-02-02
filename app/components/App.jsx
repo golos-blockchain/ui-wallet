@@ -40,7 +40,6 @@ const availableDomains = [
     'golos.app',
     'gls.exchange',
     'golostalk.com',
-    'golos.cf',
     'dpos.space',
     'pisolog.net',
     'rudex.org',

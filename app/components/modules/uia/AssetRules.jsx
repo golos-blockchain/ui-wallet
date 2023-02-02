@@ -9,6 +9,7 @@ import CloseButton from 'react-foundation-components/lib/global/close-button';
 import Author from 'app/components/elements/Author'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import Icon from 'app/components/elements/Icon';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import Memo from 'app/components/elements/Memo';
 import transaction from 'app/redux/Transaction';
 import { clearOldAddresses, loadAddress, saveAddress, } from 'app/utils/UIA';
@@ -33,6 +34,8 @@ class APIError extends Error {
 class AssetRules extends Component {
     state = {
         transferState: TransferState.initial,
+        copied_addr: false,
+        copied_memo: false,
     }
 
     async componentDidMount() {
@@ -196,7 +199,15 @@ class AssetRules extends Component {
             addr = <Memo text={addr} myAccount={true} username={username} />
         return addr ? <div>
             {tt('asset_edit_withdrawal_jsx.to')}<br/>
-            <b>{addr}</b><br/>
+            <span style={{border: '1px solid lightgray', color: '#4BA2F2', padding: '5px', borderRadius: '5px', fontSize: '120%'}}>
+                {addr}
+            </span> 
+            <CopyToClipboard text={addr} onCopy={() => this.setState({copied_addr: true})}>
+                <span style={{cursor: 'pointer', paddingLeft: '5px'}}>
+                    <Icon name="copy" size="2x" /> {this.state.copied_addr ? <Icon name="copy_ok" /> : null}
+                </span>
+            </CopyToClipboard>
+            <br/>
             </div> : null;
     }
 
@@ -350,7 +361,15 @@ class AssetRules extends Component {
             {this._renderTo(to, to_fixed)}
             {memo_fixed ? <div>
                     {tt('asset_edit_deposit_jsx.memo_fixed')}<br/>
-                    <b>{memo_fixed}</b><br/>
+                    <span style={{border: '1px solid lightgray', color: '#4BA2F2', padding: '5px', borderRadius: '5px', fontSize: '120%'}}>
+                        {memo_fixed}
+                    </span> 
+                    <CopyToClipboard text={memo_fixed} onCopy={() => this.setState({copied_memo: true})}>
+                        <span style={{cursor: 'pointer', paddingLeft: '5px'}}>
+                            <Icon name="copy" size="2x" /> {this.state.copied_memo ? <Icon name="copy_ok" /> : null}
+                        </span>
+                    </CopyToClipboard>
+                    <br/>
                 </div> : null}
             {this._renderParams()}
         </div>);
