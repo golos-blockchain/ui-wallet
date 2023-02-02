@@ -63,7 +63,7 @@ class ConvertAssets extends React.Component {
         } else if (sym1 === 'GBG') {
             myBalance = Asset(currentAccount.get('sbd_balance'))
         } else {
-            const res = await api.getAccountsBalances([currentAccount.get('name')])
+            const res = await api.getAccountsBalancesAsync([currentAccount.get('name')])
             myBalance = res[0][sym1] ? Asset(res[0][sym1].balance) : Asset(0, asset1.precision, sym1)
         }
         return myBalance
