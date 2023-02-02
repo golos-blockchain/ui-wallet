@@ -507,8 +507,8 @@
     "total_supply": "Информация об общем количестве токенов",
     "other_options": "за RUB / UAH / USD, банковские карты и многие другие варианты",
     "questions": "Есть вопросы",
-    "community_chat": "Получить ответы можно как в чате сообщества",
-    "delegate_chat": "так и в чате делегатов"
+    "community_chat": "Есть вопросы? Ответы в чате сообщества",
+    "delegate_chat": "или в чате делегатов"
   },
   "loginform_jsx": {
     "you_need_a_private_password_or_key": "Вам нужен приватный (не публичный) ключ ...",
@@ -1080,7 +1080,7 @@
     "buy_LIQUID_TOKEN_or_VESTING_TOKEN": "Купить %(LIQUID_TOKEN)s или %(VESTING_TOKEN2)s",
     "savings": "СЕЙФ",
     "estimated_account_value": "Оценочная стоимость аккаунта",
-    "next_power_down_to_happen": "Понижение Силы Голоса в размере",
+    "next_power_down_to_happen": "Понижение на",
     "next_power_down_is_scheduled": "запланировано",
     "transfers_are_temporary_disabled": "Переводы временно отключены.",
     "cancel_power_down": "Отменить понижение Силы Голоса",
