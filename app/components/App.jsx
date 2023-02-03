@@ -21,6 +21,7 @@ import { key_utils } from 'golos-lib-js/lib/auth/ecc';
 import MiniHeader from '@modules/MiniHeader';
 import golos from 'golos-lib-js';
 import tt from 'counterpart';
+import ChainFailure from 'app/components/elements/ChainFailure'
 import DialogManager from 'app/components/elements/common/DialogManager';
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
@@ -223,6 +224,7 @@ class App extends React.Component {
             params,
             children,
             new_visitor,
+            chain_failure,
             nightmodeEnabled
         } = this.props;
 
@@ -293,6 +295,7 @@ class App extends React.Component {
                     'App__content_hide-sub-menu': false,
                 })}>
                     {callout}
+                    <ChainFailure />
                     {children}
                     {noFooter ? null : <Footer />}
                     <ScrollButton />
