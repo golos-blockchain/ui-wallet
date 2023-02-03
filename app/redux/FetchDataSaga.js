@@ -83,6 +83,8 @@ export function* fetchState(location_change_action) {
         state.props = yield call([api, api.getDynamicGlobalProperties])
         state.feed_price = yield call([api, api.getCurrentMedianHistoryPrice])
 
+        state.chain_failure = state.props.chain_status === false
+
         let accounts = new Set()
 
         if (parts[0][0] === '@') {
