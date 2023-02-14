@@ -110,8 +110,21 @@ class AssetEditDeposit extends React.Component {
         }
         const isFixed = (toType === 'fixed')
         const field = isFixed ? 'memo_fixed' : 'memo_transfer';
+        let title
+        if (isFixed) {
+            title = <span>
+                {tt(`asset_edit_deposit_jsx.memo_fixed`) + ' '}
+                <small>
+                    {tt(`asset_edit_deposit_jsx.memo_fixed2`)}
+                    {tt(`asset_edit_deposit_jsx.memo_fixed3`)}
+                    {tt(`asset_edit_deposit_jsx.memo_fixed4`)}
+                </small>
+            </span>
+        } else {
+            title = tt(`asset_edit_deposit_jsx.${field}`)
+        }
         return (<div style={{ display: show ? 'block' : 'none', }}>
-            {tt(`asset_edit_deposit_jsx.${field}`)}
+            {title}
             <div className='input-group'>
                 <Field
                     name={`${name}.${field}`}

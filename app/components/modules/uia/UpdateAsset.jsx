@@ -38,12 +38,14 @@ class UpdateAsset extends Component {
         fee_percent = longToAsset(fee_percent, '', 2).trim()
         let description = '';
         let image_url = '';
+        let telegram = ''
         let deposit = null;
         let withdrawal = null;
         if (props.asset.json_metadata.startsWith('{')) {
             const json_metadata = JSON.parse(props.asset.json_metadata);
             description = json_metadata.description;
             image_url = json_metadata.image_url;
+            telegram = json_metadata.telegram
             deposit = json_metadata.deposit;
             withdrawal = json_metadata.withdrawal;
         }
@@ -61,6 +63,7 @@ class UpdateAsset extends Component {
             fee_percent,
             description,
             image_url,
+            telegram,
             symbols_whitelist: props.asset.symbols_whitelist.join('\n'),
             withdrawal,
             deposit,
@@ -126,10 +129,11 @@ class UpdateAsset extends Component {
         const {
             fee_percent, symbols_whitelist, description, image_url,
         } = values;
+        let telegram = values.telegram.trim().split('@').join('')
         const deposit = values.deposit;
         const withdrawal = this._sanitizeWithdrawal(values.withdrawal);
         updateAsset({ symbol, fee_percent, symbols_whitelist,
-            image_url, description, deposit, withdrawal, accountName,
+            image_url, telegram, description, deposit, withdrawal, accountName,
             errorCallback: (e) => {
                 if (e === 'Canceled') {
                     this.setState({
@@ -238,6 +242,19 @@ class UpdateAsset extends Component {
                     </div>
                 </div>
 
+                <div className='row'>
+                    <div className='column small-10'>
+                        {tt('assets_jsx.telegram')}
+                        <div className='input-group' style={{marginBottom: '1.25rem'}}>
+                            <Field name='telegram'
+                                className='input-group-field bold'
+                                maxLength='50'
+                                type='text'
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <AssetEditDeposit
                     name='deposit'
                     values={values}
@@ -296,7 +313,7 @@ export default connect(
     },
     dispatch => ({
         updateAsset: ({
-            symbol, fee_percent, symbols_whitelist, image_url, description,
+            symbol, fee_percent, symbols_whitelist, image_url, telegram, description,
             deposit, withdrawal,
             accountName, successCallback, errorCallback
         }) => {
@@ -313,6 +330,7 @@ export default connect(
                 symbols_whitelist: [...set],
                 json_metadata: JSON.stringify({
                     image_url,
+                    telegram,
                     description,
                     deposit,
                     withdrawal,
