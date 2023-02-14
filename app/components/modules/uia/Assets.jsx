@@ -143,14 +143,23 @@ class Assets extends Component {
 
             let description = ""
             let image_url = ""
+            let telegram
             let deposit = null;
             let withdrawal = null;
             if (item.json_metadata.startsWith('{')) {
                 let json_metadata = JSON.parse(item.json_metadata)
                 description = json_metadata.description
                 image_url = json_metadata.image_url
+                telegram = json_metadata.telegram
                 deposit = json_metadata.deposit;
                 withdrawal = json_metadata.withdrawal;
+            }
+
+            if (telegram) {
+                telegram = 'https://t.me/' + encodeURIComponent(telegram)
+                telegram = <a href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px' }}>
+                    <Icon name='new/telegram' title="Telegram" />
+                </a>
             }
 
             const hasDeposit = deposit
@@ -240,7 +249,7 @@ class Assets extends Component {
                 </td>
                 <td>
                     <span className="Assets__info">
-                    {tt('assets_jsx.creator')}: <Author author={item.creator} follow={false} /><br/>
+                    {tt('assets_jsx.creator')}: <Author author={item.creator} follow={false} />{telegram}<br/>
                     {tt('market_jsx.market_fee_percent_').trim() + ': ' + longToAsset(item.fee_percent, '', 2).trim() + '%'}<br/>
                     {tt('assets_jsx.supply_count')}:<br/>
                     {item.supply}

@@ -211,9 +211,14 @@ class AssetRules extends Component {
             </div> : null;
     }
 
-    _renderParams = (withDetails = true) => {
-        const { rules, sym, } = this.props;
-        const { min_amount, fee, details, } = rules;
+    _renderParams = () => {
+        const { rules, sym, currentUser } = this.props;
+        const username = currentUser.get('username')
+        const { min_amount, fee, memo_fixed } = rules
+        let details = rules.details
+        if (memo_fixed) {
+            details = details.split('<account>').join(username)
+        }
         return <div style={{fontSize: "90%"}}>
             <hr />
             {details && <div style={{ whiteSpace: 'pre-line', }}>
@@ -341,14 +346,19 @@ class AssetRules extends Component {
     }
 
     render() {
-        const { rules, sym, onClose, } = this.props;
-        const { to, to_type, to_fixed, to_transfer, memo_fixed,
+        const { rules, sym, onClose, currentUser, } = this.props;
+        const { to, to_type, to_fixed, to_transfer,
             min_amount, fee, details, isDeposit, } = rules;
         if (isDeposit && to_type === 'api') {
             return this._renderApi();
         }
         if (isDeposit && to_type === 'transfer') {
             return this._renderTransfer();
+        }
+        let memo_fixed = rules.memo_fixed
+        if (memo_fixed) {
+            const username = currentUser.get('username')
+            memo_fixed = memo_fixed.split('<account>').join(username)
         }
         return (<div>
             <CloseButton onClick={onClose} />
@@ -360,7 +370,7 @@ class AssetRules extends Component {
             </h4>
             {this._renderTo(to, to_fixed)}
             {memo_fixed ? <div>
-                    {tt('asset_edit_deposit_jsx.memo_fixed')}<br/>
+                    {tt('asset_edit_deposit_jsx.memo_fixed')}:<br/>
                     <span style={{border: '1px solid lightgray', color: '#4BA2F2', padding: '5px', borderRadius: '5px', fontSize: '120%'}}>
                         {memo_fixed}
                     </span> 
