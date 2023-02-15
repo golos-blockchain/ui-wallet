@@ -494,10 +494,12 @@ class UserWallet extends React.Component {
                          </div>
                         : null
                     }
-                    <div>{isMyAccount ? <Link
+                    <div>{isMyAccount ? <a
+                        href='/convert/YMRUB/GOLOS?buy'
+                        target='_blank'
+                        rel='nofollow noreferrer'
                         className="button tiny hollow"
-                        to="/exchanges"
-                    >{tt('g.buy')}</Link> : null}</div>
+                    >{tt('g.buy')}</a> : null}</div>
                 </div>
             </div>
             <div className="UserWallet__balance row zebra">

@@ -31,8 +31,8 @@ export default {
             cb(null, [require('@pages/LeavePage')]);
         } else if (route.page === 'UserProfile') {
             cb(null, [require('@pages/UserProfile')]);
-        } else if (route.page === 'ConvertAssetsLoader') {
-            cb(null, [require('@pages/ConvertAssetsLoader')]);
+        } else if (route.page === 'ConvertAssetsPage') {
+            cb(null, [require('@pages/ConvertAssetsPage')]);
         } else if (route.page === 'Market') {
             cb(null, [require('@pages/MarketLoader')]);
         } else {
