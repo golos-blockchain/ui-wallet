@@ -3,6 +3,9 @@ import tt from 'counterpart'
 
 import { blogsUrl } from 'app/utils/blogsUtils'
 import Icon from 'app/components/elements/Icon'
+import session from 'app/utils/session'
+
+const username = session.load().currentName;
 
 class Exchanges extends React.Component {
     render() {
@@ -56,7 +59,7 @@ class Exchanges extends React.Component {
                                     <a target="_blank" href="/market/GOLOS/YMUSDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMPZM" className="button">GOLOS-PZM</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMHIVE" className="button">GOLOS-HIVE</a><br />
                                     Настройка и стратегии торгового бота DEXbot, <a target="_blank" href="https://github.com/golos-blockchain/libs/wiki">примеры</a> операций <small>(JavaScript/Python)</small>.<br />
                                     <br /><hr/><br />
-                                    <h4><span className='new'>new</span> <a target="_blank" href="https://gateway.ecurrex.ru/buy_golos.php">Быстрая покупка GOLOS <Icon name='extlink' /></a></h4>с банковской карты через QIWI <small>(от сервиса <a target="_blank" href={blogsUrl('/@ecurrex-ru')}>@ecurrex-ru</a>)</small>
+                                    <h4><span className='new'>new</span> <a target="_blank" href={'https://gateway.ecurrex.ru/buy_golos.php?account=' + username}>Быстрая покупка GOLOS <Icon name='extlink' /></a></h4>с банковской карты через QIWI <small>(от сервиса <a target="_blank" href={blogsUrl('/@ecurrex-ru')}>@ecurrex-ru</a>)</small>
                                 </div>
                             </div>
                         </div>
