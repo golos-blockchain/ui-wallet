@@ -41,7 +41,8 @@ class PowerCalc extends React.Component {
     async componentDidMount() {
         const pr = await apidexGetPrices('GOLOS')
         this.setState({
-            rub_per_golos: pr.price_rub
+            price_rub: pr.price_rub,
+            price_usd: pr.price_usd
         })
         this.initLevels()
     }
@@ -60,7 +61,7 @@ class PowerCalc extends React.Component {
 
     render() {
         const { gprops, currentAccount } = this.props
-        const { amount, rub_per_golos, nextLevels, nearestLevel } = this.state
+        const { amount, price_rub, price_usd, nextLevels, nearestLevel } = this.state
 
         if (!currentAccount) {
             return null
@@ -75,9 +76,21 @@ class PowerCalc extends React.Component {
         let willAchieve = accuEmissionPerDay(currentAccount, gprops, addFloat)
 
         let increaseRub, willAchieveRub
-        if (rub_per_golos) {
-            increaseRub = '~' + (am * rub_per_golos).toFixed(2) + ' RUB'
-            willAchieveRub = '(~' + (willAchieve * rub_per_golos).toFixed(2) + ' RUB)'
+        if (price_rub) {
+            let increateTitle
+            if (price_usd) {
+                increateTitle = '~' + (am * price_usd).toFixed(2) + ' USD'
+            }
+            increaseRub = <span title={increateTitle}>
+                    {'~' + (am * price_rub).toFixed(2) + ' RUB'}
+                </span>
+            let willAchieveTitle
+            if (price_usd) {
+                willAchieveTitle = '~' + (willAchieve * price_usd).toFixed(2) + ' USD'
+            }
+            willAchieveRub = <span title={willAchieveTitle}>
+                    {'(~' + (willAchieve * price_rub).toFixed(2) + ' RUB)'}
+                </span>
         }
 
         willAchieve = Asset(willAchieve * 1000, 3, 'GOLOS')
@@ -136,7 +149,11 @@ class PowerCalc extends React.Component {
             <div className="row">
                 <div className='column small-12'>
                     {tt('power_calc_jsx.you_will_achieve')}
-                    <b>{' ' +willAchieve.floatString + ' ' + willAchieveRub + ' '}</b>
+                    <b>
+                        {' ' +willAchieve.floatString + ' '}
+                        {willAchieveRub}
+                        {' '}
+                    </b>
                     {tt('power_calc_jsx.daily')}.<br/>
                     <span style={{ fontSize: '80%' }}>
                         {tt('power_calc_jsx.apr') + ' ~' + aprAmount.toString() + ' (APR ' + apr + '%)'}

@@ -544,7 +544,8 @@
     "curation_rewards_last_week": "Curation rewards last week",
     "curation_rewards_history": "Curation Rewards History",
     "replenish_golos_power": "Replenish your Golos Power",
-    "replenish_golos_power_AMOUNT": " with %(AMOUNT)s to receive your curaton rewards."
+    "replenish_golos_power2": " with ",
+    "replenish_golos_power3":" to receive your curaton rewards."
   },
   "do_not_bother": {
     "title": "Do not bother",
@@ -803,7 +804,8 @@
   },
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
-    "claim_balance_hint_SUBTRACT_DAILY": "If you will add %(SUBTRACT)s into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "claim_balance_hint1": "If you will add ",
+    "claim_balance_hint_DAILY": " into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
     "claim_balance_hint_enough_REQUIRED": "Your Golos Power was not enough to receive emission (required at least %(REQUIRED)s). Emission for that time period is collected on your CLAIM-balance. Now you can claim it on your TIP-balance.",
     "claim_expiration_hint": "The tokens request window will end",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
