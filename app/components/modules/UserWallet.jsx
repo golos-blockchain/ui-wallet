@@ -547,7 +547,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {tt('userwallet_jsx.savings')} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#seif">(?)</a></small></span><br />
+                    {tt('userwallet_jsx.savings')} <br />
                     <span className="secondary">{tt('transfer_jsx.balance_subject_to_3_day_withdraw_waiting_period')}</span>
                 </div>
                 <div className="column small-12 medium-4">
@@ -584,8 +584,17 @@ class UserWallet extends React.Component {
                     </LiteTooltip></div>
                 </div>
             </div>
+            <div className="UserWallet__balance row zebra">
+                <div className="column small-12 medium-8">
+                    {tt('userwallet_jsx.assets_issued')} &nbsp;<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/ymusdt.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymhive.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymprizm.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymrub.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymsteem.jpg")} width="24" height="24" /></Link>&nbsp; {tt('userwallet_jsx.others')}...<br />
+                    <span className="secondary">{tt('userwallet_jsx.trade_gateways')}.</span>
+                </div>
+                <div className="column small-12 medium-4">
+                    <Link to={"/@" + account.get('name') + "/assets"}><small>{tt('userwallet_jsx.go_to_assets')}</small></Link>
+                </div>
+            </div>
 
-            <div align="center">
+            <div align="center"><br />
                 {Math.random() > 0.5 ? (<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>) : (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a>)}
             </div>
 

@@ -213,7 +213,7 @@ class AssetRules extends Component {
             addr = <Memo text={addr} myAccount={true} username={username} />
         return addr ? <div>
             {tt('asset_edit_withdrawal_jsx.to')}<br/>
-            <span style={{border: '1px solid lightgray', color: '#4BA2F2', padding: '5px', borderRadius: '5px', fontSize: '120%'}}>
+            <span style={{wordWrap: 'break-word', color: '#4BA2F2', fontSize: '120%'}}>
                 {addr}
             </span> 
             <CopyToClipboard text={addr} onCopy={() => this.setState({copied_addr: true})}>
@@ -424,7 +424,7 @@ class AssetRules extends Component {
             {this._renderTo(to, to_fixed)}
             {memo_fixed ? <div>
                     {tt('asset_edit_deposit_jsx.memo_fixed')}:<br/>
-                    <span style={{border: '1px solid lightgray', color: '#4BA2F2', padding: '5px', borderRadius: '5px', fontSize: '120%'}}>
+                    <span style={{wordWrap: 'break-word', color: '#4BA2F2', fontSize: '120%'}}>
                         {memo_fixed}
                     </span> 
                     <CopyToClipboard text={memo_fixed} onCopy={() => this.setState({copied_memo: true})}>

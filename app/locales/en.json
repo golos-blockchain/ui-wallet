@@ -1083,7 +1083,11 @@
     "account_idleness": "Your account has not had any actions using the active key for a long time",
     "worker_foundation": "Workers foundation",
     "history_viewing": "Operation history",
-    "history": "HISTORY"
+    "history": "HISTORY",
+    "assets_issued": "User Issued Assets",
+    "go_to_assets": "Go to the list of UIA-assets",
+    "others": "and others",
+    "trade_gateways": "Allow you to trade through gateways to popular cryptocurrencies, exchange or reward them"
   },
   "user_saga_js": {
     "image_upload": {
