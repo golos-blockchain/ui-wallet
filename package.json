@@ -32,7 +32,7 @@
     "@xmldom/xmldom": "^0.8.6",
     "assert": "^1.4.1",
     "autoprefixer": "^8.6.1",
-    "babel-loader": "8.3.0",
+    "babel-loader": "^9.1.2",
     "browserify-zlib": "^0.2.0",
     "bs58": "^3.1.0",
     "bytebuffer": "^5.0.1",
