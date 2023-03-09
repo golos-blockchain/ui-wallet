@@ -119,10 +119,27 @@ class Assets extends Component {
 
         const assetsNorm = normalizeAssets(assets)
 
+        const presorted = []
+        for (const [sym, item] of Object.entries(assets)) {
+            item.parsed = Asset(item.balance)
+            item.parsed_sum = item.parsed.plus(Asset(item.tip_balance)).plus(Asset(item.market_balance))
+            item.parsed_sum = parseFloat(item.parsed_sum.amountFloat)
+            presorted.push([sym, item])
+        }
+        presorted.sort((a, b) => {
+            const ha = !a[1].my && $STM_Config.hidden_assets[a[0]]
+            const hb = !b[1].my && $STM_Config.hidden_assets[b[0]]
+            if (!ha && hb) return -1
+            if (ha && !hb) return 1
+            if (a[1].parsed_sum > b[1].parsed_sum) return -1
+            if (a[1].parsed_sum < b[1].parsed_sum) return 1
+            return 0
+        })
+
         let show_load_more = false;
         let my_assets = [];
-        for (const [sym, item] of Object.entries(assets)) {
-            if (!item.my) {
+        for (const [sym, item] of presorted) {
+            if (!item.my && $STM_Config.hidden_assets[sym]) {
                 show_load_more = true;
                 if (!this.state.show_full_list) continue;
             }
@@ -135,6 +152,8 @@ class Assets extends Component {
             if (!item.allow_override_transfer) {
                 balance_menu.push({ value: tt('userwallet_jsx.transfer_to_tip'), link: '#', onClick: showTransfer.bind( this, account_name, sym, item.precision, 'Transfer to TIP' ) })
             }
+
+            balance_menu.push({ value: tt('g.buy'), link: '/convert/YMRUB/' + sym + '?buy' })
 
             let tip_menu = [
                 { value: tt('g.transfer'), link: '#', onClick: showTransfer.bind( this, '', sym, item.precision, 'TIP to Account' ) },
@@ -188,8 +207,7 @@ class Assets extends Component {
 
             const tradables = getTradablesFor(assetsNorm, [sym], true)
 
-            const parsed = Asset(item.balance)
-            const convertDirection = parsed.amount ? 'sell' : 'buy'
+            const convertDirection = item.parsed.amount ? 'sell' : 'buy'
 
             my_assets.push(<tr key={sym}>
                 <td>

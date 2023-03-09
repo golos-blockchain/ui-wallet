@@ -107,7 +107,8 @@ export function* fetchState(location_change_action) {
                             } else {
                                 state.assets[sym] = {
                                     balance: '0.' + '0'.repeat(precision) + ' ' + sym,
-                                    tip_balance: '0.' + '0'.repeat(precision) + ' ' + sym
+                                    tip_balance: '0.' + '0'.repeat(precision) + ' ' + sym,
+                                    market_balance: '0.' + '0'.repeat(precision) + ' ' + sym
                                 }
                             }
 

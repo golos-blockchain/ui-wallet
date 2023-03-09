@@ -80,11 +80,11 @@ export default function resolveRoute(path)
         return {page: 'UserProfile', params: match.slice(1)};
     }
     if (path === '/convert') {
-        return {page: 'ConvertAssetsLoader'};
+        return {page: 'ConvertAssetsPage'};
     }
     match = path.match(routeRegex.ConvertPair);
     if (match) { 
-        return {page: 'ConvertAssetsLoader', params: match.slice(1)}
+        return {page: 'ConvertAssetsPage', params: match.slice(1)}
     }
     return {page: 'NotFound'};
 }

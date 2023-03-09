@@ -16,6 +16,7 @@ const wait = ms => (
     }))
 
 let polling = false
+let hasData = false
 let active_user = null
 let last_trade = null
 
@@ -27,8 +28,8 @@ export function* fetchMarket(location_change_action) {
     }
 
     let parts = pathname.split('/')
-    let sym1 = parts[2]
-    let sym2 = parts[3]
+    let sym1 = parts[2] || 'GOLOS'
+    let sym2 = parts[3] || 'GBG'
 
     let assets;
     try {
@@ -43,11 +44,10 @@ export function* fetchMarket(location_change_action) {
     }
     yield put(MarketReducer.actions.upsertAssets(kv_assets));
 
-    if(polling == true) return
+    if(polling && hasData) return
     polling = true
 
     while(polling) {
-
         try {
             const state = yield call([api, api.getOrderBookExtendedAsync], 500, [sym1, sym2]);
             yield put(MarketReducer.actions.receiveOrderbook(state));
@@ -64,6 +64,8 @@ export function* fetchMarket(location_change_action) {
 
             const state3 = yield call([api, api.getTickerAsync], [sym1, sym2]);
             yield put(MarketReducer.actions.receiveTicker(state3, [sym1, sym2]));
+
+            hasData = true
         } catch (error) {
             console.error('~~ Saga fetchMarket error ~~>', error);
             yield put({type: 'global/CHAIN_API_ERROR', error: error.message});
@@ -81,7 +83,7 @@ export function* fetchOpenOrders(set_user_action) {
     let pair = ["GOLOS", "GBG"] // for UserWallet (/@account/transfers)
     if (isMarket) {
         let parts = window.location.href.split('/')
-        pair = [parts[4], parts[5]]
+        pair = [parts[4] || 'GOLOS', parts[5] || 'GBG']
     }
 
     try {

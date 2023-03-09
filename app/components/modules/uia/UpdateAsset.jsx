@@ -29,8 +29,19 @@ class UpdateAsset extends Component {
             errorMessage: '',
             successMessage: '',
         };
-        this.initForm(props);
         this.aewRef = React.createRef();
+    }
+
+    componentDidMount() {
+        if (this.props.asset) {
+            this.initForm(this.props)
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.asset && !prevProps.asset) {
+            this.initForm(this.props)
+        }
     }
 
     initForm(props) {
@@ -43,9 +54,9 @@ class UpdateAsset extends Component {
         let withdrawal = null;
         if (props.asset.json_metadata.startsWith('{')) {
             const json_metadata = JSON.parse(props.asset.json_metadata);
-            description = json_metadata.description;
-            image_url = json_metadata.image_url;
-            telegram = json_metadata.telegram
+            description = json_metadata.description || description
+            image_url = json_metadata.image_url || image_url
+            telegram = json_metadata.telegram || telegram
             deposit = json_metadata.deposit;
             withdrawal = json_metadata.withdrawal;
         }
@@ -59,15 +70,17 @@ class UpdateAsset extends Component {
         };
         if (!withdrawal.ways || !withdrawal.ways[0])
             withdrawal.ways = [{ name: '', memo: '', prefix: '', }];
-        this.state.initialValues = {
-            fee_percent,
-            description,
-            image_url,
-            telegram,
-            symbols_whitelist: props.asset.symbols_whitelist.join('\n'),
-            withdrawal,
-            deposit,
-        };
+        this.setState({
+            initialValues: {
+                fee_percent,
+                description,
+                image_url,
+                telegram,
+                symbols_whitelist: props.asset.symbols_whitelist.join('\n'),
+                withdrawal,
+                deposit,
+            }
+        })
     }
 
     onFeePercentChange = (e, values, handle) => {
@@ -164,9 +177,9 @@ class UpdateAsset extends Component {
 
     render() {
         const {props: {account, isMyAccount, cprops, symbol, asset}} = this;
-        if (!asset) return (<div></div>);
         const { initialValues, successMessage, errorMessage, } = this.state;
         const account_name = account.get('name');
+        if (!initialValues) return (<div></div>)
 
         return (<div>
             <Formik

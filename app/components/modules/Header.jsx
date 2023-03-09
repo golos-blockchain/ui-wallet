@@ -106,7 +106,7 @@ class Header extends React.Component {
             if(route.params[1] === "recent-replies"){
                 page_title = tt('header_jsx.replies_to') + " " + user_title;
             }
-        } else if (route.page === 'ConvertAssetsLoader') {
+        } else if (route.page === 'ConvertAssetsPage') {
             page_title = tt('g.convert_assets')
         } else {
             page_name = ''; //page_title = route.page.replace( /([a-z])([A-Z])/g, '$1 $2' ).toLowerCase();

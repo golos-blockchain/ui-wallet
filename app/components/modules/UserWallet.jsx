@@ -37,14 +37,15 @@ class UserWallet extends React.Component {
 
     loadPriceIfNeed = async () => {
         const { account } = this.props
-        if (!account || this.state.rub_per_golos) {
+        if (!account || this.state.price_rub) {
             return
         }
         const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
         if (accumulative_balance_steem) {
             const pr = await apidexGetPrices('GOLOS')
             this.setState({
-                rub_per_golos: pr.price_rub
+                price_rub: pr.price_rub,
+                price_usd: pr.price_usd
             })
         }
     }
@@ -324,24 +325,35 @@ class UserWallet extends React.Component {
         const { min_gp_to_curate } = this.props
         let claim_disabled = false
         let claim_hint
-        let SUBTRACT
+        let SUBTRACT = []
         if (vesting_steem >= min_gp_to_curate) {
             claim_hint = tt('tips_js.claim_balance_hint_enough_REQUIRED', {
                 REQUIRED: (min_gp_to_curate + 0.001).toFixed(3) + ' ' + LIQUID_TICKER
             })
         } else {
             const subtract = min_gp_to_curate - vesting_steem + 0.001
-            SUBTRACT = subtract.toFixed(3) + ' ' + LIQUID_TICKER
-            const { rub_per_golos } = this.state
-            if (rub_per_golos) {
-                SUBTRACT += ' (~' + (subtract * rub_per_golos).toFixed(2) + ' RUB)'
+            SUBTRACT.push(subtract.toFixed(3) + ' ' + LIQUID_TICKER)
+            const { price_rub, price_usd } = this.state
+            if (price_rub) {
+                SUBTRACT.push(' (')
+                let price_title
+                if (price_usd) {
+                    price_title = '~' + (subtract * price_usd).toFixed(2) + ' USD'
+                }
+                SUBTRACT.push(<span key='price' title={price_title}>
+                        {'~' + (subtract * price_rub).toFixed(2) + ' RUB'}
+                    </span>)
+                SUBTRACT.push(')')
             }
             let DAILY = vsEmissionPerDay(gprops, 0, parseFloat(steemToVests(subtract, gprops)))
             DAILY = numberWithCommas(DAILY.toFixed(3)) + ' ' + LIQUID_TICKER
-            claim_hint = tt('tips_js.claim_balance_hint_SUBTRACT_DAILY', {
-                SUBTRACT,
-                DAILY
-            })
+            claim_hint = <span>
+                {tt('tips_js.claim_balance_hint1')}
+                {SUBTRACT}
+                {tt('tips_js.claim_balance_hint_DAILY', {
+                    DAILY
+                })}
+            </span>
             claim_disabled = true
         }
 
@@ -494,10 +506,12 @@ class UserWallet extends React.Component {
                          </div>
                         : null
                     }
-                    <div>{isMyAccount ? <Link
+                    <div>{isMyAccount ? <a
+                        href='/convert/YMRUB/GOLOS?buy'
+                        target='_blank'
+                        rel='nofollow noreferrer'
                         className="button tiny hollow"
-                        to="/exchanges"
-                    >{tt('g.buy')}</Link> : null}</div>
+                    >{tt('g.buy')}</a> : null}</div>
                 </div>
             </div>
             <div className="UserWallet__balance row zebra">

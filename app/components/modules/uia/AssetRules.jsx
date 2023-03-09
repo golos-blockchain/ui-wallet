@@ -11,6 +11,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import Icon from 'app/components/elements/Icon';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Memo from 'app/components/elements/Memo';
+import TransferWaiter from 'app/components/modules/uia/TransferWaiter'
 import transaction from 'app/redux/Transaction';
 import { clearOldAddresses, loadAddress, saveAddress, } from 'app/utils/UIA';
 import getUIAAddress from 'shared/getUIAAddress'
@@ -38,7 +39,7 @@ class AssetRules extends Component {
         copied_memo: false,
     }
 
-    async componentDidMount() {
+    load = async () => {
         const { rules, sym, } = this.props;
         const { to_type, to_api, isDeposit, creator, } = rules;
         if (isDeposit) {
@@ -56,6 +57,19 @@ class AssetRules extends Component {
             } else if (to_type === 'api') {
                 this.doAPI()
             }
+        }
+    }
+
+    componentDidMount() {
+        this.load()
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.sym !== this.props.sym) {
+            this.setState({
+                apiLoaded: null
+            })
+            this.load()
         }
     }
 
@@ -212,7 +226,7 @@ class AssetRules extends Component {
     }
 
     _renderParams = () => {
-        const { rules, sym, currentUser } = this.props;
+        const { rules, sym, currentUser, embed } = this.props;
         const username = currentUser.get('username')
         const { min_amount, fee, memo_fixed } = rules
         let details = rules.details
@@ -220,10 +234,10 @@ class AssetRules extends Component {
             details = details.split('<account>').join(username)
         }
         return <div style={{fontSize: "90%"}}>
-            <hr />
+            {!embed ? <hr /> : null}
             {details && <div style={{ whiteSpace: 'pre-line', }}>
                 {details}
-            <br/><br/></div>}
+            <br/>{!embed ? <br/> : null}</div>}
             {min_amount && <div>
                 {tt('asset_edit_withdrawal_jsx.min_amount')} <b>{min_amount} {sym || ''}</b></div>}
             {fee && <div>
@@ -232,12 +246,12 @@ class AssetRules extends Component {
     }
 
     _renderApi = () => {
-        const { sym, onClose } = this.props
-        const header = (<h4>
+        const { sym, onClose, embed } = this.props
+        const header = !embed ? (<h4>
             {tt('asset_edit_deposit_jsx.transfer_title_SYM', {
                 SYM: sym || ' ',
             })}
-        </h4>)
+        </h4>) : null
         const { apiLoaded  } = this.state
         if (!apiLoaded) {
             const { sym } = this.props
@@ -253,12 +267,19 @@ class AssetRules extends Component {
         }
         if (apiLoaded.error) {
             const { creator } = this.props.rules
+            let { telegram } = this.props
+            if (telegram) {
+                telegram = 'https://t.me/' + encodeURIComponent(telegram)
+                telegram = <a href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px' }}>
+                    <Icon name='new/telegram' title="Telegram" />
+                </a>
+            }
             return (<div>
                 <CloseButton onClick={onClose} />
                 {header}
                 {tt('asset_edit_deposit_jsx.api_error') + sym + ':'}
                 <p style={{marginTop: '0.3rem', marginBottom: '0.3rem'}}>
-                    <Author author={creator} forceMsgs={true} />
+                    <Author author={creator} forceMsgs={true} />{telegram}
                 </p>
                 {tt('asset_edit_deposit_jsx.api_error_details')}
                 <pre style={{marginTop: '0.3rem'}}>
@@ -274,11 +295,12 @@ class AssetRules extends Component {
             {header}
             {this._renderTo(address, null)}
             {this._renderParams(false)}
+            {this._renderWaiter()}
         </div>)
     }
 
     _renderTransfer = () => {
-        const { rules, sym, onClose, } = this.props;
+        const { rules, sym, onClose, embed } = this.props;
         const { to_transfer, memo_transfer, } = rules;
         const { transferState, receivedTransfer, } = this.state;
 
@@ -286,11 +308,11 @@ class AssetRules extends Component {
 
         const enough = this.enoughBalance();
 
-        const header = (<h4>
+        const header = (!embed ? <h4>
             {tt('asset_edit_deposit_jsx.transfer_title_SYM', {
                 SYM: sym || ' ',
             })}
-        </h4>);
+        </h4> : null);
 
         if (transferState === TransferState.received) {
             const { currentUser, } = this.props;
@@ -345,8 +367,39 @@ class AssetRules extends Component {
         </div>);
     }
 
+    _renderWaiter = () => {
+        let { sym, waiterTitle, onTransfer } = this.props
+        if (!onTransfer) {
+            onTransfer = (delta) => {
+                this.props.fetchState()
+                this.setState({
+                    deposited: delta
+                })
+            }
+        }
+        return <TransferWaiter
+            sym={sym} title={waiterTitle} onTransfer={onTransfer} />
+    }
+
     render() {
-        const { rules, sym, onClose, currentUser, } = this.props;
+        const { deposited } = this.state
+        if (deposited) {
+            const { embed, sym, onClose } = this.props
+            return <div>
+                <CloseButton onClick={onClose} />
+                {!embed ? <h4>
+                    {tt('asset_edit_deposit_jsx.transfer_title_SYM', {
+                        SYM: sym || ' ',
+                    })}
+                </h4> : null}
+                {tt('asset_edit_deposit_jsx.you_received')}
+                <b>{deposited.toString()}</b>.
+                <br />
+                {tt('asset_edit_deposit_jsx.you_received2')}
+            </div>
+        }
+
+        const { rules, sym, onClose, currentUser, embed, } = this.props;
         const { to, to_type, to_fixed, to_transfer,
             min_amount, fee, details, isDeposit, } = rules;
         if (isDeposit && to_type === 'api') {
@@ -362,12 +415,12 @@ class AssetRules extends Component {
         }
         return (<div>
             <CloseButton onClick={onClose} />
-            <h4>
+            {!embed ? <h4>
                 {tt((isDeposit ? 'asset_edit_deposit_jsx' : 'asset_edit_withdrawal_jsx')
                         + '.transfer_title_SYM', {
                     SYM: sym || ' ',
                 })}
-            </h4>
+            </h4> : null}
             {this._renderTo(to, to_fixed)}
             {memo_fixed ? <div>
                     {tt('asset_edit_deposit_jsx.memo_fixed')}:<br/>
@@ -382,6 +435,7 @@ class AssetRules extends Component {
                     <br/>
                 </div> : null}
             {this._renderParams()}
+            {isDeposit ? this._renderWaiter() : null}
         </div>);
     }
 }
@@ -390,14 +444,20 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-        const currentUserFromRoute = Map({username: currentUserNameFromRoute});
-        const currentUser = state.user.getIn(['current']) || currentUserFromRoute;
+        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        if (!currentUser) {
+            const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
+            currentUser = Map({username: currentUserNameFromRoute});
+        }
         const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')]);
         return { ...ownProps, currentUser, currentAccount, };
     },
 
     dispatch => ({
+        fetchState: () => {
+            const pathname = window.location.pathname;
+            dispatch({type: 'FETCH_STATE', payload: {pathname}});
+        },
         dispatchTransfer: ({
             to, memo, currentUser, successCallback, errorCallback
         }) => {

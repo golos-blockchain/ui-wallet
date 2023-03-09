@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import tt from 'counterpart'
 
 import TransferHistoryRow from 'app/components/cards/TransferHistoryRow'
+import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import {numberWithCommas, vestsToSp, assetFloat} from 'app/utils/StateFunctions'
 import Callout from 'app/components/elements/Callout'
@@ -15,10 +16,19 @@ import { Asset, Price } from 'golos-lib-js/lib/utils'
 class CurationRewards extends React.Component {
     state = { historyIndex: 0 }
 
+    async componentDidMount() {
+        const pr = await apidexGetPrices('GOLOS')
+        this.setState({
+            price_rub: pr.price_rub,
+            price_usd: pr.price_usd
+        })
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
         if (!this.props.account.transfer_history) return true;
         if (!nextProps.account.transfer_history) return true;
         if (!this.props.current_user && nextProps.current_user) return true;
+        if (this.state.price_rub !== nextState.price_rub) return true
         return (
             nextProps.account.transfer_history.length !== this.props.account.transfer_history.length ||
             nextState.historyIndex !== this.state.historyIndex);
@@ -67,7 +77,17 @@ class CurationRewards extends React.Component {
                 }
                 if (gpExists.amount < gpMin.amount) {
                     gpDeficit = gpMin.amount - gpExists.amount;
-                    gpDeficit = Asset(gpDeficit, 3, 'GOLOS').toString();
+                    gpDeficit = Asset(gpDeficit, 3, 'GOLOS')
+                    const { price_rub, price_usd } = this.state
+                    if (price_rub && price_usd) {
+                        const defRub = '~' + (parseFloat(gpDeficit.amountFloat) * price_rub).toFixed(2) + ' RUB'
+                        const defUsd = '~' + (parseFloat(gpDeficit.amountFloat) * price_usd).toFixed(2) + ' USD'
+                        gpDeficit = <span title={defUsd}>
+                            {gpDeficit.toString()}{' (' + defRub + ')'}
+                        </span>
+                    } else {
+                        gpDeficit = gpDeficit.toString()
+                    }
                 }
             }
         }
@@ -156,7 +176,9 @@ class CurationRewards extends React.Component {
 
             {gpDeficit && <Callout>
                 <div align="center"><Link to={`/@${account.name}/transfers`}>{tt('curationrewards_jsx.replenish_golos_power')}</Link>
-                {tt('curationrewards_jsx.replenish_golos_power_AMOUNT', {AMOUNT: gpDeficit})}
+                {tt('curationrewards_jsx.replenish_golos_power2')}
+                {gpDeficit}
+                {tt('curationrewards_jsx.replenish_golos_power3')}
                 <br /><Icon name="golos" size="2x" /></div>
             </Callout>}
 

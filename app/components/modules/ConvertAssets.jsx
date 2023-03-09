@@ -430,9 +430,9 @@ class ConvertAssets extends React.Component {
     }
 
     render() {
-        const { direction, isDialog } = this.props
+        const { direction, isDialog, currentAccount } = this.props
         const { loading, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning } = this.state
-        if (loading) {
+        if (loading || !currentAccount) {
             return (<center>
                 <LoadingIndicator type='circle' size='25px' />
             </center>)

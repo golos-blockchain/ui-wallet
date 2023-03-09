@@ -506,6 +506,18 @@
     "estimated_author_rewards_last_week": "Estimated author rewards last week",
     "author_rewards_history": "Author Rewards History"
   },
+  "quickbuy_jsx": {
+    "buy_SYM_with": "Buy %(SYM)s tokens",
+    "with_what": "Method:",
+    "with_what2": "Your choice:",
+    "how_to": "1. Buy:",
+    "go_step2": "2. Transfer:",
+    "step2": "Do these actions and wait. When %(SYM1)s will be on your balance, you will have ability to exchange them to %(SYM2)s.",
+    "cancel": "Cancel",
+    "cannot_buy_TOKEN": "Cannot buy such token: %(TOKEN)s",
+    "no_such_TOKEN": "Cannot buy using such token: %(TOKEN)s",
+    "deposit_unavailable": "Deposit disabled by gateway holder. You can contact him: "
+  },
   "plurals": {
     "reply_count": {
       "zero": "no replies",
@@ -532,7 +544,8 @@
     "curation_rewards_last_week": "Curation rewards last week",
     "curation_rewards_history": "Curation Rewards History",
     "replenish_golos_power": "Replenish your Golos Power",
-    "replenish_golos_power_AMOUNT": " with %(AMOUNT)s to receive your curaton rewards."
+    "replenish_golos_power2": " with ",
+    "replenish_golos_power3":" to receive your curaton rewards."
   },
   "do_not_bother": {
     "title": "Do not bother",
@@ -662,7 +675,9 @@
     "waiting": "Transfer of 0.001 GOLOS was sent. Responding transfer with address will acquire in ~5 minutes...",
     "timeouted": "Transfer with address is not acquired. Try again or contact the issuer of ",
     "api_error": "Cannot get address. Try again later. If problem still occurs, contact the issuer of ",
-    "api_error_details": "and send the error details:"
+    "api_error_details": "and send the error details:",
+    "you_received": "Congratulations! You received ",
+    "you_received2": "They are on your balance."
   },
   "asset_edit_withdrawal_jsx": {
     "title": "Withdrawal Rules",
@@ -789,7 +804,8 @@
   },
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
-    "claim_balance_hint_SUBTRACT_DAILY": "If you will add %(SUBTRACT)s into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "claim_balance_hint1": "If you will add ",
+    "claim_balance_hint_DAILY": " into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
     "claim_balance_hint_enough_REQUIRED": "Your Golos Power was not enough to receive emission (required at least %(REQUIRED)s). Emission for that time period is collected on your CLAIM-balance. Now you can claim it on your TIP-balance.",
     "claim_expiration_hint": "The tokens request window will end",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
