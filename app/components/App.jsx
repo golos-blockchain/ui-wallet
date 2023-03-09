@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Toaster } from 'react-hot-toast'
 import cn from 'classnames';
 import { createGlobalStyle } from 'styled-components';
 import AppPropTypes from 'app/utils/AppPropTypes';
@@ -289,6 +290,7 @@ class App extends React.Component {
                 }
                 onMouseMove={this.onEntropyEvent}
             >
+                {process.env.BROWSER ? <Toaster position='bottom-left' /> : null}
                 {noHeader ? null : (miniHeader ? <MiniHeader /> : <Header />)}
                 <div className={cn('App__content' +
                     (noHeader ? ' no-header' : ''), {

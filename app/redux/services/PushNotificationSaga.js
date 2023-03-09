@@ -93,7 +93,11 @@ function* onUserLogin(action) {
         for (let task of tasks) {
             yield put({
                 type: 'ADD_NOTIFICATION',
-                payload: NotifyContent(task)
+                payload: {
+                    message: (t) => NotifyContent(t, task),
+                    custom: true,
+                    dismissAfter: 10000,
+                }
             });
         }
     }
