@@ -18,7 +18,7 @@ jobs:
 
       - uses: docker/build-push-action@v4
         with:
-          build-args: "SOURCE_COMMIT=$SOURCE_COMMIT"
+          build-args: SOURCE_COMMIT
           file: ./Dockerfile
           push: true
           tags: testgolos/wallet:latest
