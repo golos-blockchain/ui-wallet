@@ -4,7 +4,8 @@ services:
   web:
     image: golosblockchain/web-ui:latest
     restart: always
-    build: .
+    build:
+      context: .
     volumes:
       - ./config/default.json:/var/app/config/default.json
     ports:
