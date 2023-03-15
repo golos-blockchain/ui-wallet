@@ -124,13 +124,12 @@ class Assets extends Component {
             item.parsed = Asset(item.balance)
             item.parsed_sum = item.parsed.plus(Asset(item.tip_balance)).plus(Asset(item.market_balance))
             item.parsed_sum = parseFloat(item.parsed_sum.amountFloat)
+            item.hideMe = !item.parsed_sum && !item.myCreated && $STM_Config.hidden_assets[sym]
             presorted.push([sym, item])
         }
         presorted.sort((a, b) => {
-            const ha = !a[1].my && $STM_Config.hidden_assets[a[0]]
-            const hb = !b[1].my && $STM_Config.hidden_assets[b[0]]
-            if (!ha && hb) return -1
-            if (ha && !hb) return 1
+            if (!a.hideMe && b.hideMe) return -1
+            if (a.hideMe && !b.hideMe) return 1
             if (a[1].parsed_sum > b[1].parsed_sum) return -1
             if (a[1].parsed_sum < b[1].parsed_sum) return 1
             return 0
@@ -139,7 +138,7 @@ class Assets extends Component {
         let show_load_more = false;
         let my_assets = [];
         for (const [sym, item] of presorted) {
-            if (!item.my && $STM_Config.hidden_assets[sym]) {
+            if (item.hideMe) {
                 show_load_more = true;
                 if (!this.state.show_full_list) continue;
             }
