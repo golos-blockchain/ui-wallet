@@ -116,6 +116,7 @@ export function* fetchState(location_change_action) {
 
                             if (ma.creator == uname) {
                                 state.assets[sym].my = true
+                                state.assets[sym].myCreated = true
                             }
                         })
 

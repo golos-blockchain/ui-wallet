@@ -18,7 +18,9 @@ class ConfirmTransactionForm extends Component {
         okClick: PropTypes.func,
     };
     componentDidMount() {
-        document.body.addEventListener('click', this.closeOnOutsideClick);
+        setTimeout(() => {
+            document.body.addEventListener('click', this.closeOnOutsideClick);
+        }, 1)
     }
     componentWillUnmount() {
         document.body.removeEventListener('click', this.closeOnOutsideClick);
