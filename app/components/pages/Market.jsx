@@ -397,7 +397,7 @@ class Market extends Component {
                         }</td>
                         <td className={need_reverse ? (o.type === 'bid' ? 'sell-color' : 'buy-color') : (o.type === 'ask' ? 'sell-color' : 'buy-color')}>{tt(need_reverse ? (o.type === 'bid' ? 'g.sell' : 'g.buy') : (o.type === 'ask' ? 'g.sell' : 'g.buy'))}</td>
                         <td className={need_reverse ? (o.type === 'bid' ? 'sell-color' : 'buy-color') : (o.type === 'ask' ? 'sell-color' : 'buy-color')}>
-                            {o.price.toFixed(assetsNorm[sym2].precision)}
+                            {o.price.toFixed(8)}
                         </td>
                         <td>{o.asset1}</td>
                         <td>{o.asset2}</td>
@@ -526,12 +526,12 @@ class Market extends Component {
                     </div>
                 </div>
 
-                <div className="row">
+                {/* <div className="row">
                     <div className="column small-12">
-{assets && assetsNorm[sym1].allow_override_transfer && (<p className="text-center"><Icon name="info_o" /> <small>{tt('market_jsx.asset_') + sym1 + tt('market_jsx.asset_is_overridable')} <a target="_blank" href="https://wiki.golos.id/users/faq#chto-takoe-otzyvnye-uia-tokeny">{tt('g.more_hint')} ></a></small></p>)}
-{assets && assetsNorm[sym2].allow_override_transfer && (<p className="text-center"><Icon name="info_o" /> <small>{tt('market_jsx.asset_') + sym2 + tt('market_jsx.asset_is_overridable')} <a target="_blank" href="https://wiki.golos.id/users/faq#chto-takoe-otzyvnye-uia-tokeny">{tt('g.more_hint')} ></a></small></p>)}
+                        {assets && assetsNorm[sym1].allow_override_transfer && (<p className="text-center"><Icon name="info_o" /> <small>{tt('market_jsx.asset_') + sym1 + tt('market_jsx.asset_is_overridable')} <a target="_blank" href="https://wiki.golos.id/users/faq#chto-takoe-otzyvnye-uia-tokeny">{tt('g.more_hint')} ></a></small></p>)}
+                        {assets && assetsNorm[sym2].allow_override_transfer && (<p className="text-center"><Icon name="info_o" /> <small>{tt('market_jsx.asset_') + sym2 + tt('market_jsx.asset_is_overridable')} <a target="_blank" href="https://wiki.golos.id/users/faq#chto-takoe-otzyvnye-uia-tokeny">{tt('g.more_hint')} ></a></small></p>)}
                     </div>
-                </div>
+                </div> */}
 
                 <div className="row show-for-medium">
                     <div className="small-6 columns">

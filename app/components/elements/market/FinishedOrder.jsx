@@ -23,6 +23,8 @@ class FinishedOrder extends React.Component {
                     <div>
                         {tt('convert_assets_jsx.finished_desc')}
                         {link}.
+                        <br /><br />
+                        <center><img src={require('app/assets/images/sign-ok.png')} alt='' /></center>
                     </div>
                 </div>)
         } else if (finished === 'not') {

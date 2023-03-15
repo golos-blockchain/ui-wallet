@@ -51,6 +51,7 @@ const availableDomains = [
     'vk.com',
     'coinmarketcap.com',
     'golos.chatbro.com',
+    'qiwi.com',
     'ecurrex.ru',
     'yandex.ru',
     'google.com'

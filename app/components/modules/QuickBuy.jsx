@@ -169,7 +169,7 @@ class QuickBuy extends React.Component {
         }
 
         return <div className='QuickBuy'>
-            <h3>{tt('quickbuy_jsx.buy_SYM_with', {
+            <h3 align='center'>{tt('quickbuy_jsx.buy_SYM_with', {
                 SYM: sym2
             })}<DropdownMenu el='div' items={listItems} selected={selected}>
                     <span>
@@ -179,14 +179,14 @@ class QuickBuy extends React.Component {
                     </span>
                 </DropdownMenu>
             </h3>
-            <div className='row' style={{ marginTop: '1rem' }}>
-                <b>{tt('quickbuy_jsx.how_to')}</b>
+            <div className='row header-h1' style={{ marginTop: '1rem' }}>
+                <h1>{tt('quickbuy_jsx.how_to')}</h1>
             </div>
-            <div className='row' style={{ marginTop: '0.25rem' }}>
+            <div className='row' style={{ marginTop: '1.5rem' }}>
                 {this.renderDetails()}
             </div>
-            <div className='row' style={{ marginTop: '1rem' }}>
-                <b>{tt('quickbuy_jsx.go_step2')}</b>
+            <div className='row header-h1' style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
+                <h1>{tt('quickbuy_jsx.go_step2')}</h1>
             </div>
             {content}
         </div>
