@@ -39,8 +39,16 @@ class TransferWaiter extends React.Component {
             const balances = await api.getAccountsBalancesAsync([username], {
                 symbols: [sym]
             })
-            const bal = balances[0][sym].balance
-            return Asset(bal)
+            let bal = balances[0][sym]
+            if (bal) {
+                bal = bal.balance
+                return Asset(bal)
+            } else {
+                const assets = await api.getAssetsAsync('', [sym])
+                bal = Asset(assets[0].supply)
+                bal.amount = 0
+                return bal
+            }
         }
         try {
             const initBal = await getBalance()

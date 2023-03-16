@@ -128,8 +128,8 @@ class Assets extends Component {
             presorted.push([sym, item])
         }
         presorted.sort((a, b) => {
-            if (!a.hideMe && b.hideMe) return -1
-            if (a.hideMe && !b.hideMe) return 1
+            if (!a[1].hideMe && b[1].hideMe) return -1
+            if (a[1].hideMe && !b[1].hideMe) return 1
             if (a[1].parsed_sum > b[1].parsed_sum) return -1
             if (a[1].parsed_sum < b[1].parsed_sum) return 1
             return 0
