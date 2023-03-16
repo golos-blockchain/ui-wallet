@@ -81,7 +81,7 @@ class CMCSmall extends React.Component {
                 </a>
                 <span className="CMCSmall__price">
                     <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
-                        {price_rub ? price_rub.toFixed(6) + ' ₽' : null} 
+                        {price_rub ? price_rub.toFixed(5) + ' ₽' : null} 
                     </a>
                 </span>
             </span>

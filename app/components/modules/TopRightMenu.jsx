@@ -86,7 +86,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const settingsLink = `/@${username}/settings`;
 
     const witnessItem = <li className={scn}>
-        <Link to="/~witnesses" title={tt('navigation.witnesses')}><Icon name="new/like" size="1_25x" /></Link>
+        <Link to="/convert/YMUSDT/GOLOS?buy" title={tt('g.quick_buy')}><Icon name="editor/coin" size="1_25x" /></Link>
       </li>
     ;
 
@@ -169,7 +169,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
         return (
             <ul className={mcn + mcl}>
-                <LocaleSelect />
+                <span className={scn}><LocaleSelect /></span>
                 {marketItem}
                 {witnessItem}
                 <li className="delim show-for-medium" />

@@ -396,6 +396,8 @@ class AssetRules extends Component {
                 <b>{deposited.toString()}</b>.
                 <br />
                 {tt('asset_edit_deposit_jsx.you_received2')}
+                <br /><br />
+                <center><img src={require('app/assets/images/sign-ok.png')} alt='' /></center>
             </div>
         }
 

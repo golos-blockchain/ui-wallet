@@ -52,7 +52,7 @@ class TransferWaiter extends React.Component {
         }
         try {
             const initBal = await getBalance()
-            const pollMsec = process.env.NODE_ENV === 'development' ? 1000 : 15000
+            const pollMsec = process.env.NODE_ENV === 'development' ? 1000 : 30000
             this.pollInterval = setInterval(async () => {
                 const bal = await getBalance()
                 console.log(initBal.toString(), bal.toString())
@@ -98,10 +98,10 @@ class TransferWaiter extends React.Component {
         const sec = seconds % 60
         const remaining = min.toString().padStart(2, '0') + ':' + sec.toString().padStart(2, '0')
         const { sym, title } = this.props
-        return <div style={{ marginTop: '1rem', }}>
+        return <div align="center" style={{ marginTop: '1rem', }}>
             {title}
-            <div style={{ marginTop: '1rem', }}>
-                <LoadingIndicator type='circle' />
+            <div style={{ marginTop: '0.5rem', }}>
+                <LoadingIndicator type='dots' />
                 {remaining}
             </div>
         </div>

@@ -7,4 +7,33 @@
         height: 28px;
         margin-right: 0.5rem;
     }
+
+	.header-h1 {
+		position: relative;
+		margin-bottom: .5rem;
+	}
+	.header-h1 h1 {
+		font-size: 1.2rem;
+		margin-bottom: 0;
+		padding-left: 3rem;
+		color: darkgray;
+	}
+	.header-h1 h1::before {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 2.2rem;
+		height: 2.2rem;
+		background: lightgray;
+	}
+	.header-h1 h1::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		top: 2rem;
+		width: 100%;
+		height: .2rem;
+		background-color: #4BA2F2;
+	}
 }

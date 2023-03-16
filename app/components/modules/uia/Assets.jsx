@@ -152,7 +152,7 @@ class Assets extends Component {
                 balance_menu.push({ value: tt('userwallet_jsx.transfer_to_tip'), link: '#', onClick: showTransfer.bind( this, account_name, sym, item.precision, 'Transfer to TIP' ) })
             }
 
-            balance_menu.push({ value: tt('g.buy'), link: '/convert/YMRUB/' + sym + '?buy' })
+            balance_menu.push({ value: tt('g.buy'), link: '/convert/YMUSDT/' + sym + '?buy' })
 
             let tip_menu = [
                 { value: tt('g.transfer'), link: '#', onClick: showTransfer.bind( this, '', sym, item.precision, 'TIP to Account' ) },

@@ -18,7 +18,10 @@
   "server_session_secret": "exiKdyF+IwRIXJDmtGIl4vWUz4i3eVSISpfZoeYc0s4=", // Generated via Node - crypto.randomBytes(32).toString('base64')
   "session_cookie_key": "gls.wallet.session",
   "session_key": "goloswallet",
-  "logo": "https://i.imgur.com/UQz7tKn.png",
+  "logo": {
+    "icon": "https://i.imgur.com/u2BuoCm.png",
+    "title": "https://i.imgur.com/O0R7mrO.png"
+  },
   "add_notify_site": {
     "show": false,
     "id": 1,
