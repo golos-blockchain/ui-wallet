@@ -124,7 +124,7 @@ class Assets extends Component {
             item.parsed = Asset(item.balance)
             item.parsed_sum = item.parsed.plus(Asset(item.tip_balance)).plus(Asset(item.market_balance))
             item.parsed_sum = parseFloat(item.parsed_sum.amountFloat)
-            item.hideMe = !item.parsed_sum && !item.myCreated && $STM_Config.hidden_assets[sym]
+            item.hideMe = !item.parsed_sum && !item.myCreated && $STM_Config.hidden_assets && $STM_Config.hidden_assets[sym]
             presorted.push([sym, item])
         }
         presorted.sort((a, b) => {
