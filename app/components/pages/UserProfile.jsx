@@ -33,6 +33,7 @@ import {isFetchingOrRecentlyUpdated} from 'app/utils/StateFunctions';
 import {repLog10} from 'app/utils/ParsersAndFormatters';
 import { proxifyImageUrl } from 'app/utils/ProxifyUrl';
 import Tooltip from 'app/components/elements/Tooltip';
+import LiteTooltip from 'app/components/elements/LiteTooltip';
 import { LinkWithDropdown } from 'react-foundation-components/lib/global/dropdown';
 import VerticalMenu from 'app/components/elements/VerticalMenu';
 import MarkNotificationRead from 'app/components/elements/MarkNotificationRead';
@@ -205,7 +206,7 @@ export default class UserProfile extends React.Component {
         let level = null
         if (this.props.gprops) {
             let { levelUrl, levelTitle, levelName } = getGameLevel(accountImm, this.props.gprops)
-            level = (<img className="GameLevel" src={levelUrl} title={levelTitle} alt={levelName} />)
+            level = (<LiteTooltip t={levelTitle}><img className="GameLevel" src={levelUrl} alt={levelName} /></LiteTooltip>)
         }
 
         let tab_content = null;

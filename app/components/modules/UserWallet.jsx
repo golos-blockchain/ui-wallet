@@ -401,7 +401,7 @@ class UserWallet extends React.Component {
 
             {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {CLAIM_TOKEN.toUpperCase()}<br />
+                    {CLAIM_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#nakopitelnyi-balans">(?)</a></small></span><br />
                     <span className="secondary">{claim_hint}</span>
                 </div>
                 <div className="column small-12 medium-4">

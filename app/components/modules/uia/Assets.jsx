@@ -175,7 +175,7 @@ class Assets extends Component {
 
             if (telegram) {
                 telegram = 'https://t.me/' + encodeURIComponent(telegram)
-                telegram = <a href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px' }}>
+                telegram = <a href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px', fill: 'gray' }}>
                     <Icon name='new/telegram' title="Telegram" />
                 </a>
             }

@@ -387,17 +387,17 @@ class AssetRules extends Component {
             const { embed, sym, onClose } = this.props
             return <div>
                 <CloseButton onClick={onClose} />
+                <center>
                 {!embed ? <h4>
                     {tt('asset_edit_deposit_jsx.transfer_title_SYM', {
                         SYM: sym || ' ',
                     })}
                 </h4> : null}
-                {tt('asset_edit_deposit_jsx.you_received')}
-                <b>{deposited.toString()}</b>.
-                <br />
-                {tt('asset_edit_deposit_jsx.you_received2')}
+                <img src={require('app/assets/images/target.png')} alt='' />
                 <br /><br />
-                <center><img src={require('app/assets/images/sign-ok.png')} alt='' /></center>
+                {tt('asset_edit_deposit_jsx.you_received')}
+                <b>{deposited.toString()}</b>. {tt('asset_edit_deposit_jsx.you_received2')}
+                </center>
             </div>
         }
 

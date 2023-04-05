@@ -14,5 +14,13 @@ export default {
  
     "YMPZM": {
         "text": "Купите токены PZM на бирже <extlink href=\"https://market.rudex.org/#/market/RUDEX.PZM_RUDEX.USDT\">RuDEX</extlink> или воспользуйтесь <extlink href=\"https://wallet.prizm.space\">кошельком PRIZM</extlink>."
+    },
+ 
+    "YMHIVE": {
+        "text": "Купите токены HIVE на бирже <extlink href=\"https://www.binance.com/en/trade/HIVE_USDT\">Binance</extlink> или воспользуйтесь <extlink href=\"https://wallet.hive.blog\">кошельком HIVE</extlink>."
+    },
+ 
+    "YMSTEEM": {
+        "text": "Купите токены STEEM на бирже <extlink href=\"https://www.binance.com/en/trade/STEEM_USDT\">Binance</extlink> или воспользуйтесь <extlink href=\"https://steemitwallet.com\">кошельком STEEM</extlink>."
     }
 }
