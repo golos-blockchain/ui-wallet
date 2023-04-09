@@ -4,6 +4,7 @@ import tt from 'counterpart'
 
 import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
+import { apidexGetAll } from 'app/utils/ApidexApiClient'
 import { getAssetMeta, getTradablesFor } from 'app/utils/market/utils'
 
 class MarketPair extends React.Component {
@@ -33,11 +34,31 @@ class MarketPair extends React.Component {
             const hiddenAssets = $STM_Config.hidden_assets ? Object.keys($STM_Config.hidden_assets) : []
             const filter = item => !hiddenAssets.includes(item.symbol)
 
+            let maxDepth = 0
+            const addDepth = (symbols) => {
+                for (const asset of symbols) {
+                    const cmc = this.cmc[asset.symbol]
+                    asset.market_depth = parseFloat(asset.market_depth) || 0
+                    if (cmc && cmc.price_usd && asset.market_depth) {
+                        asset.market_usd = asset.market_depth * cmc.price_usd
+                        if (asset.market_usd > maxDepth) {
+                            maxDepth = asset.market_usd
+                        }
+                    }
+                }
+            }
+
+            const symbols1 = lists[1].filter(filter)
+            addDepth(symbols1)
+            const symbols2 = lists[0].filter(filter)
+            addDepth(symbols2)
+
             this.setState({
-                symbols1: lists[1].filter(filter),
-                symbols2: lists[0].filter(filter),
+                symbols1,
+                symbols2,
                 sym1,
                 sym2,
+                maxDepth,
             })
             this.onChange(null, sym1, sym2)
         } else if (sym1 || sym2) {
@@ -54,8 +75,9 @@ class MarketPair extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { sym1, sym2 } = this.props
+        this.cmc = (await apidexGetAll()).data
         this.initLists(sym1, sym2)
     }
 
@@ -77,6 +99,18 @@ class MarketPair extends React.Component {
         this.onChange(e, this.state.sym2, this.state.sym1)
     }
 
+    makeStyle = (asset) => {
+        const { maxDepth } = this.state
+        let pct = Math.round(asset.market_usd / maxDepth * 100)
+        if (pct < 10 && asset.market_depth >= 1) {
+            pct = 10
+        }
+        const color = '#ecffeb'
+        return {
+            'background': 'linear-gradient(to left, ' + color + ' ' + pct + '%, white 1%)'
+        }
+    }
+
     render() {
         const { assets, slim, itemsPerPage, linkComposer, label1, label2 } = this.props
         const { sym1, sym2, symbols1, symbols2 } = this.state
@@ -89,6 +123,7 @@ class MarketPair extends React.Component {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(symbol, sym2),
+                style: this.makeStyle(asset),
                 onClick: (e) => {
                     this.onChange(e, symbol, sym2)
                 }
@@ -101,6 +136,7 @@ class MarketPair extends React.Component {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(sym1, symbol),
+                style: this.makeStyle(asset),
                 onClick: (e) => {
                     this.onChange(e, sym1, symbol)
                 }

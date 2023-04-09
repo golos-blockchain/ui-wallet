@@ -33,6 +33,9 @@ export default function resolveRoute(path)
     if (path === '/market') {
         return {page: 'Market'};
     }
+    if (path === '/rating') {
+        return {page: 'Rating'}
+    }
     let match = path.match(routeRegex.MarketPair);
     if (match) {
         return {page: 'Market', params: match.slice(1)};

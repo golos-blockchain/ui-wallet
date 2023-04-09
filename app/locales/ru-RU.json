@@ -679,6 +679,13 @@
     "account_name_is_not_available": "Имя аккаунта недоступно",
     "prev_posts": "Вам может быть интересно"
   },
+  "rating_jsx": {
+    "price": "Цена:",
+    "volume": "Объём:",
+    "volume2": "Объем в USDT:",
+    "volume_title": "Объем за 24 часа",
+    "change": "Изменение:"
+  },
   "reply_editor": {
     "shorten_title": "Сократите заголовок",
     "exceeds_maximum_length": "Превышает максимальную длину (%(maxKb)sKB)",

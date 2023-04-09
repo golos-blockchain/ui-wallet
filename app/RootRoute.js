@@ -35,6 +35,8 @@ export default {
             cb(null, [require('@pages/ConvertAssetsPage')]);
         } else if (route.page === 'Market') {
             cb(null, [require('@pages/MarketLoader')]);
+       } else if (route.page === 'Rating') {
+            cb(null, [require('@pages/Rating')]);
         } else {
             cb(process.env.BROWSER ? null : Error(404), [
                 require('@pages/NotFound'),
