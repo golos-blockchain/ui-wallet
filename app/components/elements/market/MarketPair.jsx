@@ -105,9 +105,15 @@ class MarketPair extends React.Component {
         if (pct < 10 && asset.market_depth >= 1) {
             pct = 10
         }
-        const color = '#ecffeb'
+        let backColor = 'white'
+        if (asset.symbol === 'GOLOS') {
+            backColor = 'rgb(234, 240, 255)'
+        } else if (asset.symbol === 'GBG') {
+            backColor = 'rgb(254, 243, 222)'
+        }
+        const highlightColor = '#ecffeb'
         return {
-            'background': 'linear-gradient(to left, ' + color + ' ' + pct + '%, white 1%)'
+            'background': 'linear-gradient(to left, ' + backColor + ' ' + pct + '%, ' + highlightColor + ' 1%)'
         }
     }
 
