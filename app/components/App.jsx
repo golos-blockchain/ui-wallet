@@ -7,6 +7,7 @@ import { createGlobalStyle } from 'styled-components';
 import AppPropTypes from 'app/utils/AppPropTypes';
 import Header from 'app/components/modules/Header';
 import Footer from 'app/components/modules/Footer';
+import AppReminder from 'app/components/elements/app/AppReminder'
 import URLLoader from 'app/components/elements/app/URLLoader';
 import TooltipManager from 'app/components/elements/common/TooltipManager';
 import user from 'app/redux/User';
@@ -28,6 +29,8 @@ import { init as initAnchorHelper } from 'app/utils/anchorHelper';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
 import session from 'app/utils/session'
+
+const APP_REMINDER_INTERVAL = 30*24*60*60*1000
 
 const GlobalStyle = createGlobalStyle`
     body {
@@ -73,6 +76,16 @@ class App extends React.Component {
             this.state !== nextState ||
             p.nightmodeEnabled !== n.nightmodeEnabled
         );
+    }
+
+    showAppReminder = () => {
+        if (process.env.IS_APP) {
+            return
+        }
+        const now = Date.now()
+        let reminded = localStorage.getItem('app_reminder') || 0
+        reminded = parseInt(reminded)
+        return !reminded || (now - reminded > APP_REMINDER_INTERVAL)
     }
 
     constructor(props) {
@@ -280,6 +293,8 @@ class App extends React.Component {
         const noHeader = isApp
         const noFooter = isApp || location.pathname.startsWith('/submit')
 
+        const reminder = this.showAppReminder() ? <AppReminder /> : null
+
         return (
             <div
                 className={
@@ -301,6 +316,7 @@ class App extends React.Component {
                     <ChainFailure />
                     {children}
                     {noFooter ? null : <Footer />}
+                    {reminder}
                     <ScrollButton />
                 </div>
                 <Dialogs />
