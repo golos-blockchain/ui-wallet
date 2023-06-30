@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import tt from 'counterpart'
+import { api } from 'golos-lib-js'
 
 import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
@@ -34,31 +35,50 @@ class MarketPair extends React.Component {
             const hiddenAssets = $STM_Config.hidden_assets ? Object.keys($STM_Config.hidden_assets) : []
             const filter = item => !hiddenAssets.includes(item.symbol)
 
-            let maxDepth = 0
-            const addDepth = (symbols) => {
+            const getDepths = (depths, symbols, sym) => {
+                let maxDepth = 0
                 for (const asset of symbols) {
-                    const cmc = this.cmc[asset.symbol]
-                    asset.market_depth = parseFloat(asset.market_depth) || 0
-                    if (cmc && cmc.price_usd && asset.market_depth) {
-                        asset.market_usd = asset.market_depth * cmc.price_usd
-                        if (asset.market_usd > maxDepth) {
-                            maxDepth = asset.market_usd
+                    const dd = {}
+                    for (const pair of this.pairs) {
+                        const [ base_depth, base ] = pair[1].base_depth.split(' ')
+                        const [ quote_depth, quote ] = pair[1].quote_depth.split(' ')
+                        if (base === asset.symbol && quote === sym) {
+                            dd.market_depth = parseFloat(base_depth) || 0
+                            break
+                        } else if (quote === asset.symbol && base === sym) {
+                            dd.market_depth = parseFloat(quote_depth) || 0
+                            break
                         }
                     }
+                    const cmc = this.cmc[asset.symbol]
+                    if (cmc && cmc.price_usd && dd.market_depth) {
+                        dd.market_usd = dd.market_depth * cmc.price_usd
+                        if (dd.market_usd > maxDepth) {
+                            maxDepth = dd.market_usd
+                        }
+                    }
+                    depths[asset.symbol] = dd
                 }
+                return maxDepth
             }
 
             const symbols1 = lists[1].filter(filter)
-            addDepth(symbols1)
+            const depths1 = []
+            const maxDepth1 = getDepths(depths1, symbols1, sym2)
+
             const symbols2 = lists[0].filter(filter)
-            addDepth(symbols2)
+            const depths2 = []
+            const maxDepth2 = getDepths(depths2, symbols2, sym1)
 
             this.setState({
                 symbols1,
                 symbols2,
                 sym1,
                 sym2,
-                maxDepth,
+                depths1,
+                depths2,
+                maxDepth1,
+                maxDepth2,
             })
             this.onChange(null, sym1, sym2)
         } else if (sym1 || sym2) {
@@ -78,6 +98,11 @@ class MarketPair extends React.Component {
     async componentDidMount() {
         const { sym1, sym2 } = this.props
         this.cmc = (await apidexGetAll()).data
+        try {
+            this.pairs = (await api.getMarketPairsAsync({ merge: false, tickers: false, as_map: true })).data
+        } catch (err) {
+            console.error('Liquidity', err)
+        }
         this.initLists(sym1, sym2)
     }
 
@@ -99,12 +124,19 @@ class MarketPair extends React.Component {
         this.onChange(e, this.state.sym2, this.state.sym1)
     }
 
-    makeStyle = (asset) => {
-        const { maxDepth } = this.state
-        let pct = Math.round(asset.market_usd / maxDepth * 100)
-        if (pct < 10 && asset.market_depth >= 1) {
-            pct = 10
+    makeStyle = (asset, depths, maxDepth) => {
+        let pct = 0
+        const dd = depths[asset.symbol]
+        if (dd.market_usd) {
+            console.log(asset.symbol, dd.market_usd, maxDepth)
+            pct = Math.round(dd.market_usd / maxDepth * 100)
+            if (pct < 10 && dd.market_depth >= 1) {
+                //pct = 10
+            }
         }
+
+        pct = Math.min(100, pct * 30)
+
         let backColor = 'white'
         if (asset.symbol === 'GOLOS') {
             backColor = 'rgb(234, 240, 255)'
@@ -113,13 +145,13 @@ class MarketPair extends React.Component {
         }
         const highlightColor = '#ecffeb'
         return {
-            'background': 'linear-gradient(to left, ' + backColor + ' ' + pct + '%, ' + highlightColor + ' 1%)'
+            'background': 'linear-gradient(to left, ' + backColor + ' ' + (100 - pct) + '%, ' + highlightColor + ' 1%)'
         }
     }
 
     render() {
         const { assets, slim, itemsPerPage, linkComposer, label1, label2 } = this.props
-        const { sym1, sym2, symbols1, symbols2 } = this.state
+        const { sym1, sym2, symbols1, symbols2, depths1, depths2, maxDepth1, maxDepth2 } = this.state
 
         if (!symbols1 && !symbols2) return <div></div>
 
@@ -129,7 +161,7 @@ class MarketPair extends React.Component {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(symbol, sym2),
-                style: this.makeStyle(asset),
+                style: this.makeStyle(asset, depths1, maxDepth1),
                 onClick: (e) => {
                     this.onChange(e, symbol, sym2)
                 }
@@ -142,7 +174,7 @@ class MarketPair extends React.Component {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(sym1, symbol),
-                style: this.makeStyle(asset),
+                style: this.makeStyle(asset, depths2, maxDepth2),
                 onClick: (e) => {
                     this.onChange(e, sym1, symbol)
                 }
