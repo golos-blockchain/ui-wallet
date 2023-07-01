@@ -99,7 +99,7 @@ class MarketPair extends React.Component {
         const { sym1, sym2 } = this.props
         this.cmc = (await apidexGetAll()).data
         try {
-            this.pairs = (await api.getMarketPairsAsync({ merge: false, tickers: false, as_map: true })).data
+            this.pairs = (await api.getMarketPairsAsync({ merge: true, tickers: false, as_map: true })).data
         } catch (err) {
             console.error('Liquidity', err)
         }
@@ -124,28 +124,26 @@ class MarketPair extends React.Component {
         this.onChange(e, this.state.sym2, this.state.sym1)
     }
 
-    makeStyle = (asset, depths, maxDepth) => {
+    makeItem = (asset, depths, maxDepth) => {
         let pct = 0
         const dd = depths[asset.symbol]
         if (dd.market_usd) {
-            console.log(asset.symbol, dd.market_usd, maxDepth)
-            pct = Math.round(dd.market_usd / maxDepth * 100)
-            if (pct < 10 && dd.market_depth >= 1) {
-                //pct = 10
+            pct = dd.market_usd / maxDepth * 100
+            // coefficients
+            pct = Math.min(100, pct * 6)
+            if (pct < 30) {
+                pct = Math.min(30, pct * 5)
             }
         }
 
-        pct = Math.min(100, pct * 30)
-
-        let backColor = 'white'
-        if (asset.symbol === 'GOLOS') {
-            backColor = 'rgb(234, 240, 255)'
-        } else if (asset.symbol === 'GBG') {
-            backColor = 'rgb(254, 243, 222)'
-        }
         const highlightColor = '#ecffeb'
         return {
-            'background': 'linear-gradient(to left, ' + backColor + ' ' + (100 - pct) + '%, ' + highlightColor + ' 1%)'
+            style: {
+                'background': 'linear-gradient(to left, white ' + (100 - Math.round(pct)) + '%, ' + highlightColor + ' 1%)',
+            },
+            dataset: {
+                market_usd: dd.market_usd
+            }
         }
     }
 
@@ -157,11 +155,12 @@ class MarketPair extends React.Component {
 
         const renderSym1 = (asset) => {
             const { symbol, image_url } = asset
+            const { style, dataset } = this.makeItem(asset, depths1, maxDepth1)
             return {
                 key: symbol, value: symbol,
-                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
+                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(symbol, sym2),
-                style: this.makeStyle(asset, depths1, maxDepth1),
+                style,
                 onClick: (e) => {
                     this.onChange(e, symbol, sym2)
                 }
@@ -170,11 +169,12 @@ class MarketPair extends React.Component {
 
         const renderSym2 = (asset) => {
             const { symbol, image_url } = asset
+            const { style, dataset } = this.makeItem(asset, depths2, maxDepth2)
             return {
                 key: symbol, value: symbol,
-                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
+                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(sym1, symbol),
-                style: this.makeStyle(asset, depths2, maxDepth2),
+                style,
                 onClick: (e) => {
                     this.onChange(e, sym1, symbol)
                 }
