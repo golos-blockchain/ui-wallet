@@ -42,7 +42,7 @@ export async function apidexGetPrices(sym) {
         const now = new Date()
         const cache = cached[sym]
         if (cache && (now - cache.time) < 60000) {
-            return cachedAll.resp
+            return cache.resp
         } else {
             let resp = await fetchWithTimeout(apidexUrl(`/api/v1/cmc/${sym}`), 2000, request)
             resp = await resp.json()
@@ -72,7 +72,7 @@ export async function apidexGetAll() {
     try {
         const now = new Date()
         if (cachedAll && (now - cachedAll.time) < 60000) {
-            return cache.resp
+            return cachedAll.resp
         } else {
             let resp = await fetchWithTimeout(apidexUrl(`/api/v1/cmc`), 1000, request)
             resp = await resp.json()

@@ -35,6 +35,24 @@
                 }
             }
         }
+
+        &.PairTop1 {
+            border: none;
+            font-size: 120%;
+
+            .Pair__logo {
+                display: inline-block;
+                vertical-align: top;
+
+                .Pair__logo-img {
+                    width: 60px;
+                }
+            }
+        }
+
+        &.PairTop1:hover {
+            background-color: transparent;
+        }
     }
 
     .Pair:hover {
