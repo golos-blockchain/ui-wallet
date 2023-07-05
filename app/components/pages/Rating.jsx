@@ -2,39 +2,76 @@ import React from 'react'
 import { connect, } from 'react-redux'
 import tt from 'counterpart'
 import { Link } from 'react-router'
+import { api } from 'golos-lib-js'
 
+import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import { getAssetMeta, } from 'app/utils/market/utils'
+import { apidexGetAll } from 'app/utils/ApidexApiClient'
 
 class Rating extends React.Component {
     constructor(props){
         super(props)
     }
 
+    state = {}
+
+    async componentDidMount() {
+        const assetList = await api.getAssetsAsync('', [], '', 5000, 'by_symbol_name', { system: true })
+        const pairs = (await api.getMarketPairsAsync({ merge: true, tickers: true, bucket: 604800 })).data
+
+        this.cmc = (await apidexGetAll()).data
+
+        for (const pair of pairs) {
+            const { ticker } = pair
+
+            const [ volume1, sym1 ] = ticker.asset1_volume.split(' ')
+
+            pair.volume = volume1
+            pair.sym1 = sym1
+
+            let cmc = this.cmc[sym1]
+            cmc = cmc && cmc.price_usd
+
+            pair.volume_usd = cmc ? (volume1 * cmc) : 0
+
+            pair.sym2 = ticker.asset2_volume.split(' ')[1]
+        }
+
+        const hiddenAssets = $STM_Config.hidden_assets ? Object.keys($STM_Config.hidden_assets) : []
+        let filtered = pairs.filter(pair => {
+            return !hiddenAssets.includes(pair.sym1) && !hiddenAssets.includes(pair.sym2)
+        })
+
+        filtered.sort((pA, pB) => {
+            const a = pA.volume_usd
+            const b = pB.volume_usd
+            if (a > b) return -1
+            if (a < b) return 1
+            return 0
+        })
+
+        this.setState({
+            assetList,
+            pairs: filtered
+        })
+    }
+
     render() {
-        const { pairs } = this.props
+        const { assetList, pairs } = this.state
         if (!pairs) {
             return <div className='Rating'>
+                <LoadingIndicator type='circle' />
             </div>
         }
 
-        const assets = this.props.assets.toJS()
+        const pairItems = pairs.map(pair => {
+            const { ticker, sym1, sym2, volume, volume_usd } = pair
 
-        const pairItems = pairs.toJS().map(pair => {
-            const { ticker } = pair
-            const sym1 = ticker.asset1_volume.split(' ')[1]
-            const sym2 = ticker.asset2_volume.split(' ')[1]
-
-            let sym = sym1
-            if (sym === 'GOLOS' && sym2 !== 'GBG') {
-                sym = sym2
-            }
-            const asset = assets.find(item => {
-                return item.supply.split(' ')[1] === sym
+            const asset = assetList.find(item => {
+                return item.supply.split(' ')[1] === sym1
             })
 
             const link = '/market/' + sym1 + '/' + sym2
-
-            const volume = ticker.asset1_volume.split(' ')[0]
 
             return <Link to={link}><div className='Pair'>
                 <div className='Pair__logo'>
@@ -60,7 +97,7 @@ class Rating extends React.Component {
                     <div className='Pair__info'>
                         {tt('rating_jsx.volume2')}
                         <span className='Pair__right'>
-                            {volume}
+                            {volume_usd.toFixed(3)}
                         </span>
                     </div>
                     <div className='Pair__info'>
@@ -87,8 +124,6 @@ module.exports = {
     component: connect(
         (state, ownProps) => {
             return {
-                assets: state.global.get('assetList'),
-                pairs: state.global.get('pairs')
             }
         },
         dispatch => ({

@@ -227,9 +227,6 @@ export function* fetchState(location_change_action) {
                     state.worker_requests[url].myVote = (myVote && myVote.voter == curUser) ? myVote : null
                 }
             }
-        } else if (parts[0] === 'rating') {
-            state.assetList = yield call([api, api.getAssetsAsync], '', [], '', 5000, 'by_symbol_name', { system: true })
-            state.pairs = (yield call([api, api.getMarketPairsAsync], { merge: true, tickers: true, bucket: 604800 })).data
         }
 
         if (accounts.size > 0) {
