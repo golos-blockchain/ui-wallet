@@ -102,12 +102,11 @@ class PowerCalc extends React.Component {
 
         let counter = 0
         const levels = this.state.nextLevels.map(level => {
-            const imgSize = '24px'
             return {
                 key: level.title[1],
                 value: level.title[1],
                 label: <span>
-                        <img src={level.imageUrl} style={{ width: imgSize, height: imgSize }} />
+                        <img src={level.imageUrl} style={{ width: '48px', height: '24px' }} />
                         <span style={{ marginLeft: '0.5rem' }}>{level.title[0]}</span>
                     </span>,
                 link: '#',
@@ -170,7 +169,7 @@ class PowerCalc extends React.Component {
                         el='div'
                         items={levels}
                         className='PowerCalc__levels'>
-                        <img src={nearestLevel.imageUrl} style={{ width: '48px', height: '48px' }} />
+                        <img src={nearestLevel.imageUrl} style={{ width: '96px', height: '48px' }} />
                         <span style={{ marginLeft: '0.5rem' }}>{nearestLevel.title[0]}</span>
                     </DropdownMenu>
                 </div>
