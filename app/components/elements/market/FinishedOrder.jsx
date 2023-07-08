@@ -19,13 +19,12 @@ class FinishedOrder extends React.Component {
 
         if (finished === 'full') {
             return (<div className='ConvertAssets'>
+                    <center>
                     <h3>{tt('convert_assets_jsx.finished')}</h3>
-                    <div>
-                        {tt('convert_assets_jsx.finished_desc')}
-                        {link}.
-                        <br /><br />
-                        <center><img src={require('app/assets/images/sign-ok.png')} alt='' /></center>
-                    </div>
+                    <img src={require('app/assets/images/swap.png')} alt='' />
+                    <br /><br />
+                    {tt('convert_assets_jsx.finished_desc')} {link}.
+                    </center>
                 </div>)
         } else if (finished === 'not') {
             return (<div className='ConvertAssets'>

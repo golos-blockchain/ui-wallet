@@ -1,8 +1,8 @@
 {
-  "site_domain": "beta.golos.today",
+  "site_domain": "devwallet.golos.today",
   "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
   "ws_connection_client": "wss://apibeta.golos.today/ws",
-  "ws_connection_server": "wss://apibeta.golos.today/ws",  
+  "ws_connection_server": "wss://apibeta.golos.today/ws",
   "helmet": {
     "directives": {
       "defaultSrc": "'self'",
@@ -19,8 +19,8 @@
   "session_cookie_key": "gls.wallet.session",
   "session_key": "goloswallet",
   "logo": {
-    "icon": "https://i.imgur.com/u2BuoCm.png",
-    "title": "https://i.imgur.com/O0R7mrO.png"
+    "icon": "https://i.imgur.com/mRV2Je1.png",
+    "title": "https://i.imgur.com/CYfDqIy.png"
   },
   "add_notify_site": {
     "show": false,
@@ -53,10 +53,9 @@
   "hidden_assets": {
     "RUDEX": true,
     "PRIZM": true,
+    "DOGECOIN": true,
     "YMZEC": true,
     "YMWMZ": true,
-    "YMXMR": true,
-    "YMDASH": true,
     "YMBTC": true
   }
 }
