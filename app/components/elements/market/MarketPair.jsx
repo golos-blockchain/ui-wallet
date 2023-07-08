@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import tt from 'counterpart'
+import { api } from 'golos-lib-js'
 
 import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
+import { apidexGetAll } from 'app/utils/ApidexApiClient'
 import { getAssetMeta, getTradablesFor } from 'app/utils/market/utils'
 
 class MarketPair extends React.Component {
@@ -33,11 +35,50 @@ class MarketPair extends React.Component {
             const hiddenAssets = $STM_Config.hidden_assets ? Object.keys($STM_Config.hidden_assets) : []
             const filter = item => !hiddenAssets.includes(item.symbol)
 
+            const getDepths = (depths, symbols, sym) => {
+                let maxDepth = 0
+                for (const asset of symbols) {
+                    const dd = {}
+                    for (const pair of this.pairs) {
+                        const [ base_depth, base ] = pair[1].base_depth.split(' ')
+                        const [ quote_depth, quote ] = pair[1].quote_depth.split(' ')
+                        if (base === asset.symbol && quote === sym) {
+                            dd.market_depth = parseFloat(base_depth) || 0
+                            break
+                        } else if (quote === asset.symbol && base === sym) {
+                            dd.market_depth = parseFloat(quote_depth) || 0
+                            break
+                        }
+                    }
+                    const cmc = this.cmc[asset.symbol]
+                    if (cmc && cmc.price_usd && dd.market_depth) {
+                        dd.market_usd = dd.market_depth * cmc.price_usd
+                        if (dd.market_usd > maxDepth) {
+                            maxDepth = dd.market_usd
+                        }
+                    }
+                    depths[asset.symbol] = dd
+                }
+                return maxDepth
+            }
+
+            const symbols1 = lists[1].filter(filter)
+            const depths1 = []
+            const maxDepth1 = getDepths(depths1, symbols1, sym2)
+
+            const symbols2 = lists[0].filter(filter)
+            const depths2 = []
+            const maxDepth2 = getDepths(depths2, symbols2, sym1)
+
             this.setState({
-                symbols1: lists[1].filter(filter),
-                symbols2: lists[0].filter(filter),
+                symbols1,
+                symbols2,
                 sym1,
                 sym2,
+                depths1,
+                depths2,
+                maxDepth1,
+                maxDepth2,
             })
             this.onChange(null, sym1, sym2)
         } else if (sym1 || sym2) {
@@ -54,8 +95,14 @@ class MarketPair extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const { sym1, sym2 } = this.props
+        this.cmc = (await apidexGetAll()).data
+        try {
+            this.pairs = (await api.getMarketPairsAsync({ merge: true, tickers: false, as_map: true })).data
+        } catch (err) {
+            console.error('Liquidity', err)
+        }
         this.initLists(sym1, sym2)
     }
 
@@ -77,18 +124,43 @@ class MarketPair extends React.Component {
         this.onChange(e, this.state.sym2, this.state.sym1)
     }
 
+    makeItem = (asset, depths, maxDepth) => {
+        let pct = 0
+        const dd = depths[asset.symbol]
+        if (dd.market_usd) {
+            pct = dd.market_usd / maxDepth * 100
+            // coefficients
+            pct = Math.min(100, pct * 6)
+            if (pct < 30) {
+                pct = Math.min(30, pct * 5)
+            }
+        }
+
+        const highlightColor = '#ecffeb'
+        return {
+            style: {
+                'background': 'linear-gradient(to left, white ' + (100 - Math.round(pct)) + '%, ' + highlightColor + ' 1%)',
+            },
+            dataset: {
+                market_usd: dd.market_usd
+            }
+        }
+    }
+
     render() {
         const { assets, slim, itemsPerPage, linkComposer, label1, label2 } = this.props
-        const { sym1, sym2, symbols1, symbols2 } = this.state
+        const { sym1, sym2, symbols1, symbols2, depths1, depths2, maxDepth1, maxDepth2 } = this.state
 
         if (!symbols1 && !symbols2) return <div></div>
 
         const renderSym1 = (asset) => {
             const { symbol, image_url } = asset
+            const { style, dataset } = this.makeItem(asset, depths1, maxDepth1)
             return {
                 key: symbol, value: symbol,
-                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
+                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(symbol, sym2),
+                style,
                 onClick: (e) => {
                     this.onChange(e, symbol, sym2)
                 }
@@ -97,10 +169,12 @@ class MarketPair extends React.Component {
 
         const renderSym2 = (asset) => {
             const { symbol, image_url } = asset
+            const { style, dataset } = this.makeItem(asset, depths2, maxDepth2)
             return {
                 key: symbol, value: symbol,
-                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
+                label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
                 link: linkComposer(sym1, symbol),
+                style,
                 onClick: (e) => {
                     this.onChange(e, sym1, symbol)
                 }

@@ -1,0 +1,61 @@
+.Rating {
+    padding: 1rem;
+
+    .Pair {
+        min-width: 250px;
+        min-height: 100px;
+        padding: 1rem;
+        border: 1px solid rgba(128, 128, 128, 0.45);
+        display: inline-block;
+
+        .Pair__logo {
+            display: inline-block;
+            vertical-align: top;
+
+            .Pair__logo-img {
+                width: 50px;
+            }
+        }
+
+        .Pair__main {
+            display: inline-block;
+            color: black;
+            margin-left: 1rem;
+
+            .Pair__header {
+                font-weight: bold;
+            }
+
+            .Pair__info {
+                font-size: 80%;
+
+                .Pair__right {
+                    float: right;
+                    margin-left: 0.5rem;
+                }
+            }
+        }
+
+        &.PairTop1 {
+            border: none;
+            font-size: 120%;
+
+            .Pair__logo {
+                display: inline-block;
+                vertical-align: top;
+
+                .Pair__logo-img {
+                    width: 60px;
+                }
+            }
+        }
+
+        &.PairTop1:hover {
+            background-color: transparent;
+        }
+    }
+
+    .Pair:hover {
+        background-color: #f1f1f1;
+    }
+}

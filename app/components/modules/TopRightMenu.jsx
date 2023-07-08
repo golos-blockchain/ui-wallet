@@ -91,7 +91,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     ;
 
     const marketItem = <li className={scn}>
-        <Link to="/market/GOLOS/YMUSDT" title={tt('navigation.market')}><Icon name="trade" size="1_5x" /></Link>
+        <Link to="/rating" title={tt('navigation.market')}><Icon name="trade" size="1_5x" /></Link>
       </li>
     ;
 

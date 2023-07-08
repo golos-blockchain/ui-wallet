@@ -10,6 +10,7 @@ import GlobalReducer from './GlobalReducer';
 import constants from './constants';
 import { reveseTag, getFilterTags } from 'app/utils/tags';
 import { CATEGORIES, SELECT_TAGS_KEY, DEBT_TOKEN_SHORT, LIQUID_TICKER } from 'app/client_config';
+import { getAllPairs } from 'app/utils/market/utils'
 
 export function* fetchDataWatches () {
     yield fork(watchLocationChange);
@@ -229,9 +230,7 @@ export function* fetchState(location_change_action) {
         }
 
         if (accounts.size > 0) {
-                    console.time('accs');
             const acc = yield call([api, api.getAccountsAsync], Array.from(accounts))
-                    console.timeEnd('accs');
             for (let i in acc) {
                 state.accounts[ acc[i].name ] = acc[i]
             }

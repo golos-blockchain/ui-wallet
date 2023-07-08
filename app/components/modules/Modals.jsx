@@ -10,6 +10,7 @@ import ConfirmTransactionForm from 'app/components/modules/ConfirmTransactionFor
 import Transfer from 'app/components/modules/Transfer';
 import ChangeAccount from 'app/components/modules/ChangeAccount'
 import AddAccount from 'app/components/modules/AddAccount'
+import AppDownload from 'app/components/modules/app/AppDownload'
 import user from 'app/redux/User';
 import tr from 'app/redux/Transaction';
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
@@ -28,12 +29,14 @@ class Modals extends React.Component {
         show_powerdown_modal: PropTypes.bool,
         show_change_account_modal: PropTypes.bool,
         show_add_account_modal: PropTypes.bool,
+        show_app_download_modal: PropTypes.bool,
         show_power_calc_modal: PropTypes.bool,
         hideLogin: PropTypes.func.isRequired,
         hideConfirm: PropTypes.func.isRequired,
         hideTransfer: PropTypes.func.isRequired,
         hidePowerdown: PropTypes.func.isRequired,
         hidePowerCalc: PropTypes.func.isRequired,
+        hideAppDownload: PropTypes.func.isRequired,
         notifications: PropTypes.object,
         removeNotification: PropTypes.func,
         show_open_orders_modal: PropTypes.bool,
@@ -60,6 +63,7 @@ class Modals extends React.Component {
             show_powerdown_modal,
             show_change_account_modal,
             show_add_account_modal,
+            show_app_download_modal,
             show_power_calc_modal,
             hideLogin,
             hideTransfer,
@@ -68,6 +72,7 @@ class Modals extends React.Component {
             hideConfirm,
             hideChangeAccount,
             hideAddAccount,
+            hideAppDownload,
             hidePowerCalc,
             notifications,
             removeNotification,
@@ -122,6 +127,10 @@ class Modals extends React.Component {
                     <CloseButton onClick={hidePowerCalc} />
                     <PowerCalc />
                 </Reveal>}
+                {show_app_download_modal && <Reveal onHide={hideAppDownload} show={show_app_download_modal}>
+                    <CloseButton onClick={hideAppDownload} />
+                    <AppDownload />
+                </Reveal>}
             </div>
         );
     }
@@ -141,6 +150,7 @@ export default connect(
             show_powerdown_modal: state.user.get('show_powerdown_modal'),
             show_change_account_modal: state.user.get('show_change_account_modal'),
             show_add_account_modal: state.user.get('show_add_account_modal'),
+            show_app_download_modal: state.user.get('show_app_download_modal'),
             notifications: state.app.get('notifications'),
             show_open_orders_modal: state.user.get('show_open_orders_modal'),
         }
@@ -177,6 +187,10 @@ export default connect(
         hideAddAccount: e => {
             if (e) e.preventDefault();
             dispatch(user.actions.hideAddAccount())
+        },
+        hideAppDownload: e => {
+            if (e) e.preventDefault()
+            dispatch(user.actions.hideAppDownload())
         },
         // example: addNotification: ({key, message}) => dispatch({type: 'ADD_NOTIFICATION', payload: {key, message}}),
         removeNotification: (key) => dispatch({type: 'REMOVE_NOTIFICATION', payload: {key}}),

@@ -60,3 +60,29 @@ export async function apidexGetPrices(sym) {
         return empty
     }
 }
+
+let cachedAll = {}
+
+export async function apidexGetAll() {
+    const empty = {
+        data: {}
+    }
+    if (!apidexAvailable()) return empty
+    let request = Object.assign({}, request_base)
+    try {
+        const now = new Date()
+        if (cachedAll && (now - cachedAll.time) < 60000) {
+            return cachedAll.resp
+        } else {
+            let resp = await fetchWithTimeout(apidexUrl(`/api/v1/cmc`), 1000, request)
+            resp = await resp.json()
+            cachedAll = {
+                resp, time: now
+            }
+            return resp
+        }
+    } catch (err) {
+        console.error('apidexGetAll', err)
+        return empty
+    }
+}

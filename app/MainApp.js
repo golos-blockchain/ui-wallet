@@ -47,17 +47,19 @@ async function initState() {
         return initialState
     }
 
-    try {
-        $STM_Config.add_notify_site = await checkUpdates()
-    } catch (err) {
-        console.error('Cannot check updates', err)
-        alert('Cannot check updates' + err)
-    }
-
     let splashTimeout = setTimeout(() => {
         closeSplash()
         showNodeError()
     }, 30000)
+
+    try {
+        $STM_Config.add_notify_site = await checkUpdates()
+    } catch (err) {
+        console.error('Cannot check updates', err)
+        clearTimeout(splashTimeout)
+        closeSplash()
+        alert('Cannot check updates' + err)
+    }
 
     let nodeError = null
 
