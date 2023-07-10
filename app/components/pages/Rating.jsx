@@ -106,6 +106,7 @@ class Rating extends React.Component {
 
         return <Link to={link}><div className='Pair PairTop1'>
             <div className='Pair__logo'>
+                <img src={require('app/assets/images/badge.png')} width='110px' alt='' /><br />
                 <img src={getAssetMeta(asset).image_url || ''}
                     className='Pair__logo-img' />
             </div>
@@ -218,7 +219,7 @@ class Rating extends React.Component {
         return <div className='row'>
             <div className='Rating'>
                 {/*reloading ? <LoadingIndicator /> : null*/}
-                <h4>{tt('navigation.market2')}</h4>
+                <h4>{tt('rating_jsx.title')}</h4>
                 {top1 ? <div>{top1}</div> : null}
                 {pairItems}
             </div>

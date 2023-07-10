@@ -76,7 +76,7 @@ class FilledOrders extends Component {
         return (
             <div>
                 <span style={{float: 'right', fontSize: '85%', marginLeft: '20px'}}>
-                    <a href='/market/GOLOS/YMUSDT' className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
+                    <a href='/rating' className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
                 </span>
                 <span style={{float: 'right', fontSize: '85%'}}>
                     <a href='/convert/GOLOS/YMUSDT' className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
