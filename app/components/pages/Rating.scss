@@ -1,7 +1,9 @@
 .Rating {
     padding: 1rem;
+    text-align: center;
 
     .Pair {
+        text-align: left;
         min-width: 250px;
         min-height: 100px;
         padding: 1rem;
@@ -19,7 +21,7 @@
 
         .Pair__main {
             display: inline-block;
-            color: black;
+            color: $color-text-gray;
             margin-left: 1rem;
 
             .Pair__header {
@@ -42,7 +44,8 @@
 
             .Pair__logo {
                 display: inline-block;
-                vertical-align: top;
+                vertical-align: top;    
+                text-align: center;
 
                 .Pair__logo-img {
                     width: 60px;

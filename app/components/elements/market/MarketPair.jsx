@@ -136,7 +136,7 @@ class MarketPair extends React.Component {
             }
         }
 
-        const highlightColor = '#ecffeb'
+        const highlightColor = '#e2f7df'
         return {
             style: {
                 'background': 'linear-gradient(to left, white ' + (100 - Math.round(pct)) + '%, ' + highlightColor + ' 1%)',

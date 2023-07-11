@@ -359,6 +359,14 @@
     "forum": "Forum GolosTalk",
     "sale_agreement": "Sale Agreement",
     "telegram_support": "%(APP_NAME_UP)s Support"
+  },  
+  "rating_jsx": {
+    "title": "Rating of trading volumes",
+    "price": "Price:",
+    "volume": "Volume:",
+    "volume2": "Volume USDT:",
+    "volume_title": "Volume 24h",
+    "change": "Change:"
   },
   "reply_editor": {
     "shorten_title": "Shorten title",

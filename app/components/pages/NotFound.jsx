@@ -19,7 +19,7 @@ class NotFound extends React.Component {
                       <li><a href="/transfers">balances</a></li>
                       <li><a href="/assets">uia-assets</a></li>
                       <li><a href="/donates-to">rewards</a></li>
-                      <li><a href="/market">market</a></li>
+                      <li><a href="/rating">market</a></li>
                     </ul>
                 </div>
             </div>

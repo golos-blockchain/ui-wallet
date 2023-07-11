@@ -126,7 +126,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     }
     additional_menu.push(
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
-        { link: '/market', icon: 'trade', value: tt("navigation.market") },
+        { link: '/rating', icon: 'trade', value: tt("navigation.market") },
         { link: blogsUrl('/services'), target: blogsTarget(), icon: 'new/monitor', value: tt("navigation.services") },
         { link: blogsUrl('/search'), target: blogsTarget(), icon: 'new/search', value: tt("navigation.search") },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },

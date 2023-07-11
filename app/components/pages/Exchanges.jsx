@@ -107,7 +107,7 @@ class Exchanges extends React.Component {
                             <hr/>
                         </div>
                         <div className='row'>
-                            <a target="_blank" href="/market/GOLOS/YMUSDT" className="golos-btn btn-secondary btn-round"><Icon name="trade" /> Golos Market</a>&nbsp;
+                            <a target="_blank" href="/rating" className="golos-btn btn-secondary btn-round"><Icon name="trade" /> Golos Market</a>&nbsp;
                             <a target="_blank" href="/convert/GOLOS/YMUSDT" className="golos-btn btn-secondary btn-round"><Icon name="sorting" /> Golos Convert</a>&nbsp;
                             <a target="_blank" href="https://coinmarketcap.com/currencies/golos-blockchain/" className="golos-btn btn-secondary btn-round"><Icon name="extlink" /> CoinMarketCap</a>&nbsp;
                             <a target="_blank" href="https://explorer.golos.id/" className="golos-btn btn-secondary btn-round"><Icon name="cog" /> Block Explorer</a>&nbsp;
