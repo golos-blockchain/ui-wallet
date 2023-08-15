@@ -7,6 +7,7 @@ import {List} from 'immutable';
 import { Asset, } from 'golos-lib-js/lib/utils'
 
 import ConvertAssetsBtn from 'app/components/elements/market/ConvertAssetsBtn'
+import NotifiCounter from 'app/components/elements/NotifiCounter'
 import SavingsWithdrawHistory from 'app/components/elements/SavingsWithdrawHistory';
 import TransferHistoryRow from 'app/components/cards/TransferHistoryRow';
 import TransactionError from 'app/components/elements/TransactionError';
@@ -18,6 +19,7 @@ import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDa
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
 import { blogsUrl } from 'app/utils/blogsUtils'
+import { markNotificationRead } from 'app/utils/NotifyApiClient'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -67,14 +69,28 @@ class UserWallet extends React.Component {
         disableAmount: true
       });
     }
-      const { transferDetails: { immediate, to, amount, token, memo } } = this.props;
-      if (immediate) callTransfer({ to, amount, token, memo})
+        const { transferDetails: { immediate, to, amount, token, memo } } = this.props;
+        if (immediate) callTransfer({ to, amount, token, memo})
+
+        const { account } = this.props
+        if (account) {
+            this.readNotifications(account)
+        }
     }
 
     componentDidUpdate(prevProps) {
         if (!prevProps.account && this.props.account) {
             this.loadPriceIfNeed()
+
+            const { account } = this.props
+            this.readNotifications(account)
         }
+    }
+
+    readNotifications = (account) => {
+        setTimeout(() => {
+            markNotificationRead(account.get('name'), ['delegate_vs'])
+        }, 500)
     }
 
     render() {
@@ -460,8 +476,9 @@ class UserWallet extends React.Component {
                     {total_received_vesting_shares != 0 ? (
                             <div style={{ paddingRight: isMyAccount ? '0.85rem' : null }} >
                                 <LiteTooltip t={tt('g.received_vesting', {VESTING_TOKEN})}>
-                                    <small><a href="#" onClick={showDelegateVestingInfo.bind(this, 'received')}>
+                                    <small><a className='received_vesting' href="#" onClick={showDelegateVestingInfo.bind(this, 'received')}>
                                         + {total_received_vesting_shares_str}
+                                        <NotifiCounter fields='delegate_vs' />
                                     </a></small>
                                 </LiteTooltip>
                             </div>
