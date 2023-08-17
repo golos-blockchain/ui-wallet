@@ -127,7 +127,10 @@ class MarketPair extends React.Component {
     makeItem = (asset, depths, maxDepth) => {
         let pct = 0
         const dd = depths[asset.symbol]
-        if (dd.market_usd) {
+        // TODO: dd can be undefined, because when we switching symbols,
+        // PagedDropdownMenu re-renders on old symbols (it caches them),
+        // but with new depths.
+        if (dd && dd.market_usd) {
             pct = dd.market_usd / maxDepth * 100
             // coefficients
             pct = Math.min(100, pct * 6)
@@ -142,7 +145,7 @@ class MarketPair extends React.Component {
                 'background': 'linear-gradient(to left, white ' + (100 - Math.round(pct)) + '%, ' + highlightColor + ' 1%)',
             },
             dataset: {
-                market_usd: dd.market_usd
+                market_usd: dd && dd.market_usd
             }
         }
     }
