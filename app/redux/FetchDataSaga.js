@@ -143,7 +143,7 @@ export function* fetchState(location_change_action) {
                     break
                     case 'transfers':
                     default:
-                        const history = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['donate', 'transfer', 'author_reward', 'curation_reward', 'transfer_to_tip', 'transfer_from_tip', 'transfer_to_vesting', 'withdraw_vesting', 'asset_issue', 'invite', 'transfer_to_savings', 'transfer_from_savings', 'convert_sbd_debt', 'convert', 'fill_convert_request', 'interest', 'worker_reward', 'account_freeze', 'unwanted_cost', 'unlimit_cost']})
+                        const history = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['donate', 'transfer', 'author_reward', 'curation_reward', 'transfer_to_tip', 'transfer_from_tip', 'transfer_to_vesting', 'withdraw_vesting', 'asset_issue', 'invite', 'transfer_to_savings', 'transfer_from_savings', 'convert_sbd_debt', 'convert', 'fill_convert_request', 'interest', 'worker_reward', 'account_freeze', 'unwanted_cost', 'unlimit_cost', 'subscription_payment'/*, 'subscription_prepaid_return'*/]})
                         account.transfer_history = []
                         account.other_history = []
 
@@ -170,6 +170,8 @@ export function* fetchState(location_change_action) {
                                 case 'account_freeze':
                                 case 'unwanted_cost':
                                 case 'unlimit_cost':
+                                case 'subscription_payment':
+                                //case 'subscription_prepaid_return':
                                     state.accounts[uname].transfer_history.push(operation)
                                 break
 

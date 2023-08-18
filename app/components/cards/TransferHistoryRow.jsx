@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { Link } from 'react-router';
 import { PrivateKey } from 'golos-lib-js/lib/auth/ecc'
+import { Asset } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
@@ -267,6 +268,49 @@ class TransferHistoryRow extends React.Component {
                 description_end += tt('transferhistoryrow_jsx.with_negrep')
             } else {
                 description_end += tt('transferhistoryrow_jsx.with_unlimit')
+            }
+        }
+        else if (type === 'subscription_payment') {
+            const iAmSponsor = data.subscriber === this.props.context
+            const total = Asset(data.amount).plus(data.rest).floatString
+            if (data.payment_type === 'first') {
+                if (iAmSponsor) {
+                    description_start += tt('transferhistoryrow_jsx.i_become_sponsor')
+                    link = data.author
+                    description_end += tt('transferhistoryrow_jsx.for')
+                    description_end += total
+                } else {
+                    link = data.subscriber
+                    description_end += tt('transferhistoryrow_jsx.their_become_sponsor')
+                    description_end += tt('transferhistoryrow_jsx.for')
+                    description_end += total
+                }
+            } else if (data.payment_type === 'prolong') {
+                if (iAmSponsor) {
+                    description_start += tt('transferhistoryrow_jsx.i_prolong_sponsor')
+                    link = data.author
+                    description_end += tt('transferhistoryrow_jsx.for')
+                    description_end += total
+                } else {
+                    link = data.subscriber
+                    description_end += tt('transferhistoryrow_jsx.their_prolong_sponsor')
+                    description_end += tt('transferhistoryrow_jsx.for')
+                    description_end += total
+                }
+            } else if (data.payment_type === 'regular') {
+                if (iAmSponsor) {
+                    description_start += tt('transferhistoryrow_jsx.payment_for_sponsorship')
+                    link = data.author
+                    description_end += ' - ' + total
+                    description_end += tt('transferhistoryrow_jsx.per_month')
+                } else {
+                    description_start += tt('transferhistoryrow_jsx.payment_from_sponsor')
+                    link = data.subscriber
+                    description_end += ' - ' + total
+                    description_end += tt('transferhistoryrow_jsx.per_month')
+                }
+            } else {
+                code_key = JSON.stringify({type, ...data}, null, 2);
             }
         }
 
