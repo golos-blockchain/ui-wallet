@@ -106,7 +106,7 @@ class WorkerRequestVoting extends React.Component {
         const isDown = type === 'down'
         return (<FoundationDropdown show={show} onHide={onHide}>
             <div className="Voting__adjust_weight row align-middle collapse">
-                <a href="#" onClick={onClick} className="columns small-2 confirm_weight" title={tt('g.flag')}>
+                <a href="#" onClick={onClick} className="columns small-2 confirm_weight">
                     <Icon size="2x" name={iconName} />
                 </a>
                 <div className="columns small-2 weight-display">{isDown ? '-' : ''}{value}%</div>
