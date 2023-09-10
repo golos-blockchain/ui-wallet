@@ -13,9 +13,9 @@ class Expandable extends Component {
     };
 
     render() {
-        const { title, } = this.props;
+        const { title, ...rest } = this.props;
         const { opened, } = this.state;
-        return (<div className={'Expandable' + (opened ? ' opened' : '')}>
+        return (<div className={'Expandable' + (opened ? ' opened' : '')} {...rest}>
             <div className='Expander' onClick={this.onToggleExpander}>
                 <Icon name={opened ? 'chevron-up-circle' : 'chevron-down-circle'} size='2x' />
                 <h5 style={{ paddingLeft: '0.5rem', }}>{title}</h5>

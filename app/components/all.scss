@@ -39,6 +39,9 @@
 @import "./elements/market/MarketPair";
 @import "./elements/market/OrderForm";
 @import "./elements/market/TickerPriceStat";
+@import "./elements/nft/NFTSmallIcon";
+@import "./elements/nft/NFTMarketCollections";
+@import "./elements/nft/NFTTokenItem";
 @import "./elements/workers/WorkerRequestVoting";
 
 // dialogs
@@ -67,6 +70,12 @@
 @import "./modules/Powerdown.scss";
 @import "./modules/QuickBuy.scss";
 @import "./modules/Modals";
+@import "./modules/nft/NFTCollections";
+@import "./modules/nft/CreateNFTCollection";
+@import "./modules/nft/IssueNFTToken";
+@import "./modules/nft/NFTTokens";
+@import "./modules/nft/NFTTokenSell";
+@import "./modules/nft/NFTTokenTransfer";
 
 // pages
 @import "./pages/Exchanges";
@@ -76,3 +85,6 @@
 @import "./pages/Rating";
 @import "./pages/UserProfile";
 @import "./pages/Witnesses";
+@import "./pages/nft/NFTCollectionPage";
+@import "./pages/nft/NFTMarketPage";
+@import "./pages/nft/NFTTokenPage";

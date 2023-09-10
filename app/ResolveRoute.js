@@ -1,14 +1,18 @@
 export const routeRegex = {
     UserProfile1: /^\/(@[\w\.\d-]+)\/?$/,
-    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
+    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|filled-orders|permissions|created|password|witness|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
     UserProfile3: /^\/(@[\w\.\d-]+)\/[\w\.\d-]+/,
+    UserNFTEndPoints: /^\/(@[\w\.\d-]+)\/nft-tokens\/([\w\d.-]+)\/?$/,
     UserAssetEndPoints: /^\/(@[\w\.\d-]+)\/assets\/([\w\d.-]+)\/(update|transfer)$/,
-    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|filled-orders|permissions|created|password|witness|settings)$/,
+    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|filled-orders|permissions|created|password|witness|settings)$/,
     WorkerSort: /^\/workers\/([\w\d\-]+)\/?($|\?)/,
     WorkerSearchByAuthor: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/?($|\?)/,
     WorkerRequest: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/([\w\d-]+)\/?($|\?)/,
     MarketPair: /^\/market\/([\w\d\.]+)\/([\w\d.]+)\/?($|\?)/,
     ConvertPair: /^\/convert\/([\w\d\.]+)\/([\w\d.]+)\/?($|\?)/,
+    NFTCollection: /^\/nft-collections\/([\w\d\.]+)\/?($|\?)/,
+    NFTToken: /^\/nft-tokens\/([\w\d\.]+)\/?($|\?)/,
+    NFTMarket: /^\/nft\/([\w\d\.]+)\/?($|\?)/,
     UserJson: /^\/(@[\w\.\d-]+)(\.json)$/,
     UserNameJson: /^.*(?=(\.json))/
 };
@@ -72,6 +76,10 @@ export default function resolveRoute(path)
     if (match) {
         return {page: 'Workers', params: match.slice(1)};
     }
+    match = path.match(routeRegex.UserNFTEndPoints)
+    if (match) {
+        return {page: 'UserProfile', params: [match[1], 'nft-tokens', match[2]]}
+    }
     match = path.match(routeRegex.UserAssetEndPoints);
     if (match) {
         return {page: 'UserProfile', params: [match[1], 'assets', match[2], match[3]]};
@@ -88,6 +96,21 @@ export default function resolveRoute(path)
     match = path.match(routeRegex.ConvertPair);
     if (match) { 
         return {page: 'ConvertAssetsPage', params: match.slice(1)}
+    }
+    match = path.match(routeRegex.NFTCollection)
+    if (match) { 
+        return {page: 'NFTCollectionPage', params: match.slice(1)}
+    }
+    match = path.match(routeRegex.NFTToken)
+    if (match) { 
+        return {page: 'NFTTokenPage', params: match.slice(1)}
+    }
+    if (path === '/nft') {
+        return {page: 'NFTMarketPage'}
+    }
+    match = path.match(routeRegex.NFTMarket)
+    if (match) { 
+        return {page: 'NFTMarketPage', params: match.slice(1)}
     }
     return {page: 'NotFound'};
 }

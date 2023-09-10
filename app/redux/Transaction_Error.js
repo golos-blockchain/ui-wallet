@@ -8,6 +8,8 @@ export default function transactionErrorReducer(
     let errorStr = error.toString();
     let errorKey = 'Transaction broadcast error.';
 
+    let handled = false
+
     for (const [type] of operations) {
         switch (type) {
             case 'vote':
@@ -42,6 +44,21 @@ export default function transactionErrorReducer(
                     errorKey = errorStr = tt('invites_jsx.claim_wrong_secret_fatal');
                 }
                 break;
+            case 'nft_collection':
+                if (errorStr.includes('Object already exist')) {
+                    errorKey = errorStr = tt('nft_collections_jsx.name_exists')
+                    handled = true
+                }
+                break;
+            case 'nft_issue':
+                if (errorStr.includes('Account does not have sufficient funds')) {
+                    errorKey = errorStr = tt('transfer_jsx.insufficient_funds')
+                    handled = true
+                } else if (errorStr.includes('Cannot issue more tokens')) {
+                    errorKey = errorStr = tt('issue_nft_token_jsx.max_token_count')
+                    handled = true
+                }
+                break;
             case 'withdraw_vesting':
                 if (
                     errorStr.includes(
@@ -64,7 +81,6 @@ export default function transactionErrorReducer(
                 break;
         }
 
-        let handled = false
         if (errorStr.includes('You are blocked by user')) {
             errorKey = errorStr = tt('chain_errors.user_blocked_user')
             handled = true

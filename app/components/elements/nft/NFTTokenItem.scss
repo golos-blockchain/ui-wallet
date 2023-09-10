@@ -1,0 +1,48 @@
+.NFTTokenItem {
+    display: inline-block;
+    border: 1px solid rgba(128,128,128,0.45);
+    border-radius: 5px;
+    margin-right: 1rem;
+    margin-bottom: 1em;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    .token-image {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+    .price-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.25rem;
+    }
+
+    .token-title {
+        margin-top: 0.25rem;
+        margin-bottom: 0.1rem;
+    }
+    .token-coll {
+        display: inline-block;
+        margin-bottom: 0.35rem;
+    }
+
+    .button {
+        margin: 0px !important;
+        margin-right: 5px !important;
+    }
+    .button:hover {
+        background-color: #016aad !important;
+    }
+    .button.hollow {
+        border: 0px;
+    }
+    .button.hollow:hover {
+        background-color: transparent !important;
+    }
+}
+
+.NFTTokenItem:hover {
+    background-color: rgba(208,208,208,0.45);
+    border: 1px solid rgba(128,128,128,0.45);
+}

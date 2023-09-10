@@ -33,6 +33,12 @@ export default {
             cb(null, [require('@pages/UserProfile')]);
         } else if (route.page === 'ConvertAssetsPage') {
             cb(null, [require('@pages/ConvertAssetsPage')]);
+        } else if (route.page === 'NFTCollectionPage') {
+            cb(null, [require('@pages/nft/NFTCollectionPage')]);
+        } else if (route.page === 'NFTTokenPage') {
+            cb(null, [require('@pages/nft/NFTTokenPage')]);
+        } else if (route.page === 'NFTMarketPage') {
+            cb(null, [require('@pages/nft/NFTMarketPage')]);
         } else if (route.page === 'Market') {
             cb(null, [require('@pages/MarketLoader')]);
        } else if (route.page === 'Rating') {
