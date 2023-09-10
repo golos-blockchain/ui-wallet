@@ -1,0 +1,49 @@
+.NFTTokenPage {
+    padding: 1rem;
+    flex: 1;
+    width: 100%;
+
+    .container {
+        display: flex;
+        width: 100%;
+    }
+    .buttons {
+        align-self: flex-end;
+        display: flex;
+        width: 100%;
+    }
+
+    img {
+        max-width: 320px;
+        max-height: 320px;
+    }
+
+    .Expandable {
+        margin-bottom: 0.5rem;
+        padding-bottom: 0px;
+        width: 100%;
+        .Expander {
+            margin-bottom: 0rem;
+            h5 {
+                font-size: 1rem;
+            }
+        }
+    }
+
+    .price-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 0.25rem;
+    }
+
+    .button {
+        margin: 0px !important;
+        margin-left: 5px !important;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .button-center {
+        margin-top: -4px !important;
+        margin-left: 10px !important;
+    }
+}

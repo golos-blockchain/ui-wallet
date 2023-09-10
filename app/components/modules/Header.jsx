@@ -91,23 +91,31 @@ class Header extends React.Component {
             const name = acct_meta ? normalizeProfile(acct_meta.toJS()).name : null;
             const user_title = name ? `${name} (@${user_name})` : user_name;
             page_title = user_title;
-            if(route.params[1] === "curation-rewards"){
+            if (route.params[1] === "curation-rewards"){
                 page_title = tt('header_jsx.curation_rewards_by') + " " + user_title;
-            }
-            if(route.params[1] === "author-rewards"){
+            } else if (route.params[1] === "author-rewards"){
                 page_title = tt('header_jsx.author_rewards_by') + " " + user_title;
-            }
-            if(route.params[1] === "donates-from"){
+            } else if (route.params[1] === "donates-from"){
                 page_title = tt('header_jsx.donates_from') + " " + user_title;
-            }
-            if(route.params[1] === "donates-to"){
+            } else if (route.params[1] === "donates-to"){
                 page_title = tt('header_jsx.donates_to') + " " + user_title;
-            }
-            if(route.params[1] === "recent-replies"){
+            } else if (route.params[1] === "recent-replies"){
                 page_title = tt('header_jsx.replies_to') + " " + user_title;
+            } else if (route.params[1] === "nft-tokens"){
+                page_title = tt('header_jsx.nft_tokens') + " " + user_title
+            } else if (route.params[1] === "nft-collections"){
+                page_title = tt('header_jsx.nft_collections') + " " + user_title
+            } else if (route.params[1] === "nft-history"){
+                page_title = tt('g.nft_history') + " " + user_title
             }
         } else if (route.page === 'ConvertAssetsPage') {
             page_title = tt('g.convert_assets')
+        } else if (route.page === `NFTCollectionPage`){
+            page_title = tt('header_jsx.nft_collection')
+        } else if (route.page === `NFTTokenPage`){
+            page_title = tt('header_jsx.nft_token')
+        } else if (route.page === `NFTMarketPage`){
+            page_title = tt('header_jsx.nft_market')
         } else {
             page_name = ''; //page_title = route.page.replace( /([a-z])([A-Z])/g, '$1 $2' ).toLowerCase();
         }

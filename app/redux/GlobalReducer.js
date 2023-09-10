@@ -6,6 +6,51 @@ import { fromJSGreedy } from 'app/utils/StateFunctions';
 
 const emptyContentMap = Map(emptyContent);
 
+const upsertNftAssets = (state, nft_assets, start_token_id) => {
+    if (!start_token_id) {
+        state = state.set('nft_assets', fromJS(nft_assets))
+    } else {
+        state = state.update('nft_assets', data => {
+            data = data.merge(nft_assets)
+            return data
+        })
+    }
+    return state
+}
+
+const upsertPagedItems = (state, key, items, start_item_id, next_from) => {
+    if (!start_item_id) {
+        state = state.set(key, fromJS({
+            data: items,
+            next_from
+        }))
+    } else {
+        state = state.update(key, stateItems => {
+            stateItems = stateItems.update('data', data => {
+                for (const item of items) {
+                    data = data.push(fromJS(item))
+                }
+                return data
+            })
+            stateItems = stateItems.set('next_from', next_from)
+            return stateItems
+        })
+    }
+    return state
+}
+
+const upsertNftTokens = (state, nft_tokens, start_token_id, next_from) => {
+    return upsertPagedItems(state, 'nft_tokens', nft_tokens, start_token_id, next_from)
+}
+
+const upsertNftOrders = (state, nft_orders, start_order_id, next_from) => {
+    return upsertPagedItems(state, 'nft_orders', nft_orders, start_order_id, next_from)
+}
+
+const upsertOwnNftOrders = (state, own_nft_orders, start_order_id, next_from) => {
+    return upsertPagedItems(state, 'own_nft_orders', own_nft_orders, start_order_id, next_from)
+}
+
 export default createModule({
     name: 'global',
     initialState: Map({
@@ -52,7 +97,15 @@ export default createModule({
                         );
                     }
                 }
-                let res = state.mergeDeep(payload)
+                let res = state
+                if (res.has('nft_collections'))
+                    res = res.delete('nft_collections')
+                res = res.mergeDeep(payload)
+                if (!payload.has('nft_tokens')) {
+                    if (!window.location.pathname.endsWith('/nft-tokens')) {
+                        res = res.delete('nft_tokens')
+                    }
+                }
                 return res
             },
         },
@@ -161,6 +214,56 @@ export default createModule({
             action: 'RECEIVE_UIA_BALANCES',
             reducer: (state, { payload: { assets } }) => {
                 return state.set('assets', fromJS(assets))
+            },
+        },
+        {
+            action: 'FETCH_NFT_TOKENS',
+            reducer: state => state,
+        },
+        {
+            action: 'RECEIVE_NFT_TOKENS',
+            reducer: (state, { payload: { nft_tokens, start_token_id, next_from, nft_assets } }) => {
+                let new_state = state
+                new_state = upsertNftTokens(new_state, nft_tokens, start_token_id, next_from)
+                if (nft_assets) {
+                    new_state = upsertNftAssets(new_state, nft_assets, start_token_id)
+                }
+                return new_state
+            },
+        },
+        {
+            action: 'FETCH_NFT_COLLECTION_TOKENS',
+            reducer: state => state,
+        },
+        {
+            action: 'RECEIVE_NFT_COLLECTION_TOKENS',
+            reducer: (state, { payload: { nft_coll, nft_tokens, start_token_id, next_from, nft_assets } }) => {
+                let new_state = state
+                if (nft_coll) {
+                    new_state = new_state.set('nft_collection', fromJS(nft_coll))
+                    new_state = new_state.set('nft_collection_loaded', true)
+                }
+                new_state = upsertNftTokens(new_state, nft_tokens, start_token_id, next_from)
+                if (nft_assets) {
+                    new_state = upsertNftAssets(new_state, nft_assets, start_token_id)
+                }
+                return new_state
+            },
+        },
+        {
+            action: 'FETCH_NFT_MARKET',
+            reducer: state => state,
+        },
+        {
+            action: 'RECEIVE_NFT_MARKET',
+            reducer: (state, { payload: { nft_orders, own_nft_orders, start_order_id, next_from, nft_assets } }) => {
+                let new_state = state
+                new_state = upsertNftOrders(new_state, nft_orders, start_order_id, next_from)
+                new_state = upsertOwnNftOrders(new_state, own_nft_orders)
+                if (nft_assets) {
+                    new_state = upsertNftAssets(new_state, nft_assets, start_order_id)
+                }
+                return new_state
             },
         },
         {

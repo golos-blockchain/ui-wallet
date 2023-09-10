@@ -29,10 +29,37 @@ class TransferHistoryRow extends React.Component {
         /*  all transfers involve up to 2 accounts, context and 1 other. */
         let description_start = "";
         let link = null, linkTitle = null, linkExternal = false
+        let description_middle = ''
+        let link2 = null, linkTitle2 = null, linkExternal2 = false
+        let description_middle2 = ''
+        let link3 = null, linkTitle3 = null, linkExternal3 = false
         let code_key = "";
         let description_end = "";
+        let link4 = null, linkTitle4 = null, linkExternal4 = false
         let target_hint = "";
         let data_memo = data.memo;
+
+        const getToken = (token_id) => {
+            const { nft_tokens } = this.props
+            let tokenLink
+            let tokenTitle
+            const token = nft_tokens && nft_tokens.toJS()[data.token_id]
+            if (token) {
+                try {
+                    const meta = JSON.parse(token.json_metadata)
+                    tokenTitle = meta.title
+                } catch (err) {
+                    console.error(err)
+                }
+            }
+            if (!tokenTitle) {
+                tokenTitle = '#' + data.token_id
+            }
+            tokenLink = <Link to={'/nft-tokens/' + data.token_id} target='_blank' rel='noopener noreferrer'>
+                {tokenTitle}
+            </Link>
+            return { tokenTitle, tokenLink }
+        }
 
         if (/^transfer$|^transfer_to_savings$|^transfer_from_savings$/.test(type)) {
             const fromWhere =
@@ -312,10 +339,73 @@ class TransferHistoryRow extends React.Component {
             } else {
                 code_key = JSON.stringify({type, ...data}, null, 2);
             }
+        } else if (type === 'nft_token') {
+            link = data.creator
+            description_middle = tt('transferhistoryrow_jsx.nft_issued') + tt('transferhistoryrow_jsx.nft_token') + ' '
+            const { tokenTitle, tokenLink } = getToken(data.token_id)
+            link2 = tokenLink
+            if (!link2) {
+                description_middle += tokenTitle
+            }
+            linkExternal2 = true
+            if (data.creator !== data.to) {
+                description_middle2 += tt('transferhistoryrow_jsx.nft_issued_for')
+                link3 = data.to
+            }
+            description_end = ', ' + tt('transferhistoryrow_jsx.nft_issued_cost') + Asset(data.issue_cost).floatString
+        } else if (type === 'nft_transfer') {
+            if (this.props.context === data.from) {
+                if (data.to === 'null') {
+                    description_end += tt('transferhistoryrow_jsx.burnt') + ' '
+                    description_end += tt('transferhistoryrow_jsx.nft_token')
+                } else {
+                    description_start += tt('transferhistoryrow_jsx.you_gifted0') + ' '
+                    link = data.to
+                    description_end += tt('transferhistoryrow_jsx.you_gifted') + ': '
+                    description_end += tt('transferhistoryrow_jsx.nft_token')
+                }
+            } else {
+                link = data.from
+                description_end += ' ' + tt('transferhistoryrow_jsx.gifted') + ' '
+                description_end += tt('transferhistoryrow_jsx.nft_token')
+            }
+            const { tokenTitle, tokenLink } = getToken(data.token_id)
+            link4 = tokenLink
+            linkExternal4 = true
+            description_end += ' ' + (!link4 ? tokenTitle : '')
+        } else if (type === 'nft_sell') {
+            link = data.seller
+            description_middle = tt('transferhistoryrow_jsx.nft_sell')
+            description_middle += tt('transferhistoryrow_jsx.nft_token') + ' '
+            const { tokenTitle, tokenLink } = getToken(data.token_id)
+            link2 = tokenLink
+            if (!link2) {
+                description_middle += tokenTitle
+            }
+            linkExternal2 = true
+            description_middle2 += tt('transferhistoryrow_jsx.for')
+            description_middle2 += Asset(data.price).floatString
+        } else if (type === 'nft_token_sold') {
+            link = data.seller
+            description_middle = tt('transferhistoryrow_jsx.sold')
+            link2 = data.buyer
+            description_middle2 = ' ' + tt('transferhistoryrow_jsx.nft_token') + ' '
+            const { tokenTitle, tokenLink } = getToken(data.token_id)
+            link3 = tokenLink
+            if (!link3) {
+                description_middle2 += tokenTitle
+            }
+            linkExternal3 = true
+            description_end = tt('transferhistoryrow_jsx.for')
+            description_end += Asset(data.price).floatString
+        } else {
+            code_key = JSON.stringify({type, ...data}, null, 2);
         }
 
-        else {
-            code_key = JSON.stringify({type, ...data}, null, 2);
+        const wrapLink = (href, title, isExternal) => {
+            return (isExternal ?
+                <a href={href} target='_blank' rel='noreferrer noopener'>{title || href}</a> :
+                <Link to={`/@${href}`}>{title || href}</Link>)
         }
 
         return(
@@ -328,10 +418,13 @@ class TransferHistoryRow extends React.Component {
                     <td className="TransferHistoryRow__text" style={{maxWidth: "35rem"}}>
                         {description_start}
                         {code_key && <span style={{fontSize: "85%"}}>{code_key}</span>}
-                        {link && (linkExternal ?
-                            <a href={link} target='_blank' rel='noreferrer noopener'>{linkTitle || link}</a> :
-                            <Link to={`/@${link}`}>{linkTitle || link}</Link>)}
+                        {link && wrapLink(link, linkTitle, linkExternal)}
+                        {description_middle}
+                        {link2 && wrapLink(link2, linkTitle2, linkExternal2)}
+                        {description_middle2}
+                        {link3 && wrapLink(link3, linkTitle3, linkExternal3)}
                         {description_end}
+                        {link4 && wrapLink(link4, linkTitle4, linkExternal4)}
                         {target_hint && <span style={{fontSize: "85%", padding: "5px"}}>[{target_hint}]</span>}
                     </td>
                     <td className="show-for-medium" style={{maxWidth: "25rem", wordWrap: "break-word", fontSize: "85%"}}>
@@ -358,6 +451,7 @@ export default connect(
             username,
             curation_reward,
             author_reward,
+            nft_tokens: state.global.get('nft_token_map')
         }
     },
 )(TransferHistoryRow)

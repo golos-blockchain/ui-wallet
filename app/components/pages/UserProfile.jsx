@@ -14,6 +14,8 @@ import CreateAsset from 'app/components/modules/uia/CreateAsset';
 import Assets from 'app/components/modules/uia/Assets';
 import UpdateAsset from 'app/components/modules/uia/UpdateAsset';
 import TransferAsset from 'app/components/modules/uia/TransferAsset';
+import NFTCollections from 'app/components/modules/nft/NFTCollections'
+import NFTTokens from 'app/components/modules/nft/NFTTokens'
 import Invites from 'app/components/elements/Invites';
 import PasswordReset from 'app/components/elements/PasswordReset';
 import UserWallet from 'app/components/modules/UserWallet';
@@ -24,6 +26,7 @@ import DonatesTo from 'app/components/modules/DonatesTo';
 import CurationRewards from 'app/components/modules/CurationRewards';
 import AuthorRewards from 'app/components/modules/AuthorRewards';
 import FilledOrders from 'app/components/modules/FilledOrders'
+import NFTHistory from 'app/components/modules/nft/NFTHistory'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
@@ -213,7 +216,7 @@ export default class UserProfile extends React.Component {
 
         // const global_status = this.props.global.get('status');
 
-        let rewardsClass = '', walletClass = '', permissionsClass = '';
+        let rewardsClass = '', walletClass = '', permissionsClass = '', nftClass = ''
         if (!section || section === 'transfers') {
             // transfers, check if url has query params
             const { location: { query } } = this.props;
@@ -246,8 +249,18 @@ export default class UserProfile extends React.Component {
                 <br />
                 <CreateAsset account={accountImm} />
                 </div>;
-        }
-        else if( section === 'curation-rewards' ) {
+        } else if( section === 'nft-collections' ) {
+            nftClass = 'active'
+            tab_content = <div>
+                <NFTCollections account={accountImm} isMyAccount={isMyAccount} />
+                </div>
+        } else if( section === 'nft-tokens' ) {
+            nftClass = 'active'
+            tab_content = <div>
+                <NFTTokens account={accountImm} isMyAccount={isMyAccount} />
+                <MarkNotificationRead fields='nft_receive' account={account.name} />
+            </div>
+        } else if( section === 'curation-rewards' ) {
             rewardsClass = 'active';
             tab_content = <CurationRewards
                 account={account}
@@ -260,6 +273,16 @@ export default class UserProfile extends React.Component {
                 account={account}
                 current_user={current_user}
                 />
+        }
+        else if( section === 'nft-history' ) {
+            nftClass = 'active'
+            tab_content = <div>
+                <NFTHistory
+                    account={account}
+                    current_user={current_user}
+                />
+                <MarkNotificationRead fields='nft_token_sold' account={account.name} />
+            </div>
         }
         else if( section === 'donates-from' ) {
             rewardsClass = 'active';
@@ -357,6 +380,12 @@ export default class UserProfile extends React.Component {
             {link: `/@${accountname}/curation-rewards`, label: tt('g.curation_rewards'), value: tt('g.curation_rewards')}
         ];
 
+        let nftMenu = [
+            {link: `/@${accountname}/nft-tokens`, label: tt('g.nft_tokens'), value: tt('g.nft_tokens'), addon: isMyAccount && <NotifiCounter fields='nft_receive' /> },
+            {link: `/@${accountname}/nft-collections`, label: tt('g.nft_collections'), value: tt('g.nft_collections')},
+            {link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold' /> },
+        ];
+
         let permissionsMenu = [
             {link: `/@${accountname}/permissions`, label: tt('g.keys'), value: tt('g.keys')},
             {link: `/@${accountname}/password`, label: tt('g.reset_password'), value: tt('g.reset_password')}
@@ -378,6 +407,20 @@ export default class UserProfile extends React.Component {
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
                         {tt('g.assets')}
                     </Link>
+                    <div>
+                        <LinkWithDropdown
+                            closeOnClickOutside
+                            dropdownPosition='bottom'
+                            dropdownAlignment={this.state.linksAlign}
+                            dropdownContent={<VerticalMenu items={nftMenu} />}
+                            >
+                            <a className={`${nftClass} UserProfile__menu-item`} ref={this._onLinkRef}>
+                                {tt('g.nft')}
+                                {isMyAccount && <NotifiCounter fields='nft_receive,nft_token_sold' />}
+                                <Icon name='dropdown-center' />
+                            </a>
+                        </LinkWithDropdown>
+                    </div>
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}

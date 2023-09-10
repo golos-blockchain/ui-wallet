@@ -100,6 +100,9 @@ class WitnessProps extends React.Component {
             ['allow_distribute_auction_reward', 'dropped', 'true'],
             ['allow_return_auction_reward_to_fund', 'dropped', 'true'],
         ],
+        [
+            ['nft_issue_cost', 'gbg'],
+        ],
     ];
 
     wprops_22 = [
@@ -156,7 +159,7 @@ class WitnessProps extends React.Component {
         props.comments_per_window = parseInt(props.comments_per_window);
         updateChainProperties({
             owner: account.name,
-            props: [8, props],
+            props: [9, props],
             errorCallback: (e) => {
                 if (e === 'Canceled') {
                     this.setState({

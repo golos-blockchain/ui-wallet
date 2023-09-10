@@ -12,6 +12,16 @@
     "TIP_TOKEN": "TIP-баланс",
     "CLAIM_TOKEN": "Накопительный баланс"
   },
+  "account_name": {
+    "account_name_should_be_shorter": "Имя аккаунта должно быть короче.",
+    "account_name_should_be_longer": "Имя аккаунта должно быть длиннее.",
+    "account_name_should_not_be_empty": "Имя аккаунта не должно быть пустым.",
+    "each_account_segment_should_start_with_a_letter": "Каждый сегмент имени аккаунта должен начинаться с буквы.",
+    "each_account_segment_should_have_only_letters_digits_or_dashes": "Сегмент имени аккаунта может содержать только буквы, цифры и дефисы.",
+    "each_account_segment_should_have_only_one_dash_in_a_row": "Каждый сегмент имени аккаунта может содержать только один дефис.",
+    "each_account_segment_should_end_with_a_letter_or_digit": "Каждый сегмент имени аккаунта должен заканчиваться буквой или цифрой.",
+    "each_account_segment_should_be_longer": "Сегмент имени аккаунта должен быть длиннее."
+  },
   "authorrewards_jsx": {
     "estimated_author_rewards_last_week": "Оценочные авторские вознаграждения за неделю",
     "author_rewards_history": "История авторских наград"
@@ -164,6 +174,7 @@
     "blog": "Блог",
     "browse": "Посмотреть",
     "basic": "Основные",
+    "burn": "Сжечь",
     "buy": "Купить",
     "quick_buy": "Быстрая покупка",
     "buy_VESTING_TOKEN": "Купить %(VESTING_TOKEN2)s",
@@ -242,6 +253,10 @@
     "reset_password": "Сброс пароля",
     "invites": "Инвайт-чеки",
     "assets": "Активы UIA",
+    "nft": "NFT",
+    "nft_tokens": "Токены NFT",
+    "nft_collections": "Коллекции NFT",
+    "nft_history": "История NFT",
     "help_wallet": "Функции кошелька",
     "phone": "телефон",
     "post": "Пост",
@@ -427,6 +442,7 @@
     "donate_for_post": "отблагодарил вас за пост",
     "you_donate_for_post": "Вы отблагодарили",
     "for_the_post": "за пост",
+    "for_the_comment": "за комментарий",
     "night_mode": "Ночной режим",
     "social_network": "Социальные сети",
     "about_project": "Голос Кошелёк — децентрализованный сервис, работающий на базе блокчейна Golos",
@@ -476,7 +492,8 @@
     "min_golos_power_to_curate": "Минимальная сумма СГ (в GBG), с которой пользователь начнёт получать процент за курирование контента",
     "min_golos_power_to_emission": "Минимальная сумма СГ (в GBG), с которой пользователь начнёт получать долю от эмиссии на TIP-баланс",
     "unwanted_operation_cost": "Плата за отправку нежелательных операций (если получатель заблокировал отправителя или выбрал Не беспокоить)",
-    "unlimit_operation_cost": "Плата за отправку операций при отрицательной репутации, за обход лимитов post/comment/vote-window"
+    "unlimit_operation_cost": "Плата за отправку операций при отрицательной репутации, за обход лимитов post/comment/vote-window",
+    "nft_issue_cost": "Плата за выпуск NFT-токена владельцем коллекции (в GBG)"
   },
   "header_jsx": {
     "home": "Лента",
@@ -501,6 +518,11 @@
     "author_rewards_by": "Автор награжден",
     "donates_from": "Донаты, отправленные",
     "donates_to": "Донаты, полученные",
+    "nft_tokens": "NFT-токены",
+    "nft_collections": "NFT-коллекции, созданные",
+    "nft_token": "NFT-токен",
+    "nft_collection": "NFT-коллекция",
+    "nft_market": "Биржа NFT",
     "replies_to": "Ответы на",
     "comments_by": "Комментарии"
   },
@@ -914,7 +936,17 @@
     "vote": "голос",
     "some_action": "действие",
     "with_negrep": " при отрицательной репутации",
-    "with_unlimit": " вне суточного лимита"
+    "with_unlimit": " вне суточного лимита",
+    "gifted": "подарил",
+    "you_gifted0": "К",
+    "you_gifted": " отправлен подарок",
+    "nft_token": "NFT-токен",
+    "burnt": "Сожжен",
+    "nft_issued": " выпустил ",
+    "nft_issued_for": " для ",
+    "nft_issued_cost":  "за выпуск списано ",
+    "nft_sell": " выставил на продажу ",
+    "sold": " продал "
   },
   "user_profile": {
     "unknown_account": "Неизвестный аккаунт",
@@ -1052,6 +1084,87 @@
     "transfer_no_memo": "Для вывода средств укажите заметку",
     "no_way_error": "Если вы заполнили одно из полей, то вы должны указать хотя бы один способ вывода или заполнить Дополнительно.",
     "no_to_error": "Если вы указали вывод через перевод с заметкой, то укажите, куда переводить."
+  },
+  "nft_collections_jsx": {
+    "not_yet": "У вас нет своих собственных коллекций NFT-токенов.",
+    "not_yet2": "У ",
+    "not_yet3": " нет своих собственных коллекций NFT-токенов.",
+    "create": "Создать коллекцию",
+    "name_exists": "Коллекция с таким именем уже создана другим автором",
+    "tokens_exist": "Нельзя удалить коллекцию, в которой уже есть токены",
+    "volume_hint": "Объем торгов за все время",
+    "price_hint": "Последняя цена покупки"
+  },
+  "create_nft_collection_jsx": {
+    "title": "Создать коллекцию NFT",
+    "name": "Имя токена",
+    "coll_title": "Название",
+    "coll_descr": "Описание",
+    "image": "Ссылка на изображение",
+    "json_metadata": "JSON-метаданные",
+    "json_wrong": "Некорректный JSON. ",
+    "not_required": "(не обязательно)",
+    "token_count": "Количество токенов",
+    "infinity": "Бесконечное",
+    "create": "Создать",
+    "restore_json": "Вернуть по умолчанию",
+    "json_no_fields": "В JSON не хватает полей: ",
+    "json_fix": "Добавить недостающее"
+  },
+  "issue_nft_token_jsx": {
+    "title": "Выпустить NFT",
+    "issue_cost": "Будет списана плата за выпуск -",
+    "max_token_count": "Достигнуто максимальное кол-во токенов в коллекции."
+  },
+  "nft_tokens_jsx": {
+    "not_yet": "У вас пока нет NFT-токенов.",
+    "not_yet2": "У ",
+    "not_yet3": " пока нет NFT-токенов.",
+    "token_count": {
+      "zero": "0 токенов",
+      "one": "1 токен",
+      "other": "%(count)s токенов"
+    },
+    "sort": "Сортировка",
+    "sort_new": "Сначала новые",
+    "sort_old": "Сначала старые",
+    "sort_price": "По цене",
+    "sort_name": "По имени коллекции",
+    "cancel": "Отменить",
+    "cancel_hint": "Отменить продажу",
+    "selling_for": "Продается за ",
+    "buy": "Купить",
+    "buy2": "Купить за ",
+    "buy_confirm": "Вы уверены, что хотите купить ",
+    "buy_confirm2": " за ",
+    "your_token": "Ваш токен",
+    "owner": "Владелец"
+  },
+  "nft_collection_page_jsx": {
+    "owner_is": "Владелец коллекции - ",
+    "not_yet": "В этой коллекции еще нет токенов."
+  },
+  "nft_token_page_jsx": {
+    "issued": " выпустил токен",
+    "issued_for": " для",
+    "transfered": " отправил токен",
+    "selled": " выставил на продажу токен за ",
+    "selled2": " продал токен ",
+    "selled2m": " за ",
+    "bought": " купил токен",
+    "owner_is": "Владелец - ",
+    "burnt": "Этот NFT-токен существовал когда-то.",
+    "burnt2": "Но он был сожжен.",
+    "burnt3": "И все, что о нем напоминает, это маленькая горстка пепла в нашей серверной...",
+    "msg": "Написать владельцу"
+  },
+  "nft_token_sell_jsx": {
+    "fill_price": "Укажите цену"
+  },
+  "nft_market_page_jsx": {
+    "no_orders": "На бирже сейчас не продается ни один NFT-токен.",
+    "no_own_orders": "Вы пока не продаете NFT-токенов.",
+    "own_orders": "Мои ордеры"
   },
   "invites_jsx": {
     "create_invite": "Создание чека",
