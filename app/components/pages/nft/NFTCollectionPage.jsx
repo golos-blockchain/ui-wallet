@@ -176,6 +176,11 @@ class NFTCollectionPage extends Component {
 
                 <div style={{ marginTop: '0.5rem' }}>
                     {items}
+                    {next_from ? <div className='load-more' key='load_more'>
+                        <center><button className='button hollow small' onClick={
+                            e => this.props.fetchNftCollectionTokens(this.props.routeParams.name, next_from, this.sort, this.sortReversed)
+                        }>{tt('g.load_more')}</button></center>
+                    </div> : null}
                 </div>
             </div>
 
