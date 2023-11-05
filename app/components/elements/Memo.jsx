@@ -4,10 +4,12 @@ import { connect, } from 'react-redux';
 import tt from 'counterpart';
 import { memo, } from 'golos-lib-js';
 import { Link, } from 'react-router';
-import links from 'app/utils/Links';
+
+import links from 'app/utils/Links'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import { validate_account_name, } from 'app/utils/ChainValidation'
-import user from 'app/redux/User';
+import user from 'app/redux/User'
+import { blogsUrl } from 'app/utils/blogsUtils'
 
 class Memo extends React.Component {
     static propTypes = {
@@ -36,6 +38,17 @@ class Memo extends React.Component {
         const sections = []
         let idx = 0
         if (!text || (typeof text.split !== 'function')) return
+        const isNftPost = text.startsWith('Post: ')
+        const isNftComment = !isNftPost && text.startsWith('Comment: ')
+        if (isNftPost || isNftComment) {
+            sections.push((isNftPost ? tt('g.for_the_post') : tt('g.for_the_comment')) + ': ')
+            const link = text.split(' ')[1]
+            let linkText = link
+            const truncateText = isNftPost ? 50 : 40
+            if (linkText.length > truncateText) linkText = linkText.substr(0, truncateText) + '...'
+            sections.push(<a key={idx++} href={blogsUrl(link)} target='_blank' rel='nofollow noreferrer'>{linkText}&nbsp;</a>)
+            return sections
+        }
         for (let section of text.split(' ')) {
             if (section.trim().length === 0) continue
             const matchUserName = section.match(/(^|\s)(@[a-z][-\.a-z\d]+[a-z\d])/i)

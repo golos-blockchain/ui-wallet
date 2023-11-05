@@ -58,6 +58,7 @@
     "bid": "Bid",
     "blog": "Blog",
     "browse": "Browse",
+    "burn": "Burn",
     "buy": "Buy",
     "quick_buy": "Quick Buy",
     "buy_VESTING_TOKEN": "Buy %(VESTING_TOKEN)s",
@@ -133,6 +134,10 @@
     "reset_password": "Password reset",
     "invites": "Invite checks",
     "assets": "UIA assets",
+    "nft": "NFT",
+    "nft_tokens": "NFT-tokens",
+    "nft_collections": "NFT-collections",
+    "nft_history": "NFT history",
     "help_wallet": "Wallet functions",
     "phone": "phone",
     "post": "Post",    
@@ -312,7 +317,8 @@
     "hide_content": "Information was not found or was hidden for violating the rules.",
     "donate_for_post": "thanked you for the post",
     "you_donate_for_post": "You thanked",
-    "for_the_post": "for the post",    
+    "for_the_post": "for the post",
+    "for_the_comment": "for the comment",   
     "night_mode": "Night Mode",
     "social_network": "Social network",
     "about_project": "Golos Wallet - is a decentralized service based on the GOLOS blockchain"
@@ -510,6 +516,16 @@
       "one": "1 post",
       "other": "%(count)s posts"
     }
+  },
+  "account_name": {
+    "account_name_should_be_shorter": "Account name should be shorter.",
+    "account_name_should_be_longer": "Account name should be longer.",
+    "account_name_should_not_be_empty": "Account name should not be empty.",
+    "each_account_segment_should_start_with_a_letter": "Each account name segment should start with a letter.",
+    "each_account_segment_should_have_only_letters_digits_or_dashes": "Each account name segment should have only letters, digits or dashes.",
+    "each_account_segment_should_have_only_one_dash_in_a_row": "Each account name segment should have only one dash in a row.",
+    "each_account_segment_should_end_with_a_letter_or_digit": "Each account name segment should end with a letter or digit.",
+    "each_account_segment_should_be_longer": "Each account name segment should be longer."
   },
   "authorrewards_jsx": {
     "estimated_author_rewards_last_week": "Estimated author rewards last week",
@@ -715,6 +731,87 @@
     "no_way_error": "If you set at leas one of these fields, you should also set at least 1 withdrawal method or Details field.",
     "no_to_error": "If you set withdraw via transfer with memo, please also set, to which account to transfer."
   },
+  "nft_collections_jsx": {
+    "not_yet": "You haven't any own NFT-token collections.",
+    "not_yet2": "",
+    "not_yet3": " haven't any own NFT-token collections.",
+    "create": "Create collection",
+    "name_exists": "Collection with such name is already created by another author",
+    "tokens_exist": "Cannot delete collection which has tokens",
+    "volume_hint": "Market volume for all time",
+    "price_hint": "Last buy price"
+  },
+  "create_nft_collection_jsx": {
+    "title": "Create NFT collection",
+    "name": "Token name",
+    "coll_title": "Title",
+    "coll_descr": "Description",
+    "image": "Image URL",
+    "json_metadata": "JSON metadata",
+    "json_wrong": "Wrong JSON. ",
+    "not_required": "(not required)",
+    "token_count": "Max token count",
+    "infinity": "Infinity",
+    "create": "Create",
+    "restore_json": "Restore default",
+    "json_no_fields": "In JSON missing fields: ",
+    "json_fix": "Add missing fields"
+  },
+  "issue_nft_token_jsx": {
+    "title": "Issue NFT",
+    "issue_cost": "The issue cost is",
+    "max_token_count": "Max token count in collection is already reached."
+  },
+  "nft_tokens_jsx": {
+    "not_yet": "You have no NFT-tokens.",
+    "not_yet2": "",
+    "not_yet3": " has no NFT-tokens.",
+    "token_count": {
+      "zero": "0 tokens",
+      "one": "1 token",
+      "other": "%(count)s tokens"
+    },
+    "sort": "Sorting",
+    "sort_new": "News first",
+    "sort_old": "Old first",
+    "sort_price": "By price",
+    "sort_name": "By collection name",
+    "cancel": "Cancel",
+    "cancel_hint": "Cancel selling",
+    "selling_for": "Selling for ",
+    "buy": "Buy",
+    "buy2": "Buy for ",
+    "buy_confirm": "Are you sure you want to buy ",
+    "buy_confirm2": " for ",
+    "your_token": "Your token",
+    "owner": "Owner"
+  },
+  "nft_collection_page_jsx": {
+    "owner_is": "Owner of collection is ",
+    "not_yet": "No tokens yet in this collection."
+  },
+  "nft_token_page_jsx": {
+    "issued": " issued token",
+    "issued_for": " for",
+    "transfered": " sent token for",
+    "selled": " placed selling order for ",
+    "selled2": " selled token to ",
+    "selled2m": " for ",
+    "bought": " bought token ",
+    "owner_is": "Owner is ",
+    "burnt": "This NFT-токен was existing sometime.",
+    "burnt2": "But it was burnt.",
+    "burnt3": "And all that reminds us of him is a small handful of ashes on our server room...",
+    "msg": "Chat with owner"
+  },
+  "nft_token_sell_jsx": {
+    "fill_price": "Fill price please"
+  },
+  "nft_market_page_jsx": {
+    "no_orders": "No NFT tokens are selling on the market now.",
+    "no_own_orders": "You are not selling any NFT token yet.",
+    "own_orders": "My orders"
+  },
   "invites_jsx": {
     "create_invite": "Create new invite check",
     "create_invite_info": "Cheques (invite codes) are a universal tool for transferring of GOLOS tokens to other people outside the blockchain. There are two ways to redeem the code: transfer its balance to your account or register a new account using it.",
@@ -851,6 +948,12 @@
     "transferred": "Transfer ",
     "percen_referral": " - you get a percentage of the referral fee ",
     "funded_workers": "Funded by the community ",
+    "i_become_sponsor": "Became a sponsor of ",
+    "their_become_sponsor": " became a sponsor of ",
+    "i_prolong_sponsor": "Prolonged sponsorship of ",
+    "their_prolong_sponsor": " prolonged sponsorship of ",
+    "payment_for_sponsorship": "Payment for sponsorship of ",
+    "payment_from_sponsor": "Payment from sponsor ",
     "to_golos_power": " for Golos Power",
     "to_tip": " to TIP balance ",
     "from_tip": " with TIP balance ",
@@ -873,7 +976,17 @@
     "vote": "vote",
     "some_action": "action",
     "with_negrep": " with negative reputation",
-    "with_unlimit": " out of daily limit"
+    "with_unlimit": " out of daily limit",
+    "gifted": "gifted",
+    "you_gifted0": "Sent a gift for",
+    "you_gifted": "",
+    "nft_token": "NFT-token",
+    "burnt": "Burnt",
+    "nft_issued": " issued ",
+    "nft_issued_for": " for ",
+    "nft_issued_cost":  "issue cost is ",
+    "nft_sell": " placed order of selling ",
+    "sold": " sold "
   },
   "savingswithdrawhistory_jsx": {
     "cancel_this_withdraw_request": "Cancel this withdraw request?",
@@ -912,6 +1025,11 @@
     "author_rewards_by": "Author rewards by",
     "donates_from": "Donates from",
     "donates_to": "Donates to",
+    "nft_tokens": "NFT-tokens",
+    "nft_collections": "NFT-collections, created by",
+    "nft_token": "NFT-token",
+    "nft_collection": "NFT-collection",
+    "nft_market": "NFT-market",
     "replies_to": "Replies to",
     "comments_by": "Comments by"
   },

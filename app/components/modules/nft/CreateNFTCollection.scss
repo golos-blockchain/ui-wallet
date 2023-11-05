@@ -1,0 +1,34 @@
+.CreateNFTCollection {
+    .column {
+        padding-left: 0rem;
+        padding-right: 0rem;
+    }
+    .padding-left {
+        padding-left: 0.75rem;
+    }
+    .image-preview {
+        max-width: 150px;
+        height: 40px;
+        margin-left: 0.75rem;
+        border: none;
+    }
+    .json_metadata {
+        min-width: 100%;
+        min-height: 120px;
+        font-family: monospace;
+    }
+    .json-error {
+        margin-bottom: 0px;
+    }
+    .Expandable {
+        margin-bottom: 0px;
+        padding-bottom: 0px;
+        width: 100%;
+        .Expander {
+            margin-bottom: 0px;
+            h5 {
+                font-size: 1rem;
+            }
+        }
+    }
+}

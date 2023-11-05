@@ -150,11 +150,11 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [
-            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,delegate_vs" />},
+            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,delegate_vs,nft_receive" />},
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
-            {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention" />},
+            {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention,new_sponsor,sponsor_inactive" />},
             {link: donatesLink, icon: 'hf/hf8', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
@@ -196,7 +196,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                                 </div>
                             </div>
                         </a>
-                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention" /></div>
+                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention,new_sponsor,sponsor_inactive,nft_receive" /></div>
                     </li>}
                 </LinkWithDropdown>
                 {navAdditional}
