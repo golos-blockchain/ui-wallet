@@ -50,7 +50,7 @@ async function initState() {
     let splashTimeout = setTimeout(() => {
         closeSplash()
         showNodeError()
-    }, 30000)
+    }, 60000)
 
     try {
         $STM_Config.add_notify_site = await checkUpdates()

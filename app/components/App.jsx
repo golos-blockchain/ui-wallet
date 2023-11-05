@@ -30,7 +30,7 @@ import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
 import session from 'app/utils/session'
 
-const APP_REMINDER_INTERVAL = 30*24*60*60*1000
+const APP_REMINDER_INTERVAL = 60*24*60*60*1000
 
 const GlobalStyle = createGlobalStyle`
     body {
