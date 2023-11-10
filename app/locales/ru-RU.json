@@ -1140,6 +1140,11 @@
     "your_token": "Ваш токен",
     "owner": "Владелец"
   },
+  "all_nft_page_jsx": {
+    "title": "Все NFT на Golos",
+    "no_at_all": "На Golos нет ни одного NFT-токена. Вы можете ",
+    "no_at_all2": "выпустить первый токен!"
+  },
   "nft_collection_page_jsx": {
     "owner_is": "Владелец коллекции - ",
     "not_yet": "В этой коллекции еще нет токенов."

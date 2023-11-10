@@ -116,6 +116,8 @@ class Header extends React.Component {
             page_title = tt('header_jsx.nft_token')
         } else if (route.page === `NFTMarketPage`){
             page_title = tt('header_jsx.nft_market')
+        } else if (route.page === `AllNFTPage`){
+            page_title = tt('all_nft_page_jsx.title')
         } else {
             page_name = ''; //page_title = route.page.replace( /([a-z])([A-Z])/g, '$1 $2' ).toLowerCase();
         }

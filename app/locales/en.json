@@ -786,6 +786,11 @@
     "your_token": "Your token",
     "owner": "Owner"
   },
+  "all_nft_page_jsx": {
+    "title": "All NFT on the Golos",
+    "no_at_all": "No NFT-tokens on Golos. You can ",
+    "no_at_all2": "issue your own!"
+  },
   "nft_collection_page_jsx": {
     "owner_is": "Owner of collection is ",
     "not_yet": "No tokens yet in this collection."

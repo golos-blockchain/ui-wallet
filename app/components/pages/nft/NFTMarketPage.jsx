@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect, } from 'react-redux'
+import { Link } from 'react-router'
 import tt from 'counterpart'
 
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
@@ -74,7 +75,12 @@ class NFTMarketPage extends React.Component {
 
         return <div className='row'>
             <div className='NFTMarketPage'>
-                <h4>{tt('header_jsx.nft_market')}</h4>
+                <div style={{ marginTop: '0.25rem' }}>
+                    <h4 style={{ display: 'inline-block' }}>{tt('header_jsx.nft_market')}</h4>
+                    <Link to={`/all-nft`} className="button hollow float-right">
+                        {tt('all_nft_page_jsx.title')}
+                    </Link>
+                </div>
                 {content}
             </div>
         </div>
