@@ -3,6 +3,7 @@ import tt from 'counterpart'
 import { connect, } from 'react-redux'
 import CloseButton from 'react-foundation-components/lib/global/close-button'
 import { Formik, Form, Field, ErrorMessage, } from 'formik'
+import { api } from 'golos-lib-js'
 import { Asset, AssetEditor } from 'golos-lib-js/lib/utils'
 
 import AmountField from 'app/components/elements/forms/AmountField'
@@ -16,6 +17,20 @@ class NFTTokenSell extends Component {
     state = {
         order: {
             price: AssetEditor('0.000 GOLOS')
+        }
+    }
+
+    async componentDidMount() {
+        try {
+            const assets = await api.getAssetsAsync('', [], '', 5000, 'by_symbol_name')
+            for (const asset of assets) {
+                asset.supply = Asset(asset.supply)
+            }
+            this.setState({
+                assets
+            })
+        } catch (err) {
+            console.error(err)
         }
     }
 
@@ -99,7 +114,7 @@ class NFTTokenSell extends Component {
     }
 
     render() {
-        if (this.doNotRender) {
+        if (this.doNotRender || !this.state.assets) {
             return <LoadingIndicator type='circle' />
         }
 
@@ -120,9 +135,10 @@ class NFTTokenSell extends Component {
         const assets = {}
         assets['GOLOS'] = { supply: Asset(0, 3, 'GOLOS') }
         assets['GBG'] = { supply: Asset(0, 3, 'GBG') }
-        for (const asset of this.props.assets) {
-            asset.supply = asset.supply.symbol ? asset.supply : Asset(asset.supply)
-            assets[asset.supply.symbol] = asset
+        for (const asset of this.state.assets) {
+            const sym = asset.supply.symbol
+            if ($STM_Config.hidden_assets && $STM_Config.hidden_assets[sym]) continue
+            assets[sym] = asset
         }
 
         return <div className='NFTTokenSell'>
@@ -186,7 +202,6 @@ export default connect(
     (state, ownProps) => {
         return { ...ownProps,
             nft_tokens: state.global.get('nft_tokens'),
-            assets: state.global.get('assets')
         }
     },
 
