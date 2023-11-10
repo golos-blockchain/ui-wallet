@@ -51,6 +51,11 @@ const upsertOwnNftOrders = (state, own_nft_orders, start_order_id, next_from) =>
     return upsertPagedItems(state, 'own_nft_orders', own_nft_orders, start_order_id, next_from)
 }
 
+const upsertNftMarketColls = (state, nft_colls, start_name, next_from) => {
+    return upsertPagedItems(state, 'nft_market_collections', nft_colls, start_name, next_from)
+}
+
+
 export default createModule({
     name: 'global',
     initialState: Map({
@@ -263,6 +268,18 @@ export default createModule({
                 if (nft_assets) {
                     new_state = upsertNftAssets(new_state, nft_assets, start_order_id)
                 }
+                return new_state
+            },
+        },
+        {
+            action: 'FETCH_NFT_MARKET_COLLECTIONS',
+            reducer: state => state,
+        },
+        {
+            action: 'RECEIVE_NFT_MARKET_COLLECTIONS',
+            reducer: (state, { payload: { nft_colls, start_name, next_from, } }) => {
+                let new_state = state
+                new_state = upsertNftMarketColls(new_state, nft_colls, start_name, next_from)
                 return new_state
             },
         },

@@ -817,6 +817,14 @@
     "no_own_orders": "You are not selling any NFT token yet.",
     "own_orders": "My orders"
   },
+  "nft_market_collections_jsx": {
+    "all_collections": "All collections",
+    "order_count": {
+      "zero": "No orders",
+      "one": "1 order",
+      "other": "%(count)s orders"
+    }
+  },
   "invites_jsx": {
     "create_invite": "Create new invite check",
     "create_invite_info": "Cheques (invite codes) are a universal tool for transferring of GOLOS tokens to other people outside the blockchain. There are two ways to redeem the code: transfer its balance to your account or register a new account using it.",
