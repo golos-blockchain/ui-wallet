@@ -5,18 +5,16 @@ import tt from 'counterpart'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import g from 'app/redux/GlobalReducer'
+import session from 'app/utils/session'
 
 class NFTMarketPage extends React.Component {
     componentDidMount() {
-        setTimeout(() => {
-            this.refetch()
-        }, 500)
+        this.refetch()
     }
 
     refetch = () => {
-        const { currentUser } = this.props
-        const username = currentUser && currentUser.get('username')
-        this.props.fetchNftMarket(username, '', 0, this.sort, this.sortReversed)
+        const curName = session.load().currentName
+        this.props.fetchNftMarket(curName, '', 0, this.sort, this.sortReversed)
     }
 
     render() {
