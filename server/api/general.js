@@ -76,7 +76,6 @@ export default function useGeneralApi(app) {
             const params = ctx.request.body;
             const {csrf, type, value} = typeof(params) === 'string' ? JSON.parse(params) : params;
             if (!ctx.checkCSRF(csrf)) return;
-            console.log('-- /record_event -->', ctx.session.uid, type, value);
             const str_value = typeof value === 'string' ? value : JSON.stringify(value);
             recordWebEvent(ctx, type, str_value);
             ctx.body = JSON.stringify({status: 'ok'});
