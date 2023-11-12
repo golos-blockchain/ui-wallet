@@ -39,6 +39,8 @@ export default {
             cb(null, [require('@pages/nft/NFTTokenPage')]);
         } else if (route.page === 'NFTMarketPage') {
             cb(null, [require('@pages/nft/NFTMarketPage')]);
+        } else if (route.page === 'AllNFTPage') {
+            cb(null, [require('@pages/nft/AllNFTPage')])
         } else if (route.page === 'Market') {
             cb(null, [require('@pages/MarketLoader')]);
        } else if (route.page === 'Rating') {

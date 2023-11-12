@@ -64,6 +64,7 @@ export function* fetchDataWatches () {
     yield fork(watchFetchNftTokens)
     yield fork(watchFetchNftCollectionTokens)
     yield fork(watchFetchNftMarket)
+    yield fork(watchFetchNftMarketCollections)
 }
 
 export function* watchGetContent() {
@@ -700,5 +701,38 @@ export function* fetchNftMarket({ payload: { account, collectionName, start_orde
         yield put(GlobalReducer.actions.receiveNftMarket({nft_orders, own_nft_orders, start_order_id, next_from, nft_assets}))
     } catch (err) {
         console.error('fetchNftMarket', err)
+    }
+}
+
+export function* watchFetchNftMarketCollections() {
+    yield takeLatest('global/FETCH_NFT_MARKET_COLLECTIONS', fetchNftMarketCollections)
+}
+
+export function* fetchNftMarketCollections({ payload: { start_name } }) {
+    try {
+        const limit = 99
+
+        const nft_colls = yield call([api, api.getNftCollectionsAsync], {
+            start_name,
+            limit: limit + 1,
+            sort: 'by_token_count'
+        })
+
+        let next_from
+        if (nft_colls.length > limit) {
+            next_from = nft_colls.pop().name
+        }
+
+        try {
+            yield fillNftCollectionImages(nft_colls)
+        } catch (err) {
+            console.error(err)
+        }
+
+        yield put(GlobalReducer.actions.receiveNftMarketCollections({
+            nft_colls, start_name, next_from
+        }))
+    } catch (err) {
+        console.error('fetchNftMarketCollections', err)
     }
 }

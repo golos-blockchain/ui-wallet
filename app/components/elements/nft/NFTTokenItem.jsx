@@ -99,7 +99,9 @@ class NFTTokenItem extends Component {
             }
             last_price = <span title={tt('nft_tokens_jsx.selling_for') + price.floatString}>
                 {imageUrl && <img className='price-icon' src={imageUrl} alt={''} />}
-                {price.amountFloat}
+                <span style={{fontSize: price.amountFloat.length > 9 ? '90%' : '100%' }}>
+                    {price.amountFloat}
+                </span>
             </span>
         }
 

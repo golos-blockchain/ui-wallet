@@ -786,6 +786,11 @@
     "your_token": "Your token",
     "owner": "Owner"
   },
+  "all_nft_page_jsx": {
+    "title": "All NFT on the Golos",
+    "no_at_all": "No NFT-tokens on Golos. You can ",
+    "no_at_all2": "issue your own!"
+  },
   "nft_collection_page_jsx": {
     "owner_is": "Owner of collection is ",
     "not_yet": "No tokens yet in this collection."
@@ -811,6 +816,14 @@
     "no_orders": "No NFT tokens are selling on the market now.",
     "no_own_orders": "You are not selling any NFT token yet.",
     "own_orders": "My orders"
+  },
+  "nft_market_collections_jsx": {
+    "all_collections": "All collections",
+    "order_count": {
+      "zero": "No orders",
+      "one": "1 order",
+      "other": "%(count)s orders"
+    }
   },
   "invites_jsx": {
     "create_invite": "Create new invite check",

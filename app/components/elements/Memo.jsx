@@ -5,6 +5,7 @@ import tt from 'counterpart';
 import { memo, } from 'golos-lib-js';
 import { Link, } from 'react-router';
 
+import { availableDomains } from 'app/components/App'
 import links from 'app/utils/Links'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import { validate_account_name, } from 'app/utils/ChainValidation'
@@ -52,7 +53,7 @@ class Memo extends React.Component {
         for (let section of text.split(' ')) {
             if (section.trim().length === 0) continue
             const matchUserName = section.match(/(^|\s)(@[a-z][-\.a-z\d]+[a-z\d])/i)
-            const matchLink = section.match(links.local)
+            let insertPlain = true
             if (matchUserName) {
                 const user2 = matchUserName[0].trim().substring(1)
                 const userLower = user2.toLowerCase()
@@ -60,11 +61,20 @@ class Memo extends React.Component {
                 valid
                     ? sections.push(<Link key={idx++} to={`/@${userLower}`}>{`@${user2}`}&nbsp;</Link>)
                     : sections.push(<span key={idx++}>{`@${user2}`}</span>)
+                insertPlain = false
+            } else if (section.match(links.any)) {
+                let hostname
+                try {
+                    hostname = new URL(section.trim()).hostname
+                } catch (err) {
+                    console.error(err)
+                }
+                if (availableDomains.includes(hostname)) {
+                    sections.push(<a key={idx++} href={section} target='_blank' rel='noopener noreferrer'>{section}&nbsp;</a>)
+                    insertPlain = false
+                }
             }
-            else if (matchLink) {
-                sections.push(<Link key={idx++} to={section}>{section}&nbsp;</Link>)
-            }
-            else {
+            if (insertPlain) {
                 sections.push(<span className="overflow-ellipsis" key={idx++}>{section}&nbsp;</span>)
             }
       }

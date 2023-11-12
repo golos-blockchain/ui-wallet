@@ -38,7 +38,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `;
 
-const availableDomains = [
+export const availableDomains = [
     'golos.id',
     'golos.in',
     'golos.today',

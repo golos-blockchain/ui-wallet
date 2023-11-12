@@ -1140,6 +1140,11 @@
     "your_token": "Ваш токен",
     "owner": "Владелец"
   },
+  "all_nft_page_jsx": {
+    "title": "Все NFT на Golos",
+    "no_at_all": "На Golos нет ни одного NFT-токена. Вы можете ",
+    "no_at_all2": "выпустить первый токен!"
+  },
   "nft_collection_page_jsx": {
     "owner_is": "Владелец коллекции - ",
     "not_yet": "В этой коллекции еще нет токенов."
@@ -1165,6 +1170,14 @@
     "no_orders": "На бирже сейчас не продается ни один NFT-токен.",
     "no_own_orders": "Вы пока не продаете NFT-токенов.",
     "own_orders": "Мои ордеры"
+  },
+  "nft_market_collections_jsx": {
+    "all_collections": "Все коллекции",
+    "order_count": {
+      "zero": "Нет ордеров",
+      "one": "1 ордер",
+      "other": "%(count)s ордеров"
+    }
   },
   "invites_jsx": {
     "create_invite": "Создание чека",

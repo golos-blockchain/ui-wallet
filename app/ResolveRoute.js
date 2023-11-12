@@ -112,5 +112,8 @@ export default function resolveRoute(path)
     if (match) { 
         return {page: 'NFTMarketPage', params: match.slice(1)}
     }
+    if (path === '/all-nft') {
+        return {page: 'AllNFTPage'}
+    }
     return {page: 'NotFound'};
 }
