@@ -78,6 +78,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     </li>;
     const walletLink = `/@${username}/transfers`;
     const uiaLink = `/@${username}/assets`;
+    const nftLink = `/@${username}/nft-tokens`;
     const inviteLink = `/@${username}/invites`;
     const ordersLink = `/@${username}/filled-orders`;
     const blogLink = blogsUrl(`/@${username}`);
@@ -128,7 +129,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         { link: '#', onClick: toggleNightmode, icon: 'editor/eye', value: tt('g.night_mode') },
         { link: '/rating', icon: 'trade', value: tt("navigation.market") },
         { link: blogsUrl('/services'), target: blogsTarget(), icon: 'new/monitor', value: tt("navigation.services") },
-        { link: blogsUrl('/search'), target: blogsTarget(), icon: 'new/search', value: tt("navigation.search") },
+        { link: '/nft', icon: 'editor-toolbar/picture', value: tt("header_jsx.nft_market") },
         { link: '/exchanges', icon: 'editor/coin', value: tt("navigation.buy_sell") },
         { link: '/~witnesses', icon: 'new/like', value: tt("navigation.witnesses") },
         { link: '/workers', icon: 'voters', value: tt("navigation.workers") },
@@ -150,8 +151,9 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
     if (loggedIn) { // change back to if(username) after bug fix:  Clicking on Login does not cause drop-down to close #TEMP!
         let user_menu = [
-            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,delegate_vs,nft_receive" />},
+            {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,delegate_vs" />},
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
+            {link: nftLink, icon: 'editor-toolbar/picture', value: tt('g.nft_tokens'), addon: <NotifiCounter fields="nft_receive" />},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
             {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention,new_sponsor,sponsor_inactive" />},

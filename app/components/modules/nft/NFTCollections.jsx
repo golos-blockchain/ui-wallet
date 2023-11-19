@@ -148,11 +148,15 @@ class NFTCollections extends Component {
             <div className="row">
                 <div className="column small-12">
                     <h4 className="Assets__header">{tt('g.nft_collections')}</h4>
+                    <Link to={`/nft`} className="button float-right">
+                        {tt('header_jsx.nft_market')}
+                    </Link>
                     {isMyAccount && <a href='#' onClick={this.showCreate} className="button hollow float-right">
                         {tt('nft_collections_jsx.create')}
                     </a>}
                 </div>
             </div>
+            <br />
             <div className="row">
                 <div className="column small-12">
                     {items}

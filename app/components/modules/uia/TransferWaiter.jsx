@@ -52,7 +52,7 @@ class TransferWaiter extends React.Component {
         }
         try {
             const initBal = await getBalance()
-            const pollMsec = process.env.NODE_ENV === 'development' ? 1000 : 30000
+            const pollMsec = process.env.NODE_ENV === 'development' ? 1000 : 20000
             this.pollInterval = setInterval(async () => {
                 const bal = await getBalance()
                 console.log(initBal.toString(), bal.toString())
