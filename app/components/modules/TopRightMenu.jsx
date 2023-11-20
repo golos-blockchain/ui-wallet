@@ -154,7 +154,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
-            {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention,new_sponsor,sponsor_inactive" />},
+            {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention,new_sponsor,sponsor_inactive,referral" />},
             {link: donatesLink, icon: 'hf/hf8', value: tt('g.rewards'), addon: <NotifiCounter fields="donate,donate_msgs" />},
             (messagesLink ?
                 {link: messagesLink, icon: 'new/envelope', value: tt('g.messages'), target: '_blank', addon: <NotifiCounter fields="message" />} :
@@ -196,7 +196,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                                 </div>
                             </div>
                         </a>
-                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention,new_sponsor,sponsor_inactive,nft_receive" /></div>
+                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention,new_sponsor,sponsor_inactive,nft_receive,referral" /></div>
                     </li>}
                 </LinkWithDropdown>
                 {navAdditional}
