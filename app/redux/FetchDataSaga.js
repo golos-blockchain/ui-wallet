@@ -27,6 +27,8 @@ function* fillNftCollectionImages(nft_collections) {
 
     const noImgKeys = Object.keys(noImgColls)
 
+    if (!noImgKeys.length) return
+
     const tokens = (yield call([api, api.getNftTokensAsync], {
         select_collections: noImgKeys,
         collection_limit: 1,
