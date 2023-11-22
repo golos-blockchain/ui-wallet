@@ -16,6 +16,7 @@ import MarketPair from 'app/components/elements/market/MarketPair'
 import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
         calcFeeForSell, calcFeeForBuy } from 'app/utils/market/utils'
 import transaction from 'app/redux/Transaction'
+import { apidexExchange } from 'app/utils/ApidexApiClient'
 
 class ConvertAssets extends React.Component {
     constructor(props) {
@@ -69,35 +70,21 @@ class ConvertAssets extends React.Component {
         return myBalance
     }
 
-    initOrders = async (sym1, sym2) => {
-        const now = Date.now()
-        if (!this.ordersUpdated || now - this.ordersUpdated > 3000) {
-            this.orders = await api.getOrderBookExtendedAsync(500, [sym1, sym2])
-            this.ordersUpdated = now
-        }
-    }
-
-    normalizeOrder = (order, sym1, sym2, prec1, prec2) => {
-        if (!order.asset1.symbol)
-            order.asset1 = Asset(order.asset1, prec1, sym1)
-        if (!order.asset2.symbol)
-            order.asset2 = Asset(order.asset2, prec1, sym2)
-        if (!order._price)
-            order._price = Price(order.order_price)
-    }
-
     calculate = async (sellAmount, buyAmount, myBalance, isSell = true) => {
         let res = isSell ? buyAmount.clone() : sellAmount.clone()
         res.amount = 0
+        sellAmount =sellAmount.mul(10000)
         let req = isSell ? sellAmount.clone() : buyAmount.clone()
-
-        await this.initOrders(sellAmount.symbol, buyAmount.symbol)
 
         this.limitPrice = null
         this.bestPrice = null
 
-        let orders = this.orders.bids
-        if (!orders.length) {
+        const result = await apidexExchange(req,
+            (isSell ? buyAmount.symbol : sellAmount.symbol),
+            isSell ? 'sell' : 'buy'
+        )
+
+        if (result.error) {
             this.setState({
                 warning: tt('convert_assets_jsx.no_orders_DIRECTION', {
                     DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
@@ -113,26 +100,10 @@ class ConvertAssets extends React.Component {
             return res
         }
 
-        for (let i = 0; i < orders.length; ++i) {
-            const order = orders[i]
-            this.normalizeOrder(order, sellAmount.symbol, buyAmount.symbol, sellAmount.precision, buyAmount.precision)
-
-            const orderAmount = isSell ? order.asset1 : order.asset2
-
-            const amount = req.min(orderAmount)
-            let amount2 = amount.mul(order._price)
-            res = res.plus(amount2)
-
-            this.bestPrice = this.bestPrice || order._price.clone()
-            this.limitPrice = order._price.clone()
-
-            req = req.minus(orderAmount)
-
-            if (req.amount <= 0) {
-                req.amount = 0
-                break
-            }
-        }
+        this.bestPrice = result.best_price.clone()
+        this.limitPrice = result.limit_price.clone()
+        res = result.result.clone()
+        const remain = result.remain
 
         if (res.amount == 0) {
             res.amount = 1
@@ -141,11 +112,11 @@ class ConvertAssets extends React.Component {
             res.amount = myBalance.amount
             this.limitPrice = Price(req, res)
             warning = tt('convert_assets_jsx.too_big_price')
-        } else if (req.amount > 0) {
+        } else if (remain) {
             warning = {
-                a1: (isSell ? sellAmount : buyAmount).minus(req).floatString,
+                a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
                 a2: res.floatString,
-                remain: req.floatString,
+                remain: remain.floatString,
                 isSell
             }
             if (!isSell) {
@@ -174,8 +145,6 @@ class ConvertAssets extends React.Component {
         const myBalance = await this.getBalance(sym1, asset1)
 
         let sellAmount = myBalance.clone()
-
-        this.ordersUpdated = null
 
         let fee = buyAmount.clone()
         fee.amount = 0
