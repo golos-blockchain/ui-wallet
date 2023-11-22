@@ -15,7 +15,9 @@ class AllNFTPage extends React.Component {
     state = {}
 
     componentDidMount() {
-        this.refetch()
+        setTimeout(() => {
+            this.refetch()
+        }, 500)
     }
 
     refetch = () => {
