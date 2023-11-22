@@ -11,6 +11,7 @@ import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
 import transaction from 'app/redux/Transaction'
 import { getAssetMeta } from 'app/utils/market/utils'
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 class NFTTokenItem extends Component {
     state = {}
@@ -154,10 +155,12 @@ class NFTTokenItem extends Component {
             </div>
         }
 
+        let tokenImage = image.startsWith('http') ? proxifyNFTImage(image) : image
+
         return <a href={link} target='_blank' rel='noopener noreferrer'>
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
-                <img className='token-image' src={image} alt='' title={data.title}/>
+                <img className='token-image' src={tokenImage} alt='' title={data.title}/>
                 {!isMy && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
                     {'@' + token.owner}
                 </Link>}

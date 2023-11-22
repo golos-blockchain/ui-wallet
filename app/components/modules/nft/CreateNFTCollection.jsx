@@ -3,6 +3,7 @@ import tt from 'counterpart'
 import { connect, } from 'react-redux'
 import CloseButton from 'react-foundation-components/lib/global/close-button'
 import { Formik, Form, Field, ErrorMessage, } from 'formik'
+import Dropzone from 'react-dropzone'
 
 import Expandable from 'app/components/elements/Expandable'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
@@ -226,9 +227,63 @@ class CreateNFTCollection extends Component {
         }
     }
 
+    uploadImage = (file, name = '', values, setFieldValue) => {
+        const {notify} = this.props
+        const {uploadImage} = this.props
+        this.setState({imageUploading: true})
+        uploadImage(file, progress => {
+            if (progress.url) {
+                setFieldValue('image', progress.url)
+                this.setState({
+                    showImage: true
+                })
+                this.updateJSONMetadata(values, setFieldValue, { image: progress.url })
+            }
+            if (progress.error) {
+                const { error } = progress;
+                notify(error, 10000)
+            }
+            this.setState({ imageUploading: false })
+        })
+    }
+
+    onDropImage = (acceptedFiles, rejectedFiles, values, setFieldValue) => {
+        if (!acceptedFiles.length) {
+            if (rejectedFiles.length) {
+                alert(tt('reply_editor.please_insert_only_image_files'))
+                console.log('onDrop Rejected files: ', rejectedFiles)
+            }
+            return
+        }
+        const file = acceptedFiles[0]
+        this.uploadImage(file, file.name, values, setFieldValue)
+    }
+
+    onUploadImageClick = () => {
+        this.dropzone.open();
+    }
+
     render() {
         const { onClose, } = this.props;
-        const { submitting, showImage, errorMessage, hideErrors } = this.state
+        const { submitting, showImage, errorMessage, hideErrors, imageUploading } = this.state
+
+        const selectorStyleCover = imageUploading ?
+            {
+                whiteSpace: `nowrap`,
+                display: `flex`,
+                alignItems: `center`,
+                paddingLeft: '0px',
+                paddingRight: '12px',
+                pointerEvents: `none`,
+                cursor: `default`,
+                opacity: `0.6`
+            } :
+            {
+                display: `flex`,
+                alignItems: `center`,
+                paddingLeft: '0px',
+                paddingRight: '12px',
+            }
 
         return (<div className='CreateNFTCollection'>
             <CloseButton onClick={onClose} />
@@ -283,8 +338,18 @@ class CreateNFTCollection extends Component {
                 <div className='row'>
                     <div className='column small-12'>
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='image' type='text' onBlur={this.onImageBlur} placeholder={tt('create_nft_collection_jsx.image_hint')}
-                                onChange={(e) => this.onImageChange(e, values, setFieldValue)} />
+                            <a onMouseDown={this.onUploadImageClick}
+                                style={selectorStyleCover}>
+                                {imageUploading ? `${tt(`user_saga_js.image_upload.uploading`)} ...` : tt(`g.upload`)}
+                            </a>
+                            <Dropzone style={{width: `100%`}}
+                                    onDrop={(af, rf) => this.onDropImage(af, rf, values, setFieldValue)}
+                                    className={'none'}
+                                    disableClick multiple={false} accept="image/*"
+                                    ref={(node) => { this.dropzone = node; }}>
+                                <Field name='image' type='text' onBlur={this.onImageBlur} placeholder={tt('create_nft_collection_jsx.image_hint')}
+                                    onChange={(e) => this.onImageChange(e, values, setFieldValue)} />
+                            </Dropzone>
                             <img src={values.image || 'empty'} className='image-preview' style={{ visibility: (showImage && values.image) ? 'visible' : 'hidden' }} />
                         </div>
                         <ErrorMessage name='image' component='div' className='error' />
@@ -369,6 +434,19 @@ export default connect(
     },
 
     dispatch => ({
+        uploadImage: (file, progress) => {
+            dispatch({
+                type: 'user/UPLOAD_IMAGE',
+                payload: {file, progress},
+            })
+        },
+        notify: (message, dismiss = 3000) => {
+            dispatch({type: 'ADD_NOTIFICATION', payload: {
+                key: "settings_" + Date.now(),
+                message,
+                dismissAfter: dismiss}
+            })
+        },
         createCollection: (
             name, json_metadata, max_token_count, currentUser, successCallback, errorCallback
         ) => {

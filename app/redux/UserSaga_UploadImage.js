@@ -30,7 +30,7 @@ const ERRORS_MATCH = [
     ],
 ];
 
-function* uploadImage(action) {
+function* uploadImage(action) {try{
     const { file, dataUrl, filename = 'image.txt', progress, useGolosImages = false } = action.payload;
 
     function onError(txt) {
@@ -198,4 +198,7 @@ function* uploadImage(action) {
     };
 
     xhr.send(formData);
+} catch (err) {
+    console.error(err)
+}
 }
