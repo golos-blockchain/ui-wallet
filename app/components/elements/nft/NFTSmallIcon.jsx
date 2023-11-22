@@ -1,11 +1,15 @@
 import React, { Component, } from 'react'
 
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
+
 class NFTSmallIcon extends Component {
     render() {
         const { image, ...rest } = this.props
 
+        const url = image.startsWith('http') ? proxifyNFTImage(image) : image
+
         return <a className='NFTSmallIcon' 
-            style={{ backgroundImage: `url(${image})` }} href={image} target='_blank' rel='nofollow noreferrer' {...rest}></a>
+            style={{ backgroundImage: `url(${url})` }} href={url} target='_blank' rel='nofollow noreferrer' {...rest}></a>
     }
 }
 

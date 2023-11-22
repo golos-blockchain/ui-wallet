@@ -30,6 +30,15 @@ export const proxifyImageUrl = (url, dimensions = '0x0') => {
     return prefix + url;
 };
 
+export const proxifyNFTImage = (url) => {
+    if (!$STM_Config)
+      return url
+    let prefix = ''
+    if ($STM_Config.images.img_proxy_prefix && $STM_Config.images.use_img_proxy !== false) prefix += fixHost($STM_Config.images.img_proxy_prefix) + '/orig/png/'
+    if ($STM_Config.images.img_proxy_backup_prefix) prefix += fixHost($STM_Config.images.img_proxy_backup_prefix) + '/0x0/'
+    return prefix + url
+};
+
 /**
  * Strips all proxy domains from the beginning of the url. Adds the global proxy if dimension is specified
  * @param {string} url
