@@ -1,4 +1,5 @@
 import fetchWithTimeout from 'shared/fetchWithTimeout'
+import { Asset, Price } from 'golos-lib-js/lib/utils'
 
 const request_base = {
     method: 'get',
@@ -84,5 +85,30 @@ export async function apidexGetAll() {
     } catch (err) {
         console.error('apidexGetAll', err)
         return empty
+    }
+}
+
+export async function apidexExchange(sell, buySym, direction = 'sell') {
+    if (!apidexAvailable()) return null
+    let request = Object.assign({}, request_base)
+    try {
+        let resp = await fetchWithTimeout(apidexUrl(`/api/v1/exchange/` + sell.toString() + '/' + buySym + '/' + direction), 2000, request)
+        resp = await resp.json()
+        if (resp.result) {
+            resp.result = Asset(resp.result)
+        }
+        if (resp.best_price) {
+            resp.best_price = Price(resp.best_price)
+        }
+        if (resp.limit_price) {
+            resp.limit_price = Price(resp.limit_price)
+        }
+        if (resp.remain) {
+            resp.remain = Asset(resp.remain)
+        }
+        return resp
+    } catch (err) {
+        console.error('apidexExchange', err)
+        return null
     }
 }
