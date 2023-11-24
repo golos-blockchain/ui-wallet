@@ -7,6 +7,7 @@ import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
 import { apidexGetAll } from 'app/utils/ApidexApiClient'
 import { getAssetMeta, getTradablesFor } from 'app/utils/market/utils'
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 class MarketPair extends React.Component {
     static propTypes = {
@@ -157,8 +158,12 @@ class MarketPair extends React.Component {
         if (!symbols1 && !symbols2) return <div></div>
 
         const renderSym1 = (asset) => {
-            const { symbol, image_url } = asset
+            const { symbol, } = asset
             const { style, dataset } = this.makeItem(asset, depths1, maxDepth1)
+            let { image_url } = asset
+            if (image_url) {
+                image_url = proxifyNFTImage(image_url)
+            }
             return {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
@@ -171,8 +176,12 @@ class MarketPair extends React.Component {
         }
 
         const renderSym2 = (asset) => {
-            const { symbol, image_url } = asset
+            const { symbol } = asset
             const { style, dataset } = this.makeItem(asset, depths2, maxDepth2)
+            let { image_url } = asset
+            if (image_url) {
+                image_url = proxifyNFTImage(image_url)
+            }
             return {
                 key: symbol, value: symbol,
                 label: (<span className={'Market__bg-' + symbol} style={{lineHeight: '28px'}} data-usd={dataset.market_usd}><img src={image_url} width='28' height='28'/>&nbsp;&nbsp;&nbsp;{symbol}</span>),
@@ -183,13 +192,17 @@ class MarketPair extends React.Component {
                 }
             }
         }
-        
+
+        let sym1Image = getAssetMeta(assets[sym1]).image_url
+        if (sym1Image) {
+            sym1Image = proxifyNFTImage(sym1Image)
+        }
         let left = <div style={{ display: 'inline-block' }}>
                 <div className='MarketPair__label'>{label1}</div>
                 <PagedDropdownMenu el='div' className='top-most' items={symbols1} perPage={itemsPerPage}
                         renderItem={renderSym1}>
                     <span>
-                        <img src={getAssetMeta(assets[sym1]).image_url || ''}
+                        <img src={sym1Image || ''}
                             className='MarketPair__selected' />
                         {sym1}
                         {symbols1.length > 0 && <Icon name='dropdown-arrow' />}
@@ -197,12 +210,16 @@ class MarketPair extends React.Component {
                 </PagedDropdownMenu>
             </div>
 
+        let sym2Image = getAssetMeta(assets[sym2]).image_url
+        if (sym2Image) {
+            sym2Image = proxifyNFTImage(sym2Image)
+        }
         let right = <div style={{ display: 'inline-block' }}>
                 <div className='MarketPair__label'>{label2}</div>
                 <PagedDropdownMenu el='div' className='top-most' items={symbols2} perPage={itemsPerPage}
                         renderItem={renderSym2}>
                     <span>
-                        <img src={getAssetMeta(assets[sym2]).image_url || ''}
+                        <img src={sym2Image || ''}
                             className='MarketPair__selected' />
                         {sym2}
                         {symbols2.length > 0 && <Icon name='dropdown-arrow' />}
