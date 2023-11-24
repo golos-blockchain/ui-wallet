@@ -7,6 +7,7 @@ import { api } from 'golos-lib-js'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import { getAssetMeta, } from 'app/utils/market/utils'
 import { apidexGetAll } from 'app/utils/ApidexApiClient'
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 const RELOAD_EACH_MSEC = 30*1000
 
@@ -104,10 +105,15 @@ class Rating extends React.Component {
 
         const link = '/market/' + sym1 + '/' + sym2
 
+        let image_url = getAssetMeta(asset).image_url
+        if (image_url) {
+            image_url = proxifyNFTImage(image_url)
+        }
+
         return <Link to={link}><div className='Pair PairTop1'>
             <div className='Pair__logo'>
                 <img src={require('app/assets/images/badge.png')} width='110px' alt='' /><br />
-                <img src={getAssetMeta(asset).image_url || ''}
+                <img src={image_url || ''}
                     className='Pair__logo-img' />
             </div>
             <div className='Pair__main'>
@@ -173,9 +179,14 @@ class Rating extends React.Component {
 
             const link = '/market/' + sym1 + '/' + sym2
 
+            let image_url = getAssetMeta(asset).image_url
+            if (image_url) {
+                image_url = proxifyNFTImage(image_url)
+            }
+
             pairItems.push(<Link to={link} key='link'><div className='Pair'>
                 <div className='Pair__logo'>
-                    <img src={getAssetMeta(asset).image_url || ''}
+                    <img src={image_url || ''}
                         className='Pair__logo-img' />
                 </div>
                 <div className='Pair__main'>

@@ -20,6 +20,7 @@ import AssetRules from 'app/components/modules/uia/AssetRules';
 import Reveal from 'react-foundation-components/lib/global/reveal';
 import Tooltip from 'app/components/elements/Tooltip';
 import { normalizeAssets, getTradablesFor } from 'app/utils/market/utils'
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 class Assets extends Component {
     static propTypes = {
@@ -167,7 +168,7 @@ class Assets extends Component {
             if (item.json_metadata.startsWith('{')) {
                 let json_metadata = JSON.parse(item.json_metadata)
                 description = json_metadata.description
-                image_url = json_metadata.image_url
+                image_url = proxifyNFTImage(json_metadata.image_url)
                 telegram = json_metadata.telegram
                 deposit = json_metadata.deposit;
                 withdrawal = json_metadata.withdrawal;
