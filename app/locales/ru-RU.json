@@ -1097,7 +1097,7 @@
   },
   "create_nft_collection_jsx": {
     "title": "Создать коллекцию NFT",
-    "name": "Имя токена",
+    "name": "Тикер",
     "coll_title": "Название",
     "coll_descr": "Описание",
     "image": "Ссылка на изображение",

@@ -744,7 +744,7 @@
   },
   "create_nft_collection_jsx": {
     "title": "Create NFT collection",
-    "name": "Token name",
+    "name": "Ticker",
     "coll_title": "Title",
     "coll_descr": "Description",
     "image": "Image URL",
