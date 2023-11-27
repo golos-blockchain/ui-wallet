@@ -73,7 +73,7 @@ class ConvertAssets extends React.Component {
     calculate = async (sellAmount, buyAmount, myBalance, isSell = true) => {
         let res = isSell ? buyAmount.clone() : sellAmount.clone()
         res.amount = 0
-        sellAmount =sellAmount.mul(10000)
+
         let req = isSell ? sellAmount.clone() : buyAmount.clone()
 
         this.limitPrice = null
