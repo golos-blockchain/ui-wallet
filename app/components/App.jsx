@@ -25,6 +25,7 @@ import golos from 'golos-lib-js';
 import tt from 'counterpart';
 import ChainFailure from 'app/components/elements/ChainFailure'
 import DialogManager from 'app/components/elements/common/DialogManager';
+import NotifyPolling from 'app/components/elements/NotifyPolling'
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
@@ -325,6 +326,7 @@ class App extends React.Component {
                 {process.env.BROWSER ? <TooltipManager /> : null}
                 <GlobalStyle />
                 {process.env.IS_APP ? <URLLoader /> : null}
+                <NotifyPolling />
             </div>
 
         );
