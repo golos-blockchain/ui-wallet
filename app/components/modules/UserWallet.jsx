@@ -19,7 +19,7 @@ import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDa
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
 import { blogsUrl } from 'app/utils/blogsUtils'
-import { markNotificationRead } from 'app/utils/NotifyApiClient'
+import { markNotificationReadWs } from 'app/utils/NotifyApiClient'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -89,7 +89,7 @@ class UserWallet extends React.Component {
 
     readNotifications = (account) => {
         setTimeout(() => {
-            markNotificationRead(account.get('name'), ['delegate_vs'])
+            markNotificationReadWs(account.get('name'), ['delegate_vs'])
         }, 500)
     }
 
