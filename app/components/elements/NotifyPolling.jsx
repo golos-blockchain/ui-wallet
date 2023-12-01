@@ -29,22 +29,22 @@ class NotifyPolling extends React.Component {
 
         let subscribeRes
         while (true) {
-            subscribeRes = await counterSubscribeWs(username, async function (err, res) {
-                if (err) {
-                    console.error(err)
-                    return
-                }
+            try {
+                subscribeRes = await counterSubscribeWs(username, async function (err, res) {
+                    if (err) {
+                        console.error(err)
+                        return
+                    }
 
-                if (firstFilled) { // TODO: it is more reliably to use timestamps to check order
-                    await update(res.counters)
-                }
-            })
+                    if (firstFilled) { // TODO: it is more reliably to use timestamps to check order
+                        await update(res.counters)
+                    }
+                })
 
-            if (subscribeRes.err) {
-                console.warning('counterSubscribeWs:', subscribeRes.err, ', retry...')
-                await delay(2000)
-            } else {
                 break
+            } catch (err) {
+                console.warn('counterSubscribeWs:', err, ', retry...')
+                await delay(500)
             }
         }
 
@@ -56,8 +56,8 @@ class NotifyPolling extends React.Component {
             let counters
             try {
                 counters = await getNotificationsWs(username)
-            } catch (error) {
-                console.error('getNotificationsWs', error)
+            } catch (err) {
+                console.error('getNotificationsWs', err)
             }
 
             if (counters) {
