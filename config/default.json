@@ -45,7 +45,8 @@
     "custom_client": "blogs"
   },
   "notify_service": {
-    "host": "https://devnotify.golos.app"
+    "host": "https://devnotify.golos.app",
+    "host_ws": "ws://devnotify.golos.app/ws"
   },
   "apidex_service": {
     "host": "https://api-dex.golos.app"
