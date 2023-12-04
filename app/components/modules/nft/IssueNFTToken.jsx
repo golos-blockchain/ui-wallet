@@ -232,14 +232,14 @@ class IssueNFTToken extends Component {
                     <div className='column small-12'>
                         {tt('create_nft_collection_jsx.coll_title') + '*'}
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='title' type='text' autoFocus
+                            <Field name='title' type='text' placeholder={tt('issue_nft_token_jsx.coll_title_hint')} autoFocus
                                 onChange={(e) => this.onTitleChange(e, values, setFieldValue)} />
                         </div>
                         <ErrorMessage name='title' component='div' className='error' />
                     </div>
                 </div>
                 <div>
-                    {tt('assets_jsx.transfer_new_owner')}
+                    {tt('assets_jsx.transfer_new_owner') + '*'}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
@@ -251,27 +251,23 @@ class IssueNFTToken extends Component {
                 </div>
                 <div>
                     {tt('create_nft_collection_jsx.coll_descr')}
-                    {' '}
-                    {tt('create_nft_collection_jsx.not_required')}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='description' type='text'
+                            <Field name='description' type='text' placeholder={tt('issue_nft_token_jsx.coll_descr_hint')}
                                 onChange={(e) => this.onDescriptionChange(e, values, setFieldValue)} />
                         </div>
                         <ErrorMessage name='description' component='div' className='error' />
                     </div>
                 </div>
                 <div>
-                    {tt('create_nft_collection_jsx.image')}
-                    {' '}
-                    {tt('create_nft_collection_jsx.not_required')}
+                    {tt('issue_nft_token_jsx.image')}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='image' type='text' onBlur={this.onImageBlur}
+                            <Field name='image' type='text' onBlur={this.onImageBlur} placeholder={tt('issue_nft_token_jsx.image_hint')}
                                 onChange={(e) => this.onImageChange(e, values, setFieldValue)} />
                             <img src={values.image || 'empty'} className='image-preview' style={{ visibility: (showImage && values.image) ? 'visible' : 'hidden' }} />
                         </div>

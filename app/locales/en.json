@@ -743,11 +743,15 @@
     "price_hint": "Last buy price"
   },
   "create_nft_collection_jsx": {
-    "title": "Create NFT collection",
+    "title": "Create collection",
     "name": "Ticker",
     "coll_title": "Title",
     "coll_descr": "Description",
-    "image": "Image URL",
+    "image": "Cover collection",
+    "name_hint": "AVATARS",
+    "coll_title_hint": "User avatars",
+    "coll_descr_hint": "NFT tokens will be collected in this collection ...",
+    "image_hint": "Image URL",
     "json_metadata": "JSON metadata",
     "json_wrong": "Wrong JSON. ",
     "not_required": "(not required)",
@@ -760,6 +764,10 @@
   },
   "issue_nft_token_jsx": {
     "title": "Issue NFT",
+    "image": "Picture NFT-token",
+    "coll_title_hint": "Avatar user XXX",
+    "coll_descr_hint": "Prize for active participation in game ...",
+    "image_hint": "Image URL",
     "issue_cost": "The issue cost is",
     "max_token_count": "Max token count in collection is already reached."
   },
