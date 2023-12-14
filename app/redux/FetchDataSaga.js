@@ -731,8 +731,10 @@ export function* fetchNftMarketCollections({ payload: { start_name } }) {
             console.error(err)
         }
 
+        const filtered = nft_colls.filter(coll => coll.sell_order_count !== 0)
+
         yield put(GlobalReducer.actions.receiveNftMarketCollections({
-            nft_colls, start_name, next_from
+            nft_colls: filtered, start_name, next_from
         }))
     } catch (err) {
         console.error('fetchNftMarketCollections', err)
