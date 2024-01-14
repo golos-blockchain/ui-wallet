@@ -11,13 +11,13 @@ class AmountField extends React.Component {
         // TODO: is it right to pass all props to input
         const { placeholder, name, ...rest } = this.props
         const { value, } = field
-        const { values, setFieldValue } = form
+        const { values, setFieldValue, setFieldTouched } = form
         return <input type='text' value={value.amountStr} placeholder={placeholder}
-            {...rest} onChange={(e) => this.onChange(e, values, setFieldValue)}
+            {...rest} onChange={(e) => this.onChange(e, values, setFieldValue, setFieldTouched)}
             />
     }
 
-    onChange = (e, values, setFieldValue) => {
+    onChange = (e, values, setFieldValue, setFieldTouched) => {
         const { name } = this.props
         const newAmount = values[name].withChange(e.target.value)
         if (newAmount.hasChange && newAmount.asset.amount >= 0) {

@@ -6,6 +6,12 @@ class Expandable extends Component {
         opened: false,
     };
 
+    componentDidMount() {
+        this.setState({
+            opened: !!this.props.opened
+        })
+    }
+
     onToggleExpander = () => {
         this.setState({
             opened: !this.state.opened,

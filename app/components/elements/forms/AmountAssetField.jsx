@@ -8,23 +8,19 @@ class AmountAssetField extends React.Component {
     }
 
     onChange = (e) => {
-        const { amountField, values, setFieldValue, assets } = this.props
+        const { amountField, onChange, values, setFieldValue, assets } = this.props
         const value = e.target.value
         const asset = assets[value]
         if (asset) {
             const { supply } = asset
-            const oldValue = values[amountField].asset
-            setFieldValue(amountField, AssetEditor(oldValue.amount,
-                supply.precision, supply.symbol))
+            if (amountField) {
+                const oldValue = values[amountField].asset
+                setFieldValue(amountField, AssetEditor(oldValue.amount,
+                    supply.precision, supply.symbol))
+            }
 
-            if (!values.author) { // if not edit mode
-                if (asset.allow_override_transfer || value === 'GBG') {
-                    if (values.tip_cost)
-                        setFieldValue('tip_cost', false)
-                    setFieldValue('disable_tip', true)
-                } else {
-                    setFieldValue('disable_tip', false)
-                }
+            if (onChange) {
+                onChange(e, asset)
             }
         }
     }

@@ -105,6 +105,8 @@ export default createModule({
                 let res = state
                 if (res.has('nft_collections'))
                     res = res.delete('nft_collections')
+                if (res.has('nft_token'))
+                    res = res.deleteIn(['nft_token', 'my_bet'])
                 res = res.mergeDeep(payload)
                 if (!payload.has('nft_tokens')) {
                     if (!window.location.pathname.endsWith('/nft-tokens')) {

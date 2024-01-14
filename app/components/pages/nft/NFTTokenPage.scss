@@ -12,6 +12,16 @@
         display: flex;
         width: 100%;
     }
+    .my_bet {
+        padding-left: 5px;
+        padding-top: 5px;
+
+        span {
+            vertical-align: middle;
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+    }
 
     img {
         max-width: 320px;

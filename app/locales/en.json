@@ -778,13 +778,17 @@
     "sort_name": "By collection name",
     "cancel": "Cancel",
     "cancel_hint": "Cancel selling",
+    "place_bet": "Place a bet",
     "selling_for": "Selling for ",
+    "you_bet_is": "Your bet is ",
+    "has_bets": "Bets",
     "buy": "Buy",
     "buy2": "Buy for ",
     "buy_confirm": "Are you sure you want to buy ",
     "buy_confirm2": " for ",
     "your_token": "Your token",
-    "owner": "Owner"
+    "owner": "Owner",
+    "bets": "Bets"
   },
   "all_nft_page_jsx": {
     "title": "All NFT on the Golos",
@@ -803,6 +807,9 @@
     "selled2": " selled token to ",
     "selled2m": " for ",
     "bought": " bought token ",
+    "placed_bet": " placed bet",
+    "canceled_bet": " canceled bet",
+    "on": " on ",
     "owner_is": "Owner is ",
     "burnt": "This NFT-токен was existing sometime.",
     "burnt2": "But it was burnt.",

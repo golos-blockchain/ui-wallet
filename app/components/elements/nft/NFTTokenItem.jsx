@@ -126,6 +126,12 @@ class NFTTokenItem extends Component {
             }, value: tt('g.transfer') })
         }
 
+        // if (!isMy && last_price) {
+        //     kebabItems.unshift({ link: '#', onClick: e => {
+        //         this.props.showPlaceBet(e, tokenIdx)
+        //     }, value: tt('nft_tokens_jsx.place_bet') })
+        // }
+
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
 
@@ -137,7 +143,7 @@ class NFTTokenItem extends Component {
                     <Icon name='new/more' size='0_95x' />
                 </DropdownMenu> : null}
                 {isMy && !selling && <button className='button slim float-right' onClick={e => this.props.showSell(e, tokenIdx)}>{tt('g.sell')}</button>}
-                {isMy && selling && <button className='button slim alert hollow float-right' title={tt('nft_tokens_jsx.cancel_hint')}
+                {isMy && selling && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.cancel_hint')}
                     onClick={e => this.cancelOrder(e, tokenIdx)}>
                     {tt('nft_tokens_jsx.cancel')}</button>}
                 {!isMy && selling && <button className='button slim float-right' title={tt('nft_tokens_jsx.buy2') + price.floatString}
@@ -148,7 +154,7 @@ class NFTTokenItem extends Component {
             buttons = <div>
                 {!isMy && <React.Fragment>&nbsp;</React.Fragment>}
                 {isMy && <button className='button slim' onClick={e => this.props.showSell(e, tokenIdx)}>{tt('g.sell')}</button>}
-                {isMy && <button className='button slim hollow' onClick={e => this.props.showTransfer(e, tokenIdx)}>{tt('g.transfer')}</button>}
+                {isMy && <button className='button slim hollow noborder' onClick={e => this.props.showTransfer(e, tokenIdx)}>{tt('g.transfer')}</button>}
                 {kebabItems.length > 1 ? <DropdownMenu className='float-right' el='div' items={kebabItems}>
                     <Icon name='new/more' size='0_95x' />
                 </DropdownMenu> : null}
@@ -164,6 +170,9 @@ class NFTTokenItem extends Component {
                 {!isMy && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
                     {'@' + token.owner}
                 </Link>}
+                {token.has_bets && <a href={link + '#bets'} target='_blank' rel='noopener noreferrer' className='token-owner'>
+                    {tt('nft_tokens_jsx.has_bets')}
+                </a>}
                 <div>
                     <h5 className='token-title'>{data.title}</h5>
                     <span className='token-coll secondary'>

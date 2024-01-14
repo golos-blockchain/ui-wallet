@@ -12,6 +12,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
+import NFTPlaceBet from 'app/components/modules/nft/NFTPlaceBet'
 import g from 'app/redux/GlobalReducer'
 
 class NFTTokens extends Component {
@@ -59,6 +60,20 @@ class NFTTokens extends Component {
         })
     }
 
+    showPlaceBet = (e, tokenIdx) => {
+        e.preventDefault()
+        this.setState({
+            showPlaceBet: true,
+            tokenIdx,
+        })
+    }
+
+    hidePlaceBet = () => {
+        this.setState({
+            showPlaceBet: false,
+        })
+    }
+
     sortOrder = (e, sort, sortReversed) => {
         e.preventDefault()
         this.sort = sort
@@ -91,11 +106,12 @@ class NFTTokens extends Component {
                     assets={assets}
                     showTransfer={this.showTransfer}
                     showSell={this.showSell}
+                    showPlaceBet={this.showPlaceBet}
                     refetch={this.refetch} />)
             }
         }
 
-        const { showTransfer, showSell, tokenIdx } = this.state
+        const { showTransfer, showSell, showPlaceBet, tokenIdx } = this.state
 
         const sortItems = [
             { link: '#', onClick: e => {
@@ -165,6 +181,15 @@ class NFTTokens extends Component {
                 <NFTTokenSell
                     currentUser={currentUser}
                     onClose={this.hideSell}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                />
+            </Reveal>
+
+            <Reveal show={showPlaceBet} onHide={this.hidePlaceBet} revealStyle={{ width: '450px' }}>
+                <NFTPlaceBet
+                    currentUser={currentUser}
+                    onClose={this.hidePlaceBet}
                     tokenIdx={tokenIdx}
                     refetch={this.refetch}
                 />
