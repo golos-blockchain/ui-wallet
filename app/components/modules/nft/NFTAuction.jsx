@@ -6,19 +6,22 @@ import { Formik, Form, Field, ErrorMessage, } from 'formik'
 import { api } from 'golos-lib-js'
 import { validateAccountName, Asset, AssetEditor } from 'golos-lib-js/lib/utils'
 
-import AssetBalance from 'app/components/elements/AssetBalance'
+import Callout from 'app/components/elements/Callout'
 import AmountField from 'app/components/elements/forms/AmountField'
 import AmountAssetField from 'app/components/elements/forms/AmountAssetField'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTSmallIcon from 'app/components/elements/nft/NFTSmallIcon'
 import transaction from 'app/redux/Transaction'
-import { generateOrderID } from 'app/utils/market/utils'
-import session from 'app/utils/session'
 
-class NFTPlaceBet extends Component {
+const isDev = () => {
+    return process.env.NODE_ENV === 'development'
+}
+
+class NFTAuction extends Component {
     state = {
-        order: {
-            price: AssetEditor('0.000 GOLOS')
+        auction: {
+            min_price: AssetEditor('0.000 GOLOS'),
+            expiration: isDev() ? 15 : 7
         }
     }
 
@@ -28,30 +31,20 @@ class NFTPlaceBet extends Component {
         }
         try {
             let assets = {}
-            let currentBalance
-            const username = session.load().currentName
-            if (username) {
-                let bals = await api.getAccountsBalances([username], { system: true })
-                bals = bals[0]
-                if (bals['GOLOS']) {
-                    assets['GOLOS'] = { supply: Asset(bals['GOLOS'].balance) }
-                }
-                if (bals['GBG']) {
-                    assets['GBG'] = { supply: Asset(bals['GBG'].balance) }
-                }
-                for (const [sym, obj] of Object.entries(bals)) {
-                    if (!isHidden(sym) && sym !== 'GOLOS' && sym !== 'GBG') {
-                        assets[sym] = { supply: Asset(obj.balance) }
-                    }
-                }
-                for (const [sym, obj] of Object.entries(assets)) {
-                    currentBalance = obj.supply.clone()
-                    break
+            const assetsSys = {}
+            const data = await api.getAssetsAsync('', [], '', 5000, 'by_symbol_name', { system: true })
+            for (const asset of data) {
+                asset.supply = Asset(asset.supply)
+                const symbol = asset.supply.symbol
+                if (symbol === 'GOLOS' || symbol === 'GBG') {
+                    assetsSys[symbol] = asset
+                } else {
+                    assets[symbol] = asset
                 }
             }
+            assets = { ...assetsSys, ...assets }
             this.setState({
-                assets,
-                currentBalance
+                assets
             })
         } catch (err) {
             console.error(err)
@@ -60,12 +53,9 @@ class NFTPlaceBet extends Component {
 
     validate = (values) => {
         const errors = {}
-        const { price } = values
-        const { currentBalance } = this.state
-        if (price.asset.eq(0)) {
-            errors.price = tt('nft_token_sell_jsx.fill_price')
-        } else if (currentBalance && price.asset.gt(currentBalance)) {
-            errors.price = tt('g.invalid_amount')
+        const { min_price } = values
+        if (min_price.asset.eq(0)) {
+            errors.min_price = tt('nft_token_sell_jsx.fill_price')
         }
         return errors
     }
@@ -90,11 +80,26 @@ class NFTPlaceBet extends Component {
 
         const { currentUser, onClose, } = this.props
         const token = this.getToken()
-        const { token_id, name } = token
+        const { token_id } = token
 
         const username = currentUser.get('username')
 
-        await this.props.placeBet(token_id, values.price, name, username, () => {
+        let expirationSec = parseInt(values.expiration)
+        if (!isDev()) {
+            expirationSec *= 3600*24
+        }
+        let gprops
+        try {
+            gprops = await api.getDynamicGlobalPropertiesAsync()
+        } catch (err) {
+            console.error(err)
+            alert('Error - blockchain unavailable')
+            return
+        }
+        let expiration = new Date(gprops.time)
+        expiration.setSeconds(expiration.getSeconds() + expirationSec)
+
+        await this.props.auction(token_id, values.min_price.asset, expiration, username, () => {
             this.props.onClose()
             this.setSubmitting(false)
             this.doNotRender = true
@@ -126,7 +131,6 @@ class NFTPlaceBet extends Component {
     }
 
     onMouseUp = (e) => {
-        e.preventDefault()
         if (this.state.cancelMouseDown) {
             this.props.onClose()   
         }
@@ -157,7 +161,7 @@ class NFTPlaceBet extends Component {
 
         const token = this.getToken()
 
-        const { json_metadata, image } = token
+        const { json_metadata, image, has_offers } = token
 
         let data
         if (json_metadata) {
@@ -167,15 +171,15 @@ class NFTPlaceBet extends Component {
 
         const { errorMessage, submitting, currentBalance, } = this.state
 
-        return <div className='NFTPlaceBet'>
+        return <div className='NFTAuction'>
             <CloseButton onClick={onClose} />
-            <h4>{tt('nft_tokens_jsx.place_bet')}</h4>
+            <h4>{tt('nft_tokens_jsx.start_auction')}</h4>
             <div style={{ marginBottom: '0.5rem' }}>
                 <NFTSmallIcon image={image} />
                 <span style={{ display: 'inline-block', marginTop: '13px', marginLeft: '0.5rem' }}>{data.title}</span>
             </div>
             <Formik
-                initialValues={this.state.order}
+                initialValues={this.state.auction}
                 enableReinitialize={true}
                 validate={this.validate}
                 validateOnMount={true}
@@ -187,30 +191,44 @@ class NFTPlaceBet extends Component {
                 return (
             <Form onMouseUp={this.onMouseUp}>
                 <div>
-                    {tt('g.price')}
+                    {tt('nft_tokens_jsx.min_price')}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <AmountField name='price' autoFocus />
+                            <AmountField name='min_price' autoFocus />
                             <span className="input-group-label" style={{paddingLeft: 0, paddingRight: 0}}>
-                                <AmountAssetField amountField='price' setFieldValue={setFieldValue} values={values} assets={assets}
+                                <AmountAssetField amountField='min_price' setFieldValue={setFieldValue} values={values} assets={assets}
                                     onChange={this.onAssetChange}/>
                             </span>
                         </div>
-                        {errors.price && <div className='error'>{errors.price}</div>}
+                        {errors.min_price && <div className='error'>{errors.min_price}</div>}
                     </div>
                 </div>
-                {currentBalance && <AssetBalance balanceValue={currentBalance.floatString} />}
+                <div>
+                    {tt('nft_tokens_jsx.auction_expiration')}
+                </div>
+                <div className='row'>
+                    <div className='column small-12'>
+                        <div className='input-group' style={{marginBottom: 5}}>
+                            <Field type='number' name='expiration' />
+                            <span className="input-group-label">
+                                {isDev() ? tt('nft_tokens_jsx.auction_expiration_dev') : tt('nft_tokens_jsx.auction_expiration2')}
+                            </span>
+                        </div>
+                        {errors.expiration && <div className='error'>{errors.expiration}</div>}
+                    </div>
+                </div>
                 {(errorMessage && errorMessage !== 'Canceled') ? <div className='row'>
                     <div className='column small-12'>
                         <div className='error' style={{marginBottom:'0px'}}>{errorMessage}</div>
                     </div>
                 </div> : null}
+                {has_offers && <Callout>{tt('nft_tokens_jsx.auction_hint')}</Callout>}
                 <div className='row' style={{ marginTop: '0.5rem' }}>
                     <div className='column small-8'>
                         <button type='submit' disabled={!isValid || submitting} className='button'>
-                            {tt('nft_tokens_jsx.place_bet')}
+                            {tt('nft_tokens_jsx.start')}
                         </button>
                         <button type='button' disabled={submitting} className='button hollow'
                                 onMouseDown={this.onCancelMouseDown} onMouseUp={this.onCancelMouseUp}>
@@ -234,24 +252,5 @@ export default connect(
     },
 
     dispatch => ({
-        placeBet: (
-            token_id, price, collectionName, username, successCallback, errorCallback
-        ) => {
-            const operation = {
-                buyer: username,
-                name: collectionName,
-                token_id,
-                order_id: generateOrderID(),
-                price: price.asset.toString()
-            }
-
-            dispatch(transaction.actions.broadcastOperation({
-                type: 'nft_buy',
-                username,
-                operation,
-                successCallback,
-                errorCallback
-            }))
-        }
     })
-)(NFTPlaceBet)
+)(NFTAuction)

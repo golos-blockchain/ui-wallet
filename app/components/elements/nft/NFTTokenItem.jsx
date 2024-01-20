@@ -170,8 +170,8 @@ class NFTTokenItem extends Component {
                 {!isMy && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
                     {'@' + token.owner}
                 </Link>}
-                {token.has_bets && <a href={link + '#bets'} target='_blank' rel='noopener noreferrer' className='token-owner'>
-                    {tt('nft_tokens_jsx.has_bets')}
+                {token.has_offers && <a href={link + '#offers'} target='_blank' rel='noopener noreferrer' className='token-owner'>
+                    {tt('nft_tokens_jsx.has_offers')}
                 </a>}
                 <div>
                     <h5 className='token-title'>{data.title}</h5>

@@ -15,6 +15,13 @@ import { getAllPairs } from 'app/utils/market/utils'
 import { parseNFTImage, NFTImageStub } from 'app/utils/NFTUtils'
 import session from 'app/utils/session'
 
+function* markAuctions(tokens) {
+    for (const token of tokens) {
+        token.auction_min_price = Asset(token.auction_min_price)
+        token.is_auction = token.auction_min_price.gt(0)
+    }
+}
+
 function* fillNftCollectionImages(nft_collections) {
     const noImgColls = {}
     for (let i = 0; i < nft_collections.length; ++i) {
@@ -64,18 +71,33 @@ function* fillNftTokenOrders(select_token_ids, tokens_by_id, onlyMy = true) {
         if (acc) {
             const nft_orders = yield call([api, api.getNftOrdersAsync], {
                 select_token_ids,
-                owner: onlyMy ? acc : undefined,
                 limit: onlyMy ? 100 : 1,
                 type: 'buying'
             })
             for (const order of nft_orders) {
-                const { token_id } = order
+                const { owner, token_id } = order
                 const token = tokens_by_id[token_id]
                 if (!token) continue
-                if (onlyMy) {
-                    token.my_bet = order
-                } else {
+                token.has_offers = true
+                if (onlyMy && owner === acc) {
+                    token.my_offer = order
+                }
+            }
+
+            if (!nft_orders.length) {
+                const nft_bets = yield call([api, api.getNftBetsAsync], {
+                    select_token_ids,
+                    limit: 100,
+                    type: 'buying'
+                })
+                for (const bet of nft_bets) {
+                    const { owner, token_id } = bet
+                    const token = tokens_by_id[token_id]
+                    if (!token) continue
                     token.has_bets = true
+                    if (onlyMy && owner == acc) {
+                        token.my_bet = bet
+                    }
                 }
             }
         }
@@ -361,6 +383,7 @@ export function* fetchState(location_change_action) {
                     select_token_ids: [parts[1]],
                     state: 'any'
                 }))
+                yield markAuctions(state.nft_token)
                 state.nft_token = state.nft_token[0]
                 state.nft_token_loaded = true
 
@@ -390,6 +413,9 @@ export function* fetchState(location_change_action) {
                         }
                         if (state.nft_token.my_bet) {
                             const price = Asset(state.nft_token.my_bet.price)
+                            syms.add(price.symbol)
+                        } else if (state.nft_token.my_offer) {
+                            const price = Asset(state.nft_token.my_offer.price)
                             syms.add(price.symbol)
                         }
                     }

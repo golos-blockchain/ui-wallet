@@ -143,6 +143,12 @@
     "quick_convert": "Быстрый обмен",
     "open_market": "Перейти к бирже"
   },
+  "time_exact_wrapper_jsx": {
+    "days": " дн. ",
+    "hours": " ч ",
+    "minutes": " мин ",
+    "secs": " сек "
+  },
   "g": {
     "golos_fest": "Новости",
     "APP_NAME": "Голос",
@@ -1133,16 +1139,30 @@
     "cancel": "Отменить",
     "cancel_hint": "Отменить продажу",
     "place_bet": "Сделать ставку",
+    "place_offer": "Предложить цену",
     "selling_for": "Продается за ",
     "you_bet_is": "Ваша ставка - ",
     "has_bets": "Ставки",
+    "you_offer_is": "Вы предлагаете цену - ",
+    "has_offers": "Предложения",
     "buy": "Купить",
     "buy2": "Купить за ",
     "buy_confirm": "Вы уверены, что хотите купить ",
     "buy_confirm2": " за ",
     "your_token": "Ваш токен",
     "owner": "Владелец",
-    "bets": "Ставки"
+    "offers": "Предложения",
+    "bets": "Ставки",
+    "sell_fix_price": "По фиксированной цене",
+    "start_auction": "Запустить аукцион",
+    "stop_auction": "Остановить аукцион",
+    "start": "Запустить",
+    "min_price": "Минимальная ставка:",
+    "auction_expiration": "Окончание аукциона - через:",
+    "auction_expiration2": "дней",
+    "auction_expiration_dev": "секунд",
+    "auction_hint": "Предложения о покупке, сделанные пользователями самостоятельно, будут отменены.",
+    "bet_already_exists": "Уже есть ставка с такой ценой."
   },
   "all_nft_page_jsx": {
     "title": "Все NFT на Golos",
@@ -1163,6 +1183,8 @@
     "bought": " купил токен",
     "placed_bet": " сделал ставку",
     "canceled_bet": " отменил ставку",
+    "placed_offer": " предложил цену",
+    "canceled_offer": " отменил предложение", 
     "on": " на ",
     "owner_is": "Владелец - ",
     "burnt": "Этот NFT-токен существовал когда-то.",

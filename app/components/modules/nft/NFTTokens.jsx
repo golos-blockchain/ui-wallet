@@ -12,7 +12,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
-import NFTPlaceBet from 'app/components/modules/nft/NFTPlaceBet'
+import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import g from 'app/redux/GlobalReducer'
 
 class NFTTokens extends Component {
@@ -187,7 +187,7 @@ class NFTTokens extends Component {
             </Reveal>
 
             <Reveal show={showPlaceBet} onHide={this.hidePlaceBet} revealStyle={{ width: '450px' }}>
-                <NFTPlaceBet
+                <NFTPlaceOfferBet
                     currentUser={currentUser}
                     onClose={this.hidePlaceBet}
                     tokenIdx={tokenIdx}
