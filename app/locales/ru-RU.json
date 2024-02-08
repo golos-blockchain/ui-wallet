@@ -1101,9 +1101,9 @@
     "coll_title": "Название",
     "coll_descr": "Описание",
     "image": "Обложка коллекции",
-    "name_hint": "AVATARS",
-    "coll_title_hint": "Аватары пользователей",
-    "coll_descr_hint": "В коллекции представлены NFT-токены про ...",
+    "name_hint": "CRYPTOPUNKS",
+    "coll_title_hint": "Криптопанки",
+    "coll_descr_hint": "Коллекция 8-битных изображений панков ...",
     "image_hint": "Ссылка на изображение",
     "json_metadata": "JSON-метаданные",
     "json_wrong": "Некорректный JSON. ",
@@ -1118,8 +1118,8 @@
   "issue_nft_token_jsx": {
     "title": "Выпустить NFT",
     "image": "Картинка NFT-токена",
-    "coll_title_hint": "Аватар пользователя XXX",
-    "coll_descr_hint": "Приз за активное участие в игре/конкурсе ...",
+    "coll_title_hint": "Криптопанк #21",
+    "coll_descr_hint": "8-битный панк с уникальными параметрами ...",
     "image_hint": "Ссылка на изображение",
     "issue_cost": "Будет списана плата за выпуск -",
     "max_token_count": "Достигнуто максимальное кол-во токенов в коллекции."
@@ -1155,7 +1155,7 @@
     "no_at_all2": "выпустить первый токен!"
   },
   "nft_collection_page_jsx": {
-    "owner_is": "Владелец коллекции - ",
+    "owner_is": "Автор коллекции - ",
     "not_yet": "В этой коллекции еще нет токенов."
   },
   "nft_token_page_jsx": {
