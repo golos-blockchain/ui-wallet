@@ -2971,9 +2971,9 @@ core-js@^2.4.0, core-js@^2.5.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.17.3:
-  version "3.33.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.33.0.tgz#70366dbf737134761edb017990cf5ce6c6369c40"
-  integrity sha512-HoZr92+ZjFEKar5HS6MC776gYslNOKHt75mEBKWKnPeFDpZ6nH5OeF3S6HFT1mUAUZKrzkez05VboaX8myjSuw==
+  version "3.35.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.1.tgz#9c28f8b7ccee482796f8590cc8d15739eaaf980c"
+  integrity sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==
 
 core-js@^3.19.1, core-js@^3.6.0, core-js@^3.8.3:
   version "3.25.0"
@@ -3935,7 +3935,7 @@ formidable@^2.0.1:
 
 "formik@https://gitpkg.now.sh/golos-blockchain/formik/packages/formik?b697b6ef3f13c795bb862b35589fffde442ab465":
   version "2.2.9"
-  resolved "https://gitpkg.now.sh/golos-blockchain/formik/packages/formik?b697b6ef3f13c795bb862b35589fffde442ab465#a696d8404c7b8751188a426f347589fdc24f4ba7"
+  resolved "https://gitpkg.now.sh/golos-blockchain/formik/packages/formik?b697b6ef3f13c795bb862b35589fffde442ab465#1dfdbd4ea0331625cd063e826dbb86330fe9244c"
   dependencies:
     deepmerge "^2.1.1"
     hoist-non-react-statics "^3.3.0"
@@ -4200,10 +4200,10 @@ globule@^1.0.0:
     lodash "^4.17.21"
     minimatch "~3.0.2"
 
-golos-lib-js@^0.9.60:
-  version "0.9.60"
-  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.60.tgz#abf7e88499954312c817ebc38532e8e8d0451cbd"
-  integrity sha512-9UlH8OLTZj70godojecYTHIJ/6X+YW80zDVTYEq4qGDjZFlIAyczqu4UHlwZIxOtlZoyFMFtxMonWEXkw3nnPg==
+golos-lib-js@^0.9.66:
+  version "0.9.66"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.66.tgz#5864656bf39e18cdd6415edd355c461b7da5509b"
+  integrity sha512-fykMKcip+NCLKSXN19nqREVJt1j3NYZMyXUtisx1kP2v5BrJ+PXjLuiODzzpiS+9fOSa6D89JWMHixuY60CO1g==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"
@@ -8532,9 +8532,9 @@ ws@^5.2.0:
     async-limiter "~1.0.0"
 
 ws@^8.2.3:
-  version "8.14.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.14.2.tgz#6c249a806eb2db7a20d26d51e7709eab7b2e6c7f"
-  integrity sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==
+  version "8.16.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
+  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
 
 ws@^8.4.2:
   version "8.11.0"
