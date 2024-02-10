@@ -4200,10 +4200,10 @@ globule@^1.0.0:
     lodash "^4.17.21"
     minimatch "~3.0.2"
 
-golos-lib-js@^0.9.65:
-  version "0.9.65"
-  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.65.tgz#dc2e579701fab138d0ffdd48a267c4b8d295adfc"
-  integrity sha512-uOe7gBn982UQHBRPbUJ6lC9YJlnFhHMJMkZDfVfr0tFKiCjy2hnjDFaG/w/0QvSMQaLCay2MlrB15KImuxvuHQ==
+golos-lib-js@^0.9.66:
+  version "0.9.66"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.66.tgz#5864656bf39e18cdd6415edd355c461b7da5509b"
+  integrity sha512-fykMKcip+NCLKSXN19nqREVJt1j3NYZMyXUtisx1kP2v5BrJ+PXjLuiODzzpiS+9fOSa6D89JWMHixuY60CO1g==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"

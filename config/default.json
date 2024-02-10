@@ -3,6 +3,7 @@
   "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
   "ws_connection_client": "wss://apibeta.golos.today/ws",
   "ws_connection_server": "wss://apibeta.golos.today/ws",
+  "ws_connection_exchange": "wss://apibeta.golos.today/ws",
   "helmet": {
     "directives": {
       "defaultSrc": "'self'",
@@ -49,7 +50,7 @@
     "host_ws": "wss://devnotify.golos.app/ws"
   },
   "apidex_service": {
-    "host": "https://api-dex.golos.app"
+    "host": "https://devapi-dex.golos.app"
   },
   "hidden_assets": {
     "RUDEX": true,
