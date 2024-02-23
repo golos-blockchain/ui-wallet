@@ -1,7 +1,6 @@
 import React from 'react'
+import { libs } from 'golos-lib-js'
 import tt from 'counterpart'
-
-import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 
 class CMCValue extends React.Component {
     state = {}
@@ -23,7 +22,7 @@ class CMCValue extends React.Component {
         if (!buyAmount) {
             return
         }
-        const { price_usd, price_rub, page_url } = await apidexGetPrices(buyAmount.symbol)
+        const { price_usd, price_rub, page_url } = await libs.dex.apidexGetPrices({ sym: buyAmount.symbol })
         const calc = (price) => {
             if (price === null || price === undefined) return null
             return parseFloat(buyAmount.amountFloat) * price

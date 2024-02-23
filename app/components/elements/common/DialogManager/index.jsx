@@ -17,24 +17,30 @@ export default class DialogManager extends React.PureComponent {
     }
 
     static info(text, title) {
-        DialogManager.showDialog({
-            component: CommonDialog,
-            props: {
-                title,
-                text,
-            },
-        });
+        return new Promise(resolve => {
+            DialogManager.showDialog({
+                component: CommonDialog,
+                props: {
+                    title,
+                    text,
+                },
+                onClose: resolve,
+            });
+        })
     }
 
     static alert(text, title) {
-        DialogManager.showDialog({
-            component: CommonDialog,
-            props: {
-                title,
-                type: 'alert',
-                text,
-            },
-        });
+        return new Promise(resolve => {
+            DialogManager.showDialog({
+                component: CommonDialog,
+                props: {
+                    title,
+                    type: 'alert',
+                    text,
+                },
+                onClose: resolve,
+            });
+        })
     }
 
     static confirm(text, title) {

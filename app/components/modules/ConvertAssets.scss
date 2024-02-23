@@ -4,11 +4,63 @@
         margin-left: 1.5rem;
         vertical-align: top;
         margin-top: 0.1rem;
+
+        border: 1px solid rgb(230, 230, 230);
+        background-color: rgb(242, 242, 242);
+        padding: 0.5rem;
+
+        &.clickable {
+            cursor: pointer;
+
+            b {
+                color: rgb(24, 24, 24);
+            }
+        }
+        &.clickable:hover {
+            .ConvertAssets__link {
+                text-decoration: underline;
+            }
+        }
+    }
+    &__link {
+        color: #0078C4;
+        cursor: pointer;
+        font-weight: 600;
     }
 
+    .MarketPair {
+        font-size: 120%;
+        margin-bottom: 1rem;
+    }
     .MarketLink {
         svg {
             fill: #0078C4;
+        }
+    }
+
+    .radio-header {
+        line-height: 1.4;
+    }
+    .RadioButton__label {
+        padding-left: 5px;
+        padding-right: 5px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+    .RadioButton__label-text {
+        font-size: 110%;
+        margin-left: 8px;
+    }
+    .RadioButton__item:not(.RadioButton_disabled) {
+        .RadioButton__label-text {
+            color: black !important;
+        }
+    }
+    .radio-item.best {
+        .RadioButton__label {
+            background-color: rgb(231, 242, 254);
         }
     }
 }

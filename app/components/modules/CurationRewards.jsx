@@ -3,21 +3,21 @@ import React from 'react'
 import { Link } from 'react-router'
 import {connect} from 'react-redux'
 import tt from 'counterpart'
+import { libs } from 'golos-lib-js'
+import { Asset, Price } from 'golos-lib-js/lib/utils'
 
 import TransferHistoryRow from 'app/components/cards/TransferHistoryRow'
-import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import {numberWithCommas, vestsToSp, assetFloat} from 'app/utils/StateFunctions'
 import Callout from 'app/components/elements/Callout'
 import Icon from 'app/components/elements/Icon'
 import { LIQUID_TICKER, VEST_TICKER } from 'app/client_config'
-import { Asset, Price } from 'golos-lib-js/lib/utils'
 
 class CurationRewards extends React.Component {
     state = { historyIndex: 0 }
 
     async componentDidMount() {
-        const pr = await apidexGetPrices('GOLOS')
+        const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         this.setState({
             price_rub: pr.price_rub,
             price_usd: pr.price_usd
