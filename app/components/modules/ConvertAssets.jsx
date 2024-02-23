@@ -79,6 +79,77 @@ class ConvertAssets extends React.Component {
         this.limitPrice = null
         this.bestPrice = null
 
+        if (!window._old_ex) {
+            const node = $STM_Config.ws_connection_exchange
+            if (!node) {
+                alert('No exchange node')
+                return
+            }
+
+            const eapi = new api.Golos()
+            eapi.setWebSocket(node)
+
+            let result 
+            try {
+                result = await eapi.getExchange({
+                    amount: req.toString(),
+                    direction: isSell ? 'sell' : 'buy',
+                    symbol: res.symbol
+                })
+            } catch (err) {
+                console.error(err)
+                return null
+            }
+
+            console.log('ex:', JSON.stringify(result))
+
+            if (!result.direct && !result.best) {
+                this.setState({
+                    warning: tt('convert_assets_jsx.no_orders_DIRECTION', {
+                        DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
+                    })
+                })
+                return null
+            }
+
+            let warning = ''
+
+            if (!req.amount) {
+                this.setState({ warning })
+                return res
+            }
+
+            const chain = result.direct
+            const step = chain.steps[0]
+            this.bestPrice = Price(step.best_price)
+            this.limitPrice = Price(step.limit_price)
+            res = Asset(chain.res)
+            const remain = step.remain ? Asset(step.remain) : undefined
+
+            if (res.amount == 0) {
+                res.amount = 1
+                warning = tt('convert_assets_jsx.too_low_amount')
+            } else if (!isSell && res.gt(myBalance)) {
+                res.amount = myBalance.amount
+                this.limitPrice = Price(req, res)
+                warning = tt('convert_assets_jsx.too_big_price')
+            } else if (remain) {
+                warning = {
+                    a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
+                    a2: res.floatString,
+                    remain: remain.floatString,
+                    isSell
+                }
+                if (!isSell) {
+                    res = res.plus(req.mul(this.bestPrice))
+                }
+            }
+
+            this.setState({ warning })
+
+            return res
+        }
+
         const result = await apidexExchange(req,
             (isSell ? buyAmount.symbol : sellAmount.symbol),
             isSell ? 'sell' : 'buy'
