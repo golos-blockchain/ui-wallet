@@ -909,8 +909,8 @@
         "Here you can sell or buy tokens.",
         "Instantly and just in two clicks."
     ],
-    "sell": "sell",
-    "buy": "buy",
+    "sell": "Sell",
+    "buy": "Buy",
     "sell_amount": "Sell amount:",
     "buy_amount": "Buy amount:",
     "amount_with_fee": "Amount with fee:",
@@ -949,6 +949,27 @@
     "no_fee": "No fee.",
     "too_low_amount": "Too low amount.",
     "you_will_receive": "You will receive "
+  },
+  "convert_alt_banner": {
+    "using_chain": "Using the chain",
+    "with": "With ",
+    "direct": "direct exchange",
+    "you_can_receive": "receive",
+    "you_spend": "you will spend",
+    "you_can_buy": "buy",
+    "you_can_sell": "sell",
+    "for": "for",
+    "direct_radio": "Direct exchange",
+    "chain_radio": "Smart exchange",
+    "unavailable": "unavailable",
+    "unavail_hint": "Refresh page.",
+    "unavail_hint2": "If problem repeating, please write to ",
+    "unavail_hint3": "community chat",
+    "no_way": "no way"
+  },
+  "convert_error": {
+    "try_direct": "Try ",
+    "try_direct2": " direct exchange"
   },
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",

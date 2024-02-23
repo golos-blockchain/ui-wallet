@@ -1,10 +1,9 @@
 import React from 'react'
+import { libs } from 'golos-lib-js'
 
 import Icon from 'app/components/elements/Icon'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import tt from 'counterpart'
-
-import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 
 class CMCSmall extends React.Component {
     state = {
@@ -26,7 +25,7 @@ class CMCSmall extends React.Component {
     }
 
     async componentDidMount() {
-        let res = await apidexGetPrices('GOLOS')
+        let res = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         if (res.price_rub) {
             const price_change = this.getPriceChange(res)
             this.setState({

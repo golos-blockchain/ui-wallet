@@ -7,6 +7,7 @@ import coBody from 'co-body';
 import {PublicKey, Signature, hash} from 'golos-lib-js/lib/auth/ecc';
 import {api, broadcast} from 'golos-lib-js';
 import { getDynamicGlobalProperties } from 'app/utils/APIWrapper'
+import useGetExchangeHandler from 'server/api/get_exchange'
 import useGetAddressHandler from 'server/api/uia_address'
 
 export default function useGeneralApi(app) {
@@ -97,5 +98,6 @@ export default function useGeneralApi(app) {
         ctx.body = JSON.stringify({views: 1});
     });
 
+    useGetExchangeHandler(router)
     useGetAddressHandler(router)
 }

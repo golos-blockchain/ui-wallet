@@ -2,14 +2,13 @@ import React from 'react'
 import { Formik, Form, Field, ErrorMessage, } from 'formik'
 import tt from 'counterpart'
 import { connect } from 'react-redux'
-import golos from 'golos-lib-js'
+import golos, { libs } from 'golos-lib-js'
 import { Asset } from 'golos-lib-js/lib/utils'
 import { Map } from 'immutable'
 
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import user from 'app/redux/User'
 import { steemToVests, vestsToSteem, accuEmissionPerDay, vsEmissionPerDay } from 'app/utils/StateFunctions'
-import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
 
 class PowerCalc extends React.Component {
@@ -39,7 +38,7 @@ class PowerCalc extends React.Component {
     }
 
     async componentDidMount() {
-        const pr = await apidexGetPrices('GOLOS')
+        const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         this.setState({
             price_rub: pr.price_rub,
             price_usd: pr.price_usd

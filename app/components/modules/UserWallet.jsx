@@ -4,6 +4,7 @@ import {Link} from 'react-router';
 import g from 'app/redux/GlobalReducer';
 import tt from 'counterpart';
 import {List} from 'immutable';
+import { libs, } from 'golos-lib-js'
 import { Asset, } from 'golos-lib-js/lib/utils'
 
 import ConvertAssetsBtn from 'app/components/elements/market/ConvertAssetsBtn'
@@ -14,7 +15,6 @@ import TransactionError from 'app/components/elements/TransactionError';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Reveal from 'react-foundation-components/lib/global/reveal';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
-import { apidexGetPrices } from 'app/utils/ApidexApiClient'
 import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDay, vsEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
@@ -44,7 +44,7 @@ class UserWallet extends React.Component {
         }
         const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
         if (accumulative_balance_steem) {
-            const pr = await apidexGetPrices('GOLOS')
+            const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
             this.setState({
                 price_rub: pr.price_rub,
                 price_usd: pr.price_usd
