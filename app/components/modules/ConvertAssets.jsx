@@ -18,6 +18,8 @@ import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
 import transaction from 'app/redux/Transaction'
 import { apidexExchange } from 'app/utils/ApidexApiClient'
 
+const MIN_PROFIT_PCT = 10
+
 class ConvertAssets extends React.Component {
     constructor(props) {
         super(props)
@@ -91,10 +93,24 @@ class ConvertAssets extends React.Component {
 
             let result 
             try {
+                const min_to_receive = {}
+                if (isSell) {
+                    min_to_receive.multi = Asset(1, res.precision, res.symbol)
+                } else {
+                    const multi = req.clone()
+                    let more = multi.mul(100 + MIN_PROFIT_PCT).div(100)
+                    if (more.eq(multi)) more = more.plus(1)
+                    min_to_receive.multi = more
+                }
+
                 result = await eapi.getExchange({
                     amount: req.toString(),
                     direction: isSell ? 'sell' : 'buy',
-                    symbol: res.symbol
+                    symbol: res.symbol,
+                    remain: {
+                        multi: 'ignore'
+                    },
+                    min_to_receive
                 })
             } catch (err) {
                 console.error(err)
@@ -120,16 +136,21 @@ class ConvertAssets extends React.Component {
             }
 
             const chain = result.direct
+
+            if (!chain) {
+                res.amount = 1
+                warning = tt('convert_assets_jsx.too_low_amount')
+                this.setState({ warning })
+                return
+            }
+
             const step = chain.steps[0]
             this.bestPrice = Price(step.best_price)
             this.limitPrice = Price(step.limit_price)
             res = Asset(chain.res)
             const remain = step.remain ? Asset(step.remain) : undefined
 
-            if (res.amount == 0) {
-                res.amount = 1
-                warning = tt('convert_assets_jsx.too_low_amount')
-            } else if (!isSell && res.gt(myBalance)) {
+            if (!isSell && res.gt(myBalance)) {
                 res.amount = myBalance.amount
                 this.limitPrice = Price(req, res)
                 warning = tt('convert_assets_jsx.too_big_price')
