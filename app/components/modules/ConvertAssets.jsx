@@ -82,6 +82,13 @@ class ConvertAssets extends React.Component {
         this.bestPrice = null
 
         if (!window._old_ex) {
+            let warning = ''
+
+            if (!req.amount) {
+                this.setState({ warning })
+                return res
+            }
+
             const node = $STM_Config.ws_connection_exchange
             if (!node) {
                 alert('No exchange node')
@@ -119,7 +126,9 @@ class ConvertAssets extends React.Component {
 
             console.log('ex:', JSON.stringify(result))
 
-            if (!result.direct && !result.best) {
+            const chain = result.direct
+
+            if (!chain) {
                 this.setState({
                     warning: tt('convert_assets_jsx.no_orders_DIRECTION', {
                         DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
@@ -128,29 +137,16 @@ class ConvertAssets extends React.Component {
                 return null
             }
 
-            let warning = ''
-
-            if (!req.amount) {
-                this.setState({ warning })
-                return res
-            }
-
-            const chain = result.direct
-
-            if (!chain) {
-                res.amount = 1
-                warning = tt('convert_assets_jsx.too_low_amount')
-                this.setState({ warning })
-                return
-            }
-
             const step = chain.steps[0]
             this.bestPrice = Price(step.best_price)
             this.limitPrice = Price(step.limit_price)
             res = Asset(chain.res)
             const remain = step.remain ? Asset(step.remain) : undefined
 
-            if (!isSell && res.gt(myBalance)) {
+            if (res.amount == 0) {
+                res.amount = 1
+                warning = tt('convert_assets_jsx.too_low_amount')
+            } else if (!isSell && res.gt(myBalance)) {
                 res.amount = myBalance.amount
                 this.limitPrice = Price(req, res)
                 warning = tt('convert_assets_jsx.too_big_price')
