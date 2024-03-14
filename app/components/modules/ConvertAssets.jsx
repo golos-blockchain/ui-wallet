@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { api, } from 'golos-lib-js'
+import { api, dex } from 'golos-lib-js'
 import { Asset, AssetEditor, Price } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import { connect, } from 'react-redux'
@@ -15,10 +15,8 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import MarketPair from 'app/components/elements/market/MarketPair'
 import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
         calcFeeForSell, calcFeeForBuy } from 'app/utils/market/utils'
+import { ExchangeTypes, getExchange } from 'app/utils/market/exchange'
 import transaction from 'app/redux/Transaction'
-import { apidexExchange } from 'app/utils/ApidexApiClient'
-
-const MIN_PROFIT_PCT = 10
 
 class ConvertAssets extends React.Component {
     constructor(props) {
@@ -72,151 +70,6 @@ class ConvertAssets extends React.Component {
         return myBalance
     }
 
-    calculate = async (sellAmount, buyAmount, myBalance, isSell = true) => {
-        let res = isSell ? buyAmount.clone() : sellAmount.clone()
-        res.amount = 0
-
-        let req = isSell ? sellAmount.clone() : buyAmount.clone()
-
-        this.limitPrice = null
-        this.bestPrice = null
-
-        if (!window._old_ex) {
-            let warning = ''
-
-            if (!req.amount) {
-                this.setState({ warning })
-                return res
-            }
-
-            const node = $STM_Config.ws_connection_exchange
-            if (!node) {
-                alert('No exchange node')
-                return
-            }
-
-            const eapi = new api.Golos()
-            eapi.setWebSocket(node)
-
-            let result 
-            try {
-                const min_to_receive = {}
-                if (isSell) {
-                    min_to_receive.multi = Asset(1, res.precision, res.symbol)
-                } else {
-                    const multi = req.clone()
-                    let more = multi.mul(100 + MIN_PROFIT_PCT).div(100)
-                    if (more.eq(multi)) more = more.plus(1)
-                    min_to_receive.multi = more
-                }
-
-                result = await eapi.getExchange({
-                    amount: req.toString(),
-                    direction: isSell ? 'sell' : 'buy',
-                    symbol: res.symbol,
-                    remain: {
-                        multi: 'ignore'
-                    },
-                    min_to_receive
-                })
-            } catch (err) {
-                console.error(err)
-                return null
-            }
-
-            console.log('ex:', JSON.stringify(result))
-
-            const chain = result.direct
-
-            if (!chain) {
-                this.setState({
-                    warning: tt('convert_assets_jsx.no_orders_DIRECTION', {
-                        DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
-                    })
-                })
-                return null
-            }
-
-            const step = chain.steps[0]
-            this.bestPrice = Price(step.best_price)
-            this.limitPrice = Price(step.limit_price)
-            res = Asset(chain.res)
-            const remain = step.remain ? Asset(step.remain) : undefined
-
-            if (res.amount == 0) {
-                res.amount = 1
-                warning = tt('convert_assets_jsx.too_low_amount')
-            } else if (!isSell && res.gt(myBalance)) {
-                res.amount = myBalance.amount
-                this.limitPrice = Price(req, res)
-                warning = tt('convert_assets_jsx.too_big_price')
-            } else if (remain) {
-                warning = {
-                    a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
-                    a2: res.floatString,
-                    remain: remain.floatString,
-                    isSell
-                }
-                if (!isSell) {
-                    res = res.plus(req.mul(this.bestPrice))
-                }
-            }
-
-            this.setState({ warning })
-
-            return res
-        }
-
-        const result = await apidexExchange(req,
-            (isSell ? buyAmount.symbol : sellAmount.symbol),
-            isSell ? 'sell' : 'buy'
-        )
-
-        if (result.error) {
-            this.setState({
-                warning: tt('convert_assets_jsx.no_orders_DIRECTION', {
-                    DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
-                })
-            })
-            return null
-        }
-
-        let warning = ''
-
-        if (!req.amount) {
-            this.setState({ warning })
-            return res
-        }
-
-        this.bestPrice = result.best_price.clone()
-        this.limitPrice = result.limit_price.clone()
-        res = result.result.clone()
-        const remain = result.remain
-
-        if (res.amount == 0) {
-            res.amount = 1
-            warning = tt('convert_assets_jsx.too_low_amount')
-        } else if (!isSell && res.gt(myBalance)) {
-            res.amount = myBalance.amount
-            this.limitPrice = Price(req, res)
-            warning = tt('convert_assets_jsx.too_big_price')
-        } else if (remain) {
-            warning = {
-                a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
-                a2: res.floatString,
-                remain: remain.floatString,
-                isSell
-            }
-            if (!isSell) {
-                res = res.plus(req.mul(this.bestPrice))
-            }
-        }
-
-        this.setState({ warning })
-
-        return res
-    }
-
     onPairChange = async ({ event, link, sym1, asset1, sym2, asset2 }) => {
         if (event) {
             event.preventDefault()
@@ -234,12 +87,19 @@ class ConvertAssets extends React.Component {
 
         let sellAmount = myBalance.clone()
 
-        let fee = buyAmount.clone()
-        fee.amount = 0
-        let calcBuy = await this.calculate(sellAmount, buyAmount, myBalance)
-        if (calcBuy) {
-            let calc = calcFeeForSell(calcBuy, this.state.assets[sym2].fee_percent)
-            calcBuy = calc.clearBuy
+        let fee
+        let res = await getExchange(sellAmount, buyAmount, myBalance,
+            (data) => {
+                fee = data.fee
+                const { warning, altBanner } = data
+                this.setState({
+                    warning,
+                    altBanner
+                })
+            })
+        if (res && !fee) {
+            let calc = calcFeeForSell(res, this.state.assets[sym2].fee_percent)
+            res = calc.clearBuy
             fee = calc.fee
         }
 
@@ -247,20 +107,29 @@ class ConvertAssets extends React.Component {
             myBalance,
             sellAmount: AssetEditor(sellAmount),
             sellError: '',
-            buyAmount: AssetEditor(calcBuy || buyAmount),
+            buyAmount: AssetEditor(res || buyAmount),
             fee,
         })
     }
 
     sellAmountUpdated = async () => {
         const { sellAmount, buyAmount, myBalance, assets } = this.state
-        let newBuy = await this.calculate(sellAmount.asset, buyAmount.asset, myBalance)
-        if (newBuy) {
-            let calc = calcFeeForSell(newBuy, assets[buyAmount.asset.symbol].fee_percent)
-            newBuy = calc.clearBuy
+        let fee
+        let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
+            (data) => {
+                fee = data.fee
+                const { warning, altBanner } = data
+                this.setState({ warning, altBanner })
+            })
+        if (res) {
+            if (!fee) {
+                let calc = calcFeeForSell(res, assets[buyAmount.asset.symbol].fee_percent)
+                res = calc.clearBuy
+                fee = calc.fee
+            }
             this.setState({
-                buyAmount: AssetEditor(newBuy),
-                fee: calc.fee
+                buyAmount: AssetEditor(res),
+                fee,
             })
         }
     }
@@ -300,21 +169,26 @@ class ConvertAssets extends React.Component {
             })
 
             const { sellAmount, myBalance, assets } = this.state
+
+            let fee, warning
             let calc = calcFeeForBuy(newAmount.asset, assets[newAmount.asset.symbol].fee_percent)
 
-            let newSell = await this.calculate(sellAmount.asset, calc.buyWF, myBalance, false)
-            if (newSell) {
+            let res = await getExchange(sellAmount.asset, newAmount.asset, myBalance,
+            (data) => {
+                fee = data.fee
+                const { warning, altBanner } = data
+                this.setState({ warning, altBanner })
+            }, ExchangeTypes.direct, false)
+            if (res) {
                 this.setState({
-                    sellAmount: AssetEditor(newSell),
+                    sellAmount: AssetEditor(res),
+                    fee: fee || calc.fee
                 })
             }
-            this.setState({
-                fee: calc.fee
-            })
         }
     }
 
-    submit = (e) => {
+    submit = async (e) => {
         e.preventDefault()
         const {
             sellAmount: { asset: sellAmount },
@@ -336,6 +210,27 @@ class ConvertAssets extends React.Component {
         this.setState({ loading: true })
 
         const { currentAccount } = this.props
+
+        if (!window._old_ex) {
+            const { chains } = this.state
+            const chain = chains.direct
+            const tx = await dex.makeExchangeTx(chain.steps, {
+                owner: currentAccount.get('name')
+            })
+            
+            this.props.placeOrders(currentAccount.get('name'), tx, confirm, async (orderid) => {
+                await new Promise(resolve => setTimeout(resolve, 4000))
+                const newState = { loading: false, finishedAcc: currentAccount.get('name') }
+                this.setState({
+                    ...newState,
+                    finished: 'full',
+                })
+            }, () => {
+                this.setState({ loading: false, canceled: true })
+            })
+            return
+        }
+
         this.props.placeOrder(currentAccount.get('name'),
             sellAmount, minToReceive, confirm, async (orderid) => {
             await new Promise(resolve => setTimeout(resolve, 4000))
@@ -373,10 +268,31 @@ class ConvertAssets extends React.Component {
 
     _renderDescription() {
         const { modal } = this.props
+        const { altBanner } = this.state
         const delimiter = modal ? ' ' : <br />
-        const lines =  tt('convert_assets_jsx.description')
-            .reduce((prev, curr) => [prev, delimiter, curr])
-        const width = modal ? ((this.sellSym().length + this.buySym().length) > 11 ? '30%' : '40%') : '50%'
+        let width = modal ? ((this.sellSym().length + this.buySym().length) > 11 ? '30%' : '40%') : '50%'
+        let lines = []
+        if (altBanner) {
+            let it = 0
+            const { chain, sell, buy } = altBanner
+
+            width = '50%'
+
+            lines.push(<span key={++it}>{tt('convert_alt_banner.' + (chain ? 'multi' : 'direct'))}</span>)
+            if (chain) {
+                lines.push(<br key={++it} />)
+                lines.push(<span className='ConvertAssets__link' key={++it}>{chain.syms.join(' > ')}</span>)
+                lines.push(<br key={++it} />)
+            }
+            lines.push(<span key={++it}>{tt('convert_alt_banner.multi2')}</span>)
+            lines.push(<br key={++it} />)
+            lines.push(<b key={++it}>{sell.floatString}</b>)
+            lines.push(<span key={++it}>{tt('convert_alt_banner.multi3')}</span>)
+            lines.push(<b key={++it}>{buy.floatString + '.'}</b>)
+        } else {
+            lines = tt('convert_assets_jsx.description')
+                .reduce((prev, curr) => [prev, delimiter, curr])
+        }
         return (<span className={'secondary ConvertAssets__description'} style={{ width }} >
                 {lines}
             </span>)
@@ -555,6 +471,26 @@ export default connect(
         };
     },
     dispatch => ({
+        placeOrders: (
+                owner, orders, confirm, successCallback, errorCallback
+            ) => {
+            dispatch(
+                transaction.actions.broadcastOperation({
+                    type: 'limit_order_create',
+                    trx: orders,
+                    username: owner,
+                    confirm,
+                    successCallback: () => {
+                        let pathname = window.location.pathname
+                        dispatch({type: 'FETCH_STATE', payload: {pathname}})
+                        successCallback()
+                    },
+                    errorCallback: () => {
+                        errorCallback()
+                    }
+                })
+            )
+        },
         placeOrder: (
                 owner, amountToSell, minToReceive, confirm, successCallback, errorCallback
             ) => {

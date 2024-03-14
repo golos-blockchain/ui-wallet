@@ -5,6 +5,11 @@
         vertical-align: top;
         margin-top: 0.1rem;
     }
+    &__link {
+        color: #0078C4;
+        cursor: pointer;
+        font-weight: 600;
+    }
 
     .MarketLink {
         svg {
