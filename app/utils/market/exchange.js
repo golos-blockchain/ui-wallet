@@ -107,12 +107,15 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
         const min_to_receive = {}
         if (isSell) {
-            min_to_receive.multi = Asset(1, res.precision, res.symbol)
-        } else {
-            const multi = req.clone()
+            const multi = res.clone()
             let more = multi.mul(100 + MIN_PROFIT_PCT).div(100)
             if (more.eq(multi)) more = more.plus(1)
             min_to_receive.multi = more
+        } else {
+            const multi = req.clone()
+            let lesser = multi.mul(100 - MIN_PROFIT_PCT).div(100)
+            if (lesser.eq(0)) lesser.amount = 1
+            min_to_receive.multi = lesser
         }
 
         resMul = await eapi.getExchange({
@@ -199,8 +202,13 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             if (!amCurrent) {
                 return true
             } else {
-                const more = amCurrent.mul(100 + MIN_PROFIT_PCT).div(100)
-                if (amBetter.gte(more)) return true
+                if (isSell) {
+                    const more = amCurrent.mul(100 + MIN_PROFIT_PCT).div(100)
+                    if (amBetter.gte(more)) return true
+                } else {
+                    const lesser = amCurrent.mul(100 - MIN_PROFIT_PCT).div(100)
+                    if (amBetter.lte(lesser)) return true
+                }
             }
         }
         return false
@@ -210,21 +218,22 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     ) : true
     if (showAltBanner) {
         if (isDir) {
-            if (isSell) {
-                altBanner = { chain, sell: req, buy: amMul }
-            } else {
-                altBanner = { chain, sell: amMul, buy: reqFixed }
+            altBanner = { isSell, chain,
+                sell: (isSell ? req : amMul),
+                buy: (isSell ? amMul : reqFixed),
+                req
             }
         } else {
-            if (isSell) {
-                altBanner = { direct: true, sell: req, buy: amDir }
-            } else {
-                altBanner = { direct: true, sell: amDir, buy: req }
+            altBanner = { isSell, direct: true,
+                sell: (isSell ? req : amDir),
+                buy: (isSell ? amDir : req),
+                req
             }
         }
     }
 
     if (onData) {
+        console.log('ab', altBanner)
         onData({
             warning,
 
