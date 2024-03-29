@@ -2,11 +2,10 @@ import React from 'react'
 import { connect, } from 'react-redux'
 import tt from 'counterpart'
 import { Link } from 'react-router'
-import { api } from 'golos-lib-js'
+import { api, libs } from 'golos-lib-js'
 
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import { getAssetMeta, } from 'app/utils/market/utils'
-import { apidexGetAll } from 'app/utils/ApidexApiClient'
 import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 const RELOAD_EACH_MSEC = 30*1000
@@ -22,7 +21,7 @@ class Rating extends React.Component {
         const assetList = await api.getAssetsAsync('', [], '', 5000, 'by_symbol_name', { system: true })
         const pairs = (await api.getMarketPairsAsync({ merge: true, tickers: true, bucket: 604800 })).data
 
-        this.cmc = (await apidexGetAll()).data
+        this.cmc = (await libs.dex.apidexGetAll()).data
 
         for (const pair of pairs) {
             const { ticker } = pair

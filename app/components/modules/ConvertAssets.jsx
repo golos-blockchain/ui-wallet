@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { api, dex } from 'golos-lib-js'
+import golos, { api, libs } from 'golos-lib-js'
 import { Asset, AssetEditor, Price } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import { connect, } from 'react-redux'
@@ -222,7 +222,7 @@ class ConvertAssets extends React.Component {
         if (chain) {
             let tx
             try {
-                tx = await dex.makeExchangeTx(chain.steps, {
+                tx = await libs.dex.makeExchangeTx(chain.steps, {
                     owner: currentAccount.get('name')
                 })
             } catch (err) {

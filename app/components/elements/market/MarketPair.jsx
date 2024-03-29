@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import tt from 'counterpart'
-import { api } from 'golos-lib-js'
+import { api, libs } from 'golos-lib-js'
 
 import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
-import { apidexGetAll } from 'app/utils/ApidexApiClient'
 import { getAssetMeta, getTradablesFor } from 'app/utils/market/utils'
 import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
@@ -98,7 +97,7 @@ class MarketPair extends React.Component {
 
     async componentDidMount() {
         const { sym1, sym2 } = this.props
-        this.cmc = (await apidexGetAll()).data
+        this.cmc = (await libs.dex.apidexGetAll()).data
         try {
             this.pairs = (await api.getMarketPairsAsync({ merge: true, tickers: false, as_map: true })).data
         } catch (err) {

@@ -1,9 +1,7 @@
-import { api } from 'golos-lib-js'
+import { api, libs } from 'golos-lib-js'
 import { Asset, Price } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import isEqual from 'lodash/isEqual'
-
-import { apidexExchange } from 'app/utils/ApidexApiClient'
 
 const MIN_PROFIT_PCT = 10
 
@@ -48,7 +46,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let chain
     let altBanner = null
 
-    let resDir = await apidexExchange(req,
+    let resDir = await libs.dex.apidexExchange(req,
         (isSell ? buyAmount.symbol : sellAmount.symbol),
         isSell ? 'sell' : 'buy'
     )
