@@ -46,12 +46,14 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let chain
     let altBanner = null
 
-    let resDir = await libs.dex.apidexExchange(req,
-        (isSell ? buyAmount.symbol : sellAmount.symbol),
-        isSell ? 'sell' : 'buy'
-    )
+    let resDir = await libs.dex.apidexExchange({
+        sell: req,
+        buySym: (isSell ? buyAmount.symbol : sellAmount.symbol),
+        direction: isSell ? 'sell' : 'buy'
+    })
 
-    if (resDir) {
+    // resDir = null if apidex is down
+    if (resDir) { 
         if (resDir.error) {
             if (isDir) {
                 warning = tt('convert_assets_jsx.no_orders_DIRECTION', {
@@ -222,10 +224,14 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 req
             }
         } else {
-            altBanner = { isSell, direct: true,
-                sell: (isSell ? req : amDir),
-                buy: (isSell ? amDir : req),
-                req
+            if (amDir) {
+                altBanner = { isSell, direct: true,
+                    sell: (isSell ? req : amDir),
+                    buy: (isSell ? amDir : req),
+                    req
+                }
+            } else  {
+                // TODO: if api-dex down
             }
         }
     }

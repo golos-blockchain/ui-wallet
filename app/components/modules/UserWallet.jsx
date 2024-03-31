@@ -44,7 +44,7 @@ class UserWallet extends React.Component {
         }
         const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
         if (accumulative_balance_steem) {
-            const pr = await libs.dex.apidexGetPrices('GOLOS')
+            const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
             this.setState({
                 price_rub: pr.price_rub,
                 price_usd: pr.price_usd

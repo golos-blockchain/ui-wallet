@@ -38,7 +38,7 @@ class PowerCalc extends React.Component {
     }
 
     async componentDidMount() {
-        const pr = await libs.dex.apidexGetPrices('GOLOS')
+        const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         this.setState({
             price_rub: pr.price_rub,
             price_usd: pr.price_usd

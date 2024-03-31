@@ -25,7 +25,7 @@ class CMCSmall extends React.Component {
     }
 
     async componentDidMount() {
-        let res = await libs.dex.apidexGetPrices('GOLOS')
+        let res = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         if (res.price_rub) {
             const price_change = this.getPriceChange(res)
             this.setState({

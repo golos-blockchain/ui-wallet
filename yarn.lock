@@ -4257,10 +4257,10 @@ globule@^1.0.0:
     lodash "^4.17.21"
     minimatch "~3.0.2"
 
-golos-dex-lib-js@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/golos-dex-lib-js/-/golos-dex-lib-js-1.0.0.tgz#699e9d054d4595e545810c4ba47b601facc5ca23"
-  integrity sha512-7enbEzX18/b+WiDh3nl0mo0Bo0l7hP57nGoDxApyA4Me1cX2Iz3lSzx3SbAhTz5ACCVOvhhSXJVK9GpbnuIMNg==
+golos-dex-lib-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/golos-dex-lib-js/-/golos-dex-lib-js-1.0.2.tgz#e0fe5d29781da8d0830ccb6bcfa5386bc73a2c5d"
+  integrity sha512-wrTzbMdoXlarjFu15liuTdcZjHlPXbdGyMouvCVlMKVqcldUbvi5SMR5egtLBjMKZfmFnFxbFrv798ukGqqSUg==
   dependencies:
     golos-lib-js "^0.9.64"
 
