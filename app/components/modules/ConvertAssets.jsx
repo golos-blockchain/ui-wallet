@@ -8,6 +8,7 @@ import { Map, } from 'immutable'
 import { Link, browserHistory } from 'react-router'
 
 import AssetBalance from 'app/components/elements/AssetBalance'
+import RadioButton from 'app/components/elements/common/RadioButton'
 import CMCValue from 'app/components/elements/market/CMCValue'
 import FinishedOrder from 'app/components/elements/market/FinishedOrder'
 import Icon from 'app/components/elements/Icon'
@@ -473,8 +474,16 @@ class ConvertAssets extends React.Component {
                     onChange={this.onPairChange} />
                 {this._renderDescription()}
             </div>
+            <div style={{width: '300px'}}>
+                <RadioButton id={1} title={tt('convert_alt_banner.direct_radio')} disabled={false} selectedValue={this.state.sel || 1} onChange={(e) => {
+                    this.setState({sel: 1})}} />
+            </div>
             {this._renderFields()}
             {this._renderWarning()}
+            <div style={{width: '300px'}}>
+                <RadioButton id={2} title={tt('convert_alt_banner.chain_radio')} disabled={false} hint='world2' selectedValue={this.state.sel || 1} onChange={(e) => {
+                    this.setState({sel: 2})}} />
+            </div>
             <div style={{ marginTop: '1.25rem' }}>
                 <button onClick={this.submit} className='button' disabled={disabled}>
                     {direction === 'sell' ? tt('g.sell') : tt('g.buy')}

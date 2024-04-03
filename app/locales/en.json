@@ -958,7 +958,9 @@
     "you_spend": "you will spend",
     "you_can_buy": "you can buy",
     "you_can_sell": "you can sell",
-    "for": "for"
+    "for": "for",
+    "direct_radio": "Direct exchange",
+    "chain_radio": "Intelligent exchange"
   },
   "convert_error": {
     "try_direct": "Try ",

@@ -845,7 +845,9 @@
     "you_spend": "вы потратите",
     "you_can_buy": "вы можете купить",
     "you_can_sell": "вы можете продать",
-    "for": "за"
+    "for": "за",
+    "direct_radio": "Прямой обмен",
+    "chain_radio": "Интеллектуальный обмен"
   },
   "convert_error": {
     "try_direct": "Попробуйте ",
