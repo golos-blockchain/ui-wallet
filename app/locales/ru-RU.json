@@ -847,7 +847,8 @@
     "you_can_sell": "вы можете продать",
     "for": "за",
     "direct_radio": "Прямой обмен",
-    "chain_radio": "Интеллектуальный обмен"
+    "chain_radio": "Интеллектуальный обмен",
+    "unavailable": "недоступен"
   },
   "convert_error": {
     "try_direct": "Попробуйте ",

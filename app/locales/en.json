@@ -960,7 +960,8 @@
     "you_can_sell": "you can sell",
     "for": "for",
     "direct_radio": "Direct exchange",
-    "chain_radio": "Intelligent exchange"
+    "chain_radio": "Intelligent exchange",
+    "unavailable": "unavailable"
   },
   "convert_error": {
     "try_direct": "Try ",

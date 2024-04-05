@@ -34,6 +34,9 @@
         }
     }
 
+    .radio-header {
+        line-height: 1.4;
+    }
     .RadioButton__label {
         background-color: rgb(231, 242, 254);
         padding-left: 5px;
@@ -43,10 +46,16 @@
     }
     .RadioButton__label-text {
         font-size: 110%;
-        color: black !important;
         margin-left: 8px;
     }
-    .radio-header {
-        line-height: 1.4;
+    .RadioButton__item:not(.RadioButton_disabled) {
+        .RadioButton__label-text {
+            color: black !important;
+        }
+    }
+    .RadioButton_disabled {
+        .RadioButton__label {
+            background-color: #f1f1f1;
+        }
     }
 }

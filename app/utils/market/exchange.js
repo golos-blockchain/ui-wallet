@@ -32,7 +32,8 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     selected = ExchangeTypes.direct, isSell = true
 ) {
     const req = isSell ? sellAmount.clone() : buyAmount.clone()
-    const isDir = selected == ExchangeTypes.direct 
+    let isDir = selected == ExchangeTypes.direct 
+    let newSelected
 
     let res = isSell ? buyAmount.clone() : sellAmount.clone()
     res.amount = 0
@@ -44,7 +45,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let warning = ''
     let amDir, amMul
     let chain
-    let altBanner = null
+    let altBanner = null, mainMsg
 
     let resDir = await libs.dex.apidexExchange({
         sell: req,
@@ -97,6 +98,13 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             if (isDir) {
                 res = amDir
             }
+        }
+    } else {
+        if (isDir) {
+            isDir = false
+            selected = ExchangeTypes.multi
+            newSelected = selected
+            mainMsg = tt('convert_alt_banner.unavailable')
         }
     }
 
@@ -195,6 +203,14 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 }
             }
         }
+    } else {
+        if (!isDir) {
+            isDir = true
+            if (amDir) res = amDir
+            selected = ExchangeTypes.direct
+            newSelected = selected
+            mainMsg = tt('convert_alt_banner.unavailable')
+        }
     }
 
     const showAlt = (amCurrent, amBetter) => {
@@ -230,9 +246,14 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                     buy: (isSell ? amDir : req),
                     req
                 }
-            } else  {
-                // TODO: if api-dex down
-            }
+            } // else - if apidex down
+        }
+    }
+
+    if (!altBanner) {
+        altBanner = {
+            direct: !isDir,
+            msg: tt('convert_alt_banner.unavailable')
         }
     }
 
@@ -248,7 +269,9 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             fee,
             reqFixed,
 
-            altBanner
+            altBanner,
+            mainMsg,
+            newSelected
         })
     }
 
