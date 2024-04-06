@@ -257,8 +257,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         }
     }
 
+    let bestType = ExchangeTypes.direct
+    if (showAlt(amDir, amMul)) {
+        bestType = ExchangeTypes.multi
+    }
+
     if (onData) {
-        console.log('ab', altBanner)
         onData({
             warning,
 
@@ -271,7 +275,8 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
             altBanner,
             mainMsg,
-            newSelected
+            newSelected,
+            bestType
         })
     }
 

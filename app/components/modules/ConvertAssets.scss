@@ -28,6 +28,10 @@
         font-weight: 600;
     }
 
+    .MarketPair {
+        font-size: 120%;
+        margin-bottom: 1rem;
+    }
     .MarketLink {
         svg {
             fill: #0078C4;
@@ -38,11 +42,12 @@
         line-height: 1.4;
     }
     .RadioButton__label {
-        background-color: rgb(231, 242, 254);
         padding-left: 5px;
         padding-right: 5px;
         padding-top: 8px;
         padding-bottom: 8px;
+        margin-top: 2px;
+        margin-bottom: 2px;
     }
     .RadioButton__label-text {
         font-size: 110%;
@@ -53,9 +58,9 @@
             color: black !important;
         }
     }
-    .RadioButton_disabled {
+    .radio-item.best {
         .RadioButton__label {
-            background-color: #f1f1f1;
+            background-color: rgb(231, 242, 254);
         }
     }
 }

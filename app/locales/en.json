@@ -909,8 +909,8 @@
         "Here you can sell or buy tokens.",
         "Instantly and just in two clicks."
     ],
-    "sell": "sell",
-    "buy": "buy",
+    "sell": "Sell",
+    "buy": "Buy",
     "sell_amount": "Sell amount:",
     "buy_amount": "Buy amount:",
     "amount_with_fee": "Amount with fee:",
@@ -961,7 +961,10 @@
     "for": "for",
     "direct_radio": "Direct exchange",
     "chain_radio": "Intelligent exchange",
-    "unavailable": "unavailable"
+    "unavailable": "unavailable",
+    "unavail_hint": "Refresh page.",
+    "unavail_hint2": "If problem repeating, please write to ",
+    "unavail_hint3": "community chat"
   },
   "convert_error": {
     "try_direct": "Try ",

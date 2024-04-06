@@ -8,6 +8,7 @@ import { Map, } from 'immutable'
 import { Link, browserHistory } from 'react-router'
 
 import AssetBalance from 'app/components/elements/AssetBalance'
+import DialogManager from 'app/components/elements/common/DialogManager'
 import RadioButton from 'app/components/elements/common/RadioButton'
 import CMCValue from 'app/components/elements/market/CMCValue'
 import FinishedOrder from 'app/components/elements/market/FinishedOrder'
@@ -18,10 +19,12 @@ import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
         calcFeeForSell, calcFeeForBuy } from 'app/utils/market/utils'
 import { ExchangeTypes, getExchange } from 'app/utils/market/exchange'
 import transaction from 'app/redux/Transaction'
+import { findModalRoot, hideElement, showElement } from 'app/utils/DomUtils'
 
 class ConvertAssets extends React.Component {
     constructor(props) {
         super(props)
+        this.root = React.createRef()
         this.state = {
             loading: true,
             myBalance: Asset(0, 3, 'GOLOS'),
@@ -94,11 +97,12 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount, buyAmount, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected } = data
+                const { warning, altBanner, mainMsg, newSelected, bestType } = data
                 this.setState({
                     warning,
                     altBanner,
                     mainMsg,
+                    bestType,
                     exType: newSelected || this.state.exType
                 })
             }, exType)
@@ -123,8 +127,8 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected } = data
-                this.setState({ warning, altBanner, mainMsg,
+                const { warning, altBanner, mainMsg, newSelected, bestType } = data
+                this.setState({ warning, altBanner, mainMsg, bestType,
                     exType: newSelected || this.state.exType })
             }, exType)
         if (res) {
@@ -182,8 +186,8 @@ class ConvertAssets extends React.Component {
             let res = await getExchange(sellAmount.asset, newAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected } = data
-                this.setState({ warning, altBanner, mainMsg,
+                const { warning, altBanner, mainMsg, newSelected, bestType } = data
+                this.setState({ warning, altBanner, mainMsg, bestType,
                     exType: newSelected || this.state.exType })
             }, exType, false)
             if (res) {
@@ -368,7 +372,6 @@ class ConvertAssets extends React.Component {
         const marginTop = '0rem'
         const fieldSell = (<React.Fragment>
                 <div style={{ marginTop }}>
-                    {tt('convert_assets_jsx.sell_amount')}
                     <div className='input-group'>
                         <input type='text' value={sellAmount.amountStr} onChange={this.onSellAmountChange} />
                         <span className='input-group-label uppercase'>{this.sellSym()}</span>
@@ -380,7 +383,6 @@ class ConvertAssets extends React.Component {
             </React.Fragment>)
         const fieldBuy = (<React.Fragment>
                 <div style={{ marginTop }}>
-                    {tt('convert_assets_jsx.buy_amount')}
                     <div className='input-group'>
                         <input type='text' value={buyAmount.amountStr} onChange={this.onBuyAmountChange} />
                         <span className='input-group-label uppercase'>{this.buySym()}</span>
@@ -441,7 +443,7 @@ class ConvertAssets extends React.Component {
                 <span>{tt('convert_assets_jsx.too_much_amount4')}</span>
             ]
         }
-        return (<div className='callout' style={{ marginTop: '0.5rem', marginBottom: '1rem', fontSize: '0.9rem' }}>
+        return (<div className='callout' style={{ marginTop: '0.5rem', fontSize: '0.9rem' }}>
                 {children}
                 &nbsp;
                 <Icon name='info_o' title={tt('convert_assets_jsx.order_can_be_canceled')} />
@@ -463,9 +465,9 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected } = data
+                const { warning, altBanner, mainMsg, newSelected, bestType } = data
                 exType = newSelected || exType
-                this.setState({ warning, altBanner, mainMsg, })
+                this.setState({ warning, altBanner, mainMsg, bestType })
             }, exType, isSell)
         if (res) {
             if (!fee) {
@@ -491,8 +493,28 @@ class ConvertAssets extends React.Component {
         }
     }
 
+    _renderRadioUnavailable = (msg) => {
+        const onClick = async (e) => {
+            e.preventDefault()
+            let node = this.root.current
+            node = node && findModalRoot(node)
+            if (node) {
+                hideElement(node)
+            }
+            await DialogManager.alert(<div>
+                {tt('convert_alt_banner.unavail_hint')}<br/>
+                {tt('convert_alt_banner.unavail_hint2')}{' '}
+                {tt('convert_alt_banner.unavail_hint3')}.
+            </div>)
+            if (node) {
+                showElement(node, 'block')
+            }
+        }
+        return <span>{msg}&nbsp;<a href='#' onClick={onClick}><Icon name='info_o' /></a></span>
+    }
+
     _renderRadioDirect = () => {
-        const { exType, altBanner } = this.state
+        const { exType, altBanner, bestType } = this.state
         let spans = []
         const disabled = altBanner && altBanner.msg
 
@@ -503,7 +525,7 @@ class ConvertAssets extends React.Component {
             if (!chain) {
                 spans.push(<span key={++it}>(</span>)
                 if (msg) {
-                    spans.push(<span key={++it}>{msg}</span>)
+                    spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
                 } else {
                     if (isSell) {
                         spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
@@ -517,7 +539,7 @@ class ConvertAssets extends React.Component {
             }
         }
 
-        return <div>
+        return <div className={'radio-item' + (bestType === ExchangeTypes.direct ? ' best': '')} style={{ marginTop: '0.5rem' }}>
             <RadioButton id={ExchangeTypes.direct} title={<div className='radio-header'>
                     <div><b>{tt('convert_alt_banner.direct_radio')}</b></div>
                     <span style={{fontSize: '90%'}}>{spans}</span>
@@ -526,7 +548,7 @@ class ConvertAssets extends React.Component {
     }
 
     _renderRadioMulti = () => {
-        const { exType, altBanner } = this.state
+        const { exType, altBanner, bestType } = this.state
         let title
         let spans = []
         const disabled = altBanner && altBanner.msg
@@ -541,7 +563,7 @@ class ConvertAssets extends React.Component {
                 if (exType === ExchangeTypes.direct) {
                     spans.push(<span key={++it}>(</span>)
                     if (msg) {
-                        spans.push(<span key={++it}>{msg}</span>)
+                        spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
                     } else {
                         if (isSell) {
                             spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
@@ -564,7 +586,7 @@ class ConvertAssets extends React.Component {
             }
         }
 
-        return <div title={title}>
+        return <div title={title} className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
             <RadioButton id={ExchangeTypes.multi} title={<div className='radio-header'>
                     <div><b>{tt('convert_alt_banner.chain_radio')}</b></div>
                     <span style={{fontSize: '90%'}}>{spans}</span>
@@ -588,7 +610,7 @@ class ConvertAssets extends React.Component {
                 remainToReceive={remainToReceive} />
         }
         const disabled = isSubmitting || !sellAmount.asset.amount || !buyAmount.asset.amount || sellError
-        return (<div className='ConvertAssets'>
+        return (<div className='ConvertAssets' ref={this.root}>
             <h3>{tt('g.convert_assets')}</h3>
             <div>
                 <center>
@@ -607,7 +629,7 @@ class ConvertAssets extends React.Component {
             {this._renderRadioDirect()}
             {this._renderRadioMulti()}
             {this._renderWarning()}
-            <div style={{marginTop: '0.25rem'}}>
+            <div style={{marginTop: '1rem'}}>
                 <button onClick={this.submit} className='button' disabled={disabled}>
                     {direction === 'sell' ? tt('g.sell') : tt('g.buy')}
                 </button>
