@@ -97,11 +97,11 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount, buyAmount, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType } = data
                 this.setState({
                     warning,
                     altBanner,
-                    mainMsg,
+                    mainBanner,
                     bestType,
                     exType: newSelected || this.state.exType
                 })
@@ -127,8 +127,8 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected, bestType } = data
-                this.setState({ warning, altBanner, mainMsg, bestType,
+                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                this.setState({ warning, altBanner, mainBanner, bestType,
                     exType: newSelected || this.state.exType })
             }, exType)
         if (res) {
@@ -186,8 +186,8 @@ class ConvertAssets extends React.Component {
             let res = await getExchange(sellAmount.asset, newAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected, bestType } = data
-                this.setState({ warning, altBanner, mainMsg, bestType,
+                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                this.setState({ warning, altBanner, mainBanner, bestType,
                     exType: newSelected || this.state.exType })
             }, exType, false)
             if (res) {
@@ -465,9 +465,9 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainMsg, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType } = data
                 exType = newSelected || exType
-                this.setState({ warning, altBanner, mainMsg, bestType })
+                this.setState({ warning, altBanner, mainBanner, bestType })
             }, exType, isSell)
         if (res) {
             if (!fee) {
@@ -493,6 +493,11 @@ class ConvertAssets extends React.Component {
         }
     }
 
+    _directChain = () => {
+        const { sellAmount: {asset: sellAmount }, buyAmount: {asset: buyAmount } } = this.state
+        return sellAmount.symbol + ' > ' + buyAmount.symbol
+    }
+
     _renderRadioUnavailable = (msg) => {
         const onClick = async (e) => {
             e.preventDefault()
@@ -513,83 +518,93 @@ class ConvertAssets extends React.Component {
         return <span>{msg}&nbsp;<a href='#' onClick={onClick}><Icon name='info_o' /></a></span>
     }
 
-    _renderRadioDirect = () => {
-        const { exType, altBanner, bestType } = this.state
-        let spans = []
-        const disabled = altBanner && altBanner.msg
-
-        if (altBanner && exType === ExchangeTypes.multi) {
-            const { msg, chain, sell, buy, isSell } = altBanner
+    _renderBanner = (banner) => {
+        const spans = []
+        if (banner) {
+            const { msg, chain, sell, buy, req, isSell } = banner
 
             let it = 0
-            if (!chain) {
-                spans.push(<span key={++it}>(</span>)
-                if (msg) {
-                    spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
+
+            spans.push(<span key={++it}>{' '}(</span>)
+            if (msg) {
+                spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
+            } else {
+                if (isSell) {
+                    spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
+                    spans.push(<b key={++it}>{buy.floatString}</b>)
                 } else {
-                    if (isSell) {
-                        spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
-                        spans.push(<b key={++it}>{buy.floatString}</b>)
-                    } else {
+                    if (!req || req.eq(buy)) {
                         spans.push(<span key={++it}>{tt('convert_alt_banner.you_spend') + ' '}</span>)
+                        spans.push(<b key={++it}>{sell.floatString}</b>)
+                    } else {
+                        spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_buy')}</span>)
+                        spans.push(<span key={++it}>{' '}</span>)
+                        spans.push(<b key={++it}>{buy.floatString}</b>)
+                        spans.push(<span key={++it}>{' ' + tt('convert_alt_banner.for') + ' '}</span>)
                         spans.push(<b key={++it}>{sell.floatString}</b>)
                     }
                 }
-                spans.push(<span key={++it}>)</span>)
             }
+            spans.push(<span key={++it}>)</span>)
         }
+        return spans
+    }
+
+    _renderRadioDirect = () => {
+        const { exType, altBanner, mainBanner, bestType } = this.state
+        let spans = []
+        const disabled = altBanner && altBanner.msg
+
+        if (exType === ExchangeTypes.multi) {
+            spans = this._renderBanner(altBanner)
+        } else {
+            spans = this._renderBanner(mainBanner)
+        }
+
+        const title = this._directChain()
 
         return <div className={'radio-item' + (bestType === ExchangeTypes.direct ? ' best': '')} style={{ marginTop: '0.5rem' }}>
             <RadioButton id={ExchangeTypes.direct} title={<div className='radio-header'>
-                    <div><b>{tt('convert_alt_banner.direct_radio')}</b></div>
-                    <span style={{fontSize: '90%'}}>{spans}</span>
+                    <div>
+                        <b>{tt('convert_alt_banner.direct_radio')}</b>
+                        <span style={{fontSize: '90%'}}>{spans}</span>
+                    </div>
+                    <span style={{fontSize: '90%'}}>{title}</span>
                 </div>} disabled={disabled} selectedValue={exType} onChange={this._onRadioChange} />
         </div>
     }
 
     _renderRadioMulti = () => {
-        const { exType, altBanner, bestType } = this.state
+        const { exType, altBanner, mainBanner, bestType } = this.state
         let title
         let spans = []
         const disabled = altBanner && altBanner.msg
 
-        if (altBanner) {
-            const { msg, chain, sell, buy, req, isSell } = altBanner
-
-            let it = 0
-            if (chain) {
-                title = chain.syms.join(' > ')
-
-                if (exType === ExchangeTypes.direct) {
-                    spans.push(<span key={++it}>(</span>)
-                    if (msg) {
-                        spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
-                    } else {
-                        if (isSell) {
-                            spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
-                            spans.push(<b key={++it}>{buy.floatString}</b>)
-                        } else {
-                            if (!req || req.eq(buy)) {
-                                spans.push(<span key={++it}>{tt('convert_alt_banner.you_spend') + ' '}</span>)
-                                spans.push(<b key={++it}>{sell.floatString}</b>)
-                            } else {
-                                spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_buy')}</span>)
-                                spans.push(<span key={++it}>{' '}</span>)
-                                spans.push(<b key={++it}>{buy.floatString}</b>)
-                                spans.push(<span key={++it}>{' ' + tt('convert_alt_banner.for') + ' '}</span>)
-                                spans.push(<b key={++it}>{sell.floatString}</b>)
-                            }
-                        }
-                    }
-                    spans.push(<span key={++it}>)</span>)
+        if (exType === ExchangeTypes.multi) {
+            spans = this._renderBanner(mainBanner)
+            if (mainBanner) {
+                const { chain, } = mainBanner
+                if (chain) {
+                    title = chain.syms.join(' > ')
+                }
+            }
+        } else {
+            spans = this._renderBanner(altBanner)
+            if (altBanner) {
+                const { chain, } = altBanner
+                if (chain) {
+                    title = chain.syms.join(' > ')
                 }
             }
         }
 
-        return <div title={title} className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
+        return <div className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
             <RadioButton id={ExchangeTypes.multi} title={<div className='radio-header'>
-                    <div><b>{tt('convert_alt_banner.chain_radio')}</b></div>
-                    <span style={{fontSize: '90%'}}>{spans}</span>
+                    <div>
+                        <b>{tt('convert_alt_banner.chain_radio')}</b>
+                        <span style={{fontSize: '90%'}}>{spans}</span>
+                    </div>
+                    <span style={{fontSize: '90%'}}>{title || this._directChain()}</span>
                 </div>} disabled={disabled} selectedValue={exType} onChange={this._onRadioChange} />
         </div>
     }

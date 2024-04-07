@@ -45,7 +45,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let warning = ''
     let amDir, amMul
     let chain
-    let altBanner = null, mainMsg
+    let altBanner = null, mainBanner = null
 
     let resDir = await libs.dex.apidexExchange({
         sell: req,
@@ -104,7 +104,6 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             isDir = false
             selected = ExchangeTypes.multi
             newSelected = selected
-            mainMsg = tt('convert_alt_banner.unavailable')
         }
     }
 
@@ -209,7 +208,6 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             if (amDir) res = amDir
             selected = ExchangeTypes.direct
             newSelected = selected
-            mainMsg = tt('convert_alt_banner.unavailable')
         }
     }
 
@@ -229,23 +227,32 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         }
         return false
     }
+    const multiBanner = () => {
+        return { isSell, chain,
+            sell: (isSell ? req : amMul),
+            buy: (isSell ? amMul : reqFixed),
+            req
+        }
+    }
+    const dirBanner = () => {
+        return { isSell, direct: true,
+            sell: (isSell ? req : amDir),
+            buy: (isSell ? amDir : req),
+            req
+        }
+    }
+
     const showAltBanner = isDir ? showAlt(
         amDir, amMul
     ) : true
     if (showAltBanner) {
         if (isDir) {
-            altBanner = { isSell, chain,
-                sell: (isSell ? req : amMul),
-                buy: (isSell ? amMul : reqFixed),
-                req
-            }
+            altBanner = multiBanner()
+            mainBanner = dirBanner()
         } else {
             if (amDir) {
-                altBanner = { isSell, direct: true,
-                    sell: (isSell ? req : amDir),
-                    buy: (isSell ? amDir : req),
-                    req
-                }
+                altBanner = dirBanner()
+                mainBanner = multiBanner()
             } // else - if apidex down
         }
     }
@@ -274,7 +281,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             reqFixed,
 
             altBanner,
-            mainMsg,
+            mainBanner,
             newSelected,
             bestType
         })
