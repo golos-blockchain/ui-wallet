@@ -851,7 +851,8 @@
     "unavailable": "недоступен",
     "unavail_hint": "Обновите страницу.",
     "unavail_hint2": "Если проблема повторяется, напишите в ",
-    "unavail_hint3": "чат сообщества"
+    "unavail_hint3": "чат сообщества",
+    "no_way": "нет выгодного"
   },
   "convert_error": {
     "try_direct": "Попробуйте ",

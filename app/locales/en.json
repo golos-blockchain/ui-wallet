@@ -964,7 +964,8 @@
     "unavailable": "unavailable",
     "unavail_hint": "Refresh page.",
     "unavail_hint2": "If problem repeating, please write to ",
-    "unavail_hint3": "community chat"
+    "unavail_hint3": "community chat",
+    "no_way": "no way"
   },
   "convert_error": {
     "try_direct": "Try ",

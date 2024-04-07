@@ -17,7 +17,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import MarketPair from 'app/components/elements/market/MarketPair'
 import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
         calcFeeForSell, calcFeeForBuy } from 'app/utils/market/utils'
-import { ExchangeTypes, getExchange } from 'app/utils/market/exchange'
+import { ExchangeTypes, ExchangeErrors, getExchange } from 'app/utils/market/exchange'
 import transaction from 'app/redux/Transaction'
 import { findModalRoot, hideElement, showElement } from 'app/utils/DomUtils'
 
@@ -498,7 +498,10 @@ class ConvertAssets extends React.Component {
         return sellAmount.symbol + ' > ' + buyAmount.symbol
     }
 
-    _renderRadioUnavailable = (msg) => {
+    _renderRadioMsg = (msg) => {
+        if (msg === ExchangeErrors.no_way) {
+            return <span>{tt('convert_alt_banner.no_way')}</span>
+        }
         const onClick = async (e) => {
             e.preventDefault()
             let node = this.root.current
@@ -515,19 +518,24 @@ class ConvertAssets extends React.Component {
                 showElement(node, 'block')
             }
         }
-        return <span>{msg}&nbsp;<a href='#' onClick={onClick}><Icon name='info_o' /></a></span>
+        return <span>{tt('convert_alt_banner.unavailable')}&nbsp;<a href='#' onClick={onClick}><Icon name='info_o' /></a></span>
     }
 
     _renderBanner = (banner) => {
         const spans = []
+        let title
         if (banner) {
             const { msg, chain, sell, buy, req, isSell } = banner
+
+            if (chain) {
+                title = chain.syms.join(' > ')
+            }
 
             let it = 0
 
             spans.push(<span key={++it}>{' '}(</span>)
             if (msg) {
-                spans.push(<span key={++it}>{this._renderRadioUnavailable(msg)}</span>)
+                spans.push(<span key={++it}>{this._renderRadioMsg(msg)}</span>)
             } else {
                 if (isSell) {
                     spans.push(<span key={++it}>{tt('convert_alt_banner.you_can_receive') + ' '}</span>)
@@ -547,18 +555,20 @@ class ConvertAssets extends React.Component {
             }
             spans.push(<span key={++it}>)</span>)
         }
-        return spans
+        return { spans, title }
     }
 
     _renderRadioDirect = () => {
         const { exType, altBanner, mainBanner, bestType } = this.state
         let spans = []
-        const disabled = altBanner && altBanner.msg
+        let disabled = false
 
         if (exType === ExchangeTypes.multi) {
-            spans = this._renderBanner(altBanner)
+            spans = this._renderBanner(altBanner).spans
+            disabled = altBanner && !!altBanner.msg
         } else {
-            spans = this._renderBanner(mainBanner)
+            spans = this._renderBanner(mainBanner).spans
+            disabled = mainBanner && !!mainBanner.msg
         }
 
         const title = this._directChain()
@@ -576,28 +586,16 @@ class ConvertAssets extends React.Component {
 
     _renderRadioMulti = () => {
         const { exType, altBanner, mainBanner, bestType } = this.state
-        let title
-        let spans = []
-        const disabled = altBanner && altBanner.msg
+        let disabled = false
 
         if (exType === ExchangeTypes.multi) {
-            spans = this._renderBanner(mainBanner)
-            if (mainBanner) {
-                const { chain, } = mainBanner
-                if (chain) {
-                    title = chain.syms.join(' > ')
-                }
-            }
+            disabled = mainBanner && !!mainBanner.msg
         } else {
-            spans = this._renderBanner(altBanner)
-            if (altBanner) {
-                const { chain, } = altBanner
-                if (chain) {
-                    title = chain.syms.join(' > ')
-                }
-            }
+            disabled = altBanner && !!altBanner.msg
         }
 
+        let { spans, title } = this._renderBanner(exType === ExchangeTypes.multi ? mainBanner :altBanner)
+ 
         return <div className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
             <RadioButton id={ExchangeTypes.multi} title={<div className='radio-header'>
                     <div>

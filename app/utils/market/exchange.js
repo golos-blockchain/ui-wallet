@@ -10,6 +10,11 @@ export const ExchangeTypes = {
     multi: 2
 }
 
+export const ExchangeErrors = {
+    unavailable: 1,
+    no_way: 2,
+}
+
 function exchangeApi() {
     const node = $STM_Config.ws_connection_exchange
     if (!node) {
@@ -45,6 +50,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let warning = ''
     let amDir, amMul
     let chain
+    let directErr, multiErr
     let altBanner = null, mainBanner = null
 
     let resDir = await libs.dex.apidexExchange({
@@ -100,6 +106,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             }
         }
     } else {
+        directErr = true
         if (isDir) {
             isDir = false
             selected = ExchangeTypes.multi
@@ -136,6 +143,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         })
     } catch (err) {
         console.error('Multi-step getExchange', err)
+        multiErr = err
     }
 
     if (resMul) {
@@ -228,6 +236,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         return false
     }
     const multiBanner = () => {
+        if (!amMul) {
+            return {
+                direct: !isDir,
+                msg: multiErr ? ExchangeErrors.unavailable : ExchangeErrors.no_way
+            }
+        }
         return { isSell, chain,
             sell: (isSell ? req : amMul),
             buy: (isSell ? amMul : reqFixed),
@@ -235,6 +249,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         }
     }
     const dirBanner = () => {
+        if (!amDir) {
+            return {
+                direct: !isDir,
+                msg: directErr ? ExchangeErrors.unavailable : ExchangeErrors.no_way
+            }
+        }
         return { isSell, direct: true,
             sell: (isSell ? req : amDir),
             buy: (isSell ? amDir : req),
@@ -242,26 +262,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         }
     }
 
-    const showAltBanner = isDir ? showAlt(
-        amDir, amMul
-    ) : true
-    if (showAltBanner) {
-        if (isDir) {
-            altBanner = multiBanner()
-            mainBanner = dirBanner()
-        } else {
-            if (amDir) {
-                altBanner = dirBanner()
-                mainBanner = multiBanner()
-            } // else - if apidex down
-        }
-    }
-
-    if (!altBanner) {
-        altBanner = {
-            direct: !isDir,
-            msg: tt('convert_alt_banner.unavailable')
-        }
+    if (isDir) {
+        altBanner = multiBanner()
+        mainBanner = dirBanner()
+    } else {
+        altBanner = dirBanner()
+        mainBanner = multiBanner()
     }
 
     let bestType = ExchangeTypes.direct
