@@ -83,10 +83,10 @@ class ConvertAssets extends React.Component {
                 return
             }
         }
-        /*if (this.state.canceled) {
+        if (this.state.canceled) {
             this.setState({ canceled: false })
             return
-        }*/
+        }
         let buyAmount = Asset(0, asset2.precision, sym2)
         const myBalance = await this.getBalance(sym1, asset1)
 
@@ -97,7 +97,7 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount, buyAmount, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
                 this.setState({
                     warning,
                     altBanner,
@@ -105,9 +105,11 @@ class ConvertAssets extends React.Component {
                     bestType,
                     exType: newSelected || this.state.exType
                 })
+                this.bestPrice = bestPrice
+                this.limitPrice = limitPrice
             }, exType)
         if (res && !fee) {
-            let calc = calcFeeForSell(res, this.state.assets[sym2].fee_percent)
+            let calc = calcFeeForSell(res, res.gt(0) ? this.state.assets[sym2].fee_percent : 0)
             res = calc.clearBuy
             fee = calc.fee
         }
@@ -127,11 +129,13 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
                 this.setState({ warning, altBanner, mainBanner, bestType,
                     exType: newSelected || this.state.exType })
+                this.bestPrice = bestPrice
+                this.limitPrice = limitPrice
             }, exType)
-        if (res) {
+        if (res && res.gt(0)) {
             if (!fee) {
                 let calc = calcFeeForSell(res, assets[buyAmount.asset.symbol].fee_percent)
                 res = calc.clearBuy
@@ -186,15 +190,21 @@ class ConvertAssets extends React.Component {
             let res = await getExchange(sellAmount.asset, newAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
                 this.setState({ warning, altBanner, mainBanner, bestType,
                     exType: newSelected || this.state.exType })
+                this.bestPrice = bestPrice
+                this.limitPrice = limitPrice
             }, exType, false)
             if (res) {
                 this.setState({
-                    sellAmount: AssetEditor(res),
                     fee: fee || calc.fee
                 })
+                if (res.gt(0)) {
+                    this.setState({
+                        sellAmount: AssetEditor(res),
+                    })
+                }
             }
         }
     }
@@ -240,6 +250,7 @@ class ConvertAssets extends React.Component {
                 onError(err, 'makeExchangeTx')
                 return
             }
+            console.log('tx', JSON.stringify(tx))
 
             this.props.placeOrders(currentAccount.get('name'), tx, confirm, async (orderid) => {
                 await new Promise(resolve => setTimeout(resolve, 4000))
@@ -252,6 +263,7 @@ class ConvertAssets extends React.Component {
             return
         }
 
+        console.log('order', sellAmount.toString(), minToReceive.toString())
         this.props.placeOrder(currentAccount.get('name'),
             sellAmount, minToReceive, confirm, async (orderid) => {
             await new Promise(resolve => setTimeout(resolve, 4000))
@@ -465,9 +477,11 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
                 exType = newSelected || exType
                 this.setState({ warning, altBanner, mainBanner, bestType })
+                this.bestPrice = bestPrice
+                this.limitPrice = limitPrice
             }, exType, isSell)
         if (res) {
             if (!fee) {
@@ -609,7 +623,7 @@ class ConvertAssets extends React.Component {
 
     render() {
         const { direction, isDialog, currentAccount } = this.props
-        const { loading, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning } = this.state
+        const { loading, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning, mainBanner,  exType } = this.state
         if (loading || !currentAccount) {
             return (<center>
                 <LoadingIndicator type='circle' size='25px' />
@@ -622,7 +636,7 @@ class ConvertAssets extends React.Component {
                 buyAmount={buyAmount.asset} sellAmount={sellAmount.asset}
                 remainToReceive={remainToReceive} />
         }
-        const disabled = isSubmitting || !sellAmount.asset.amount || !buyAmount.asset.amount || sellError
+        const disabled = isSubmitting || !sellAmount.asset.amount || !buyAmount.asset.amount || sellError || (exType === ExchangeTypes.multi && mainBanner && mainBanner.msg)
         return (<div className='ConvertAssets' ref={this.root}>
             <h3>{tt('g.convert_assets')}</h3>
             <div>

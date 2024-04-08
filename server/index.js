@@ -14,7 +14,7 @@ require('module').Module._initPaths();
 
 global.$STM_Config = {
     ws_connection_client: config.get('ws_connection_client'),
-    ws_connection_exchange: config.get('ws_connection_exchange'),
+    ws_connection_exchange: config.has('ws_connection_exchange') && config.get('ws_connection_exchange'),
     logo: config.get('logo'),
     add_notify_site: config.get('add_notify_site'),
     images: config.get('images'),

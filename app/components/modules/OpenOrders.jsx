@@ -21,9 +21,6 @@ class OpenOrders extends Component {
         })
         const { sym, currentUser, } = this.props;
         let pair = [sym, ''];
-        if (sym === 'GOLOS' || sym === 'GBG') {
-            pair = ['', sym];
-        }
         try {
             const orders = await api.getOpenOrdersAsync(currentUser.get('username'),
                 pair);
@@ -72,8 +69,13 @@ class OpenOrders extends Component {
         }
         let orderData = [];
         for (let order of orders) {
-            const asset1 = Asset(order.asset1);
-            const sym2 = asset1.symbol;
+            let buy = Asset(order.asset1)
+            let sell = Asset(order.asset2)
+            if (sell.symbol !== sym) {
+                [buy, sell] = [sell, buy]
+            }
+
+            const sym2 = buy.symbol
 
             orderData.push(<tr>
                 <td>
@@ -82,10 +84,10 @@ class OpenOrders extends Component {
                     </Link>
                 </td>
                 <td>
-                    {order.asset2}
+                    {sell.toString().split(' ')[0]}
                 </td>
                 <td>
-                    {order.asset1}
+                    {buy.toString()}
                 </td>
                 <td style={{ textAlign: 'right', }}>
                     <a

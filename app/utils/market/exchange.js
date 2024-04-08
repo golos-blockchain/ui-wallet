@@ -147,8 +147,6 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     }
 
     if (resMul) {
-        console.log('ex:', JSON.stringify(resMul))
-
         chain = betterChain(resMul)
 
         if (!chain) {
