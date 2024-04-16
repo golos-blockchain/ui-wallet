@@ -53,11 +53,13 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let directErr, multiErr
     let altBanner = null, mainBanner = null
 
+    console.time('apidex')
     let resDir = await libs.dex.apidexExchange({
         sell: req,
         buySym: (isSell ? buyAmount.symbol : sellAmount.symbol),
         direction: isSell ? 'sell' : 'buy'
     })
+    console.timeEnd('apidex')
 
     // resDir = null if apidex is down
     if (resDir) { 
@@ -116,6 +118,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
     let resMul, reqFixed
 
+    console.time('gex')
     try {
         const eapi = exchangeApi()
 
@@ -145,6 +148,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         console.error('Multi-step getExchange', err)
         multiErr = err
     }
+    console.timeEnd('gex')
 
     if (resMul) {
         chain = betterChain(resMul)
