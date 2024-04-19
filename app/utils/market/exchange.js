@@ -1,35 +1,26 @@
 import { api, libs } from 'golos-lib-js'
-import { Asset, Price } from 'golos-lib-js/lib/utils'
+import { Asset, _Asset, Price, _Price, fetchEx } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import isEqual from 'lodash/isEqual'
 
-const MIN_PROFIT_PCT = 10
-
-export const ExchangeTypes = {
-    direct: 1,
-    multi: 2
-}
+import getExchangeData, { MIN_PROFIT_PCT, ExchangeTypes } from 'shared/getExchangeData'
 
 export const ExchangeErrors = {
     unavailable: 1,
     no_way: 2,
 }
 
-function exchangeApi() {
-    const node = $STM_Config.ws_connection_exchange
-    if (!node) {
-        throw new Error('No exchange node')
-        return
-    }
-
-    const eapi = new api.Golos()
-    eapi.setWebSocket(node)
-    return eapi
-}
-
 function betterChain(resMul) {
     const { best, direct } = resMul
     return (best && (!direct || !isEqual(direct.syms, best.syms))) && best
+}
+
+const wrapAsset = (asset) => {
+    return (asset instanceof _Asset) ? asset : Asset(asset)
+}
+
+const wrapPrice = (price) => {
+    return (price instanceof _Price) ? price : Price(price)
 }
 
 export async function getExchange(sellAmount, buyAmount, myBalance,
@@ -42,6 +33,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
     let res = isSell ? buyAmount.clone() : sellAmount.clone()
     res.amount = 0
+    let resMul, resDir
 
     let limitPrice = null
     let bestPrice = null
@@ -53,13 +45,42 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let directErr, multiErr
     let altBanner = null, mainBanner = null
 
-    console.time('apidex')
-    let resDir = await libs.dex.apidexExchange({
-        sell: req,
-        buySym: (isSell ? buyAmount.symbol : sellAmount.symbol),
-        direction: isSell ? 'sell' : 'buy'
-    })
-    console.timeEnd('apidex')
+    console.time('comb')
+    if (!process.env.IS_APP) {
+        try {
+            const selectedStr = selected === ExchangeTypes.direct ? 'direct' : 'multi'
+            const url = '/api/v1/get_exchange/' + req.toString() + '/' + res.symbol + '/'
+                + (isSell ? 'sell' : 'buy') + '/' + selectedStr
+            let resp = await fetchEx(url, {})
+            resp = await resp.json()
+            resDir = resp.direct
+            resMul = resp.multi
+            if (resp.multi_error) multiErr = resp.multi_error
+        } catch (err) {
+            console.error('Request to backend get_exchange err:', err)
+        }
+    } else {
+        try {
+            const resp = await getExchangeData({
+                    dex: libs.dex,
+                    exNode: () => {
+                        const node = $STM_Config.ws_connection_exchange
+                        if (!node) throw new Error('No ws_connection_exchange')
+                        return node
+                    }, callParams: () => {
+                        return {req, res, isSell, selected}
+                    }
+                },
+                req.toString(), res.symbol,
+                (isSell ? 'sell' : 'buy'), selected)
+            resDir = resp.direct
+            resMul = resp.multi
+            if (resp.multi_error) multiErr = resp.multi_error
+        } catch (err) {
+            console.error('getExchangeData err:', err)
+        }
+    }
+    console.timeEnd('comb')
 
     // resDir = null if apidex is down
     if (resDir) { 
@@ -70,12 +91,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 })
             }
         } else {
-            const bp = resDir.best_price.clone()
+            const bp = wrapPrice(resDir.best_price)
             if (isDir) {
                 bestPrice = bp
-                limitPrice = resDir.limit_price.clone()
+                limitPrice = wrapPrice(resDir.limit_price)
             }
-            amDir = resDir.result.clone()
+            amDir = wrapAsset(resDir.result)
             const remain = resDir.remain
 
             if (amDir.amount == 0) {
@@ -116,39 +137,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
         }
     }
 
-    let resMul, reqFixed
-
-    console.time('gex')
-    try {
-        const eapi = exchangeApi()
-
-        const min_to_receive = {}
-        if (isSell) {
-            const multi = res.clone()
-            let more = multi.mul(100 + MIN_PROFIT_PCT).div(100)
-            if (more.eq(multi)) more = more.plus(1)
-            min_to_receive.multi = more
-        } else {
-            const multi = req.clone()
-            let lesser = multi.mul(100 - MIN_PROFIT_PCT).div(100)
-            if (lesser.eq(0)) lesser.amount = 1
-            min_to_receive.multi = lesser
-        }
-
-        resMul = await eapi.getExchange({
-            amount: req.toString(),
-            direction: isSell ? 'sell' : 'buy',
-            symbol: res.symbol,
-            remain: {
-                multi: 'ignore'
-            },
-            min_to_receive
-        })
-    } catch (err) {
-        console.error('Multi-step getExchange', err)
-        multiErr = err
-    }
-    console.timeEnd('gex')
+    let reqFixed
 
     if (resMul) {
         chain = betterChain(resMul)
@@ -212,13 +201,13 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 }
             }
         }
-    } else {
-        if (!isDir) {
-            isDir = true
-            if (amDir) res = amDir
-            selected = ExchangeTypes.direct
-            newSelected = selected
-        }
+    } 
+
+    if ((!resMul || !chain) && !isDir) {
+        isDir = true
+        if (amDir) res = amDir
+        selected = ExchangeTypes.direct
+        newSelected = selected
     }
 
     const showAlt = (amCurrent, amBetter) => {

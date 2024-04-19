@@ -1,5 +1,7 @@
 import config from 'config';
-import * as golos from 'golos-lib-js';
+import golos from 'golos-lib-js';
+import GolosDexApi from 'golos-dex-lib-js'
+
 const version = require('./version');
 
 delete process.env.BROWSER;
@@ -31,6 +33,15 @@ global.$STM_Config = {
 
 golos.config.set('websocket', config.get('ws_connection_server'))
 golos.config.set('chain_id', config.get('chain_id'))
+
+try {
+    const apidex_service = config.get('apidex_service')
+    new GolosDexApi(golos, {
+        host: apidex_service.host_local || apidex_service.host
+    })
+} catch (err) {
+    console.error('GolosDexApi server init error:', err)
+}
 
 try {
     require('./server');

@@ -17,7 +17,8 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import MarketPair from 'app/components/elements/market/MarketPair'
 import { normalizeAssets, DEFAULT_EXPIRE, generateOrderID,
         calcFeeForSell, calcFeeForBuy } from 'app/utils/market/utils'
-import { ExchangeTypes, ExchangeErrors, getExchange } from 'app/utils/market/exchange'
+import { ExchangeTypes } from 'shared/getExchangeData'
+import { getExchange, ExchangeErrors } from 'app/utils/market/exchange'
 import transaction from 'app/redux/Transaction'
 import { findModalRoot, hideElement, showElement } from 'app/utils/DomUtils'
 
