@@ -9,6 +9,7 @@ import Reveal from 'react-foundation-components/lib/global/reveal'
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import Icon from 'app/components/elements/Icon'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
+import NFTAuction from 'app/components/modules/nft/NFTAuction'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
@@ -74,6 +75,20 @@ class NFTTokens extends Component {
         })
     }
 
+    showAuction = (e, tokenIdx) => {
+        e.preventDefault()
+        this.setState({
+            showAuction: true,
+            tokenIdx,
+        })
+    }
+
+    hideAuction = () => {
+        this.setState({
+            showAuction: false,
+        })
+    }
+
     sortOrder = (e, sort, sortReversed) => {
         e.preventDefault()
         this.sort = sort
@@ -107,11 +122,12 @@ class NFTTokens extends Component {
                     showTransfer={this.showTransfer}
                     showSell={this.showSell}
                     showPlaceBet={this.showPlaceBet}
+                    showAuction={this.showAuction}
                     refetch={this.refetch} />)
             }
         }
 
-        const { showTransfer, showSell, showPlaceBet, tokenIdx } = this.state
+        const { showTransfer, showSell, showPlaceBet, showAuction, tokenIdx } = this.state
 
         const sortItems = [
             { link: '#', onClick: e => {
@@ -190,6 +206,15 @@ class NFTTokens extends Component {
                 <NFTPlaceOfferBet
                     currentUser={currentUser}
                     onClose={this.hidePlaceBet}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                />
+            </Reveal>
+
+            <Reveal show={showAuction} onHide={this.hideAuction} revealStyle={{ width: '450px' }}>
+                <NFTAuction
+                    currentUser={currentUser}
+                    onClose={this.hideAuction}
                     tokenIdx={tokenIdx}
                     refetch={this.refetch}
                 />

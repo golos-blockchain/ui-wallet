@@ -57,6 +57,10 @@
     .button.hollow:hover {
         background-color: transparent !important;
     }
+    .sell-button {
+        position: relative;
+        display: inline-block;
+    }
 }
 
 .NFTTokenItem:hover {

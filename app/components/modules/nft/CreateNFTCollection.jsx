@@ -44,7 +44,7 @@ class CreateNFTCollection extends Component {
             if (!meta || Array.isArray(meta)) throw new Error('JSON is array')
         } catch (err) {
             console.error('json_metadata', err)
-            //errors.json_metadata = tt('create_nft_collection_jsx.json_wrong')
+            errors.json_metadata = tt('create_nft_collection_jsx.json_wrong')
             meta = null
         }
         if (meta) {

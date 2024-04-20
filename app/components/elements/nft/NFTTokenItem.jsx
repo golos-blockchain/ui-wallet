@@ -7,6 +7,7 @@ import { Asset } from 'golos-lib-js/lib/utils'
 
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import Icon from 'app/components/elements/Icon'
+import NFTTokenSellPopup from 'app/components/elements/nft/NFTTokenSellPopup'
 import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
 import transaction from 'app/redux/Transaction'
@@ -18,6 +19,7 @@ class NFTTokenItem extends Component {
 
     constructor() {
         super()
+        this.sellPopupRef = React.createRef()
     }
 
     cancelOrder = async (e, tokenIdx) => {
@@ -79,10 +81,15 @@ class NFTTokenItem extends Component {
         return this.props.token.order
     }
 
+    showSell = (e) => {
+        e.preventDefault()
+        this.sellPopupRef.current.togglePopup()
+    }
+
     render() {
         const { token, tokenIdx, currentUser, page, assets } = this.props
 
-        const { json_metadata, image, selling } = token
+        const { json_metadata, image, selling, is_auction } = token
 
         let data
         if (json_metadata) {
@@ -153,7 +160,12 @@ class NFTTokenItem extends Component {
         } else {
             buttons = <div>
                 {!isMy && <React.Fragment>&nbsp;</React.Fragment>}
-                {isMy && <button className='button slim' onClick={e => this.props.showSell(e, tokenIdx)}>{tt('g.sell')}</button>}
+                {isMy && <div className='sell-button'>
+                    <button className='button slim' onClick={this.showSell}>{tt('g.sell')}</button>
+                    <NFTTokenSellPopup ref={this.sellPopupRef} is_auction={is_auction}
+                        showSell={e => this.props.showSell(e, tokenIdx)}
+                        showAuction={e => this.props.showAuction(e, tokenIdx)} />
+                </div>}
                 {isMy && <button className='button slim hollow noborder' onClick={e => this.props.showTransfer(e, tokenIdx)}>{tt('g.transfer')}</button>}
                 {kebabItems.length > 1 ? <DropdownMenu className='float-right' el='div' items={kebabItems}>
                     <Icon name='new/more' size='0_95x' />

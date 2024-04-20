@@ -181,6 +181,12 @@ class NFTPlaceOfferBet extends Component {
         return !!minPrice
     }
 
+    balanceClick = (e, setFieldValue) => {
+        e.preventDefault()
+        const { currentBalance } = this.state
+        setFieldValue('price', AssetEditor(currentBalance))
+    }
+
     render() {
         const { assets } = this.state
 
@@ -243,7 +249,7 @@ class NFTPlaceOfferBet extends Component {
                         {errors.price && errors.price !== 'min_price' && <div className='error'>{errors.price}</div>}
                     </div>
                 </div>
-                {currentBalance && <AssetBalance balanceValue={currentBalance.floatString} />}
+                {currentBalance && <AssetBalance balanceValue={currentBalance.floatString} onClick={e => this.balanceClick(e, setFieldValue)} />}
                 {(errorMessage && errorMessage !== 'Canceled') ? <div className='row'>
                     <div className='column small-12'>
                         <div className='error' style={{marginBottom:'0px'}}>{errorMessage}</div>

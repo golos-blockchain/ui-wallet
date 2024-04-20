@@ -22,6 +22,9 @@
             margin-right: 2px;
         }
     }
+    .my_offer {
+        padding-top: 10px;
+    }
     .my_auction {
         padding-left: 5px;
     }
@@ -51,13 +54,10 @@
 
     .button {
         margin: 0px !important;
-        margin-left: 5px !important;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-    }
-    .button-center {
         margin-top: -4px !important;
         margin-left: 10px !important;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
     }
 
     .sell-button {
