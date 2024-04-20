@@ -406,9 +406,11 @@ class TransferHistoryRow extends React.Component {
             linkExternal2 = true
             description_middle2 = tt('nft_token_page_jsx.selled2m')
             description_middle2 += Asset(data.price).floatString
+            description_middle2 += JSON.stringify(data)
         } else if (type === 'nft_cancel_order') {
             link = data.owner
             description_middle = tt('nft_token_page_jsx.canceled_bet') + tt('nft_token_page_jsx.on')
+            description_middle2 += JSON.stringify(data)
             const { tokenTitle, tokenLink } = getToken(data.token_id)
             link2 = tokenLink
             linkExternal2 = true

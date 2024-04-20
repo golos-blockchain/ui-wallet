@@ -96,7 +96,7 @@ class NFTAuction extends Component {
             alert('Error - blockchain unavailable')
             return
         }
-        let expiration = new Date(gprops.time)
+        let expiration = new Date(gprops.time + 'Z')
         expiration.setSeconds(expiration.getSeconds() + expirationSec)
 
         await this.props.auction(token_id, values.min_price.asset, expiration, username, () => {
@@ -252,5 +252,23 @@ export default connect(
     },
 
     dispatch => ({
+        auction: (
+            token_id, min_price, expiration, username, successCallback, errorCallback
+        ) => {
+            const operation = {
+                owner: username,
+                token_id,
+                min_price: min_price.toString(),
+                expiration: expiration.toISOString().split('.')[0]
+            }
+
+            dispatch(transaction.actions.broadcastOperation({
+                type: 'nft_auction',
+                username,
+                operation,
+                successCallback,
+                errorCallback
+            }))
+        }
     })
 )(NFTAuction)

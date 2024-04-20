@@ -411,6 +411,9 @@ export function* fetchState(location_change_action) {
                             const price = Asset(state.nft_token.order.price)
                             syms.add(price.symbol)
                         }
+                        if (state.nft_token.is_auction) {
+                            syms.add(state.nft_token.auction_min_price.symbol)
+                        }
                         if (state.nft_token.my_bet) {
                             const price = Asset(state.nft_token.my_bet.price)
                             syms.add(price.symbol)
@@ -648,6 +651,8 @@ export function* fetchNftTokens({ payload: { account, start_token_id, sort, reve
             selling_sorting: sort == 'by_last_price' ? 'sort_up_by_price': 'nothing',
             reverse_sort: !!reverse_sort
         })
+
+        yield markAuctions(nft_tokens)
 
         let next_from
         if (nft_tokens.length > limit) {
