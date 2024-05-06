@@ -1036,6 +1036,7 @@
     "account_unfreeze": " for account unfreezing",
     "received": "Received ",
     "for_unwanted": " for unwanted operation (blacklist)",
+    "for_downrep": " for decreasing reputation of ",
     "comment": "post",
     "vote": "vote",
     "some_action": "action",
