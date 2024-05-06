@@ -270,13 +270,21 @@ class TransferHistoryRow extends React.Component {
 
         else if (type === 'unwanted_cost') {
             if (data.blocker === this.props.context) {
-                description_start += tt('transferhistoryrow_jsx.received') + data.amount + tt('transferhistoryrow_jsx.from')
+                if (data.burn_fee) {
+                    return null
+                }
+                description_start += tt('transferhistoryrow_jsx.received') + data.amount + ' (TIP)' + tt('transferhistoryrow_jsx.from')
                 link = data.blocking
                 description_end += tt('transferhistoryrow_jsx.for_unwanted')
             } else {
-                description_start += tt('transferhistoryrow_jsx.transfer') + data.amount + tt('g.to')
-                link = data.blocker
-                description_end += tt('transferhistoryrow_jsx.for_unwanted')
+                if (data.burn_fee) {
+                    description_start += tt('transferhistoryrow_jsx.claimed') + data.amount + ' (TIP)' + tt('transferhistoryrow_jsx.for_downrep')
+                    link = data.blocker
+                } else {
+                    description_start += tt('transferhistoryrow_jsx.transfer') + data.amount + ' (TIP)' + tt('g.to')
+                    link = data.blocker
+                    description_end += tt('transferhistoryrow_jsx.for_unwanted')
+                }
             }
         }
 
