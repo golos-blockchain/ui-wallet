@@ -3931,6 +3931,14 @@ flux-standard-action@^0.6.0:
   dependencies:
     lodash.isplainobject "^3.2.0"
 
+folder-hash@^4.0.4:
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/folder-hash/-/folder-hash-4.0.4.tgz#f5ffa14e9fc6f3213598f6a367207adf7d419edc"
+  integrity sha512-zEyYH+UsHEfJJcCRSf9ai5I4CTZwZ8ObONRuEI5hcEmJY5pS0FUWKruX9mMnYJrgC7MlPFDYnGsK1R+WFYjLlQ==
+  dependencies:
+    debug "^4.3.3"
+    minimatch "~5.1.2"
+
 follow-redirects@^1.0.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
@@ -4264,10 +4272,37 @@ golos-dex-lib-js@^1.0.2:
   dependencies:
     golos-lib-js "^0.9.64"
 
-golos-lib-js@^0.9.64, golos-lib-js@^0.9.68:
+golos-lib-js@^0.9.64:
   version "0.9.68"
   resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.68.tgz#62f3c4a7755eacfbe6dc2f6ebc3111f2ff74e6dd"
   integrity sha512-KoQMFHtINYdM0hhe9dKPpWXZLo3MkFXyRxY/zQq0kbBjAwJBU4P1WEMwmPS+MPujjizfvU6nerUOLI4Lj7ChFw==
+  dependencies:
+    abort-controller "^3.0.0"
+    assert "^2.0.0"
+    bigi "^1.4.2"
+    browserify-aes "^1.0.6"
+    bs58 "^4.0.0"
+    buffer "^6.0.3"
+    bytebuffer "^5.0.1"
+    core-js "^3.17.3"
+    create-hash "^1.1.2"
+    create-hmac "^1.1.4"
+    cross-env "^5.0.0"
+    cross-fetch "^3.0.0"
+    debug "^2.6.8"
+    detect-node "^2.0.3"
+    ecurve "^1.0.5"
+    lodash "^4.17.21"
+    process "^0.11.10"
+    regenerator-runtime "^0.13.9"
+    secure-random "^1.1.1"
+    stream-browserify "^3.0.0"
+    ws "^8.2.3"
+
+golos-lib-js@^0.9.71:
+  version "0.9.71"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.71.tgz#794bc6582a96f0e1a3bc4301e0c5dfac976a15bf"
+  integrity sha512-FkR7nuyMUXj+IT8ErTFhu6BsaEvPaLZAr72r5H+GUhqbD8q98tFfBURCKw0MGfiO9CEv0zdDG3daPTq2TThvxA==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"
@@ -5787,7 +5822,7 @@ minimatch@^3.0.4, minimatch@^3.1.1:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimatch@^5.0.1:
+minimatch@^5.0.1, minimatch@~5.1.2:
   version "5.1.6"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-5.1.6.tgz#1cfcb8cf5522ea69952cd2af95ae09477f122a96"
   integrity sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==

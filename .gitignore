@@ -15,6 +15,7 @@ config/process.json
 config/process-dev.json
 config/process-prod.json
 config/client_config.js
+app/JsLibHash.json
 
 db/config/config.json
 

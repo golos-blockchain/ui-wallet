@@ -30,6 +30,7 @@ import { init as initAnchorHelper } from 'app/utils/anchorHelper';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
 import session from 'app/utils/session'
+import libInfo from 'app/JsLibHash.json'
 
 const APP_REMINDER_INTERVAL = 60*24*60*60*1000
 
@@ -96,6 +97,7 @@ class App extends React.Component {
     componentDidMount() {
         if (process.env.BROWSER) {
             console.log('ui-wallet version:', $STM_Config.ui_version);
+            console.log('golos-lib-js version:', libInfo.version, 'hash:', libInfo.hash)
         }
 
         const { nightmodeEnabled } = this.props;
