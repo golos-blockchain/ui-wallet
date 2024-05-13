@@ -479,8 +479,13 @@ class NFTTokenPage extends Component {
                 })
             }
             auction = <div className='my_auction' style={{paddingTop: last_price ? '5px' : '0px', paddingLeft: last_price ? '0px': '5px'}}>
-                <Icon name='clock' className='space-right' />
-                <TimeExactWrapper date={token.auction_expiration} />
+                <TimeExactWrapper date={token.auction_expiration}
+                    tooltipRender={(tooltip) => tt('nft_tokens_jsx.auction_expiration3') + ': ' + tooltip}
+                    contentRender={(content) => <React.Fragment>
+                        <Icon name='clock' className='space-right' />
+                        {content}
+                    </React.Fragment>}
+                />
                 {isMy ? <PriceIcon assets={assets} asset={token.auction_min_price} text={a => {
                         return ' >= ' + a.amountFloat + ' ' + a.symbol
                     }} style={{marginLeft: '5px', marginRight: '5px'}} title={tt('nft_tokens_jsx.min_price_is') + auction_min_price.floatString} />  : null}
@@ -490,7 +495,7 @@ class NFTTokenPage extends Component {
                     <PriceIcon assets={assets} asset={Asset(my_bet.price)} text={a => {
                         return ' ' + a.floatString
                     }} style={{marginLeft: '5px', marginRight: '5px'}} title={tt('nft_tokens_jsx.you_bet_is') + Asset(my_bet.price).floatString} />
-                    <button className='button hollow alert' onClick={cancelBet}>
+                    <button className='button hollow alert' onClick={cancelBet} title={tt('nft_token_page_jsx.cancel_bet')}>
                         {tt('nft_tokens_jsx.cancel')}
                     </button></span> : <button className='button' onClick={e => this.showPlaceOfferBet(e, auction_min_price)}>
                         {tt('nft_tokens_jsx.place_bet')}
@@ -735,6 +740,24 @@ module.exports = {
                     errorCallback
                 }))
             },
+            auction: (
+                token_id, min_price, expiration, username, successCallback, errorCallback
+            ) => {
+                const operation = {
+                    owner: username,
+                    token_id,
+                    min_price: min_price.toString(),
+                    expiration: expiration.toISOString().split('.')[0]
+                }
+
+                dispatch(transaction.actions.broadcastOperation({
+                    type: 'nft_auction',
+                    username,
+                    operation,
+                    successCallback,
+                    errorCallback
+                }))
+            }
         })
     )(NFTTokenPage)
 }

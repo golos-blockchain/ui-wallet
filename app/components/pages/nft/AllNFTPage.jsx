@@ -6,9 +6,11 @@ import Reveal from 'react-foundation-components/lib/global/reveal'
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import Icon from 'app/components/elements/Icon'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
+import NFTAuction from 'app/components/modules/nft/NFTAuction'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
+import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import g from 'app/redux/GlobalReducer'
 
 class AllNFTPage extends React.Component {
@@ -52,6 +54,35 @@ class AllNFTPage extends React.Component {
         })
     }
 
+    showPlaceOfferBet = (e, tokenIdx, minPrice) => {
+        e.preventDefault()
+        this.setState({
+            showPlaceOfferBet: true,
+            tokenIdx,
+            minPrice
+        })
+    }
+
+    hidePlaceOfferBet = () => {
+        this.setState({
+            showPlaceOfferBet: false,
+        })
+    }
+
+    showAuction = (e, tokenIdx) => {
+        e.preventDefault()
+        this.setState({
+            showAuction: true,
+            tokenIdx,
+        })
+    }
+
+    hideAuction = () => {
+        this.setState({
+            showAuction: false,
+        })
+    }
+
     sortOrder = (e, sort, sortReversed) => {
         e.preventDefault()
         this.sort = sort
@@ -79,11 +110,13 @@ class AllNFTPage extends React.Component {
                     assets={assets}
                     showTransfer={this.showTransfer}
                     showSell={this.showSell}
+                    showPlaceOfferBet={this.showPlaceOfferBet}
+                    showAuction={this.showAuction}
                     refetch={this.refetch} />)
             }
         }
 
-        const { showTransfer, showSell, tokenIdx } = this.state
+        const { showTransfer, showSell, showAuction, showPlaceOfferBet, tokenIdx } = this.state
 
         const sortItems = [
             { link: '#', onClick: e => {
@@ -150,6 +183,25 @@ class AllNFTPage extends React.Component {
                 <NFTTokenSell
                     currentUser={currentUser}
                     onClose={this.hideSell}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                />
+            </Reveal>
+
+            <Reveal show={showPlaceOfferBet} onHide={this.hidePlaceOfferBet} revealStyle={{ width: '450px' }}>
+                <NFTPlaceOfferBet
+                    currentUser={currentUser}
+                    onClose={this.hidePlaceOfferBet}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                    minPrice={this.state.minPrice}
+                />
+            </Reveal>
+
+            <Reveal show={showAuction} onHide={this.hideAuction} revealStyle={{ width: '450px' }}>
+                <NFTAuction
+                    currentUser={currentUser}
+                    onClose={this.hideAuction}
                     tokenIdx={tokenIdx}
                     refetch={this.refetch}
                 />
