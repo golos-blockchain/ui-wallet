@@ -9,7 +9,7 @@ const MINUTE = 60*SECOND
 const HOUR = 60*MINUTE
 const DAY = 24*HOUR
 
-function formatTimeExact(dt, maxDepth = 2) {
+function formatTimeExact(dt, maxDepth = 2, shorter = false) {
     const msec = +dt
     const now = Date.now()
 
@@ -29,10 +29,11 @@ function formatTimeExact(dt, maxDepth = 2) {
             const minutes = Math.floor(ms / MINUTE)
             const remainder = ms % MINUTE
             const res = minutes ? minutes + tt('time_exact_wrapper_jsx.minutes') : ''
-            return res + formatMsec(remainder, ++depth, MINUTE)
+            return (depth === 1 && minutes > 1) ? res : (res + formatMsec(remainder, ++depth, MINUTE))
         } else if (!prev || prev == MINUTE) {
             const secs = Math.floor(ms / SECOND)
-            return secs ? secs + tt('time_exact_wrapper_jsx.secs') : ''
+            return secs ? secs + (shorter ? tt('time_exact_wrapper_jsx.secs2')
+                : tt('time_exact_wrapper_jsx.secs')) : ''
         } else {
             return ''
         }
@@ -57,7 +58,7 @@ export default class TimeExactWrapper extends React.Component {
         const dt = new Date(date)
         const state = {
             dt,
-            ...formatTimeExact(dt)
+            ...formatTimeExact(dt, 2, this.props.shorter)
         }
         this.setState(state)
         return state
@@ -73,11 +74,16 @@ export default class TimeExactWrapper extends React.Component {
     }
 
     render() {
-        const { className } = this.props
+        const { className, tooltipRender, contentRender } = this.props
         let state = this.state
         state = state || this.updateState()
-        const { dt, result } = state
-        return <Tooltip t={dt.toLocaleString()} className={className}>
+        let { dt, result } = state
+        let tooltip = dt.toLocaleString()
+        tooltip = tooltipRender ? tooltipRender(tooltip) : tooltip
+        if (contentRender) {
+            result = contentRender(result)
+        }
+        return <Tooltip t={tooltip} className={className}>
             {result}
         </Tooltip>
     }

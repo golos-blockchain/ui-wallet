@@ -32,7 +32,8 @@
     "days": " d ",
     "hours": " h",
     "minutes": " m ",
-    "secs": " s "
+    "secs": " s ",
+    "secs2": " s "
   },
   "g": {
     "golos_fest": "Golos.id News",
@@ -785,6 +786,7 @@
     "cancel": "Cancel",
     "cancel_hint": "Cancel selling",
     "place_bet": "Place a bet",
+    "place_bet2": "Bet it",
     "place_offer": "Place an offer",
     "selling_for": "Selling for ",
     "you_bet_is": "Your bet is ",
@@ -808,6 +810,7 @@
     "auction_expiration": "Auction will end after:",
     "auction_expiration2": "days",
     "auction_expiration_dev": "secs",
+    "auction_expiration3": "NFT is selling via auction: Auction ending",
     "auction_hint": "User proposals will be canceled.",
     "bet_already_exists": "Bet with such price already exists."
   },

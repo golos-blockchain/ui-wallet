@@ -61,6 +61,16 @@
         position: relative;
         display: inline-block;
     }
+    .Hint__content {
+        padding: 0px;
+        min-width: 50px;
+        .Hint__inner {
+            .VerticalMenu {
+                white-space: nowrap;
+                width: auto;
+            }
+        }
+    }
 }
 
 .NFTTokenItem:hover {
