@@ -34,6 +34,11 @@
         height: 20px;
         margin-right: 0.25rem;
     }
+    .auction-time {
+        @include themify($themes) {
+          color: themed('textColorPrimary');
+        }
+    }
 
     .token-title {
         margin-top: 0.25rem;

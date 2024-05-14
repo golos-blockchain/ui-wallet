@@ -61,17 +61,18 @@ class NFTTokens extends Component {
         })
     }
 
-    showPlaceBet = (e, tokenIdx) => {
+    showPlaceOfferBet = (e, tokenIdx, minPrice) => {
         e.preventDefault()
         this.setState({
-            showPlaceBet: true,
+            showPlaceOfferBet: true,
             tokenIdx,
+            minPrice
         })
     }
 
-    hidePlaceBet = () => {
+    hidePlaceOfferBet = () => {
         this.setState({
-            showPlaceBet: false,
+            showPlaceOfferBet: false,
         })
     }
 
@@ -121,13 +122,13 @@ class NFTTokens extends Component {
                     assets={assets}
                     showTransfer={this.showTransfer}
                     showSell={this.showSell}
-                    showPlaceBet={this.showPlaceBet}
+                    showPlaceOfferBet={this.showPlaceOfferBet}
                     showAuction={this.showAuction}
                     refetch={this.refetch} />)
             }
         }
 
-        const { showTransfer, showSell, showPlaceBet, showAuction, tokenIdx } = this.state
+        const { showTransfer, showSell, showPlaceOfferBet, showAuction, tokenIdx } = this.state
 
         const sortItems = [
             { link: '#', onClick: e => {
@@ -202,12 +203,13 @@ class NFTTokens extends Component {
                 />
             </Reveal>
 
-            <Reveal show={showPlaceBet} onHide={this.hidePlaceBet} revealStyle={{ width: '450px' }}>
+            <Reveal show={showPlaceOfferBet} onHide={this.hidePlaceOfferBet} revealStyle={{ width: '450px' }}>
                 <NFTPlaceOfferBet
                     currentUser={currentUser}
-                    onClose={this.hidePlaceBet}
+                    onClose={this.hidePlaceOfferBet}
                     tokenIdx={tokenIdx}
                     refetch={this.refetch}
+                    minPrice={this.state.minPrice}
                 />
             </Reveal>
 

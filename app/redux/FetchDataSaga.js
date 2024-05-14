@@ -748,6 +748,8 @@ export function* fetchNftCollectionTokens({ payload: { collectionName, start_tok
             console.error(err)
         }
 
+        yield markAuctions(nft_tokens)
+
         yield put(GlobalReducer.actions.receiveNftCollectionTokens({nft_coll, nft_tokens, start_token_id, next_from, nft_assets}))
     } catch (err) {
         console.error('fetchNftCollectionTokens', err)

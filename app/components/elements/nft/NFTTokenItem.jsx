@@ -147,12 +147,6 @@ class NFTTokenItem extends Component {
             }, value: tt('g.transfer') })
         }
 
-        // if (!isMy && last_price) {
-        //     kebabItems.unshift({ link: '#', onClick: e => {
-        //         this.props.showPlaceBet(e, tokenIdx)
-        //     }, value: tt('nft_tokens_jsx.place_bet') })
-        // }
-
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
 
@@ -166,25 +160,28 @@ class NFTTokenItem extends Component {
                 {isMy && !selling && <button className='button slim float-right' onClick={e => this.props.showSell(e, tokenIdx)}>{tt('g.sell')}</button>}
                 {isMy && selling && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.cancel_hint')}
                     onClick={e => this.cancelOrder(e, tokenIdx)}>
-                    {tt('nft_tokens_jsx.cancel')}</button>}
+                    {tt('g.cancel')}</button>}
                 {!isMy && selling && <button className='button slim float-right' title={tt('nft_tokens_jsx.buy2') + price.floatString}
                     onClick={e => this.buyToken(e, tokenIdx)}>
                     {tt('nft_tokens_jsx.buy')}</button>}
             </div>
         } else if (is_auction) {
+            const { auction_min_price } = token
             buttons = <div>
-                <TimeExactWrapper date={auction_expiration} shorter={true}
-                    tooltipRender={(tooltip) => tt('nft_tokens_jsx.auction_expiration3') + ': ' + tooltip}
-                    contentRender={(content) => <React.Fragment>
-                        <Icon name='clock' className='space-right' />
-                        {content}
-                    </React.Fragment>}
-                />
+                <span className='auction-time'>
+                    <TimeExactWrapper date={auction_expiration} shorter={true}
+                        tooltipRender={(tooltip) => tt('nft_tokens_jsx.auction_expiration3') + ': ' + tooltip}
+                        contentRender={(content) => <React.Fragment>
+                            <Icon name='clock' className='space-right' />
+                            {content}
+                        </React.Fragment>}
+                    />
+                </span>
                 {isMy && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.stop_auction')}
                     onClick={e => this.cancelAuction(e, tokenIdx)}>
                     {tt('g.cancel')}</button>}
-                {!isMy && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.place_bet')}
-                    onClick={e => this.props.showPlaceBet(e, tokenIdx)}>
+                {!isMy && <button className='button slim float-right' title={tt('nft_tokens_jsx.min_price') + ' ' + auction_min_price.floatString}
+                    onClick={e => this.props.showPlaceOfferBet(e, tokenIdx, auction_min_price)}>
                     {tt('nft_tokens_jsx.place_bet2')}</button>}
             </div>
         } else {

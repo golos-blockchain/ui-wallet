@@ -6,9 +6,11 @@ import Reveal from 'react-foundation-components/lib/global/reveal'
 
 import IssueNFTToken from 'app/components/modules/nft/IssueNFTToken'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
+import NFTAuction from 'app/components/modules/nft/NFTAuction'
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
+import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import NotFound from 'app/components/pages/NotFound'
 import g from 'app/redux/GlobalReducer'
 import transaction from 'app/redux/Transaction'
@@ -92,6 +94,41 @@ class NFTCollectionPage extends Component {
         })
     }
 
+    hideSell = () => {
+        this.setState({
+            showSell: false,
+        })
+    }
+
+    showPlaceOfferBet = (e, tokenIdx, minPrice) => {
+        e.preventDefault()
+        this.setState({
+            showPlaceOfferBet: true,
+            tokenIdx,
+            minPrice
+        })
+    }
+
+    hidePlaceOfferBet = () => {
+        this.setState({
+            showPlaceOfferBet: false,
+        })
+    }
+
+    showAuction = (e, tokenIdx) => {
+        e.preventDefault()
+        this.setState({
+            showAuction: true,
+            tokenIdx,
+        })
+    }
+
+    hideAuction = () => {
+        this.setState({
+            showAuction: false,
+        })
+    }
+
     onBurnClick = async (e) => {
         const { nft_token, currentUser, } = this.props
         const token = nft_token.toJS()
@@ -139,12 +176,14 @@ class NFTCollectionPage extends Component {
                     assets={assets}
                     showTransfer={this.showTransfer}
                     showSell={this.showSell}
+                    showPlaceOfferBet={this.showPlaceOfferBet}
+                    showAuction={this.showAuction}
                     refetch={this.refetch}
                     page='collection' />)
             }
         }
 
-        const { showIssue, issueName, issueNum, showTransfer, showSell, tokenIdx } = this.state
+        const { showIssue, issueName, issueNum, showTransfer, showSell, showAuction, showPlaceOfferBet, tokenIdx } = this.state
 
         const isMy = currentUser && currentUser.get('username') === coll.creator
 
@@ -206,6 +245,25 @@ class NFTCollectionPage extends Component {
                 <NFTTokenSell
                     currentUser={currentUser}
                     onClose={this.hideSell}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                />
+            </Reveal>
+
+            <Reveal show={showPlaceOfferBet} onHide={this.hidePlaceOfferBet} revealStyle={{ width: '450px' }}>
+                <NFTPlaceOfferBet
+                    currentUser={currentUser}
+                    onClose={this.hidePlaceOfferBet}
+                    tokenIdx={tokenIdx}
+                    refetch={this.refetch}
+                    minPrice={this.state.minPrice}
+                />
+            </Reveal>
+
+            <Reveal show={showAuction} onHide={this.hideAuction} revealStyle={{ width: '450px' }}>
+                <NFTAuction
+                    currentUser={currentUser}
+                    onClose={this.hideAuction}
                     tokenIdx={tokenIdx}
                     refetch={this.refetch}
                 />
