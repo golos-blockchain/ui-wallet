@@ -495,7 +495,7 @@ class NFTTokenPage extends Component {
                     <PriceIcon assets={assets} asset={Asset(my_bet.price)} text={a => {
                         return ' ' + a.floatString
                     }} style={{marginLeft: '5px', marginRight: '5px'}} title={tt('nft_tokens_jsx.you_bet_is') + Asset(my_bet.price).floatString} />
-                    <button className='button hollow alert' onClick={cancelBet}>
+                    <button className='button hollow alert' onClick={cancelBet} title={tt('nft_token_page_jsx.cancel_bet')}>
                         {tt('nft_tokens_jsx.cancel')}
                     </button></span> : <button className='button' onClick={e => this.showPlaceOfferBet(e, auction_min_price)}>
                         {tt('nft_tokens_jsx.place_bet')}

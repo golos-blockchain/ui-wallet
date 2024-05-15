@@ -39,6 +39,15 @@
           color: themed('textColorPrimary');
         }
     }
+    .my-bet-offer {
+        padding-bottom: 3px;
+        cursor: default;
+        .Icon {
+            color: red;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+    }
 
     .token-title {
         margin-top: 0.25rem;

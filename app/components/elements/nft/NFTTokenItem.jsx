@@ -8,6 +8,7 @@ import { Asset } from 'golos-lib-js/lib/utils'
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import Icon from 'app/components/elements/Icon'
 import NFTTokenSellPopup from 'app/components/elements/nft/NFTTokenSellPopup'
+import PriceIcon from 'app/components/elements/nft/PriceIcon'
 import TimeExactWrapper from 'app/components/elements/TimeExactWrapper'
 import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
@@ -103,7 +104,7 @@ class NFTTokenItem extends Component {
     render() {
         const { token, tokenIdx, currentUser, page, assets } = this.props
 
-        const { json_metadata, image, selling, is_auction, auction_expiration } = token
+        const { json_metadata, image, selling, is_auction, auction_expiration, my_bet } = token
 
         let data
         if (json_metadata) {
@@ -150,6 +151,28 @@ class NFTTokenItem extends Component {
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
 
+        let myBet
+        if (my_bet) {
+            const pr = Asset(my_bet.price)
+            const cancelBet = (e) => {
+                e.preventDefault()
+                this.props.buyToken(token.token_id, 0, '', '0.000 GOLOS', currentUser, () => {
+                    this.props.refetch()
+                }, (err) => {
+                    if (!err || err.toString() === 'Canceled') return
+                    console.error(err)
+                    alert(err.toString())
+                })
+            }
+            myBet = <span className='token-owner my-bet-offer'
+                        title={tt('nft_tokens_jsx.you_bet_is') + pr.floatString}>
+                <PriceIcon text={a => {
+                        return pr.amountFloat
+                    }} asset={pr} assets={assets} />
+                <Icon size='0_75x' name='cross' title={tt('nft_token_page_jsx.cancel_bet')} onClick={cancelBet} />
+            </span>
+        }
+
         let buttons
         if (last_price) {
             buttons = <div>
@@ -180,7 +203,7 @@ class NFTTokenItem extends Component {
                 {isMy && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.stop_auction')}
                     onClick={e => this.cancelAuction(e, tokenIdx)}>
                     {tt('g.cancel')}</button>}
-                {!isMy && <button className='button slim float-right' title={tt('nft_tokens_jsx.min_price') + ' ' + auction_min_price.floatString}
+                {!isMy && !myBet && <button className='button slim float-right' title={tt('nft_tokens_jsx.min_price') + ' ' + auction_min_price.floatString}
                     onClick={e => this.props.showPlaceOfferBet(e, tokenIdx, auction_min_price)}>
                     {tt('nft_tokens_jsx.place_bet2')}</button>}
             </div>
@@ -206,12 +229,13 @@ class NFTTokenItem extends Component {
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
                 <img className='token-image' src={tokenImage} alt='' title={data.title}/>
-                {!isMy && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
+                {!isMy && !myBet && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
                     {'@' + token.owner}
                 </Link>}
                 {token.has_offers && <a href={link + '#offers'} target='_blank' rel='noopener noreferrer' className='token-owner'>
                     {tt('nft_tokens_jsx.has_offers')}
                 </a>}
+                {myBet}
                 <div>
                     <h5 className='token-title'>{data.title}</h5>
                     <span className='token-coll secondary'>
@@ -285,7 +309,9 @@ export default connect(
 
             dispatch(transaction.actions.broadcastOperation({
                 type: 'nft_buy',
-                confirm: tt('nft_tokens_jsx.buy_confirm') + tokenTitle + tt('nft_tokens_jsx.buy_confirm2') + price + '?',
+                confirm: tokenTitle ? 
+                        tt('nft_tokens_jsx.buy_confirm') + tokenTitle + tt('nft_tokens_jsx.buy_confirm2') + price + '?' :
+                        tt('g.are_you_sure'),
                 username,
                 operation,
                 successCallback,

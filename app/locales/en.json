@@ -840,7 +840,8 @@
     "burnt": "This NFT-токен was existing sometime.",
     "burnt2": "But it was burnt.",
     "burnt3": "And all that reminds us of him is a small handful of ashes on our server room...",
-    "msg": "Chat with owner"
+    "msg": "Chat with owner",
+    "cancel_bet": "Cancel bet"
   },
   "nft_token_sell_jsx": {
     "fill_price": "Fill price please"
