@@ -104,7 +104,7 @@ class NFTTokenItem extends Component {
     render() {
         const { token, tokenIdx, currentUser, page, assets } = this.props
 
-        const { json_metadata, image, selling, is_auction, auction_expiration, my_bet } = token
+        const { json_metadata, image, selling, is_auction, auction_expiration, my_bet, my_offer } = token
 
         let data
         if (json_metadata) {
@@ -148,6 +148,12 @@ class NFTTokenItem extends Component {
             }, value: tt('g.transfer') })
         }
 
+        if (!is_auction && !isMy && !my_offer) {
+            kebabItems.unshift({ link: '#', onClick: e => {
+                this.props.showPlaceOfferBet(e, tokenIdx)
+            }, value: tt('nft_tokens_jsx.place_offer') })
+        }
+
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
 
@@ -170,6 +176,28 @@ class NFTTokenItem extends Component {
                         return pr.amountFloat
                     }} asset={pr} assets={assets} />
                 <Icon size='0_75x' name='cross' title={tt('nft_token_page_jsx.cancel_bet')} onClick={cancelBet} />
+            </span>
+        }
+
+        let myOffer
+        if (my_offer) {
+            const pr = Asset(my_offer.price)
+            const cancelOffer = (e) => {
+                e.preventDefault()
+                this.props.cancelOrder(my_offer.order_id, currentUser, () => {
+                    this.props.refetch()
+                }, (err) => {
+                    if (!err || err.toString() === 'Canceled') return
+                    console.error(err)
+                    alert(err.toString())
+                })
+            }
+            myOffer = <span className='token-owner my-bet-offer'
+                        title={tt('nft_tokens_jsx.you_offer_is') + pr.floatString}>
+                <PriceIcon text={a => {
+                        return pr.amountFloat
+                    }} asset={pr} assets={assets} />
+                <Icon size='0_75x' name='cross' title={tt('nft_tokens_jsx.cancel')} onClick={cancelOffer} />
             </span>
         }
 
@@ -229,13 +257,14 @@ class NFTTokenItem extends Component {
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
                 <img className='token-image' src={tokenImage} alt='' title={data.title}/>
-                {!isMy && !myBet && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
+                {!isMy && !myBet && !myOffer && <Link to={'/@' + token.owner} className='token-owner' title={tt('nft_tokens_jsx.owner')}>
                     {'@' + token.owner}
                 </Link>}
-                {token.has_offers && <a href={link + '#offers'} target='_blank' rel='noopener noreferrer' className='token-owner'>
+                {token.has_offers && isMy && <a href={link + '#offers'} target='_blank' rel='noopener noreferrer' className='token-owner'>
                     {tt('nft_tokens_jsx.has_offers')}
                 </a>}
                 {myBet}
+                {myOffer}
                 <div>
                     <h5 className='token-title'>{data.title}</h5>
                     <span className='token-coll secondary'>
