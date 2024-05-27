@@ -98,13 +98,14 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount, buyAmount, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 this.setState({
                     warning,
                     altBanner,
                     mainBanner,
                     bestType,
-                    exType: newSelected || this.state.exType
+                    exType: newSelected || this.state.exType,
+                    chain, isSell
                 })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
@@ -130,9 +131,9 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 this.setState({ warning, altBanner, mainBanner, bestType,
-                    exType: newSelected || this.state.exType })
+                    exType: newSelected || this.state.exType, chain, isSell })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
             }, exType)
@@ -191,9 +192,9 @@ class ConvertAssets extends React.Component {
             let res = await getExchange(sellAmount.asset, newAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 this.setState({ warning, altBanner, mainBanner, bestType,
-                    exType: newSelected || this.state.exType })
+                    exType: newSelected || this.state.exType, chain, isSell })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
             }, exType, false)
@@ -221,13 +222,16 @@ class ConvertAssets extends React.Component {
         let confirm
         if (this.limitPrice) {
             minToReceive = sellAmount.mul(this.limitPrice)
+            if (minToReceive.eq(0) && buyAmount.ne(0)) {
+                minToReceive = buyAmount.clone()
+            }
 
             let possible = sellAmount.mul(this.bestPrice)
             if (possible.minus(possible.mul(3000).div(10000)).gt(buyAmount)) {
                 confirm = tt('convert_assets_jsx.price_warning')
             }
         } else {
-            minToReceive = this.state.buyAmount.asset
+            minToReceive = buyAmount.clone()
         }
 
         this.setState({ loading: true })
@@ -367,15 +371,24 @@ class ConvertAssets extends React.Component {
             return null
         }
 
-        let res = (parseFloat(buyAmount.amountFloat) / parseFloat(sellAmount.amountFloat)).toString()
-        const dot = res.indexOf(res)
-        if (dot != -1) {
-            res = res.substring(0, dot + 9)
+        const price = Price(buyAmount, sellAmount)
+        const a = sellAmount.clone()
+        a.amountFloat = '1'
+        let res = a.mul(price)
+
+        let str = res.toString().split(' ')[0]
+        const dot = str.indexOf('.')
+        if (dot !== -1) {
+            str = str.substring(0, dot + 1 + Math.min(res.precision, 6))
         }
+
+        res = Asset(str + ' ' + res.symbol)
+        if (res.eq(0)) res.amount = 1
+        res = res.toString()
 
         return <div style={{ marginTop: '0.25rem' }}>
                     {tt('convert_assets_jsx.price')} {'1 ' + sellAmount.symbol}:<br/>
-                    <b>{' ~' + res + ' ' + buyAmount.symbol}</b>
+                    <b>{' ~' + res}</b>
                 </div>
     }
 
@@ -439,13 +452,13 @@ class ConvertAssets extends React.Component {
     }
 
     _renderWarning() {
-        const { warning } = this.state
+        const { warning, isSell } = this.state
         if (!warning) {
             return null
         }
         let children = warning
         if (warning.a1) {
-            const { a1, a2, remain, isSell } = warning
+            const { a1, a2, remain } = warning
             children = [
                 <span>{tt('convert_assets_jsx.too_much_amount1')}</span>,
                 <b>{a1}</b>,
@@ -464,10 +477,11 @@ class ConvertAssets extends React.Component {
     }
 
     _onRadioChange = async (id) => {
-        const { chain, isSell } = this.state.altBanner
+        const { chain, } = this.state.altBanner
 
-        const { sellAmount, buyAmount, myBalance, assets, } = this.state
-        let exType = this.state.exType === ExchangeTypes.direct ? ExchangeTypes.multi : ExchangeTypes.direct
+        const { sellAmount, buyAmount, myBalance, assets, isSell } = this.state
+        let exType = id === ExchangeTypes.direct ?
+            ExchangeTypes.direct : ExchangeTypes.multi
 
         let fee
         let calc
@@ -478,9 +492,9 @@ class ConvertAssets extends React.Component {
         let res = await getExchange(sellAmount.asset, buyAmount.asset, myBalance,
             (data) => {
                 fee = data.fee
-                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice } = data
+                const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 exType = newSelected || exType
-                this.setState({ warning, altBanner, mainBanner, bestType })
+                this.setState({ warning, altBanner, mainBanner, bestType, chain, isSell })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
             }, exType, isSell)
@@ -496,7 +510,6 @@ class ConvertAssets extends React.Component {
             }
             const newState = {
                 fee,
-                chain,
                 exType
             }
             if (isSell) {
@@ -540,7 +553,8 @@ class ConvertAssets extends React.Component {
         const spans = []
         let title
         if (banner) {
-            const { msg, chain, sell, buy, req, isSell } = banner
+            const { isSell } = this.state
+            const { msg, chain, sell, buy, req } = banner
 
             if (chain) {
                 title = chain.syms.join(' > ')
