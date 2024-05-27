@@ -39,8 +39,8 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let bestPrice = null
     let fee
 
-    let warning = ''
     let amDir, amMul
+    let warDir, warMul
     let chain
     let directErr, multiErr
     let altBanner = null, mainBanner = null
@@ -86,9 +86,12 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     if (resDir) { 
         if (resDir.error) {
             if (isDir) {
-                warning = tt('convert_assets_jsx.no_orders_DIRECTION', {
+                warDir = tt('convert_assets_jsx.no_orders_DIRECTION', {
                     DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
                 })
+                isDir = false
+                selected = ExchangeTypes.multi
+                newSelected = selected
             }
         } else {
             const bp = wrapPrice(resDir.best_price)
@@ -97,26 +100,25 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 limitPrice = wrapPrice(resDir.limit_price)
             }
             amDir = wrapAsset(resDir.result)
-            const remain = resDir.remain
+            const remain = resDir.remain && wrapAsset(resDir.remain)
 
             if (amDir.amount == 0) {
                 amDir.amount = 1
                 if (isDir) {
-                    warning = tt('convert_assets_jsx.too_low_amount')
+                    warDir = tt('convert_assets_jsx.too_low_amount')
                 }
             } else if (!isSell && amDir.gt(myBalance)) {
                 amDir.amount = myBalance.amount
                 if (isDir) {
                     limitPrice = Price(req, res)
-                    warning = tt('convert_assets_jsx.too_big_price')
+                    warDir = tt('convert_assets_jsx.too_big_price')
                 }
             } else if (remain) {
                 if (isDir) {
-                    warning = {
+                    warDir = {
                         a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
                         a2: amDir.floatString,
-                        remain: remain.floatString,
-                        isSell
+                        remain: remain.floatString
                     }
                 }
                 if (!isSell) {
@@ -144,16 +146,16 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
         if (!chain) {
             if (!isDir) {
-                warning =  tt('convert_assets_jsx.no_orders_DIRECTION', {
+                warMul =  tt('convert_assets_jsx.no_orders_DIRECTION', {
                     DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
                 })
             }
         } else {
             const step = chain.steps[0]
-            const bp = Price(step.best_price)
+            const bp = Price(chain.best_price)
             if (!isDir) {
                 bestPrice = bp
-                limitPrice = Price(step.limit_price)
+                limitPrice = Price(chain.limit_price)
             }
             amMul = Asset(chain.res)
             const remain = step.remain ? Asset(step.remain) : undefined
@@ -164,21 +166,20 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             if (amMul.amount == 0) {
                 amMul.amount = 1
                 if (!isDir) {
-                    warning = tt('convert_assets_jsx.too_low_amount')
+                    warnMul = tt('convert_assets_jsx.too_low_amount')
                 }
             } else if (!isSell && amMul.gt(myBalance)) {
                 amMul.amount = myBalance.amount
                 if (!isDir) {
                     limitPrice = Price(req, amMul)
-                    warning = tt('convert_assets_jsx.too_big_price')
+                    warMul = tt('convert_assets_jsx.too_big_price')
                 }
             } else if (remain) {
                 if (isDir) {
-                    warning = {
+                    warMul = {
                         a1: (isSell ? sellAmount : buyAmount).minus(remain).floatString,
                         a2: amMul.floatString,
-                        remain: remain.floatString,
-                        isSell
+                        remain: remain.floatString
                     }
                 }
                 if (!isSell) {
@@ -233,7 +234,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 msg: multiErr ? ExchangeErrors.unavailable : ExchangeErrors.no_way
             }
         }
-        return { isSell, chain,
+        return { chain,
             sell: (isSell ? req : amMul),
             buy: (isSell ? amMul : reqFixed),
             req
@@ -246,7 +247,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 msg: directErr ? ExchangeErrors.unavailable : ExchangeErrors.no_way
             }
         }
-        return { isSell, direct: true,
+        return {  direct: true,
             sell: (isSell ? req : amDir),
             buy: (isSell ? amDir : req),
             req
@@ -268,7 +269,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
     if (onData) {
         onData({
-            warning,
+            warning: isDir ? warDir : warMul,
 
             bestPrice,
             limitPrice,
@@ -277,6 +278,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             fee,
             reqFixed,
 
+            isSell,
             altBanner,
             mainBanner,
             newSelected,
