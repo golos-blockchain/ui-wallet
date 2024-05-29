@@ -27,6 +27,7 @@ import CurationRewards from 'app/components/modules/CurationRewards';
 import AuthorRewards from 'app/components/modules/AuthorRewards';
 import FilledOrders from 'app/components/modules/FilledOrders'
 import NFTHistory from 'app/components/modules/nft/NFTHistory'
+import NFTMyOrders from 'app/components/modules/nft/NFTMyOrders'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
@@ -281,7 +282,16 @@ export default class UserProfile extends React.Component {
                     account={account}
                     current_user={current_user}
                 />
-                <MarkNotificationRead fields='nft_token_sold' account={account.name} />
+                <MarkNotificationRead fields='nft_token_sold,nft_buy_offer' account={account.name} />
+            </div>
+        }
+        else if( section === 'nft-orders' ) {
+            nftClass = 'active'
+            tab_content = <div>
+                <NFTMyOrders
+                    account={account}
+                    current_user={current_user}
+                />
             </div>
         }
         else if( section === 'donates-from' ) {
@@ -383,7 +393,8 @@ export default class UserProfile extends React.Component {
         let nftMenu = [
             {link: `/@${accountname}/nft-tokens`, label: tt('g.nft_tokens'), value: tt('g.nft_tokens'), addon: isMyAccount && <NotifiCounter fields='nft_receive' /> },
             {link: `/@${accountname}/nft-collections`, label: tt('g.nft_collections'), value: tt('g.nft_collections')},
-            {link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold' /> },
+            {link: `/@${accountname}/nft-orders`, label: tt('g.nft_orders'), value: tt('g.nft_orders'), },
+            {link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold,nft_buy_offer' /> },
         ];
 
         let permissionsMenu = [
@@ -416,7 +427,7 @@ export default class UserProfile extends React.Component {
                             >
                             <a className={`${nftClass} UserProfile__menu-item`} ref={this._onLinkRef}>
                                 {tt('g.nft')}
-                                {isMyAccount && <NotifiCounter fields='nft_receive,nft_token_sold' />}
+                                {isMyAccount && <NotifiCounter fields='nft_receive,nft_token_sold,nft_buy_offer' />}
                                 <Icon name='dropdown-center' />
                             </a>
                         </LinkWithDropdown>

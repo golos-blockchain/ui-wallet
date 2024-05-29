@@ -264,6 +264,7 @@
     "nft_tokens": "Токены NFT",
     "nft_collections": "Коллекции NFT",
     "nft_history": "История NFT",
+    "nft_orders": "Сделки NFT",
     "help_wallet": "Функции кошелька",
     "phone": "телефон",
     "post": "Пост",
@@ -1234,6 +1235,14 @@
       "one": "1 ордер",
       "other": "%(count)s ордеров"
     }
+  },
+  "nft_my_orders_jsx": {
+    "offers": "NFT-предложения",
+    "offers_empty": "У вас на данный момент нет предложений о покупке NFT.",
+    "bets": "Ставки в NFT-аукционах",
+    "bets_empty": "У вас нет ставок в открытых аукционах.",
+    "confirm_cancel_offer_TOKEN": "Вы уверены, что хотите отменить предложение цены за %(TOKEN)s?",
+    "confirm_cancel_bet_TOKEN": "Вы уверены, что хотите отменить ставку на %(TOKEN)s?"
   },
   "invites_jsx": {
     "create_invite": "Создание чека",

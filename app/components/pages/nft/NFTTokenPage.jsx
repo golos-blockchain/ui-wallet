@@ -267,13 +267,6 @@ class NFTTokenPage extends Component {
                     {tt('nft_token_page_jsx.bought')}
                     {!price.eq(0) ? (tt('nft_token_page_jsx.selled2m') + price.floatString) : ''}
                 </div>
-            } else if (op.token_id) {
-                content = <div>
-                    {accLink(op.buyer)}
-                    {tt('nft_token_page_jsx.placed_offer')}
-                    {tt('nft_token_page_jsx.selled2m')}
-                    {price.floatString}
-                </div>
             } else {
                 return null
             }

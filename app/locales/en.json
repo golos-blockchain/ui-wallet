@@ -145,6 +145,7 @@
     "nft_tokens": "NFT-tokens",
     "nft_collections": "NFT-collections",
     "nft_history": "NFT history",
+    "nft_orders": "NFT orders",
     "help_wallet": "Wallet functions",
     "phone": "phone",
     "post": "Post",    
@@ -858,6 +859,14 @@
       "one": "1 order",
       "other": "%(count)s orders"
     }
+  },
+  "nft_my_orders_jsx": {
+    "offers": "NFT Offers",
+    "offers_empty": "You made no offers no now.",
+    "bets": "Bets In NFT auctions",
+    "bets_empty": "You have no bets in auctions.",
+    "confirm_cancel_offer_TOKEN": "Are you sure you want to cancel your offer on %(TOKEN)s?",
+    "confirm_cancel_bet_TOKEN": "Are you sure you want to cancel your bet on %(TOKEN)s?"
   },
   "invites_jsx": {
     "create_invite": "Create new invite check",

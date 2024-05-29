@@ -1,10 +1,10 @@
 export const routeRegex = {
     UserProfile1: /^\/(@[\w\.\d-]+)\/?$/,
-    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|filled-orders|permissions|created|password|witness|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
+    UserProfile2: /^\/(@[\w\.\d-]+)\/(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|nft-orders|filled-orders|permissions|created|password|witness|settings)\/??(?:&?[^=&]*=[^=&]*)*$/,
     UserProfile3: /^\/(@[\w\.\d-]+)\/[\w\.\d-]+/,
     UserNFTEndPoints: /^\/(@[\w\.\d-]+)\/nft-tokens\/([\w\d.-]+)\/?$/,
     UserAssetEndPoints: /^\/(@[\w\.\d-]+)\/assets\/([\w\d.-]+)\/(update|transfer)$/,
-    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|filled-orders|permissions|created|password|witness|settings)$/,
+    UserEndPoints: /^(transfers|assets|create-asset|invites|curation-rewards|author-rewards|donates-from|donates-to|nft-history|nft-tokens|nft-collections|nft-orders|filled-orders|permissions|created|password|witness|settings)$/,
     WorkerSort: /^\/workers\/([\w\d\-]+)\/?($|\?)/,
     WorkerSearchByAuthor: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/?($|\?)/,
     WorkerRequest: /^\/workers\/([\w\d\-]+)\/(\@[\w\d.-]+)\/([\w\d-]+)\/?($|\?)/,

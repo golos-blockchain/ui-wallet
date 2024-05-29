@@ -62,7 +62,7 @@ function* loadNftAssets(nft_assets, syms) {
     }
 }
 
-function* fillNftTokenOrders(select_token_ids, tokens_by_id, onlyMy = true) {
+function* fillNftTokenOrders(select_token_ids, tokens_by_id) {
     try {
         if (!select_token_ids.length) return
 
@@ -70,8 +70,9 @@ function* fillNftTokenOrders(select_token_ids, tokens_by_id, onlyMy = true) {
 
         if (acc) {
             const nft_orders = yield call([api, api.getNftOrdersAsync], {
+                owner: acc,
                 select_token_ids,
-                limit: onlyMy ? 100 : 1,
+                limit: 100,
                 type: 'buying'
             })
             for (const order of nft_orders) {
@@ -84,21 +85,16 @@ function* fillNftTokenOrders(select_token_ids, tokens_by_id, onlyMy = true) {
                 }
             }
 
-            if (!nft_orders.length) {
-                const nft_bets = yield call([api, api.getNftBetsAsync], {
-                    select_token_ids,
-                    limit: 100,
-                    type: 'buying'
-                })
-                for (const bet of nft_bets) {
-                    const { owner, token_id } = bet
-                    const token = tokens_by_id[token_id]
-                    if (!token) continue
-                    token.has_bets = true
-                    if (owner == acc) {
-                        token.my_bet = bet
-                    }
-                }
+            const nft_bets = yield call([api, api.getNftBetsAsync], {
+                owner: acc,
+                limit: 100
+            })
+            for (const bet of nft_bets) {
+                const { owner, token_id } = bet
+                const token = tokens_by_id[token_id]
+                if (!token) continue
+                token.has_bets = true
+                token.my_bet = bet
             }
         }
     } catch (err) {
@@ -119,6 +115,7 @@ export function* fetchDataWatches () {
     yield fork(watchFetchNftCollectionTokens)
     yield fork(watchFetchNftMarket)
     yield fork(watchFetchNftMarketCollections)
+    yield fork(watchFetchNftOrders)
 }
 
 export function* watchGetContent() {
@@ -670,7 +667,7 @@ export function* fetchNftTokens({ payload: { account, start_token_id, sort, reve
             console.error(err)
         }
 
-        yield fillNftTokenOrders(select_token_ids, tokens_by_id, false)
+        yield fillNftTokenOrders(select_token_ids, tokens_by_id)
 
         try {
             const syms = new Set()
@@ -861,5 +858,61 @@ export function* fetchNftMarketCollections({ payload: { start_name } }) {
         }))
     } catch (err) {
         console.error('fetchNftMarketCollections', err)
+    }
+}
+
+export function* watchFetchNftOrders() {
+    yield takeLatest('global/FETCH_NFT_ORDERS', fetchNftOrders)
+}
+
+export function* fetchNftOrders({ payload: { } }) {
+    try {
+        const acc = session.load().currentName
+
+        if (!acc) return
+
+        const nft_offers = yield call([api, api.getNftOrdersAsync], {
+            owner: acc,
+            limit: 100,
+            type: 'buying',
+            tokens: true,
+        })
+
+        const nft_bets = yield call([api, api.getNftBetsAsync], {
+            owner: acc,
+            limit: 100,
+            tokens: true,
+        })
+
+        let nft_assets
+
+        try {
+            const syms = new Set()
+
+            for (const no of nft_offers) {
+                no.token.image = parseNFTImage(no.token.json_metadata)
+
+                const price = Asset(no.price)
+                syms.add(price.symbol)
+            }
+
+            for (const nb of nft_bets) {
+                nb.token.image = parseNFTImage(nb.token.json_metadata)
+
+                const price = Asset(nb.price)
+                syms.add(price.symbol)
+            }
+
+            nft_assets = {}
+            yield loadNftAssets(nft_assets, syms)
+        } catch (err) {
+            console.error(err)
+        }
+
+        yield put(GlobalReducer.actions.receiveNftOrders({
+            nft_offers, nft_bets, nft_assets
+        }))
+    } catch (err) {
+        console.error('fetchNftOrders', err)
     }
 }
