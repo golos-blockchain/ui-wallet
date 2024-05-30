@@ -110,7 +110,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             } else if (!isSell && amDir.gt(myBalance)) {
                 amDir.amount = myBalance.amount
                 if (isDir) {
-                    limitPrice = Price(req, res)
+                    limitPrice = Price(req, amDir)
                     warDir = tt('convert_assets_jsx.too_big_price')
                 }
             } else if (remain) {
