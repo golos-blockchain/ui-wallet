@@ -67,7 +67,8 @@ class NFTMarketPage extends React.Component {
 
             const username = currentUser && currentUser.get('username')
 
-            content = <div>
+            content = <div style={{ marginTop: '0.9rem' }}>
+                <h5>AvaSlon21veka</h5>
                 {items}
                 {next_from ? <div className='load-more' key='load_more'>
                     <center><button className='button hollow small' onClick={

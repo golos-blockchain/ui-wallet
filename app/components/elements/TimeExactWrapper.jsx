@@ -50,7 +50,7 @@ function formatTimeExact(dt, maxDepth = 2, shorter = false) {
 }
 
 export default class TimeExactWrapper extends React.Component {
-    updateState = () => {
+    updateState = (setIt = true) => {
         let { date } = this.props
         if (date && /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d$/.test(date)) {
             date = date + 'Z' // Firefox really wants this Z (Zulu)
@@ -60,7 +60,7 @@ export default class TimeExactWrapper extends React.Component {
             dt,
             ...formatTimeExact(dt, 2, this.props.shorter)
         }
-        this.setState(state)
+        if (setIt) this.setState(state)
         return state
     }
 
@@ -76,7 +76,7 @@ export default class TimeExactWrapper extends React.Component {
     render() {
         const { className, tooltipRender, contentRender } = this.props
         let state = this.state
-        state = state || this.updateState()
+        state = state || this.updateState(false)
         let { dt, result } = state
         let tooltip = dt.toLocaleString()
         tooltip = tooltipRender ? tooltipRender(tooltip) : tooltip

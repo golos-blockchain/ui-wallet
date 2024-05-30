@@ -864,24 +864,30 @@ export function* watchFetchNftOrders() {
     yield takeLatest('global/FETCH_NFT_ORDERS', fetchNftOrders)
 }
 
-export function* fetchNftOrders({ payload: { } }) {
+export function* fetchNftOrders({ payload: { sym } }) {
     try {
         const acc = session.load().currentName
 
         if (!acc) return
 
-        const nft_offers = yield call([api, api.getNftOrdersAsync], {
+        const symFilter = (obj) => {
+            return !sym || obj.price.endsWith(' ' + sym)
+        }
+
+        let nft_offers = yield call([api, api.getNftOrdersAsync], {
             owner: acc,
             limit: 100,
             type: 'buying',
             tokens: true,
         })
+        nft_offers = nft_offers.filter(symFilter)
 
-        const nft_bets = yield call([api, api.getNftBetsAsync], {
+        let nft_bets = yield call([api, api.getNftBetsAsync], {
             owner: acc,
             limit: 100,
             tokens: true,
         })
+        nft_bets = nft_bets.filter(symFilter)
 
         let nft_assets
 

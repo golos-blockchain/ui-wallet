@@ -8,4 +8,13 @@
     .button {
         margin-bottom: 0px;
     }
+
+    h4 {
+        display: inline-block;
+    }
+    a {
+        h4 {
+            text-decoration: underline;
+        }
+    }
 }

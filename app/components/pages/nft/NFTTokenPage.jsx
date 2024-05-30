@@ -271,7 +271,7 @@ class NFTTokenPage extends Component {
                 return null
             }
         }
-        return <tr>
+        return <tr key={i}>
             <td><TimeAgoWrapper date={trx.timestamp} /></td>
             <td>{content}</td>
         </tr>

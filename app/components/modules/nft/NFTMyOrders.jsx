@@ -23,11 +23,11 @@ const wrapAsTable = (immData, onRender, emptyHint) => {
         res.push(onRender(item))
     }
     if (res.length) {
-        res = <table style={{marginTop: '1rem'}}><tbody>
+        res = <table style={{ marginTop: '0.75rem' }}><tbody>
             {res}
         </tbody></table>
     } else {
-        res = emptyHint
+        res = <div>{emptyHint}</div>
     }
 
     return res
@@ -37,11 +37,15 @@ class NFTMyOrders extends React.Component {
     state = {}
 
     componentDidMount() {
-        this.refetch()
+        this.refetch(true)
     }
 
-    refetch = () => {
-        this.props.fetchNftOrders()
+    refetch = (init = false) => {
+        const { isModal } = this.props
+        this.props.fetchNftOrders(isModal && 'GOLOS')
+        if (!init && isModal) {
+            this.props.fetchState() // update nft_hold_balance in wallet
+        }
     }
 
     cancelOrder = (e, owner, order_id, tokenTitle) => {
@@ -161,22 +165,63 @@ class NFTMyOrders extends React.Component {
         </tr>
     }
 
+    _renderTabs = () => {
+        const { section } = this.state
+
+        let offers = <h4>{tt('nft_my_orders_jsx.offers')}</h4>
+        let bets = <h4>{tt('nft_my_orders_jsx.bets')}</h4>
+
+        const wrapLink = (item, tab) => {
+            const switchTab = (e) => {
+                e.preventDefault()
+                this.setState({
+                    section: tab
+                })
+            }
+            return <a href='#' onClick={e => switchTab(e)}>{item}</a>
+        }
+
+        if (section === 'bets') {
+            offers = wrapLink(offers, 'offers')
+        } else {
+            bets = wrapLink(bets, 'bets')
+        }
+
+        return <div>
+            {offers}
+            <h4>&nbsp;/&nbsp;</h4>
+            {bets}
+        </div>
+    }
+
     _renderOffers = (assets) => {
-        let { my_nft_offers } = this.props
-        return wrapAsTable(my_nft_offers, no => this._renderOffer(no, assets),
+        let { my_nft_offers, isModal } = this.props
+
+        const offers = wrapAsTable(my_nft_offers, no => this._renderOffer(no, assets),
             tt('nft_my_orders_jsx.offers_empty'))
+
+        return <React.Fragment>
+            {!isModal && <h4>{tt('nft_my_orders_jsx.offers')}</h4>}
+            {offers}
+        </React.Fragment>
     }
 
     _renderBets = (assets) => {
-        let { my_nft_bets } = this.props
+        let { my_nft_bets, isModal } = this.props
 
-        return wrapAsTable(my_nft_bets, nb => this._renderBet(nb, assets),
+        const bets = wrapAsTable(my_nft_bets, nb => this._renderBet(nb, assets),
             tt('nft_my_orders_jsx.bets_empty'))
+
+        return <React.Fragment>
+            {!isModal && <h4>{tt('nft_my_orders_jsx.bets')}</h4>}
+            {bets}
+        </React.Fragment>
     }
 
     render() {
         let { my_nft_offers, my_nft_bets, nft_assets,
             current_user, account, isModal } = this.props
+        const { section } = this.state
 
         const username = session.load().currentName
         if (!isModal && (!username || !account || username !== account.name)) {
@@ -199,11 +244,10 @@ class NFTMyOrders extends React.Component {
         return (<div className="UserWallet NFTMyOrders">
             <div className="row">
                 <div className="column small-12">
-                    <h4>{tt('nft_my_orders_jsx.offers')}</h4>
-                    {this._renderOffers(assets)}
-                    <hr />
-                    <h4>{tt('nft_my_orders_jsx.bets')}</h4>
-                    {this._renderBets(assets)}
+                    {isModal && this._renderTabs()}
+                    {(!isModal || section !== 'bets') && this._renderOffers(assets)}
+                    {!isModal && <hr />}
+                    {(!isModal || section === 'bets') && this._renderBets(assets)}
                 </div>
             </div>
         </div>);
@@ -224,8 +268,12 @@ export default connect(
         }
     },
     dispatch => ({
-        fetchNftOrders: () => {
-            dispatch(g.actions.fetchNftOrders({ }))
+        fetchState: () => {
+            const pathname = window.location.pathname
+            dispatch({type: 'FETCH_STATE', payload: {pathname}})
+        },
+        fetchNftOrders: (sym = undefined) => {
+            dispatch(g.actions.fetchNftOrders({ sym }))
         },
         cancelOrder: (
             owner, order_id, tokenTitle, successCallback, errorCallback

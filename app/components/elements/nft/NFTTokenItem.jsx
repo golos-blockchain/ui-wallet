@@ -6,6 +6,7 @@ import tt from 'counterpart'
 import { Asset } from 'golos-lib-js/lib/utils'
 
 import DropdownMenu from 'app/components/elements/DropdownMenu'
+import FitText from 'app/components/elements/FitText'
 import Icon from 'app/components/elements/Icon'
 import NFTTokenSellPopup from 'app/components/elements/nft/NFTTokenSellPopup'
 import PriceIcon from 'app/components/elements/nft/PriceIcon'
@@ -157,6 +158,10 @@ class NFTTokenItem extends Component {
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
 
+        const preventNavigate = (e) => {
+            e.preventDefault()
+        }
+
         let myBet
         if (my_bet) {
             const pr = Asset(my_bet.price)
@@ -171,7 +176,8 @@ class NFTTokenItem extends Component {
                 })
             }
             myBet = <span className='token-owner my-bet-offer'
-                        title={tt('nft_tokens_jsx.you_bet_is') + pr.floatString}>
+                        title={tt('nft_tokens_jsx.you_bet_is') + pr.floatString}
+                        onClick={preventNavigate}>
                 <PriceIcon text={a => {
                         return pr.amountFloat
                     }} asset={pr} assets={assets} />
@@ -193,7 +199,8 @@ class NFTTokenItem extends Component {
                 })
             }
             myOffer = <span className='token-owner my-bet-offer'
-                        title={tt('nft_tokens_jsx.you_offer_is') + pr.floatString}>
+                        title={tt('nft_tokens_jsx.you_offer_is') + pr.floatString}
+                        onClick={preventNavigate}>
                 <PriceIcon text={a => {
                         return pr.amountFloat
                     }} asset={pr} assets={assets} />
@@ -253,18 +260,6 @@ class NFTTokenItem extends Component {
 
         let tokenImage = image.startsWith('http') ? proxifyNFTImage(image) : image
 
-        let titleShr = data.title
-        let titleFont, titleTop, titleBottom, titleTitle
-        const titleLen = titleShr.length
-        if (titleLen > 23) {
-            titleFont = '90%'
-            titleTop = titleBottom = '0.42rem'
-        }
-        if (titleLen > 35) {
-            titleShr = titleShr.substring(0, 30) + '...'
-            titleTitle = data.title
-        }
-
         return <a href={link} target='_blank' rel='noopener noreferrer'>
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
@@ -278,8 +273,8 @@ class NFTTokenItem extends Component {
                 {myBet}
                 {myOffer}
                 <div>
-                    <h5 className='token-title' title={titleTitle} style={{ marginTop: titleTop, marginBottom: titleBottom, fontSize: titleFont }}>
-                        {titleShr}
+                    <h5 className='token-title'>
+                        <FitText text={data.title} maxWidth={200} shrink={27} />
                     </h5>
                     <span className='token-coll secondary'>
                         <Link to={'/nft-collections/' + token.name} target='_blank' rel='noreferrer nofollow'>
