@@ -241,6 +241,8 @@ class UserWallet extends React.Component {
 
         const sbdOrders = parseFloat(account.get('market_sbd_balance'));
         const steemOrders = parseFloat(account.get('market_balance'));
+        let nftHold = account.get('nft_hold_balance')
+        nftHold = nftHold && Asset(nftHold)
 
         /// transfer log
         let idx = 0
@@ -332,6 +334,11 @@ class UserWallet extends React.Component {
             e.preventDefault();
             this.props.showOpenOrders({ sym, });
         };
+
+        const showNftOrders = (e) => {
+            e.preventDefault()
+            this.props.showNftOrders()
+        }
 
         const showPowerCalc = (e) => {
             e.preventDefault()
@@ -523,6 +530,14 @@ class UserWallet extends React.Component {
                          </div>
                         : null
                     }
+                    {(isMyAccount && nftHold && nftHold.gt(0))
+                        ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
+                            <Link to={'/@' + account.get('name') + '/nft-orders'} onClick={e => showNftOrders(e)}>
+                                <small><LiteTooltip t={tt('g.nft_orders')}>+ {nftHold.toString()}</LiteTooltip></small>
+                            </Link>
+                         </div>
+                        : null
+                    }
                     <div>{isMyAccount ? <a
                         href='/convert/YMRUB/GOLOS?buy'
                         target='_blank'
@@ -694,6 +709,9 @@ export default connect(
         showOpenOrders: defaults => {
             dispatch(user.actions.setOpenOrdersDefaults(defaults));
             dispatch(user.actions.showOpenOrders());
+        },
+        showNftOrders: () => {
+            dispatch(user.actions.showNftOrders());
         },
         showPowerCalc: ({ account }) => {
             dispatch(user.actions.setPowerCalcDefaults({ account }))

@@ -393,9 +393,11 @@ export default class UserProfile extends React.Component {
         let nftMenu = [
             {link: `/@${accountname}/nft-tokens`, label: tt('g.nft_tokens'), value: tt('g.nft_tokens'), addon: isMyAccount && <NotifiCounter fields='nft_receive' /> },
             {link: `/@${accountname}/nft-collections`, label: tt('g.nft_collections'), value: tt('g.nft_collections')},
-            {link: `/@${accountname}/nft-orders`, label: tt('g.nft_orders'), value: tt('g.nft_orders'), },
-            {link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold,nft_buy_offer' /> },
         ];
+        if (isMyAccount) {
+            nftMenu.push({link: `/@${accountname}/nft-orders`, label: tt('g.nft_orders'), value: tt('g.nft_orders'), })
+        }
+        nftMenu.push({link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold,nft_buy_offer' /> })
 
         let permissionsMenu = [
             {link: `/@${accountname}/permissions`, label: tt('g.keys'), value: tt('g.keys')},

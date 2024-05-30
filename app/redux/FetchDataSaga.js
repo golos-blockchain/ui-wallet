@@ -70,7 +70,6 @@ function* fillNftTokenOrders(select_token_ids, tokens_by_id) {
 
         if (acc) {
             const nft_orders = yield call([api, api.getNftOrdersAsync], {
-                owner: acc,
                 select_token_ids,
                 limit: 100,
                 type: 'buying'

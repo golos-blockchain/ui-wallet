@@ -253,6 +253,18 @@ class NFTTokenItem extends Component {
 
         let tokenImage = image.startsWith('http') ? proxifyNFTImage(image) : image
 
+        let titleShr = data.title
+        let titleFont, titleTop, titleBottom, titleTitle
+        const titleLen = titleShr.length
+        if (titleLen > 23) {
+            titleFont = '90%'
+            titleTop = titleBottom = '0.42rem'
+        }
+        if (titleLen > 35) {
+            titleShr = titleShr.substring(0, 30) + '...'
+            titleTitle = data.title
+        }
+
         return <a href={link} target='_blank' rel='noopener noreferrer'>
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
@@ -266,7 +278,9 @@ class NFTTokenItem extends Component {
                 {myBet}
                 {myOffer}
                 <div>
-                    <h5 className='token-title'>{data.title}</h5>
+                    <h5 className='token-title' title={titleTitle} style={{ marginTop: titleTop, marginBottom: titleBottom, fontSize: titleFont }}>
+                        {titleShr}
+                    </h5>
                     <span className='token-coll secondary'>
                         <Link to={'/nft-collections/' + token.name} target='_blank' rel='noreferrer nofollow'>
                             {token.name}

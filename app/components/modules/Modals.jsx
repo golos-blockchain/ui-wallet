@@ -17,6 +17,7 @@ import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import PowerCalc from 'app/components/modules/PowerCalc'
 import Powerdown from 'app/components/modules/Powerdown';
 import OpenOrders from 'app/components/modules/OpenOrders';
+import NFTMyOrders from 'app/components/modules/nft/NFTMyOrders'
 
 let keyIndex = 0;
 
@@ -40,6 +41,7 @@ class Modals extends React.Component {
         notifications: PropTypes.object,
         removeNotification: PropTypes.func,
         show_open_orders_modal: PropTypes.bool,
+        show_nft_orders_modal: PropTypes.bool,
         hideOpenOrders: PropTypes.func.isRequired,
     };
 
@@ -77,7 +79,9 @@ class Modals extends React.Component {
             notifications,
             removeNotification,
             show_open_orders_modal,
+            show_nft_orders_modal,
             hideOpenOrders,
+            hideNftOrders,
         } = this.props;
 
         const notifications_array = notifications ? notifications.toArray().map(n => {
@@ -114,6 +118,10 @@ class Modals extends React.Component {
                 {show_open_orders_modal && <Reveal onHide={hideOpenOrders} show={show_open_orders_modal} size="large" revealClassName="OpenOrders">
                     <CloseButton onClick={hideOpenOrders} />
                     <OpenOrders />
+                </Reveal>}
+                {show_nft_orders_modal && <Reveal onHide={hideNftOrders} show={show_nft_orders_modal} size="large" revealClassName="NFTOrders">
+                    <CloseButton onClick={hideNftOrders} />
+                    <NFTMyOrders isModal={true} />
                 </Reveal>}
                 {show_change_account_modal && <Reveal onHide={hideChangeAccount} show={show_change_account_modal} revealStyle={{ width: '400px' }}>
                     <CloseButton onClick={hideChangeAccount} />
@@ -153,6 +161,7 @@ export default connect(
             show_app_download_modal: state.user.get('show_app_download_modal'),
             notifications: state.app.get('notifications'),
             show_open_orders_modal: state.user.get('show_open_orders_modal'),
+            show_nft_orders_modal: state.user.get('show_nft_orders_modal'),
         }
     },
     dispatch => ({
@@ -198,6 +207,10 @@ export default connect(
         hideOpenOrders: e => {
             if (e) e.preventDefault();
             dispatch(user.actions.hideOpenOrders())
+        },
+        hideNftOrders: e => {
+            if (e) e.preventDefault();
+            dispatch(user.actions.hideNftOrders())
         },
     })
 )(Modals)

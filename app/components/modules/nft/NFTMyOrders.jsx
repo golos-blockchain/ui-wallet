@@ -10,8 +10,10 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTSmallIcon from 'app/components/elements/nft/NFTSmallIcon'
 import PriceIcon from 'app/components/elements/nft/PriceIcon'
 import TimeExactWrapper from 'app/components/elements/TimeExactWrapper'
+import NotFound from 'app/components/pages/NotFound'
 import g from 'app/redux/GlobalReducer'
 import transaction from 'app/redux/Transaction'
+import session from 'app/utils/session'
 
 const wrapAsTable = (immData, onRender, emptyHint) => {
     immData = immData.get('data').toJS()
@@ -21,7 +23,7 @@ const wrapAsTable = (immData, onRender, emptyHint) => {
         res.push(onRender(item))
     }
     if (res.length) {
-        res = <table><tbody>
+        res = <table style={{marginTop: '1rem'}}><tbody>
             {res}
         </tbody></table>
     } else {
@@ -76,6 +78,10 @@ class NFTMyOrders extends React.Component {
 
         const title = data.title || (name + ' #' + token_id)
 
+        let titleShrinked = title.substring(0, 37)
+        const shrinked = titleShrinked !== title
+        if (shrinked) titleShrinked += '...'
+
         const pr = Asset(price)
 
         const url = '/nft-tokens/' + token_id
@@ -85,9 +91,9 @@ class NFTMyOrders extends React.Component {
                 <NFTSmallIcon image={image} size='mini'
                     href={url} />
             </td>
-            <td style={{ width: '33%' }}>
+            <td style={{ width: '33%' }} title={shrinked && title}>
                 <Link to={url} target='_blank' rel='noreferrer nofollow'>
-                    {title}
+                    {titleShrinked}
                 </Link>
             </td>
             <td style={{ width: '33%' }}>
@@ -115,6 +121,10 @@ class NFTMyOrders extends React.Component {
 
         const title = data.title || (name + ' #' + token_id)
 
+        let titleShrinked = title.substring(0, 37)
+        const shrinked = titleShrinked !== title
+        if (shrinked) titleShrinked += '...'
+
         const pr = Asset(price)
 
         const url = '/nft-tokens/' + token_id
@@ -124,9 +134,9 @@ class NFTMyOrders extends React.Component {
                 <NFTSmallIcon image={image} size='mini'
                     href={url} />
             </td>
-            <td style={{ width: '33%' }}>
+            <td style={{ width: '33%' }} title={shrinked && title}>
                 <Link to={url} target='_blank' rel='noreferrer nofollow'>
-                    {title}
+                    {titleShrinked}
                 </Link>
             </td>
             <td style={{ width: '16%' }}>
@@ -165,7 +175,16 @@ class NFTMyOrders extends React.Component {
     }
 
     render() {
-        let { my_nft_offers, my_nft_bets, nft_assets } = this.props
+        let { my_nft_offers, my_nft_bets, nft_assets,
+            current_user, account, isModal } = this.props
+
+        const username = session.load().currentName
+        if (!isModal && (!username || !account || username !== account.name)) {
+            if (account && account.name) {
+                window.location.href = '/@' + account.name
+            }
+            return <NotFound.component />
+        }
 
         if (!my_nft_offers) {
             return <div className="UserWallet NFTMyOrders">
@@ -194,11 +213,14 @@ class NFTMyOrders extends React.Component {
 export default connect(
     // mapStateToProps
     (state, ownProps) => {
+        const {locationBeforeTransitions: {pathname}} = state.routing
+        const usernameFromRoute = pathname.split(`/`)[1].substring(1)
         return {
             ...ownProps,
             my_nft_offers: state.global.get('my_nft_offers'),
             my_nft_bets: state.global.get('my_nft_bets'),
-            nft_assets: state.global.get('nft_assets')
+            nft_assets: state.global.get('nft_assets'),
+            usernameFromRoute
         }
     },
     dispatch => ({
