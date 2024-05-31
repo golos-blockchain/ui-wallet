@@ -25,7 +25,7 @@ class NFTTokenItem extends Component {
         this.sellPopupRef = React.createRef()
     }
 
-    cancelOrder = async (e, tokenIdx) => {
+    cancelOrder = async (e) => {
         e.preventDefault()
         const { currentUser } = this.props
         const order = this.getOrder()
@@ -38,7 +38,7 @@ class NFTTokenItem extends Component {
         })
     }
 
-    cancelAuction = async (e, tokenIdx) => {
+    cancelAuction = async (e) => {
         e.preventDefault()
         const { token, currentUser } = this.props
         const { token_id } = token
@@ -51,7 +51,7 @@ class NFTTokenItem extends Component {
         })
     }
 
-    buyToken = async (e, tokenIdx) => {
+    buyToken = async (e) => {
         e.preventDefault()
         const { token, currentUser } = this.props
         const { token_id, json_metadata } = token
@@ -78,7 +78,7 @@ class NFTTokenItem extends Component {
         })
     }
 
-    burnIt = async (e, tokenIdx) => {
+    burnIt = async (e) => {
         e.preventDefault()
         const { token, currentUser } = this.props
         const { token_id } = token
@@ -139,7 +139,7 @@ class NFTTokenItem extends Component {
 
         if (isMy && !selling) {
             kebabItems.unshift({ link: '#', onClick: e => {
-                this.burnIt(e, tokenIdx)
+                this.burnIt(e)
             }, value: tt('g.burn') })
         }
 
@@ -149,14 +149,14 @@ class NFTTokenItem extends Component {
             }, value: tt('g.transfer') })
         }
 
-        if (!is_auction && !isMy && !my_offer) {
-            kebabItems.unshift({ link: '#', onClick: e => {
-                this.props.showPlaceOfferBet(e, tokenIdx)
-            }, value: tt('nft_tokens_jsx.place_offer') })
-        }
-
         const isCollection = page === 'collection'
         const isMarket = page === 'market'
+
+        if (!is_auction && !isMy && !my_offer) {
+            kebabItems.unshift({ link: '#', onClick: e => {
+                this.props.showPlaceOfferBet(e, isMarket ? token : tokenIdx)
+            }, value: tt('nft_tokens_jsx.place_offer') })
+        }
 
         const preventNavigate = (e) => {
             e.preventDefault()
@@ -217,10 +217,10 @@ class NFTTokenItem extends Component {
                 </DropdownMenu> : null}
                 {isMy && !selling && <button className='button slim float-right' onClick={e => this.props.showSell(e, tokenIdx)}>{tt('g.sell')}</button>}
                 {isMy && selling && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.cancel_hint')}
-                    onClick={e => this.cancelOrder(e, tokenIdx)}>
+                    onClick={e => this.cancelOrder(e)}>
                     {tt('g.cancel')}</button>}
                 {!isMy && selling && <button className='button slim float-right' title={tt('nft_tokens_jsx.buy2') + price.floatString}
-                    onClick={e => this.buyToken(e, tokenIdx)}>
+                    onClick={e => this.buyToken(e)}>
                     {tt('nft_tokens_jsx.buy')}</button>}
             </div>
         } else if (is_auction) {
@@ -236,10 +236,10 @@ class NFTTokenItem extends Component {
                     />
                 </span>
                 {isMy && <button className='button slim alert hollow noborder float-right' title={tt('nft_tokens_jsx.stop_auction')}
-                    onClick={e => this.cancelAuction(e, tokenIdx)}>
+                    onClick={e => this.cancelAuction(e)}>
                     {tt('g.cancel')}</button>}
                 {!isMy && !myBet && <button className='button slim float-right' title={tt('nft_tokens_jsx.min_price') + ' ' + auction_min_price.floatString}
-                    onClick={e => this.props.showPlaceOfferBet(e, tokenIdx, auction_min_price)}>
+                    onClick={e => this.props.showPlaceOfferBet(e, isMarket ? token : tokenIdx, auction_min_price)}>
                     {tt('nft_tokens_jsx.place_bet2')}</button>}
             </div>
         } else {
@@ -274,7 +274,7 @@ class NFTTokenItem extends Component {
                 {myOffer}
                 <div>
                     <h5 className='token-title'>
-                        <FitText text={data.title} maxWidth={200} shrink={27} />
+                        <FitText text={data.title} maxWidth={200} shrink={40} />
                     </h5>
                     <span className='token-coll secondary'>
                         <Link to={'/nft-collections/' + token.name} target='_blank' rel='noreferrer nofollow'>

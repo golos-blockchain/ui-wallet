@@ -1,0 +1,44 @@
+.WalletBanner {
+    .nft-auction {
+        display: inline-block;
+        vertical-align: top;
+        padding: 0.5rem;
+
+        .nft-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            vertical-align: top;
+        }
+        .nft-details {
+            display: inline-block;
+            margin-left: 0.5rem;
+            width: 180px;
+            height: 100px;
+            position: relative;
+            &.large {
+                width: 400px;
+            }
+
+            .nft-title {
+                text-align: left;
+                overflow: hidden;
+                word-wrap: break-word;
+                max-height: 3.0em;
+                line-height: 1.5em;
+            }
+            .nft-coll {
+                text-align: left;
+            }
+            .nft-timer {
+                position: absolute;
+                bottom: 0px;
+
+                text-align: left;
+                @include themify($themes) {
+                    color: themed('textColorPrimary');
+                }
+            }
+        }
+    }
+}

@@ -6,6 +6,8 @@ import tt from 'counterpart';
 import {List} from 'immutable';
 import { libs, } from 'golos-lib-js'
 import { Asset, } from 'golos-lib-js/lib/utils'
+import CloseButton from 'react-foundation-components/lib/global/close-button'
+import Reveal from 'react-foundation-components/lib/global/reveal'
 
 import ConvertAssetsBtn from 'app/components/elements/market/ConvertAssetsBtn'
 import NotifiCounter from 'app/components/elements/NotifiCounter'
@@ -13,8 +15,6 @@ import SavingsWithdrawHistory from 'app/components/elements/SavingsWithdrawHisto
 import TransferHistoryRow from 'app/components/cards/TransferHistoryRow';
 import TransactionError from 'app/components/elements/TransactionError';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
-import Reveal from 'react-foundation-components/lib/global/reveal';
-import CloseButton from 'react-foundation-components/lib/global/close-button';
 import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDay, vsEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
@@ -24,6 +24,7 @@ import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
 import Callout from 'app/components/elements/Callout';
+import WalletBanner from 'app/components/modules/WalletBanner'
 import { LIQUID_TICKER, VEST_TICKER, DEBT_TICKER} from 'app/client_config';
 import transaction from 'app/redux/Transaction';
 import user from 'app/redux/User';
@@ -627,7 +628,7 @@ class UserWallet extends React.Component {
             </div>
 
             <div align="center"><br />
-                {Math.random() > 0.5 ? (<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" /></Link>) : (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}><img src={require('app/assets/images/banners/desktop.png')} width='800' height='100' /></a>)}
+                <WalletBanner hot_auctions={this.props.hot_auctions} account={account} />
             </div>
 
             <div className="row">
@@ -668,6 +669,7 @@ export default connect(
         const gprops = state.global.get('props');
         const sbd_interest = gprops ? gprops.get('sbd_interest_rate') : 0
         const cprops = state.global.get('cprops')
+        const hot_auctions = state.global.get('hot_auctions')
 
         let min_gp_to_curate = 0
         if (price_per_golos && cprops) {
@@ -685,7 +687,8 @@ export default connect(
             sbd_interest,
             gprops,
             cprops,
-            min_gp_to_curate
+            min_gp_to_curate,
+            hot_auctions
         }
     },
     // mapDispatchToProps

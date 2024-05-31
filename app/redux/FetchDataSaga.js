@@ -369,6 +369,21 @@ export function* fetchState(location_change_action) {
                                     state.accounts[uname].other_history.push(operation)
                             }
                         })
+
+                        const acc = session.load().currentName
+                        state.hot_auctions = yield call([api, api.getNftTokensAsync], {
+                            state: 'selling_auction_only',
+                            sort: 'by_auction_expiration',
+                            reverse_sort: false,
+                            start_token_id: 0,
+                            limit: 4,
+                            orders: false,
+                            collections: false,
+                        })
+                        state.hot_auctions = state.hot_auctions.filter(no => no.owner !== acc)
+                        for (const no of state.hot_auctions) {
+                            no.image = parseNFTImage(no.json_metadata)
+                        }
                     break
                 }
             }
@@ -769,6 +784,28 @@ export function* fetchNftMarket({ payload: { account, collectionName, start_orde
     try {
         const limit = 20
 
+        const auctions = yield call([api, api.getNftTokensAsync], {
+            state: 'selling_auction_only',
+            sort: 'by_auction_expiration',
+            reverse_sort: false,
+            start_token_id: 0,
+            limit: 30,
+            orders: false,
+            collections: false,
+        })
+
+        yield markAuctions(auctions)
+
+        let nft_tokens = []
+        let own_nft_tokens = []
+        for (const auction of auctions) {
+            if (auction.owner === account) {
+                own_nft_tokens.push(auction)
+                continue
+            }
+            nft_tokens.push(auction)
+        }
+
         const nft_orders = yield call([api, api.getNftOrdersAsync], {
             filter_owners: [account],
             select_collections: collectionName ? [collectionName] : undefined,
@@ -794,24 +831,52 @@ export function* fetchNftMarket({ payload: { account, collectionName, start_orde
             limit: 100
         }) : []
 
+        const select_token_ids = []
+        const tokens_by_id = {}
+
+        try {
+            for (const no of auctions) {
+                select_token_ids.push(no.token_id)
+                tokens_by_id[no.token_id] = no
+            }
+            for (const no of [...nft_orders, ...own_nft_orders]) {
+                const { token_id } = no.token
+                select_token_ids.push(token_id)
+                tokens_by_id[token_id] = no.token
+            }
+        } catch (err) {
+            console.error(err)
+        }
+
+        yield fillNftTokenOrders(select_token_ids, tokens_by_id)
+
         let nft_assets
 
         try {
             const syms = new Set()
 
-            for (const no of nft_orders) {
-                no.token.image = parseNFTImage(no.token.json_metadata)
+            const fillNftTokensSyms = (arr, syms) => {
+                for (const no of arr) {
+                    no.image = parseNFTImage(no.json_metadata)
+                    syms.add(no.auction_min_price.symbol) // markAuctions -> already Asset
+                    if (no.my_bet) {
+                        syms.add(Asset(no.my_bet.price).symbol)
+                    }
+                }
+            }
+            const fillNftOrdersSyms = (arr, syms) => {
+                for (const no of arr) {
+                    no.token.image = parseNFTImage(no.token.json_metadata)
 
-                const price = Asset(no.price)
-                syms.add(price.symbol)
+                    const price = Asset(no.price)
+                    syms.add(price.symbol)
+                }
             }
 
-            for (const no of own_nft_orders) {
-                no.token.image = parseNFTImage(no.token.json_metadata)
-
-                const price = Asset(no.price)
-                syms.add(price.symbol)
-            }
+            fillNftTokensSyms(nft_tokens, syms)
+            fillNftOrdersSyms(nft_orders, syms)
+            fillNftTokensSyms(own_nft_tokens, syms)
+            fillNftOrdersSyms(own_nft_orders, syms)
 
             nft_assets = {}
             yield loadNftAssets(nft_assets, syms)
@@ -819,7 +884,9 @@ export function* fetchNftMarket({ payload: { account, collectionName, start_orde
             console.error(err)
         }
 
-        yield put(GlobalReducer.actions.receiveNftMarket({nft_orders, own_nft_orders, start_order_id, next_from, nft_assets}))
+        yield put(GlobalReducer.actions.receiveNftMarket({nft_orders, own_nft_orders,
+            nft_tokens, own_nft_tokens,
+            start_order_id, next_from, nft_assets}))
     } catch (err) {
         console.error('fetchNftMarket', err)
     }
@@ -850,7 +917,7 @@ export function* fetchNftMarketCollections({ payload: { start_name } }) {
             console.error(err)
         }
 
-        const filtered = nft_colls.filter(coll => coll.sell_order_count !== 0)
+        const filtered = nft_colls.filter(coll => !!coll.sell_order_count || !!coll.auction_count)
 
         yield put(GlobalReducer.actions.receiveNftMarketCollections({
             nft_colls: filtered, start_name, next_from

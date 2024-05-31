@@ -1413,6 +1413,10 @@
     "from": "From",
     "to": "To"
   },
+  "wallet_banner_jsx": {
+    "selling": "NFT auction",
+    "selling_title": "Selling NFT: "
+  },
   "workers": {
     "workers_info": "For any work useful for the Golos Blockchain, you can get a reward by submitting an application, describing in detail what was done (development, design, advertising, documentation), anything if this initiative is supported by the community.",
     "chat_workers": "Notifications for proposals",

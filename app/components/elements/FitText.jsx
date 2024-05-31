@@ -40,12 +40,14 @@ export default class FitText extends React.Component {
             width = tryIt(text, fontSize)
             if (width > maxWidth) {
                 fontSize = '80%'
-                for (let i = 0; i < 10; ++i) {
+                for (let i = 0; i < 5; ++i) {
                     width = tryIt(text, fontSize)
                     if (width > maxWidth) {
                         if (shrink) {
                             text = this.props.text
-                            text = text.substring(0, text.length - (2 * i)) + '...'
+                            const step = 2 * i
+                            const stepBig = 5 * i
+                            text = text.substring(0, Math.min(shrink - stepBig, text.length - step)) + '...'
                             shrinked = true
                         }
                     } else {
