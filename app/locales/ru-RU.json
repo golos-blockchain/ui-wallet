@@ -976,7 +976,8 @@
     "nft_issued_for": " для ",
     "nft_issued_cost":  "за выпуск списано ",
     "nft_sell": " выставил на продажу ",
-    "sold": " продал "
+    "sold": " продал ",
+    "via_auction": " (на аукционе)"
   },
   "user_profile": {
     "unknown_account": "Неизвестный аккаунт",

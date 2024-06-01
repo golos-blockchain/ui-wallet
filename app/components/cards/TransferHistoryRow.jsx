@@ -406,6 +406,9 @@ class TransferHistoryRow extends React.Component {
             linkExternal3 = true
             description_end = tt('transferhistoryrow_jsx.for')
             description_end += Asset(data.price).floatString
+            if (!data.actor) {
+                description_end += tt('transferhistoryrow_jsx.via_auction')
+            }
         } else if (type === 'nft_buy') {
             if (!data.order_id) {
                 link = data.buyer

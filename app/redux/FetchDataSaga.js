@@ -267,7 +267,7 @@ export function* fetchState(location_change_action) {
                         state.witnesses[uname] = yield call([api, api.getWitnessByAccountAsync], uname)
                     break
                     case 'nft-history':
-                        const nftHistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['nft_token', 'nft_transfer', 'nft_buy', 'nft_cancel_order', 'nft_token_sold']})
+                        const nftHistory = yield call([api, api.getAccountHistoryAsync], uname, -1, 1000, {select_ops: ['nft_token', 'nft_transfer', 'nft_buy', /*'nft_cancel_order',*/ 'nft_token_sold']})
                         account.nft_history = []
 
                         state.cprops = yield call([api, api.getChainPropertiesAsync])
@@ -744,6 +744,20 @@ export function* fetchNftCollectionTokens({ payload: { collectionName, start_tok
         if (nft_tokens.length > limit) {
             next_from = nft_tokens.pop().token_id
         }
+
+        const select_token_ids = []
+        const tokens_by_id = {}
+
+        try {
+            for (const no of nft_tokens) {
+                select_token_ids.push(no.token_id)
+                tokens_by_id[no.token_id] = no
+            }
+        } catch (err) {
+            console.error(err)
+        }
+
+        yield fillNftTokenOrders(select_token_ids, tokens_by_id)
 
         let nft_assets
 

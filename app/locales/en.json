@@ -1064,7 +1064,8 @@
     "nft_issued_for": " for ",
     "nft_issued_cost":  "issue cost is ",
     "nft_sell": " placed order of selling ",
-    "sold": " sold "
+    "sold": " sold ",
+    "via_auction": " (via auction)"
   },
   "savingswithdrawhistory_jsx": {
     "cancel_this_withdraw_request": "Cancel this withdraw request?",
