@@ -813,7 +813,8 @@
     "auction_expiration_dev": "secs",
     "auction_expiration3": "NFT is selling via auction: Auction ending",
     "auction_hint": "User proposals will be canceled.",
-    "bet_already_exists": "Bet with such price already exists."
+    "bet_already_exists": "Bet with such price already exists.",
+    "offer_already_exists": "Offer with such price already exists."
   },
   "all_nft_page_jsx": {
     "title": "All NFT on the Golos",

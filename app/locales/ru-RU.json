@@ -1190,7 +1190,8 @@
     "auction_expiration_dev": "секунд",
     "auction_expiration3": "NFT продается на аукционе. Окончание аукциона",
     "auction_hint": "Предложения о покупке, сделанные пользователями самостоятельно, будут отменены.",
-    "bet_already_exists": "Уже есть ставка с такой ценой."
+    "bet_already_exists": "Уже есть ставка с такой ценой.",
+    "offer_already_exists": "Уже есть предложение с такой ценой."
   },
   "all_nft_page_jsx": {
     "title": "Все NFT на Golos",
