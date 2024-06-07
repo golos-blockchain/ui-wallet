@@ -33,7 +33,7 @@ export const proxifyImageUrl = (url, dimensions = '0x0') => {
 export const proxifyNFTImage = (url) => {
     if (!$STM_Config)
       return url
-    if (!url.startsWith('http'))
+    if (!url || !url.startsWith || !url.startsWith('http'))
       return url
     let prefix = ''
     if ($STM_Config.images.img_proxy_prefix && $STM_Config.images.use_img_proxy !== false) prefix += fixHost($STM_Config.images.img_proxy_prefix) + '/orig/png/'

@@ -104,10 +104,7 @@ class Rating extends React.Component {
 
         const link = '/market/' + sym1 + '/' + sym2
 
-        let image_url = getAssetMeta(asset).image_url
-        if (image_url) {
-            image_url = proxifyNFTImage(image_url)
-        }
+        const image_url = getAssetMeta(asset).image_url
 
         return <Link to={link}><div className='Pair PairTop1'>
             <div className='Pair__logo'>
@@ -178,10 +175,7 @@ class Rating extends React.Component {
 
             const link = '/market/' + sym1 + '/' + sym2
 
-            let image_url = getAssetMeta(asset).image_url
-            if (image_url) {
-                image_url = proxifyNFTImage(image_url)
-            }
+            const image_url = getAssetMeta(asset).image_url
 
             pairItems.push(<Link to={link} key='link'><div className='Pair'>
                 <div className='Pair__logo'>

@@ -1,3 +1,5 @@
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
+
 function roundUp(num, precision) {
     let satoshis = parseFloat(num) * Math.pow(10, precision);
 
@@ -73,6 +75,8 @@ function getAssetMeta(asset) {
         res.image_url = '/images/golos.png'
     } else if (sym === 'GBG') {
         res.image_url = '/images/gold-golos.png'
+    } else {
+        res.image_url = proxifyNFTImage(res.image_url)
     }
     return res
 }
