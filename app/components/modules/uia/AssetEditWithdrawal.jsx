@@ -16,6 +16,17 @@ class AssetEditWithdrawal extends React.Component {
         return handle(e);
     };
 
+    onPostfixChange = (e, handle, index, values, setFieldValue) => {
+        if (e.target.value) {
+            const way = values.withdrawal.ways[index]
+            if (way && !way.postfix_title) {
+                setFieldValue('withdrawal.ways[' + index + '].postfix_title',
+                    tt('asset_edit_withdrawal_jsx.way_postfix_title_placeholder'))
+            }
+        }
+        return handle(e)
+    };
+
     submit() {
         this.submitTried = true;
     };
@@ -100,7 +111,7 @@ class AssetEditWithdrawal extends React.Component {
     };
 
     render() {
-        const { name, values, handleChange, } = this.props;
+        const { name, values, handleChange, setFieldValue, } = this.props;
 
         let wayFields = <FieldArray
             name={`${name}.ways`}
@@ -114,8 +125,8 @@ class AssetEditWithdrawal extends React.Component {
                             name={`${name}.ways.${index}`}
                             validate={this.validateWay}
                         />
-                        <div className='row'>
-                            <div className='column small-3'>
+                        <div className='row way-row'>
+                            <div className='column small-2'>
                                 <div className='input-group'>
                                     <Field
                                         name={`${name}.ways.${index}.name`}
@@ -127,7 +138,7 @@ class AssetEditWithdrawal extends React.Component {
                                     />
                                 </div>
                             </div>
-                            <div className='column small-4'>
+                            <div className='column small-2'>
                                 <div className='input-group'>
                                     <Field
                                         name={`${name}.ways.${index}.prefix`}
@@ -139,7 +150,7 @@ class AssetEditWithdrawal extends React.Component {
                                     />
                                 </div>
                             </div>
-                            <div className='column small-5'>
+                            <div className='column small-4'>
                                 <div className='input-group'>
                                     <Field
                                         name={`${name}.ways.${index}.memo`}
@@ -148,6 +159,33 @@ class AssetEditWithdrawal extends React.Component {
                                         className='input-group-field bold'
                                         maxLength='256'
                                         placeholder={tt('asset_edit_withdrawal_jsx.way_memo_placeholder')}
+                                    />
+                                </div>
+                            </div>
+                            <div className='column small-1 postfix-left'>
+                                <div className='input-group'>
+                                    <Field
+                                        name={`${name}.ways.${index}.postfix_title`}
+                                        component='input'
+                                        type='text'
+                                        className='input-group-field bold'
+                                        maxLength='64'
+                                        placeholder={tt('asset_edit_withdrawal_jsx.way_postfix_title_placeholder')}
+                                        title={tt('asset_edit_withdrawal_jsx.way_postfix_title_hint')}
+                                    />
+                                </div>
+                            </div>
+                            <div className='column small-3 postfix-right'>
+                                <div className='input-group'>
+                                    <Field
+                                        name={`${name}.ways.${index}.postfix`}
+                                        component='input'
+                                        type='text'
+                                        className='input-group-field bold'
+                                        maxLength='64'
+                                        placeholder={tt('asset_edit_withdrawal_jsx.way_postfix_placeholder')}
+                                        title={tt('asset_edit_withdrawal_jsx.way_postfix_hint')}
+                                        onChange={e => this.onPostfixChange(e, handleChange, index, values, setFieldValue)}
                                     />
                                     <Icon 
                                         className='remove-way'
@@ -162,7 +200,7 @@ class AssetEditWithdrawal extends React.Component {
                 )) : null}
                 <div className='add-way'>
                     <a
-                        onClick={() => arrayHelpers.push({name: '', memo: '', prefix: ''})}
+                        onClick={() => arrayHelpers.push({name: '', memo: '', prefix: '', postfix_title: '', postfix: ''})}
                     >
                         +&nbsp;{tt('asset_edit_withdrawal_jsx.way_add')}
                     </a>
@@ -188,15 +226,24 @@ class AssetEditWithdrawal extends React.Component {
                         </div>
                         <ErrorMessage name={`${name}.to`} component='div' className='error' />
                     </div>
-                    <div className='row'>
-                        <div className='column small-3'>
+                    <div className='row way-row header'>
+                        <div className='column small-2'>
                             {tt('asset_edit_withdrawal_jsx.way_name')}
                         </div>
-                        <div className='column small-4'>
+                        <div className='column small-2'>
                             {tt('asset_edit_withdrawal_jsx.way_prefix')}
+                            <div className='secondary'>
+                                {tt('asset_edit_withdrawal_jsx.if_need')}
+                            </div>
                         </div>
-                        <div className='column small-5'>
+                        <div className='column small-4'>
                             {tt('asset_edit_withdrawal_jsx.way_memo')}
+                        </div>
+                        <div className='column small-4'>
+                            {tt('asset_edit_withdrawal_jsx.way_postfix')}
+                            <div className='secondary'>
+                                {tt('asset_edit_withdrawal_jsx.if_need')}
+                            </div>
                         </div>
                     </div>
                     {wayFields}

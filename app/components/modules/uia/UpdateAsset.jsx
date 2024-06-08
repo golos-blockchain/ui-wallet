@@ -69,7 +69,7 @@ class UpdateAsset extends Component {
             details: '',
         };
         if (!withdrawal.ways || !withdrawal.ways[0])
-            withdrawal.ways = [{ name: '', memo: '', prefix: '', }];
+            withdrawal.ways = [{ name: '', memo: '', prefix: '', postfix_title: '', postfix: ''  }];
         this.setState({
             initialValues: {
                 fee_percent,
@@ -279,6 +279,7 @@ class UpdateAsset extends Component {
                     ref={this.aewRef}
                     values={values}
                     handleChange={handleChange}
+                    setFieldValue={setFieldValue}
                 />
 
                 <div className='row'>

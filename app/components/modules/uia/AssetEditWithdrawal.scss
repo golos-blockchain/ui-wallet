@@ -2,6 +2,29 @@
     .input-group {
         margin-bottom: 1.25rem;
     }
+    .way-row {
+        padding-left: 0.45rem;
+        .column {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            &.postfix-left {
+                padding-right: 0rem;
+                input {
+                    font-size: 90%;
+                }
+            }
+            &.postfix-right {
+                padding-left: 0rem;
+            }
+        }
+        &.header {
+            font-size: 85%;
+            .secondary {
+                font-size: 85%;
+                padding-bottom: 0.25rem;
+            }
+        }
+    }
     .add-way {
         display: block;
         margin-bottom: 1.25rem;
