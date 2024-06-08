@@ -102,7 +102,7 @@ class TransferForm extends Component {
     };
 
     initForm(props) {
-        const { transferType, } = props.initialValues
+        const { transferType, withdrawal } = props.initialValues
         const {toVesting, uia} = props
         const isWithdraw = transferType && transferType === 'Savings Withdraw'
         const isTIP = transferType && transferType.startsWith('TIP to')
@@ -129,6 +129,9 @@ class TransferForm extends Component {
         const fields = toVesting ? ['to', 'amount'] : ['to', 'amount', 'asset']
         if(!toVesting && transferType !== 'Transfer to Savings' && transferType !== 'Savings Withdraw' && transferType !== 'Claim')
             fields.push('memo')
+        if (withdrawal) {
+            fields.push('memo_postfix')
+        }
 
         reactForm({
             name: 'transfer',
@@ -151,6 +154,7 @@ class TransferForm extends Component {
                 memo:
                     checkMemo(values.memo) ? tt('transfer_jsx.private_key_in_memo') :
                     this._memoWithdrawal(values.memo) || null,
+                memo_postfix: null
             }}
         })
     }
@@ -270,22 +274,33 @@ class TransferForm extends Component {
         if (!way) {
             console.error('Withdrawal way not found', name, withdrawal);
         }
-        let { memo, prefix, } = way;
+        let { memo, prefix, postfix, postfix_title, } = way;
 
         clearOldMemos();
         let memoPrefix = '';
+        let memoPostfix = '', memoPostfixTitle = ''
         let memoInitial = memo;
         if (prefix && typeof prefix === 'string') {
             memoPrefix = prefix;
         }
-        memo = loadMemo(this.props.sym, name, memoPrefix) || memoInitial;
-        
+        const loaded  = loadMemo(this.props.sym, name, memoPrefix, postfix_title)
+        memo = loaded.memo || ''
+        memoPostfix = (postfix && loaded.postfix) || postfix
+        memoPostfixTitle = postfix_title
+
         this.state.memo.props.onChange(memo);
+        const { memo_postfix } = this.state
+        if (memo_postfix && loaded.postfix) {
+            memo_postfix.props.onChange(loaded.postfix)
+        }
+
         this.setState({
             withdrawalWay: name,
             memoPrefix,
             memoInitial,
-        });
+            memoPostfix: memoPostfix,
+            memoPostfixTitle: memoPostfixTitle,
+        })
     };
 
     toggleMemoEncryption = (autoCall = false) => {
@@ -322,7 +337,40 @@ class TransferForm extends Component {
         return [leftColumn, rightColumn]
     }
 
-    _renderMemo(memo, memoInitial, memoPrefix, disableMemo, isMemoPrivate, loading) {
+    _renderMemoPostfix = (memo_postfix, disableMemo, loading) => {
+        const columns = this._getColumnSizes()
+        const { memoPostfix, memoPostfixTitle } = this.state
+        let postfix
+        if (memoPostfix) {
+            postfix = <input type="text"
+                placeholder={memoPostfix}
+                {...memo_postfix.props}
+                ref="memo_postfix"
+                autoComplete="on" autoCorrect="off" autoCapitalize="off"
+                spellCheck="false" disabled={disableMemo || loading}
+                className={'input-group-field'}
+            />
+            if (memoPostfixTitle) {
+                postfix = <div className="row">
+                    <div className={'column ' + columns[0]} style={{ paddingTop: 8 }}>
+                        {memoPostfixTitle}
+                    </div>
+                    <div className={'column ' + columns[1]}>
+                        <div className='input-group'>{postfix}</div>
+                    </div>
+                </div>
+            } else {
+                postfix = <div className="row">
+                    <div className='column small-12'>
+                        <div className='input-group'>{postfix}</div>
+                    </div>
+                </div>
+            }
+        }
+        return postfix
+    }
+
+    _renderMemo(memo, memoInitial, memoPrefix, memo_postfix, disableMemo, isMemoPrivate, loading) {
         const isObsoletePrivate = /^#/.test(memo.value);
         let input = (<input type="text"
             placeholder={memoInitial || tt('transfer_jsx.memo_placeholder')}
@@ -355,21 +403,25 @@ class TransferForm extends Component {
                     {input}{lock}
                 </div>);
         }
+
         const columns = this._getColumnSizes()
-        return (<div className="row">
-            <div className={'column ' + columns[0]} style={{paddingTop: 33}}>{tt('transfer_jsx.memo')}</div>
-            <div className={'column ' + columns[1]}>
-                <small>
-                    {isObsoletePrivate ?
-                        tt('transfer_jsx.public_obsolete') :
-                        (isMemoPrivate ?
-                        tt('transfer_jsx.memo_locked') :
-                        tt('transfer_jsx.public'))}
-                </small>
-                {input}
-                <div className="error">{memo.touched && memo.error && memo.error}</div>
+        return (<React.Fragment>
+            <div className="row">
+                <div className={'column ' + columns[0]} style={{paddingTop: 33}}>{tt('transfer_jsx.memo')}</div>
+                <div className={'column ' + columns[1]}>
+                    <small>
+                        {isObsoletePrivate ?
+                            tt('transfer_jsx.public_obsolete') :
+                            (isMemoPrivate ?
+                            tt('transfer_jsx.memo_locked') :
+                            tt('transfer_jsx.public'))}
+                    </small>
+                    {input}
+                    <div className="error">{memo.touched && memo.error && memo.error}</div>
+                </div>
             </div>
-        </div>)
+            {this._renderMemoPostfix(memo_postfix, disableMemo, loading)}
+        </React.Fragment>)
     };
 
     render() {
@@ -390,7 +442,7 @@ class TransferForm extends Component {
 		const powerTip = tt('tips_js.influence_tokens_which_give_you_more_control_over', {VESTING_TOKEN, VESTING_TOKENS})
 		const powerTip2 = tt('tips_js.VESTING_TOKEN_is_non_transferrable_and_requires_convert_back_to_LIQUID_TOKEN', {LIQUID_TOKEN: LIQUID_TICKER, VESTING_TOKEN2})
 		const powerTip3 = tt('tips_js.converted_VESTING_TOKEN_can_be_sent_to_yourself_but_can_not_transfer_again', {LIQUID_TOKEN, VESTING_TOKEN})
-        const { to, amount, asset, memo,
+        const { to, amount, asset, memo, memo_postfix,
                 memoPrefix, memoInitial, isMemoPrivate, } = this.state
         const { loading, trxError, advanced, } = this.state
         const {currentAccount, currentUser, sym, toVesting, transferToSelf, dispatchSubmit} = this.props
@@ -410,6 +462,7 @@ class TransferForm extends Component {
                 memo: memoInitial,
                 prefix: memoPrefix || '',
                 name: this.state.withdrawalWay,
+                postfix_title: this.state.memoPostfixTitle
             };
         }
 
@@ -515,7 +568,7 @@ class TransferForm extends Component {
                 </div>}
 
                 {(memo && !disableMemo) && !isIssueUIA &&
-                    this._renderMemo(memo, memoInitial, memoPrefix, disableMemo, isMemoPrivate, loading)}
+                    this._renderMemo(memo, memoInitial, memoPrefix, memo_postfix, disableMemo, isMemoPrivate, loading)}
 
                 {loading && <span><LoadingIndicator type="circle" /><br /></span>}
                 {!loading && <span>
@@ -596,7 +649,7 @@ export default connect(
             dispatch(user.actions.setTransferDefaults(transferDefaults))
         },
         dispatchSubmit: async ({
-            to, amount, isUIA, asset, precision, memo, transferType,
+            to, amount, isUIA, asset, precision, memo, memo_postfix, transferType,
             withdrawalWay, isMemoPrivate,
             toVesting, currentUser, errorCallback
         }) => {
@@ -657,11 +710,16 @@ export default connect(
 
             if (withdrawalWay) {
                 operation.memo = withdrawalWay.prefix + operation.memo;
+                if (memo_postfix) {
+                    operation.memo += ':' + memo_postfix
+                }
                 saveMemo(
                     asset,
                     withdrawalWay.name,
                     memo || '',
-                    withdrawalWay.prefix);
+                    withdrawalWay.prefix,
+                    memo_postfix,
+                    withdrawalWay.postfix_title);
             }
 
             if (isMemoPrivate)

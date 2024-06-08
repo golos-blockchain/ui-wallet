@@ -31,19 +31,19 @@ function _key(sym, id) {
     return sym.toUpperCase().trim() + '|' + id;
 }
 
-export function saveMemo(sym, id, memo, prefix) {
+export function saveMemo(sym, id, memo, prefix, postfix, postfix_title) {
     try {
         if (!localStorageAvailable()) return;
         let memos = getMemos();
-        memos[_key(sym, id)] = { memo, prefix, time: Date.now(), };
+        memos[_key(sym, id)] = { memo, prefix, postfix, postfix_title, time: Date.now(), };
         setMemos(memos);
     } catch (err0) {
         console.error('saveMemo', err0);
     }
 }
 
-export function loadMemo(sym, id, prefix) {
-    let res = null;
+export function loadMemo(sym, id, prefix, postfix_title) {
+    let res = {}
     try {
         if (!localStorageAvailable()) return res;
         let memos = getMemos();
@@ -56,7 +56,11 @@ export function loadMemo(sym, id, prefix) {
             console.warn('loadMemo', 'wrong memo', i);
             return res;
         }
-        return memos[i].memo;
+        if (memos[i].postfix_title !== postfix_title) {
+            console.warn('loadMemo', 'clear postfix')
+            memos[i].postfix = ''
+        }
+        return memos[i]
     } catch (err0) {
         console.error('loadMemo', err0);
         return res;
