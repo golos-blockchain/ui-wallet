@@ -1,6 +1,6 @@
 import { Asset } from 'golos-lib-js/lib/utils'
 
-export const MIN_PROFIT_PCT = 10
+export const MIN_PROFIT_PCT = 5
 
 export const ExchangeTypes = {
     direct: 1,
