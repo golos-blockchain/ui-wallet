@@ -23,6 +23,7 @@ export default class DropdownMenu extends React.Component {
             shown: false,
             selected: props.selected
         };
+        this.menuRef = React.createRef()
     }
 
     componentWillUnmount() {
@@ -67,6 +68,27 @@ export default class DropdownMenu extends React.Component {
         return selectedLabel
     }
 
+    overflowsX = () => {
+        try {
+            const { current } = this.menuRef
+            if (current && typeof(document) !== 'undefined') { // If using SSR...
+                const rect = current.getBoundingClientRect()
+                const { left, width } = rect
+                let right = left + width
+                if (this.ovX) {
+                    right += (width / 2)
+                }
+                const parentWidth = document.body.offsetWidth
+                if (right > parentWidth) {
+                    return true
+                }
+            }
+        } catch (err) {
+            console.error('overflowsX', err)
+        }
+        return false
+    }
+
     render() {
         const {el, items, selected, children, className, title, href, onClick, noArrow} = this.props;
         const hasDropdown = items.length > 0
@@ -78,8 +100,14 @@ export default class DropdownMenu extends React.Component {
 
         if(hasDropdown) entry = <a key="entry" href={href || '#'} onClick={onClick ? (e) => { onClick(e); this.toggle(e) } : this.toggle}>{entry}</a>
 
-        const menu = <VerticalMenu key="menu" title={title} items={items} hideValue={selected} className="VerticalMenu" />;
-        const cls = 'DropdownMenu' + (this.state.shown ? ' show' : '') + (className ? ` ${className}` : '')
+        const ovX = this.overflowsX()
+        this.ovX = ovX
+
+        const menu = <VerticalMenu key="menu" innerRef={this.menuRef} title={title} items={items} hideValue={selected} className="VerticalMenu" />;
+        const cls = 'DropdownMenu'
+            + (this.state.shown ? ' show' : '')
+            + (ovX ? ' align-right' : '')
+            + (className ? ` ${className}` : '')
         return React.createElement(el, {className: cls}, [entry, menu]);
     }
 }
