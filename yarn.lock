@@ -4299,10 +4299,10 @@ golos-lib-js@^0.9.64:
     stream-browserify "^3.0.0"
     ws "^8.2.3"
 
-golos-lib-js@^0.9.71:
-  version "0.9.71"
-  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.71.tgz#794bc6582a96f0e1a3bc4301e0c5dfac976a15bf"
-  integrity sha512-FkR7nuyMUXj+IT8ErTFhu6BsaEvPaLZAr72r5H+GUhqbD8q98tFfBURCKw0MGfiO9CEv0zdDG3daPTq2TThvxA==
+golos-lib-js@^0.9.73:
+  version "0.9.73"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.73.tgz#20bd17977250cd8e8a67e2bde46bc2d65df62d4c"
+  integrity sha512-iV42W+dOFK+Djdz/eqEmCiBZnzkaEL/sroqG1WlH2R2fBGs1QAzFTVzXwI7XBrDl60jKy5NnLJ4wPPtGO9ki6w==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"
