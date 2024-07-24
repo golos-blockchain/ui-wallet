@@ -9,6 +9,9 @@ tmp/*
 app/assets/static/*.js
 app/assets/static/*.json
 
+git-deps
+git-install-lock
+
 config/golos.json
 config/golos-dev.json
 config/process.json

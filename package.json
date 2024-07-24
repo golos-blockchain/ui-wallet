@@ -8,6 +8,7 @@
   "description": "Голос Кошелёк — децентрализованный сервис, работающий на базе блокчейна.",
   "main": "dist/electron/electron.js",
   "scripts": {
+    "preinstall": "node git-install.js",
     "build-version": "./server/build-version.sh",
     "build-hash": "node check_integrity --save",
     "build": "npm run build-hash && NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack/prod.config.js",
@@ -48,7 +49,7 @@
     "csstype": "^3.1.1",
     "diff-match-patch": "^1.0.0",
     "file-saver": "^2.0.5",
-    "formik": "https://gitpkg.now.sh/golos-blockchain/formik/packages/formik?b697b6ef3f13c795bb862b35589fffde442ab465",
+    "formik": "./git-deps/formik/packages/formik",
     "foundation-sites": "^6.4.3",
     "fs-extra": "^10.0.1",
     "git-rev-sync": "^3.0.2",
@@ -89,7 +90,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^4.2.12",
-    "react-foundation-components": "git+https://github.com/golos-blockchain/react-foundation-components.git#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1",
+    "react-foundation-components": "./git-deps/react-foundation-components",
     "react-hot-toast": "^2.4.0",
     "react-intl": "^6.2.10",
     "react-is": "^18.2.0",
@@ -144,6 +145,10 @@
   },
   "optionalDependencies": {
     "fsevents": "*"
+  },
+  "gitDependencies": {
+    "formik": "https://github.com/golos-blockchain/formik/tree/master/packages/formik#b697b6ef3f13c795bb862b35589fffde442ab465",
+    "react-foundation-components": "https://github.com/golos-blockchain/react-foundation-components#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1"
   },
   "engines": {
     "node": ">=8.11.3",
