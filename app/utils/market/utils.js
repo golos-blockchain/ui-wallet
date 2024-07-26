@@ -106,9 +106,9 @@ function getTradablesFor(assets, syms, onlyFirst = false) {
                 continue
             }
 
-            const { market_depth } = value
+            const { market_depth, marketed } = value
             tradableLists[i].push({
-                symbol: key, image_url, market_depth
+                symbol: key, image_url, market_depth, marketed
             })
 
             if (onlyFirst) {
