@@ -1061,7 +1061,8 @@
     "mute_asset": "Не показывать этот актив",
     "mute_asset_confirm_TICKER": "Подтвердить скрытие %(TICKER)s? Вернуть актив можно будет в разделе Настройки вашего профиля.",
     "deposit": "Депозит",
-    "withdrawal": "Вывод"
+    "withdrawal": "Вывод",
+    "address_qr_title": "Адрес/аккаунт"
   },
   "asset_edit_deposit_jsx": {
     "title": "Правила депозита",

@@ -682,7 +682,8 @@
     "mute_asset": "Do not show asset",
     "mute_asset_confirm_TICKER": "Confirm muting of %(TICKER)s? You will be able to unmute this asset in Settings of your profile.",
     "deposit": "Deposit",
-    "withdrawal": "Withdrawal"
+    "withdrawal": "Withdrawal",
+    "address_qr_title": "Address/account"
   },
   "asset_edit_deposit_jsx": {
     "title": "Deposit Rules",
