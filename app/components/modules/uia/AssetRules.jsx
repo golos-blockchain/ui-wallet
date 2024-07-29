@@ -225,7 +225,7 @@ class AssetRules extends Component {
             </span> 
             <CopyToClipboard text={addr} onCopy={() => this.setState({copied_addr: true})}>
                 <span style={{cursor: 'pointer', paddingLeft: '5px'}}>
-                    <Icon name="copy" size="2x" /> {this.state.copied_addr ? <Icon name="copy_ok" /> : null}
+                    <Icon name="copy" size="2x" /> {this.state.copied_addr ? <span style={{ marginRight: '0.4rem' }}><Icon name="copy_ok" /></span> : null}
                 </span>
             </CopyToClipboard>
             <div style={{display: "inline-block", paddingTop: 2, paddingRight: 5, cursor: "pointer"}} title='QR' onClick={e => this.showQrTo(e, addr)}>

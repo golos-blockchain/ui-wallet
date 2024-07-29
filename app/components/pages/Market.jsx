@@ -5,8 +5,10 @@ import { connect } from 'react-redux';
 import { Link, browserHistory } from 'react-router';
 import tt from 'counterpart';
 import {api, broadcast} from 'golos-lib-js'
+import { Asset } from 'golos-lib-js/lib/utils'
 
 import transaction from 'app/redux/Transaction';
+import user from 'app/redux/User'
 import {longToAsset} from 'app/utils/ParsersAndFormatters';
 import TransactionError from 'app/components/elements/TransactionError';
 import Icon from 'app/components/elements/Icon';
@@ -132,6 +134,10 @@ class Market extends Component {
             return true;
         }
 
+        if (nextState.resMulti !== state.resMulti) {
+            return true
+        }
+
         return false;
     };
 
@@ -174,6 +180,47 @@ class Market extends Component {
         this.buyForm.current.setPrice(p)
         this.sellForm.current.setPrice(p)
     };
+
+    onMultiBetter = (resMulti, multiSell) => {
+        console.log('onMultiBetter', resMulti)
+        this.setState({
+            resMulti,
+            multiSell,
+        })
+    }
+
+    renderMultiBetter = () => {
+        const { resMulti, multiSell } = this.state
+        if (!resMulti) {
+            return null
+        }
+        const tryMulti = (e) => {
+            e.preventDefault()
+
+            let {sym1, sym2} = this.props.routeParams
+            sym1 = sym1.toUpperCase()
+            sym2 = sym2.toUpperCase()
+
+            const receive = Asset(resMulti)
+            this.props.showConvertAssets({
+                direction: 'sell',
+                sellSym: (sym1 === receive.symbol ? sym2 : sym1),
+                sellAmount: multiSell.toString(),
+                buySym: receive.symbol,
+            })
+        }
+        return <div className='row' style={{ marginTop: '0.5rem', marginBottom: '0.75rem' }}>
+            <div className='column small-12'>
+                <center>
+                    {tt('market_multistep.using_multi_you_can_receive')}
+                    {Asset(resMulti).floatString}
+                    {'.'}
+                    &nbsp;
+                    <a href='#' onClick={tryMulti}>{tt('market_multistep.try_multi')}</a>
+                </center>
+            </div>
+        </div>
+    }
 
     render() {
         let {sym1, sym2} = this.props.routeParams
@@ -508,7 +555,8 @@ class Market extends Component {
                             onCreate={msg => {
                                 this.props.notify(msg);
                                 this.props.reload(user, this.props.location.pathname);
-                            }} />
+                            }}
+                            onMultiBetter={this.onMultiBetter} />
                     </div>
 
                     <div className="small-12 medium-6 columns">
@@ -522,7 +570,8 @@ class Market extends Component {
                             onCreate={msg => {
                                 this.props.notify(msg);
                                 this.props.reload(user, this.props.location.pathname);
-                            }} />
+                            }}
+                            onMultiBetter={this.onMultiBetter} />
                     </div>
                 </div>
 
@@ -532,6 +581,8 @@ class Market extends Component {
                         {assets && assetsNorm[sym2].allow_override_transfer && (<p className="text-center"><Icon name="info_o" /> <small>{tt('market_jsx.asset_') + sym2 + tt('market_jsx.asset_is_overridable')} <a target="_blank" href="https://wiki.golos.id/users/faq#chto-takoe-otzyvnye-uia-tokeny">{tt('g.more_hint')} ></a></small></p>)}
                     </div>
                 </div> */}
+
+                {this.renderMultiBetter()}
 
                 <div className="row show-for-medium">
                     <div className="small-6 columns">
@@ -708,6 +759,10 @@ export default connect(
                     }
                 })
             );
+        },
+        showConvertAssets: (opts) => {
+            dispatch(user.actions.setConvertAssetsDefaults(opts))
+            dispatch(user.actions.showConvertAssets())
         },
     })
 )(Market);

@@ -92,6 +92,12 @@ class ConvertAssets extends React.Component {
         const myBalance = await this.getBalance(sym1, asset1)
 
         let sellAmount = myBalance.clone()
+        if (this.props.sellAmount) {
+            sellAmount = Asset(this.props.sellAmount)
+            this.setState({
+                exType: ExchangeTypes.multi
+            })
+        }
 
         const { exType } = this.state
         let fee
@@ -700,6 +706,7 @@ export default connect(
 
         return {
             ...ownProps,
+            sellAmount: defaults.sellAmount,
             sellSym: defaults.sellSym || routeParams.sym1 || undefined,
             buySym: defaults.buySym || routeParams.sym2 || undefined,
             direction: defaults.direction || undefined,

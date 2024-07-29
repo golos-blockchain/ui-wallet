@@ -651,6 +651,10 @@
     "sale_agreement": "Договор купли-продажи",
     "telegram_support": "%(APP_NAME_UP)s Техподдержка"
   },
+  "market_multistep": {
+    "using_multi_you_can_receive": "С помощью функции \"Умного обмена\" вы можете получить ",
+    "try_multi": "Попробовать >"
+  },
   "quickbuy_jsx": {
     "buy_SYM_with": "Покупка токенов %(SYM)s за ",
     "with_what": "Способ покупки:",
