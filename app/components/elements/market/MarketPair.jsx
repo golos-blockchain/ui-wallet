@@ -87,7 +87,7 @@ class MarketPair extends React.Component {
                         }
                     }
 
-                    asset.volume = selVol
+                    asset.volume = symVol
 
                     let cmc
                     if (asset.volume) {
