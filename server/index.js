@@ -26,6 +26,9 @@ global.$STM_Config = {
     notify_service: config.get('notify_service'),
     messenger_service: config.get('messenger_service'),
     apidex_service: config.get('apidex_service'),
+    golos_wallet_news: config.has('golos_wallet_news') ? config.get('golos_wallet_news') : {
+        accounts: {}
+    },
     blogs_service: config.get('blogs_service'),
     hidden_assets: config.get('hidden_assets'),
     ui_version: version || '1.0-unknown',

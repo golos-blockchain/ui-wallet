@@ -53,6 +53,12 @@
     "host": "https://devapi-dex.golos.app",
     "host_local": "https://devapi-dex.golos.app"
   },
+  "golos_wallet_news": {
+    "accounts": {
+      "progolos": true,
+      "ecurrex-ru": true
+    }
+  },
   "hidden_assets": {
     "RUDEX": true,
     "PRIZM": true,
