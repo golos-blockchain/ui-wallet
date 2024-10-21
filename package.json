@@ -21,7 +21,7 @@
     "dev:local": "./.env.start.local.sh",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "dev:app": "./node_modules/.bin/webpack serve --config ./webpack/dev-app.config.js",
+    "dev:app": "npm run build-hash && ./node_modules/.bin/webpack serve --config ./webpack/dev-app.config.js",
     "build:app": "npm run build-hash && cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/.bin/webpack --config ./webpack/prod-app.config.js",
     "build:app-entry": "cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/@babel/node/bin/babel-node.js build_app_entry.js"
   },
