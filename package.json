@@ -8,6 +8,7 @@
   "description": "Голос Кошелёк — децентрализованный сервис, работающий на базе блокчейна.",
   "main": "dist/electron/electron.js",
   "scripts": {
+    "cordova": "cordova",
     "preinstall": "node git-install.js",
     "build-version": "./server/build-version.sh",
     "build-hash": "node check_integrity --save",
@@ -23,7 +24,10 @@
     "build-storybook": "build-storybook",
     "dev:app": "npm run build-hash && ./node_modules/.bin/webpack serve --config ./webpack/dev-app.config.js",
     "build:app": "npm run build-hash && cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/.bin/webpack --config ./webpack/prod-app.config.js",
-    "build:app-entry": "cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/@babel/node/bin/babel-node.js build_app_entry.js"
+    "build:app-entry": "cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/@babel/node/bin/babel-node.js build_app_entry.js",
+    "prebuild:mobile": "cross-env NODE_CONFIG_ENV=production,mobile node ./prebuild_mobile.js",
+    "build:mobile": "npm run build-hash && cross-env NODE_ENV=production NODE_CONFIG_ENV=production,mobile ./node_modules/.bin/webpack --config ./webpack/prod-app.config.js",
+    "postbuild:mobile": "cross-env NODE_CONFIG_ENV=production,mobile node ./postbuild_mobile.js && cd cordova && cordova prepare && cordova run android"
   },
   "author": "Golos <info@golos.id>",
   "license": "MIT",
@@ -42,6 +46,7 @@
     "classnames": "^2.2.5",
     "co-body": "^6.1.0",
     "config": "^3.3.9",
+    "cordova-android": "^10.1.2",
     "counterpart": "^0.17.9",
     "cross-fetch": "^3.0.0",
     "csrf": "^3.1.0",
