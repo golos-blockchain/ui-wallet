@@ -39,9 +39,10 @@ export default async function renderApp(initialState) {
     }
 
     try {
-        renderWrapper(initialState)
+        await renderWrapper(initialState)
     } catch (error) {
         console.error(error)
+        alert('renderApp ' + error.toString() + '\n' + JSON.stringify(error.stack))
         serverApiRecordEvent('client_error', error)
     }
 }

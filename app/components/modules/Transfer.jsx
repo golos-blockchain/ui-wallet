@@ -17,6 +17,7 @@ import {countDecimals, formatAmount, checkMemo} from 'app/utils/ParsersAndFormat
 import { LIQUID_TICKER, DEBT_TICKER , VESTING_TOKEN2 } from 'app/client_config';
 import VerifiedExchangeList from 'app/utils/VerifiedExchangeList';
 import { checkAllowed } from 'app/utils/Allowance'
+import { withScreenSize } from 'app/utils/ScreenSize'
 import DropdownMenu from 'app/components/elements/DropdownMenu';
 import Icon from 'app/components/elements/Icon';
 
@@ -405,10 +406,11 @@ class TransferForm extends Component {
         }
 
         const columns = this._getColumnSizes()
+        const { isS } = this.props
         return (<React.Fragment>
             <div className="row">
-                <div className={'column ' + columns[0]} style={{paddingTop: 33}}>{tt('transfer_jsx.memo')}</div>
-                <div className={'column ' + columns[1]}>
+                {!isS && <div className={'column ' + columns[0]} style={{paddingTop: 33}}>{tt('transfer_jsx.memo')}</div>}
+                <div className={'column ' + (isS ? 'small-12' : columns[1])}>
                     <small>
                         {isObsoletePrivate ?
                             tt('transfer_jsx.public_obsolete') :
@@ -435,7 +437,9 @@ class TransferForm extends Component {
 
 		const transferTips = {
 			'Transfer to Account': tt('transfer_jsx.move_funds_to_another_account'),
-			'Transfer to Savings': tt('transfer_jsx.protect_funds_by_requiring_a_3_day_withdraw_waiting_period'),
+            'Transfer to TIP': tt('transfer_jsx.move_to_tip'),
+            'TIP to Vesting': tt('transfer_jsx.tip_to_liquid_uia'),
+            'Transfer to Savings': tt('transfer_jsx.protect_funds_by_requiring_a_3_day_withdraw_waiting_period'),
 			'Savings Withdraw':    tt('transfer_jsx.withdraw_funds_after_the_required_3_day_waiting_period'),
             'Issue UIA': '',
 		}
@@ -445,7 +449,7 @@ class TransferForm extends Component {
         const { to, amount, asset, memo, memo_postfix,
                 memoPrefix, memoInitial, isMemoPrivate, } = this.state
         const { loading, trxError, advanced, } = this.state
-        const {currentAccount, currentUser, sym, toVesting, transferToSelf, dispatchSubmit} = this.props
+        const {currentAccount, currentUser, sym, toVesting, transferToSelf, dispatchSubmit, isS} = this.props
         const { transferType,
                 precision,
                 disableMemo = false,
@@ -485,11 +489,9 @@ class TransferForm extends Component {
 
                 {(!toVesting && !withdrawal) ? <div>
                     <div className="row">
-                        <div className="column small-12">
-                            {withdrawal ?
-                                tt('asset_edit_withdrawal_jsx.transfer_desc') :
-                                transferTips[transferType]}
-                        </div>
+                        {withdrawal ?
+                            tt('asset_edit_withdrawal_jsx.transfer_desc') :
+                            transferTips[transferType]}
                     </div>
                     <br />
                 </div> : null}
@@ -542,8 +544,8 @@ class TransferForm extends Component {
                 {withdrawal ? this._renderWithdrawalDetails() : null}
 
                 {<div className="row">
-                    <div className={'column ' + columns[0]} style={{paddingTop: 5}}>{amountLabel}</div>
-                    <div className={'column ' + columns[1]}>
+                    {!isS && <div className={'column ' + columns[0]} style={{paddingTop: 5}}>{amountLabel}</div>}
+                    <div className={'column ' + (isS ? 'small-12' : columns[1])}>
                         <div className="input-group" style={{marginBottom: 5}}>
                             <input type="text" placeholder={amountLabel} {...amount.props} ref="amount" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" disabled={disableAmount || loading} onChange={(e) => this.onChangeAmount(e)}/>
                             {asset && !isUIA && transferType !== 'Claim' && !transferType.startsWith('TIP to') && !transferType.endsWith('to TIP') && <span className="input-group-label" style={{paddingLeft: 0, paddingRight: 0}}>
@@ -766,4 +768,4 @@ export default connect(
             }))
         }
     })
-)(TransferForm)
+)(withScreenSize(TransferForm))

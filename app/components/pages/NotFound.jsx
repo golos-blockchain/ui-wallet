@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router';
+
 import Icon from 'app/components/elements/Icon.jsx';
 import { APP_NAME, APP_ICON } from 'app/client_config';
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 
 class NotFound extends React.Component {
 
@@ -16,10 +18,10 @@ class NotFound extends React.Component {
                        or check out some great posts.
                     </p>
                     <ul className="NotFound__menu">
-                      <li><a href="/transfers">balances</a></li>
-                      <li><a href="/assets">uia-assets</a></li>
-                      <li><a href="/donates-to">rewards</a></li>
-                      <li><a href="/rating">market</a></li>
+                      <li><a href="/transfers" onClick={hrefClick}>balances</a></li>
+                      <li><a href="/assets" onClick={hrefClick}>uia-assets</a></li>
+                      <li><a href="/donates-to" onClick={hrefClick}>rewards</a></li>
+                      <li><a href="/rating" onClick={hrefClick}>market</a></li>
                     </ul>
                 </div>
             </div>

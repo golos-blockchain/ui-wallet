@@ -141,6 +141,7 @@
     "reset_password": "Password reset",
     "invites": "Invite checks",
     "assets": "UIA assets",
+    "assets2": "UIA",
     "nft": "NFT",
     "nft_tokens": "NFT-tokens",
     "nft_collections": "NFT-collections",
@@ -1197,12 +1198,18 @@
     "choose_preset_tips": "Choose the amounts for the reward buttons",
     "emission_donate_pct": "Donation percent of your daily token emission",
     "notifications_settings": "Notification settings",
+    "notifications_settings2": "Notification settings",
     "notifications_transfer": "Transfer notifications",
     "notifications_donate": "Donate notifications",
     "notifications_reply": "Reply notifications",
     "notifications_mention": "Mention notifications",
     "notifications_message": "Private message notifications",
     "notifications_order": "Market order filled",
+    "notifications_bg": "Show notifications in background",
+    "notifications_bg_title": "Show notification when app hidden, screen is off",
+    "app_settings": "App Settings",
+    "advanced_settings": "Select the blockchain node, and another advanced settings...",
+    "open": "Open",
     "invalid_url": "Invalid URL",
     "name_is_too_long": "Name is too long",
     "name_must_not_begin_with": "Name must not begin with @",
@@ -1264,6 +1271,8 @@
     "convert_to_VESTING_TOKEN": "Convert to %(VESTING_TOKEN2)s",
     "balance_subject_to_3_day_withdraw_waiting_period": "Balance subject to 3 day withdraw waiting period.",
     "move_funds_to_another_account": "Move funds to another account.",
+    "move_to_tip": "Top up TIP-balance from main one.",
+    "tip_to_liquid_uia": "Transfer from TIP to main balance.",
     "form_title": "Send to user",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Protect funds by requiring a 3 day withdraw waiting period.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Withdraw funds after the required 3 day waiting period.",
@@ -1495,19 +1504,25 @@
     "wrong_domain_DOMAINS": "This address is not belong to GOLOS Blogs.\nGOLOS Blogs domains are: %(DOMAINS)s\nThis address will be opened in external browser."
   },
   "app_settings": {
+    "mobile_title": "Settings of Wallet",
     "ws_connection_client": "GOLOS node URL",
     "img_proxy_prefix": "Use Proxy For Images",
     "auth_service": "Golos Auth & Registration Service (for notifications)",
     "notify_service": "Golos Notify Service (for notifications)",
+    "notify_service_ws": "Golos Notify Service WebSocket (for notifications)",
     "messenger_service": "Messenger",
     "elastic_search": "Search",
     "save_and_restart": "Save and restart",
     "cancel": "Cancel",
     "node_error_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом. Или попробуйте задать другую ноду GOLOS в меню Настройки.",
-    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window."
+    "node_error_new_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом (или с нодой).",
+    "node_error_new_NODE2": "Выбрать другую ноду",
+    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window.",
+    "logs": "Logs"
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Download"
   }
 }

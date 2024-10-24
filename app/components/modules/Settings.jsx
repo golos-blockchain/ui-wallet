@@ -1,19 +1,23 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import cookie from "react-cookie";
+import Dropzone from 'react-dropzone'
 import user from 'app/redux/User';
 import g from 'app/redux/GlobalReducer';
 import tt from 'counterpart';
 import throttle from 'lodash/throttle'
+import {fromJS, Set, Map} from 'immutable'
+
 import transaction from 'app/redux/Transaction'
 import { getMetadataReliably } from 'app/utils/NormalizeProfile';
 import Icon from 'app/components/elements/Icon';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import Userpic from 'app/components/elements/Userpic';
+import { openAppSettings } from 'app/components/pages/app/AppSettings'
 import reactForm from 'app/utils/ReactForm'
-import {fromJS, Set, Map} from 'immutable'
-import cookie from "react-cookie";
-import Dropzone from 'react-dropzone'
 import { LANGUAGES, DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY, USER_GENDER } from 'app/client_config'
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 class Settings extends React.Component {
 
@@ -53,6 +57,11 @@ class Settings extends React.Component {
         if (!notifyPresets) notifyPresets = {
             receive: true, donate: true, comment_reply: true, mention: true, message: true, fill_order: true,
         }
+        if (process.env.MOBILE_APP) {
+            if (notifyPresets.in_background === undefined) {
+                notifyPresets.in_background = true
+            }
+        }
         this.setState({notifyPresets})
     }
 
@@ -70,7 +79,7 @@ class Settings extends React.Component {
         if (!mutedUIA) mutedUIA = [];
         mutedUIA = mutedUIA.filter(o => o !== sym)
         localStorage.setItem('mutedUIA', JSON.stringify(mutedUIA));
-        window.location.reload()
+        reloadLocation()
     }
 
     onNotifyPresetChange = e => {
@@ -185,7 +194,7 @@ class Settings extends React.Component {
 
         const {notifyPresets, notifyPresetsTouched} = this.state
 
-        const {account, isOwnAccount} = this.props
+        const {account, isOwnAccount, isS} = this.props
         let mutedUIA = [];
         if (process.env.BROWSER) {
           mutedUIA = localStorage.getItem('mutedUIA');
@@ -266,7 +275,7 @@ class Settings extends React.Component {
                 <div className="row">
                     <div className="small-12 medium-8 large-6 columns Notification_presets">
                         <br /><br />
-                        <h3>{tt('settings_jsx.notifications_settings')}</h3>
+                        <h3>{isS ? tt('settings_jsx.notifications_settings2') : tt('settings_jsx.notifications_settings')}</h3>
                         <label>
                             <input type='checkbox' checked={!!notifyPresets.receive} data-type='receive' onChange={this.onNotifyPresetChange} />
                             <Icon name='notification/transfer' size='2x' />
@@ -297,6 +306,10 @@ class Settings extends React.Component {
                             <Icon name='notification/order' size='2x' />
                             <span>{tt('settings_jsx.notifications_order')}</span>
                         </label>
+                        {process.env.MOBILE_APP ? <label>
+                            <input type='checkbox' checked={!!notifyPresets.in_background} data-type='in_background' onChange={this.onNotifyPresetChange} />
+                            <span>{tt('settings_jsx.notifications_bg')}&nbsp;<span onClick={() => alert(tt('settings_jsx.notifications_bg_title'))}><Icon name="info_o" /></span></span>
+                        </label> : null}
                         <br />
                         <input
                             type="submit"
@@ -308,6 +321,21 @@ class Settings extends React.Component {
                     </div>
                 </div>}            
 
+            {isOwnAccount && process.env.MOBILE_APP &&
+                <div className="row">
+                    <div className="small-12 medium-8 large-6 columns">
+                        <br />
+                        <h3>{tt('settings_jsx.app_settings')}</h3>
+                        {tt('settings_jsx.advanced_settings')}
+                        <button style={{ marginTop: '0.5rem' }}
+                            onClick={e => {
+                                openAppSettings()
+                            }}
+                            className="button hollow small"
+                        >{tt('settings_jsx.open')}
+                        </button>
+                    </div>
+                </div>}
         </div>
     }
 }
@@ -356,4 +384,4 @@ export default connect(
             });
         }
     })
-)(Settings)
+)(withScreenSize(Settings))

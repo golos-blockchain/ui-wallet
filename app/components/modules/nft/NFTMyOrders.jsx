@@ -14,6 +14,7 @@ import NotFound from 'app/components/pages/NotFound'
 import g from 'app/redux/GlobalReducer'
 import transaction from 'app/redux/Transaction'
 import session from 'app/utils/session'
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 
 const wrapAsTable = (immData, onRender, emptyHint) => {
     immData = immData.get('data').toJS()
@@ -226,7 +227,7 @@ class NFTMyOrders extends React.Component {
         const username = session.load().currentName
         if (!isModal && (!username || !account || username !== account.name)) {
             if (account && account.name) {
-                window.location.href = '/@' + account.name
+                reloadLocation('/@' + account.name)
             }
             return <NotFound.component />
         }

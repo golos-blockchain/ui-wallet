@@ -8,11 +8,13 @@ import AppPropTypes from 'app/utils/AppPropTypes';
 import Header from 'app/components/modules/Header';
 import Footer from 'app/components/modules/Footer';
 import NewsPopups from 'app/components/elements/NewsPopups'
+import BackButtonController from 'app/components/elements/app/BackButtonController'
 import URLLoader from 'app/components/elements/app/URLLoader';
 import TooltipManager from 'app/components/elements/common/TooltipManager';
 import user from 'app/redux/User';
 import g from 'app/redux/GlobalReducer';
-import { Link } from 'react-router';
+import PushNotificationSaga from 'app/redux/services/PushNotificationSaga'
+import { browserHistory, Link } from 'react-router';
 import resolveRoute from 'app/ResolveRoute';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
 import Dialogs from '@modules/Dialogs';
@@ -26,8 +28,11 @@ import tt from 'counterpart';
 import ChainFailure from 'app/components/elements/ChainFailure'
 import DialogManager from 'app/components/elements/common/DialogManager';
 import NotifyPolling from 'app/components/elements/NotifyPolling'
+import AppSettings, { openAppSettings } from 'app/components/pages/app/AppSettings'
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
+import { fixRouteIfApp, reloadLocation } from 'app/utils/app/RoutingUtils'
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
+import { getShortcutIntent, onShortcutIntent } from 'app/utils/app/ShortcutUtils'
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
 import session from 'app/utils/session'
 import libInfo from 'app/JsLibHash.json'
@@ -80,12 +85,50 @@ class App extends React.Component {
 
     constructor(props) {
         super(props)
+        this.calloutShowCount = 2
+        if (window.location.hash === '#app-settings') {
+            this.appSettings = true
+        }
+        window.appMounted = true
     }
 
-    componentDidMount() {
+    async checkShortcutIntent() {
+        try {
+            const intent = await getShortcutIntent()
+            const intentId = intent.extras['gls.wallet.id']
+            if (intent.extras['gls.wallet.hash'] === '#app-settings' && localStorage.getItem('processed_intent') !== intentId) {
+                this.appSettings = true
+                localStorage.setItem('processed_intent', intentId)
+            }
+        } catch (err) {
+            console.error('Cannot get shortcut intent', err)
+        }
+    }
+
+    async componentDidMount() {
         if (process.env.BROWSER) {
             console.log('ui-wallet version:', $STM_Config.ui_version);
             console.log('golos-lib-js version:', libInfo.version, 'hash:', libInfo.hash)
+        }
+
+        if (process.env.MOBILE_APP) {
+            await this.checkShortcutIntent()
+            onShortcutIntent(intent => {
+                if (intent.extras['gls.wallet.hash'] === '#app-settings') {
+                    openAppSettings()
+                }
+            })
+
+            fixRouteIfApp()
+
+            document.addEventListener('pause', this.onPause)
+            document.addEventListener('resume', this.onResume)
+
+            this.setState({
+                can_render: true
+            })
+
+            this.stopService()
         }
 
         const { nightmodeEnabled } = this.props;
@@ -139,13 +182,63 @@ class App extends React.Component {
         if (process.env.BROWSER) {
             window.removeEventListener('click', this.checkLeaveGolos);
         }
+        if (process.env.MOBILE_APP) {
+            document.addEventListener('pause', this.onPause)
+            document.addEventListener('resume', this.onResume)
+        }
     }
 
-    componentDidUpdate(nextProps) {
+    componentDidUpdate(prevProps) {
         // setTimeout(() => this.setState({showCallout: false}), 15000);
-        if (nextProps.location.pathname !== this.props.location.pathname) {
+        if (this.props.location.pathname !== prevProps.location.pathname &&
+            !(--this.calloutShowCount)) {
             this.setState({ showBanner: false, showCallout: false });
         }
+    }
+
+    componentDidCatch(err, info) {
+        const errStr = (err && err.toString()) ? err.toString() : JSON.stringify(err)
+        const infoStr = (info && info.componentStack) || JSON.stringify(info)
+        if (confirm(';( Ошибка рендеринга. Продолжить работу?\n\n' + errStr + '\n' + infoStr)) {
+            reloadLocation('/')
+            return
+        }
+        throw err
+    }
+
+    onPause = () => {
+        const { username } = this.props
+        const notifySess = localStorage.getItem('X-Session')
+        const notifyHost = $STM_Config.notify_service.host
+        if (username && notifySess) {
+            const settings = PushNotificationSaga.getScopePresets(username)
+            if (!settings.inBackground) {
+                console.warn('Notify - inBackground false, so do not starting service...')
+                return
+            }
+            if (!settings.bgPresets.length) {
+                console.warn('Notify - all background presets disabled, so do not starting service...')
+                return
+            }
+            const lastTake = 0
+            cordova.exec((winParam) => {
+                console.log('pause ok', winParam)
+            }, (err) => {
+                console.error('pause err', err)
+            }, 'CorePlugin', 'startService', [username, notifySess, settings.bgPresets.join(','), lastTake, notifyHost])
+        }
+    }
+
+    onResume = () => {
+        this.stopService()
+    }
+    
+    stopService = () => {
+        cordova.exec((winParam) => {
+            console.log('resume ok', winParam)
+        }, (err) => {
+            console.error('resume err', err)
+        }, 'CorePlugin', 'stopService', [])
     }
 
     checkLogin = event => {
@@ -225,6 +318,10 @@ class App extends React.Component {
     }
 
     render() {
+        if (process.env.MOBILE_APP && !this.state.can_render) {
+            return null
+        }
+
         const {
             location,
             params,
@@ -279,7 +376,7 @@ class App extends React.Component {
 
         const themeClass = nightmodeEnabled ? ' theme-dark' : ' theme-light';
 
-        const isApp = process.env.IS_APP && location.pathname.startsWith('/__app_')
+        const isApp = location.pathname.startsWith('/__app_') || this.appSettings
 
         const noHeader = isApp
         const noFooter = isApp || location.pathname.startsWith('/submit')
@@ -303,7 +400,7 @@ class App extends React.Component {
                 })}>
                     {callout}
                     <ChainFailure />
-                    {children}
+                    {this.appSettings ? <AppSettings.component /> : children}
                     {noFooter ? null : <Footer />}
                     <NewsPopups />
                     <ScrollButton />
@@ -315,6 +412,15 @@ class App extends React.Component {
                 <GlobalStyle />
                 {process.env.IS_APP ? <URLLoader /> : null}
                 <NotifyPolling />
+                {process.env.IS_APP ? <BackButtonController handle={({ goBack, goHome }) => {
+                    const { pathname } = location
+                    if (pathname === '/' || pathname.endsWith('/transfers') || pathname.endsWith('/transfers/') ||
+                        (pathname.split('/').length === 2 && pathname.startsWith('/@'))) {
+                        navigator.app.exitApp()
+                        return
+                    }
+                    reloadLocation('/')
+                }} /> : null}
             </div>
 
         );
@@ -335,13 +441,16 @@ export default connect(
     state => {
         let nightmodeEnabled = process.env.BROWSER ? localStorage.getItem('nightmodeEnabled') == 'true' || false : false
 
+        const currentUser = state.user.get('current')
+
         return {
             error: state.app.get('error'),
             new_visitor:
-                !state.user.get('current') &&
+                !currentUser &&
                 !state.offchain.get('account') &&
                 state.offchain.get('new_visit'),
-            nightmodeEnabled: nightmodeEnabled
+            username: currentUser && currentUser.get('username'),
+            nightmodeEnabled: nightmodeEnabled,
         };
     },
     dispatch => ({

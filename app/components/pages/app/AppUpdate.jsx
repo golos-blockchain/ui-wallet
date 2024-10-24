@@ -2,6 +2,7 @@ import React from 'react'
 import tt from 'counterpart'
 
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
+import { getChangelog } from 'app/utils/app/UpdateUtils'
 
 class AppUpdate extends React.Component {
     constructor(props) {
@@ -12,31 +13,37 @@ class AppUpdate extends React.Component {
     }
 
     appUpdaterUrl = (file) => {
-        let url = new URL(
-            '/desktop-' + ($STM_Config.platform === 'linux' ? 'linux' : 'windows') + '/' + file,
-            $STM_Config.app_updater.host
-        )
+        let url
+        if (process.env.MOBILE_APP) {
+            url = new URL(
+                '/messenger-android/' + file,
+                $STM_Config.app_updater.host
+            )
+        } else {
+            url = new URL(
+                '/desktop-' + ($STM_Config.platform === 'linux' ? 'linux' : 'windows') + '/' + file,
+                $STM_Config.app_updater.host
+            )
+        }
         return url.toString()
     }
 
    async componentDidMount() {
-        let params = new URLSearchParams(window.location.search)
-        const v = params.get('v')
-        const exe = params.get('exe')
-        const txt = params.get('txt')
-
-        const exeUrl = this.appUpdaterUrl(exe)
-        const txtUrl = this.appUpdaterUrl(txt)
-
-        this.setState({
-            v,
-            exeUrl
-        })
-
         try {
-            let res = await fetch(txtUrl)
-            const decoder = new TextDecoder('windows-1251')
-            res = decoder.decode(await res.arrayBuffer())
+            let params = new URLSearchParams(window.location.search)
+            const v = params.get('v')
+            const exe = params.get('exe')
+            const txt = params.get('txt')
+
+            const exeUrl = this.appUpdaterUrl(exe)
+            const txtUrl = this.appUpdaterUrl(txt)
+
+            this.setState({
+                v,
+                exeUrl
+            })
+
+            let res = await getChangelog(txtUrl)
 
             this.setState({
                 description: res,
@@ -45,25 +52,34 @@ class AppUpdate extends React.Component {
         } catch (error) {
             console.error(error)
             this.setState({
-                loading: false
+                loading: false,
+                error
             })
         }
     }
 
     goDownload = (e) => {
         e.preventDefault()
+        if (process.env.MOBILE_APP) {
+            alert('api la')
+            window.location.href = new URL('/api/exe/messenger/android/latest', $STM_Config.app_updater.host).toString()
+            return
+        }
         window.open(this.state.exeUrl, '_blank')
     }
 
     render() {
-        const { loading, v, description } = this.state
-        if (this.state.loading) {
+        const { loading, v, description, error } = this.state
+        if (loading) {
             return <center style={{ paddingTop: '5rem' }}>
                     <LoadingIndicator type='circle' size='25px' />
                 </center>
         }
+        if (error) {
+            return <code>{error.toString()}</code>
+        }
         return <div style={{ padding: '2rem' }}>
-                <h2>GOLOS Blogs - {v}</h2>
+                <h2>GOLOS {process.env.MOBILE_APP ? 'Wallet' : 'Blogs'} - {v}</h2>
                 <hr />
                 <div style={{ whiteSpace: 'pre-line' }}>
                     {description}
