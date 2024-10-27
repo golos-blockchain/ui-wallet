@@ -195,15 +195,17 @@ export function* fetchState(location_change_action) {
                         const my_assets = yield call([api, api.getAssetsAsync], '', [], '', 5000)
                         my_assets.forEach(ma => {
                             const sym = ma.supply.split(' ')[1]
-                            const precision = ma.supply.split(' ')[0].split('.')[1].length
+                            const fract = ma.supply.split(' ')[0].split('.')
+                            const precision = fract[1] ? fract[1].length : 0
 
                             if (sym in state.assets) {
                                 state.assets[sym].my = true
                             } else {
+                                const zero = (precision ? '0.' : '0') + '0'.repeat(precision) + ' ' + sym
                                 state.assets[sym] = {
-                                    balance: '0.' + '0'.repeat(precision) + ' ' + sym,
-                                    tip_balance: '0.' + '0'.repeat(precision) + ' ' + sym,
-                                    market_balance: '0.' + '0'.repeat(precision) + ' ' + sym
+                                    balance: zero,
+                                    tip_balance: zero,
+                                    market_balance: zero
                                 }
                             }
 
