@@ -38,9 +38,9 @@ cc.writeSync()
 
 console.log('--- Moving react "build" folder to "' + distPath + '/www"')
 
-if (dirExists('build')) {
+if (dirExists('dist')) {
     fs.rmSync(distPath + '/www', { recursive: true, force: true });
-    fs.renameSync('build', distPath + '/www')
+    fs.renameSync('dist', distPath + '/www')
 }
 
 console.log('--- Clearing cordova in order to update in on "cordova prepare"')

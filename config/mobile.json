@@ -7,6 +7,10 @@
       { "address": "wss://api-golos.blckchnd.com/ws" }
     ],
     "site_domain": "devwallet.golos.today",
+    "logo": {
+      "icon": "https://i.imgur.com/mRV2Je1.png",
+      "title": "https://i.imgur.com/CYfDqIy.png"
+    },
     "images": {
       "img_proxy_prefix": "https://devimages.golos.today",
       "img_proxy_backup_prefix": "https://steemitimages.com",
