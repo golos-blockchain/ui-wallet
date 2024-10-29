@@ -9,7 +9,8 @@ const copyKey = (key) => {
     cfg[key] = config.get('mobile.' + key)
 }
 cfg.app_version = app_version
-copyKey('nodes')
+copyKey('ws_connection_app')
+copyKey('ws_connection_exchange')
 copyKey('logo')
 copyKey('images')
 copyKey('blogs_service')

@@ -32,7 +32,6 @@ class LoginForm extends Component {
         const cryptoTestResult = runTests();
         // const cryptoTestResult = undefined; // temporary switch BrowserTests off
         let cryptographyFailure = false;
-        this.SignUp = this.SignUp.bind(this);
         if (cryptoTestResult !== undefined) {
             console.error('LoginForm - cryptoTestResult: ', cryptoTestResult);
             cryptographyFailure = true
@@ -85,11 +84,6 @@ class LoginForm extends Component {
                     null,
             })
         })
-    }
-
-    SignUp() {
-        const onType = document.getElementsByClassName("OpAction")[0].textContent;
-        window.location.href = "/enter_email";
     }
 
     SignIn() {

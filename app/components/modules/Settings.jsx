@@ -14,6 +14,7 @@ import {fromJS, Set, Map} from 'immutable'
 import cookie from "react-cookie";
 import Dropzone from 'react-dropzone'
 import { LANGUAGES, DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY, USER_GENDER } from 'app/client_config'
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 
 class Settings extends React.Component {
 
@@ -70,7 +71,7 @@ class Settings extends React.Component {
         if (!mutedUIA) mutedUIA = [];
         mutedUIA = mutedUIA.filter(o => o !== sym)
         localStorage.setItem('mutedUIA', JSON.stringify(mutedUIA));
-        window.location.reload()
+        reloadLocation()
     }
 
     onNotifyPresetChange = e => {

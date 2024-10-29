@@ -15,6 +15,7 @@ import Icon from 'app/components/elements/Icon';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import DropdownMenu from 'app/components/elements/DropdownMenu';
 
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 import Order from 'app/utils/market/Order'
 import TradeHistory from 'app/utils/market/TradeHistory'
 import { roundUp, roundDown, normalizeAssets } from 'app/utils/market/utils'
@@ -525,7 +526,7 @@ class Market extends Component {
                                 onChange={({event, link}) => {
                                     if (event) {
                                         event.preventDefault()
-                                        window.location.href = link
+                                        reloadLocation(link)
                                     }
                                 }}
                             />

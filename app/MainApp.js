@@ -3,7 +3,8 @@ import golos from 'golos-lib-js'
 import tt from 'counterpart'
 
 import * as api from 'app/utils/APIWrapper'
-import { checkUpdates } from './appUpdater'
+import { addShortcut } from 'app/utils/app/ShortcutUtils'
+import { checkUpdates } from 'app/utils/app/UpdateUtils'
 import defaultCfg from 'app/app_cfg'
 require('app/cookieHelper')
 
@@ -12,7 +13,26 @@ require('app/cookieHelper')
 let appConfig
 if (process.env.MOBILE_APP) {
     console.log('Loading app config...')
-    appConfig = defaultCfg
+    let cfg = localStorage.getItem('app_settings')
+    if (cfg) {
+        try {
+            cfg = JSON.parse(cfg)
+            // Add here migrations
+            cfg = { ...defaultCfg, ...cfg }
+        } catch (err) {
+            console.error('Cannot parse app_settings', err)
+            cfg = defaultCfg
+        }
+    } else {
+        cfg = defaultCfg
+    }
+    if (!cfg.ws_connection_client) {
+        cfg.ws_connection_client = cfg.ws_connection_app[0].address
+    }
+    if (cfg.images.use_img_proxy === undefined) {
+        cfg.images.use_img_proxy = true
+    }
+    appConfig = cfg
 } else {
     appConfig = window.appSettings.load()
 }
@@ -49,7 +69,7 @@ function showNodeError() {
 }
 
 const showError = (err, label = '') => {
-    if (!process.env.MOBILE_APP) return.
+    if (!process.env.MOBILE_APP) return
     alert(label + ' error:\n'
         + (err && err.toString()) + '\n'
         + (err && JSON.stringify(err.stack))
@@ -70,6 +90,16 @@ async function initState() {
             return initialState
         }
 
+        // First add - for case if all failed at all, and not rendering
+        if (process.env.MOBILE_APP) {
+            await addShortcut({
+                id: 'the_settings',
+                shortLabel: 'Настройки',
+                longLabel: 'Настройки',
+                hash: '#app-settings'
+            })
+        }
+
         let splashTimeout = setTimeout(() => {
             closeSplash()
             showNodeError()
@@ -81,7 +111,8 @@ async function initState() {
             console.error('Cannot check updates', err)
             clearTimeout(splashTimeout)
             closeSplash()
-            alert('Cannot check updates' + err)
+            alert('Cannot check updates:\n' + err)
+            //showError(err, 'Cannot check updates')
         }
 
         let nodeError = null

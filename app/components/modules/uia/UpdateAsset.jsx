@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import { browserHistory, Link, } from 'react-router';
 import tt from 'counterpart';
 import { Formik, Field, ErrorMessage, } from 'formik';
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import {countDecimals, formatAsset, formatAmount, longToAsset} from 'app/utils/ParsersAndFormatters';
 import g from 'app/redux/GlobalReducer';
@@ -162,7 +163,7 @@ class UpdateAsset extends Component {
                 }
             },
             successCallback: () => {
-                window.location.href = `/@${accountName}/assets`;
+                reloadLocation(`/@${accountName}/assets`)
             },
         });
     }

@@ -1495,10 +1495,12 @@
     "wrong_domain_DOMAINS": "This address is not belong to GOLOS Blogs.\nGOLOS Blogs domains are: %(DOMAINS)s\nThis address will be opened in external browser."
   },
   "app_settings": {
+    "mobile_title": "Settings of Wallet",
     "ws_connection_client": "GOLOS node URL",
     "img_proxy_prefix": "Use Proxy For Images",
     "auth_service": "Golos Auth & Registration Service (for notifications)",
     "notify_service": "Golos Notify Service (for notifications)",
+    "notify_service_ws": "Golos Notify Service WebSocket (for notifications)",
     "messenger_service": "Messenger",
     "elastic_search": "Search",
     "save_and_restart": "Save and restart",
@@ -1508,6 +1510,7 @@
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Download"
   }
 }

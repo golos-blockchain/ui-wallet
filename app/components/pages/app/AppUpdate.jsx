@@ -12,10 +12,18 @@ class AppUpdate extends React.Component {
     }
 
     appUpdaterUrl = (file) => {
-        let url = new URL(
-            '/desktop-' + ($STM_Config.platform === 'linux' ? 'linux' : 'windows') + '/' + file,
-            $STM_Config.app_updater.host
-        )
+        let url
+        if (process.env.MOBILE_APP) {
+            url = new URL(
+                '/messenger-android/' + file,
+                $STM_Config.app_updater.host
+            )
+        } else {
+            url = new URL(
+                '/desktop-' + ($STM_Config.platform === 'linux' ? 'linux' : 'windows') + '/' + file,
+                $STM_Config.app_updater.host
+            )
+        }
         return url.toString()
     }
 

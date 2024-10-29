@@ -1569,10 +1569,12 @@
     "wrong_domain_DOMAINS": "Похоже, эта ссылка не с GOLOS Блогов.\nДомены GOLOS Блогов: %(DOMAINS)s\nЭта ссылка будет открыта во внешнем браузере."
   },
   "app_settings": {
+    "mobile_title": "Настройки Кошелька",
     "ws_connection_client": "Адрес ноды GOLOS",
     "img_proxy_prefix": "Использовать прокси для изображений",
     "auth_service": "Golos Auth & Registration Service (для уведомлений)",
     "notify_service": "Golos Notify Service (для уведомлений)",
+    "notify_service_ws": "Golos Notify Service WebSocket (для уведомлений)",
     "messenger_service": "Мессенджер",
     "elastic_search": "Поиск",
     "save_and_restart": "Сохранить и перезапустить",
@@ -1582,6 +1584,7 @@
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Скачать"
   }
 }

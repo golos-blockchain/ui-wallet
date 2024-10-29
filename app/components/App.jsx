@@ -12,7 +12,7 @@ import URLLoader from 'app/components/elements/app/URLLoader';
 import TooltipManager from 'app/components/elements/common/TooltipManager';
 import user from 'app/redux/User';
 import g from 'app/redux/GlobalReducer';
-import { Link } from 'react-router';
+import { browserHistory, Link } from 'react-router';
 import resolveRoute from 'app/ResolveRoute';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
 import Dialogs from '@modules/Dialogs';
@@ -26,8 +26,11 @@ import tt from 'counterpart';
 import ChainFailure from 'app/components/elements/ChainFailure'
 import DialogManager from 'app/components/elements/common/DialogManager';
 import NotifyPolling from 'app/components/elements/NotifyPolling'
+import AppSettings, { openAppSettings } from 'app/components/pages/app/AppSettings'
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
+import { fixRouteIfApp } from 'app/utils/app/RoutingUtils'
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
+import { getShortcutIntent, onShortcutIntent } from 'app/utils/app/ShortcutUtils'
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
 import session from 'app/utils/session'
 import libInfo from 'app/JsLibHash.json'
@@ -80,12 +83,43 @@ class App extends React.Component {
 
     constructor(props) {
         super(props)
+        if (window.location.hash === '#app-settings') {
+            this.appSettings = true
+        }
     }
 
-    componentDidMount() {
+    async checkShortcutIntent() {
+        try {
+            const intent = await getShortcutIntent()
+            const intentId = intent.extras['gls.wallet.id']
+            if (intent.extras['gls.wallet.hash'] === '#app-settings' && localStorage.getItem('processed_intent') !== intentId) {
+                this.appSettings = true
+                localStorage.setItem('processed_intent', intentId)
+            }
+        } catch (err) {
+            console.error('Cannot get shortcut intent', err)
+        }
+    }
+
+    async componentDidMount() {
         if (process.env.BROWSER) {
             console.log('ui-wallet version:', $STM_Config.ui_version);
             console.log('golos-lib-js version:', libInfo.version, 'hash:', libInfo.hash)
+        }
+
+        if (process.env.MOBILE_APP) {
+            await this.checkShortcutIntent()
+            onShortcutIntent(intent => {
+                if (intent.extras['gls.wallet.hash'] === '#app-settings') {
+                    openAppSettings()
+                }
+            })
+
+            fixRouteIfApp()
+
+            this.setState({
+                can_render: true
+            })
         }
 
         const { nightmodeEnabled } = this.props;
@@ -225,6 +259,10 @@ class App extends React.Component {
     }
 
     render() {
+        if (process.env.MOBILE_APP && !this.state.can_render) {
+            return null
+        }
+
         const {
             location,
             params,
@@ -279,7 +317,7 @@ class App extends React.Component {
 
         const themeClass = nightmodeEnabled ? ' theme-dark' : ' theme-light';
 
-        const isApp = process.env.IS_APP && location.pathname.startsWith('/__app_')
+        const isApp = process.env.IS_APP && (location.pathname.startsWith('/__app_') || this.appSettings)
 
         const noHeader = isApp
         const noFooter = isApp || location.pathname.startsWith('/submit')
@@ -303,7 +341,7 @@ class App extends React.Component {
                 })}>
                     {callout}
                     <ChainFailure />
-                    {children}
+                    {this.appSettings ? <AppSettings.component /> : children}
                     {noFooter ? null : <Footer />}
                     <NewsPopups />
                     <ScrollButton />

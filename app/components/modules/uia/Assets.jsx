@@ -21,6 +21,7 @@ import Reveal from 'react-foundation-components/lib/global/reveal';
 import Tooltip from 'app/components/elements/Tooltip';
 import { normalizeAssets, getTradablesFor } from 'app/utils/market/utils'
 import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 
 class Assets extends Component {
     static propTypes = {
@@ -56,7 +57,7 @@ class Assets extends Component {
             return;
         }
         localStorage.setItem('mutedUIA', JSON.stringify(mutedUIA));
-        window.location.reload()
+        reloadLocation()
     }
 
     showAssetRules = (rules, sym) => {

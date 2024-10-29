@@ -175,7 +175,7 @@ export default class UserProfile extends React.Component {
             </div>;
         } else {
             return <div className='UserProfile'>
-                <div className='UserProfile__center'>{tt('user_profile.unknown_account')}</div>
+                <div className='UserProfile__center'>{tt('user_profile.unknown_account') + ' ' + window.location.href}</div>
             </div>
         }
 

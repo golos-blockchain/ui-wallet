@@ -57,8 +57,8 @@ console.log('--- Including cordova.js script into "' + indexHtml + '" file...')
 let idx = fs.readFileSync(indexHtml, 'utf8')
 idx = cheerio.load(idx)
 if (idx('script[src="cordova.js"]').length === 0) {
-    idx('<script src="cordova.js"></script>').insertBefore('script')
-    idx('<script>var FileReader0 = FileReader</script>').insertBefore('script')
+    idx('<script src="cordova.js"></script>').insertBefore('script:first-of-type')
+    idx('<script>var FileReader0 = FileReader</script>').insertBefore('script:first-of-type')
     console.log('Included.')
 } else {
     console.log('Already exists.')
