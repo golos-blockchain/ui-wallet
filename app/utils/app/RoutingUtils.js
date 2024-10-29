@@ -1,4 +1,9 @@
+import { browserHistory, } from 'react-router'
+
 export function reloadLocation(href) {
+    if (href && href[0] === '#') {
+        throw new Error('reloadLocation cannot reload with href starts with #')
+    }
     const { MOBILE_APP } = process.env
     if (MOBILE_APP) {
         if (href) {
@@ -14,6 +19,7 @@ export function reloadLocation(href) {
             href = pathname || '/'
         }
         window.location.href = '/#' + href
+        window.location.reload()
         return
     }
     window.location.href = href

@@ -28,20 +28,20 @@ class AppUpdate extends React.Component {
     }
 
    async componentDidMount() {
-        let params = new URLSearchParams(window.location.search)
-        const v = params.get('v')
-        const exe = params.get('exe')
-        const txt = params.get('txt')
-
-        const exeUrl = this.appUpdaterUrl(exe)
-        const txtUrl = this.appUpdaterUrl(txt)
-
-        this.setState({
-            v,
-            exeUrl
-        })
-
         try {
+            let params = new URLSearchParams(window.location.search)
+            const v = params.get('v')
+            const exe = params.get('exe')
+            const txt = params.get('txt')
+
+            const exeUrl = this.appUpdaterUrl(exe)
+            const txtUrl = this.appUpdaterUrl(txt)
+
+            this.setState({
+                v,
+                exeUrl
+            })
+
             let res = await fetch(txtUrl)
             const decoder = new TextDecoder('windows-1251')
             res = decoder.decode(await res.arrayBuffer())
@@ -53,7 +53,8 @@ class AppUpdate extends React.Component {
         } catch (error) {
             console.error(error)
             this.setState({
-                loading: false
+                loading: false,
+                error
             })
         }
     }
@@ -64,11 +65,14 @@ class AppUpdate extends React.Component {
     }
 
     render() {
-        const { loading, v, description } = this.state
-        if (this.state.loading) {
+        const { loading, v, description, error } = this.state
+        if (loading) {
             return <center style={{ paddingTop: '5rem' }}>
                     <LoadingIndicator type='circle' size='25px' />
                 </center>
+        }
+        if (error) {
+            return <code>{error.toString()}</code>
         }
         return <div style={{ padding: '2rem' }}>
                 <h2>GOLOS Blogs - {v}</h2>

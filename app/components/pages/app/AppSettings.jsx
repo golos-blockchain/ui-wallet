@@ -2,6 +2,8 @@ import React from 'react'
 import tt from 'counterpart'
 import { Formik, Field } from 'formik'
 
+import Icon from 'app/components/elements/Icon'
+
 class AppSettings extends React.Component {
     _onSubmit = (data) => {
         let cfg = { ...$STM_Config }
@@ -97,10 +99,10 @@ class AppSettings extends React.Component {
         const { MOBILE_APP } = process.env
         return <div>
             <h1 style={{marginLeft: '0.5rem', marginTop: '1rem'}}>
-                {MOBILE_APP ? <a href='/' onClick={this._onClose}>
+                {MOBILE_APP ? <a href='/' style={{ marginRight: '0.5rem' }} onClick={this._onClose}>
                     <Icon name='chevron-left' />
                 </a> : null}
-                {tt('g.settings')}
+                {MOBILE_APP ? tt('app_settings.mobile_title') : tt('g.settings')}
             </h1>
             <div className='secondary' style={{ paddingLeft: '0.625rem', marginBottom: '0.25rem' }}>
                 {tt('app_settings.to_save_click_button')}

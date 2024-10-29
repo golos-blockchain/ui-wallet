@@ -28,7 +28,7 @@ import DialogManager from 'app/components/elements/common/DialogManager';
 import NotifyPolling from 'app/components/elements/NotifyPolling'
 import AppSettings, { openAppSettings } from 'app/components/pages/app/AppSettings'
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
-import { fixRouteIfApp } from 'app/utils/app/RoutingUtils'
+import { fixRouteIfApp, reloadLocation } from 'app/utils/app/RoutingUtils'
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { getShortcutIntent, onShortcutIntent } from 'app/utils/app/ShortcutUtils'
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
@@ -297,7 +297,12 @@ class App extends React.Component {
                                     this.closeBox($STM_Config.add_notify_site);
                                 }}
                             />
-                            <a className="link" href={notifyLink} target='_blank'>
+                            <a className="link" href={notifyLink} target='_blank' onClick={e => {
+                                if (process.env.MOBILE_APP) {
+                                    e.preventDefault()
+                                    reloadLocation(notifyLink)
+                                }
+                            }}>
                                 <Icon className="logo-icon" name={APP_ICON} /> {notifyTitle}
                             </a>
                         </div>

@@ -59,7 +59,7 @@ export async function checkUpdates(timeout = 2000) {
                     return {
                         show: true,
                         id: v,
-                        link: '#/__app_update?v=' + v + '&exe=' + obj.exe + '&txt=' + obj.txt,
+                        link: '/__app_update?v=' + v + '&exe=' + obj.exe + '&txt=' + obj.txt,
                         title: process.env.MOBILE_APP ?
                             tt('app_update.notify_wallet_VERSION', { VERSION: v }) :
                             tt('app_update.notify_VERSION', { VERSION: v }),
