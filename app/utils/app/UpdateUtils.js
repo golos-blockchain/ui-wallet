@@ -56,14 +56,19 @@ export async function checkUpdates(timeout = 2000) {
             if (versions[0]) {
                 const [ v, obj ] = versions[0]
                 if (obj.exe) {
+                    let link = '/__app_update?v=' + v + '&exe=' + obj.exe + '&txt=' + obj.txt
+                    if (!isDesktop) {
+                        link = new URL('/api/html/' + path + '/' + v, updaterHost())
+                        link = link.toString()
+                    }
                     return {
                         show: true,
                         id: v,
-                        link: '/__app_update?v=' + v + '&exe=' + obj.exe + '&txt=' + obj.txt,
+                        link,
                         title: process.env.MOBILE_APP ?
                             tt('app_update.notify_wallet_VERSION', { VERSION: v }) :
                             tt('app_update.notify_VERSION', { VERSION: v }),
-                        new_tab: !process.env.MOBILE_APP,
+                        new_tab: true,
                     }
                 } else {
                     console.error(versions[0])
@@ -102,6 +107,6 @@ export async function getChangelog(txtLink) {
         return res
     } catch (err) {
         console.error('getChangelog', err)
-        return ''
+        throw err
     }
 }

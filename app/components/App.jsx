@@ -83,6 +83,7 @@ class App extends React.Component {
 
     constructor(props) {
         super(props)
+        this.calloutShowCount = 2
         if (window.location.hash === '#app-settings') {
             this.appSettings = true
         }
@@ -175,9 +176,10 @@ class App extends React.Component {
         }
     }
 
-    componentDidUpdate(nextProps) {
+    componentDidUpdate(prevProps) {
         // setTimeout(() => this.setState({showCallout: false}), 15000);
-        if (nextProps.location.pathname !== this.props.location.pathname) {
+        if (this.props.location.pathname !== prevProps.location.pathname &&
+            !(--this.calloutShowCount)) {
             this.setState({ showBanner: false, showCallout: false });
         }
     }
@@ -297,12 +299,7 @@ class App extends React.Component {
                                     this.closeBox($STM_Config.add_notify_site);
                                 }}
                             />
-                            <a className="link" href={notifyLink} target='_blank' onClick={e => {
-                                if (process.env.MOBILE_APP) {
-                                    e.preventDefault()
-                                    reloadLocation(notifyLink)
-                                }
-                            }}>
+                            <a className="link" href={notifyLink} target='_blank'>
                                 <Icon className="logo-icon" name={APP_ICON} /> {notifyTitle}
                             </a>
                         </div>
@@ -322,7 +319,7 @@ class App extends React.Component {
 
         const themeClass = nightmodeEnabled ? ' theme-dark' : ' theme-light';
 
-        const isApp = process.env.IS_APP && (location.pathname.startsWith('/__app_') || this.appSettings)
+        const isApp = location.pathname.startsWith('/__app_') || this.appSettings
 
         const noHeader = isApp
         const noFooter = isApp || location.pathname.startsWith('/submit')

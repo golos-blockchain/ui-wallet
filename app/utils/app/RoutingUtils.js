@@ -8,6 +8,11 @@ export function reloadLocation(href) {
     if (MOBILE_APP) {
         let { pathname, hash } = window.location
         if (href) {
+            if (href.startsWith('http:') || href.startsWith('https:')) {
+                window.open(href, '_blank')
+                // And just opening in same tab - not working, somewhy opens with app's hostname...
+                return
+            }
             if (href[0] !== '/') {
                 href = '/' + href
             }
