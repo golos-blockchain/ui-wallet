@@ -6,20 +6,18 @@ export function reloadLocation(href) {
     }
     const { MOBILE_APP } = process.env
     if (MOBILE_APP) {
+        let { pathname, hash } = window.location
         if (href) {
             if (href[0] !== '/') {
                 href = '/' + href
             }
         } else {
-            let { pathname, hash } = window.location
-            if ((!pathname || pathname === '/') && hash && hash[1] === '/') {
-                window.location.reload()
-                return
-            }
             href = pathname || '/'
         }
         window.location.href = '/#' + href
-        window.location.reload()
+        if (!pathname || pathname === '/') {
+            window.location.reload()
+        }
         return
     }
     window.location.href = href

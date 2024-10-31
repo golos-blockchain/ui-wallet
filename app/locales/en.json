@@ -1506,7 +1506,8 @@
     "save_and_restart": "Save and restart",
     "cancel": "Cancel",
     "node_error_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом. Или попробуйте задать другую ноду GOLOS в меню Настройки.",
-    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window."
+    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window.",
+    "logs": "Logs"
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",

@@ -2,6 +2,7 @@ import React from 'react'
 import tt from 'counterpart'
 
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
+import { getChangelog } from 'app/utils/app/UpdateUtils'
 
 class AppUpdate extends React.Component {
     constructor(props) {
@@ -42,9 +43,7 @@ class AppUpdate extends React.Component {
                 exeUrl
             })
 
-            let res = await fetch(txtUrl)
-            const decoder = new TextDecoder('windows-1251')
-            res = decoder.decode(await res.arrayBuffer())
+            let res = await getChangelog(txtUrl)
 
             this.setState({
                 description: res,
@@ -61,6 +60,11 @@ class AppUpdate extends React.Component {
 
     goDownload = (e) => {
         e.preventDefault()
+        if (process.env.MOBILE_APP) {
+            alert('api la')
+            window.location.href = new URL('/api/exe/messenger/android/latest', $STM_Config.app_updater.host).toString()
+            return
+        }
         window.open(this.state.exeUrl, '_blank')
     }
 
@@ -75,7 +79,7 @@ class AppUpdate extends React.Component {
             return <code>{error.toString()}</code>
         }
         return <div style={{ padding: '2rem' }}>
-                <h2>GOLOS Blogs - {v}</h2>
+                <h2>GOLOS {process.env.MOBILE_APP ? 'Wallet' : 'Blogs'} - {v}</h2>
                 <hr />
                 <div style={{ whiteSpace: 'pre-line' }}>
                     {description}

@@ -60,6 +60,17 @@ class AppSettings extends React.Component {
         this.makeInitialValues()
     }
 
+    showLogs = (e) => {
+        e.preventDefault()
+        NativeLogs.getLog(
+            200,
+            false,
+            logs => {
+                alert(logs)
+            }
+        )
+    }
+
     _renderNodes(ws_connection_client) {
         let fields = []
         for (let i in $STM_Config.ws_connection_app) {
@@ -198,6 +209,9 @@ class AppSettings extends React.Component {
                                 {MOBILE_APP ? null :<button type='button' className={'button hollow ' + (MOBILE_APP ? '' : 'float-right')} onClick={this._onClose}>
                                     {tt('app_settings.cancel')}
                                 </button>}
+                                {MOBILE_APP ? <a href='#' className='float-right' onClick={this.showLogs}>
+                                    {tt('app_settings.logs')}
+                                </a> : null}
                             </div>
                         </div>
                     </div>
@@ -213,8 +227,9 @@ module.exports = {
 }
 
 module.exports.openAppSettings = function() {
+    const { pathname } = window.location
     window.location.href = '/#app-settings'
-    window.location.reload() 
-    // reload is only one way to process hash-URL in Cordova...
-    // and, pushing history is "not reliable" (can be unavailable if rendering broken...)
+    if (pathname === '/') {
+        window.location.reload() 
+    }
 }

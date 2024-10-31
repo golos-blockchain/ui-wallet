@@ -90,9 +90,15 @@ export async function checkUpdates(timeout = 2000) {
 
 export async function getChangelog(txtLink) {
     try {
-        let res = await httpGet(txtLink, 1000, 'arraybuffer')
         const decoder = new TextDecoder('windows-1251')
-        res = decoder.decode(res)
+        let res
+        if (process.env.MOBILE_APP) {
+            res = await httpGet(txtLink, 1000, 'arraybuffer')
+            res = decoder.decode(res)
+        } else {
+            res = await fetch(txtLink)
+            res = decoder.decode(await res.arrayBuffer())
+        }
         return res
     } catch (err) {
         console.error('getChangelog', err)
