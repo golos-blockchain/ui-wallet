@@ -47,6 +47,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Userpic from 'app/components/elements/Userpic';
 import Callout from 'app/components/elements/Callout';
 import normalizeProfile, { getLastSeen } from 'app/utils/NormalizeProfile';
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 export default class UserProfile extends React.Component {
     constructor(props) {
@@ -71,6 +72,8 @@ export default class UserProfile extends React.Component {
             np.loading !== this.props.loading ||
             np.location.pathname !== this.props.location.pathname ||
             np.routeParams.accountname !== this.props.routeParams.accountname ||
+            np.isS !== this.props.isS ||
+            np.isXS !== this.props.isXS ||
             ns.repLoading !== this.state.repLoading
         )
     }
@@ -149,7 +152,7 @@ export default class UserProfile extends React.Component {
 
     render() {
         const {
-            props: {current_user, current_account, wifShown, global_status, },
+            props: {current_user, current_account, wifShown, global_status, isS, isXS, },
             onPrint
         } = this;
         let { accountname, section, id, action } = this.props.routeParams;
@@ -231,7 +234,8 @@ export default class UserProfile extends React.Component {
                     showTransfer={this.props.showTransfer}
                     showPowerdown={this.props.showPowerdown}
                     current_user={current_user}
-                    withdrawVesting={this.props.withdrawVesting} />
+                    withdrawVesting={this.props.withdrawVesting}
+                    isS={isS} />
                 { isMyAccount && <div><MarkNotificationRead fields='send,receive' account={account.name} /></div> }
                 </div>;
         } else if( section === 'assets' ) {
@@ -411,6 +415,64 @@ export default class UserProfile extends React.Component {
           accountjoin = transferFromSteemToGolosDate;
         }
 
+        let hideBlog = isMyAccount && isXS
+        let hideRewards = isMyAccount ? isS : isXS
+        let blogCounter = isMyAccount && <NotifiCounter fields='comment_reply,mention,referral' />
+        let blog
+        if (!hideBlog) {
+            if (hideRewards) {
+                let blogMenu = [
+                    //blig,
+                    ...rewardsMenu
+                ]
+                blog = <LinkWithDropdown
+                    closeOnClickOutside
+                    dropdownPosition='bottom'
+                    dropdownAlignment={this.state.linksAlign}
+                    dropdownContent={<VerticalMenu items={blogMenu} />}
+                    >
+                    <a className={`${rewardsClass} UserProfile__menu-item`}>
+                        {tt('g.blog')}
+                        {blogCounter}
+                        <Icon name='dropdown-center' />
+                    </a>
+                </LinkWithDropdown>
+            } else if (!hideBlog) {
+                blog = <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
+                    {tt('g.blog')} {blogCounter}
+                </a>
+            }
+        }
+
+        let kebab
+        if (isS) {
+            let kebabMenu = []
+            if (isMyAccount) {
+                kebabMenu = [
+                    // invites,
+                    ...permissionsMenu,
+                ]
+            }
+            if (hideBlog) {
+                kebabMenu = [
+                    // blog
+                    ...rewardsMenu,
+                    // ---
+                    ...kebabMenu,
+                ]
+            }
+            kebab = kebabMenu.length ? <LinkWithDropdown
+                closeOnClickOutside
+                dropdownPosition='bottom'
+                dropdownAlignment={this.state.linksAlign}
+                dropdownContent={<VerticalMenu items={kebabMenu} />}
+                >
+                <a className={`UserProfile__menu-item`}>
+                    <Icon name='new/more' />
+                </a>
+            </LinkWithDropdown> : null
+        }
+
         const top_menu = <div className='row UserProfile__top-menu'>
             <div className='columns'>
                 <div className='UserProfile__menu menu' style={{flexWrap: 'wrap'}}>
@@ -418,7 +480,7 @@ export default class UserProfile extends React.Component {
                         {tt('g.balances')}
                     </Link>
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
-                        {tt('g.assets')}
+                        {isS ? tt('g.assets2') : tt('g.assets')}
                     </Link>
                     <div>
                         <LinkWithDropdown
@@ -437,10 +499,10 @@ export default class UserProfile extends React.Component {
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
-                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
+                    {!isS && isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
                         {tt('g.invites')}
                     </Link>}
-                    {isMyAccount && <LinkWithDropdown
+                    {!isS && isMyAccount && <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
                         dropdownAlignment={this.state.linksAlign}
@@ -452,10 +514,8 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>}
                     <div className='UserProfile__filler' />
                     <div>
-                        <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
-                            {tt('g.blog')} {isMyAccount && <NotifiCounter fields='comment_reply,mention,referral' />}
-                        </a>
-                        <LinkWithDropdown
+                        {blog}
+                        {(isMyAccount ? isS : isXS) ? null : <LinkWithDropdown
                             closeOnClickOutside
                             dropdownPosition='bottom'
                             dropdownAlignment={this.state.linksAlign}
@@ -466,13 +526,14 @@ export default class UserProfile extends React.Component {
                                 {isMyAccount && <NotifiCounter fields='donate,donate_msgs' />}
                                 <Icon name='dropdown-center' />
                             </a>
-                        </LinkWithDropdown>
+                        </LinkWithDropdown>}
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
                             <Icon name='new/envelope' /> <NotifiCounter fields='message' />
                         </a> : null}
                         {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
                             <Icon name='new/setting' />
                         </Link>}
+                        {kebab}
                     </div>
                 </div>
             </div>
@@ -635,5 +696,5 @@ module.exports = {
             },
             requestData: (args) => dispatch({type: 'REQUEST_DATA', payload: args}),
         })
-    )(UserProfile)
+    )(withScreenSize(UserProfile))
 };

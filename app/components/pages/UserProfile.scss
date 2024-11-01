@@ -284,14 +284,6 @@
     }
 }
 
-@media screen and (max-width: 400px) {
-  .UserProfile {
-    &__filler {
-      display: none;
-    }
-  }
-}
-
 @media screen and (max-width: 60em) {
   .UserProfile {
     &__buttons {

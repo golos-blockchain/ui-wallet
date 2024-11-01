@@ -67,6 +67,12 @@
     }
 }
 
+.UserWallet.small-screen {
+    .main-balance {
+        font-size: 140%;
+    }
+}
+
 // protect for foundation bug for collapsed state drop-downs
 @media only screen and (max-width: 40em) {
     .Wallet_dropdown {
