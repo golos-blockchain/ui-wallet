@@ -6,12 +6,16 @@ export function reloadLocation(href) {
     }
     const { MOBILE_APP } = process.env
     if (MOBILE_APP) {
-        let { pathname, hash } = window.location
+        let { pathname, hash, host } = window.location
         if (href) {
             if (href.startsWith('http:') || href.startsWith('https:')) {
-                window.open(href, '_blank')
-                // And just opening in same tab - not working, somewhy opens with app's hostname...
-                return
+                const url = new URL(href)
+                if (url.host !== host) {
+                    window.open(href, '_blank')
+                    // And just opening in same tab - not working, somewhy opens with app's hostname...
+                    return
+                }
+                href = url.pathname + url.search + url.hash
             }
             if (href[0] !== '/') {
                 href = '/' + href
@@ -26,6 +30,15 @@ export function reloadLocation(href) {
         return
     }
     window.location.href = href
+}
+
+export function hrefClick(e) {
+    if (process.env.MOBILE_APP) {
+        const { href } = e.target
+        if (!href) return
+        e.preventDefault()
+        reloadLocation(href)
+    }
 }
 
 //... and this processes such reloads:

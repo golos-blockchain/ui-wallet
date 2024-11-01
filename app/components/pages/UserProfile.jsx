@@ -449,9 +449,12 @@ export default class UserProfile extends React.Component {
             let kebabMenu = []
             if (isMyAccount) {
                 kebabMenu = [
-                    // invites,
+                    { link: `/@${accountname}/invites`, label: tt('g.invites'), value: tt('g.invites') },
                     ...permissionsMenu,
                 ]
+                if (isXS && isMyAccount) {
+                    kebabMenu.push({ link: `/@${accountname}/settings`, label: tt('g.settings'), value: tt('g.settings') })
+                }
             }
             if (hideBlog) {
                 kebabMenu = [
@@ -530,7 +533,7 @@ export default class UserProfile extends React.Component {
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
                             <Icon name='new/envelope' /> <NotifiCounter fields='message' />
                         </a> : null}
-                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
+                        {isMyAccount && !isXS && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
                             <Icon name='new/setting' />
                         </Link>}
                         {kebab}

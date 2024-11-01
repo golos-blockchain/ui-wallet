@@ -9,6 +9,7 @@ import Callout from 'app/components/elements/Callout';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Tooltip from 'app/components/elements/Tooltip';
 import { blogsUrl } from 'app/utils/blogsUtils'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 
 class FilledOrders extends Component {
     constructor(props) {
@@ -58,7 +59,7 @@ class FilledOrders extends Component {
                 {text}
             </td>
             <td>
-                <a href={`/market/${sym1}/${sym2}`}>{`${sym1}/${sym2}`}</a>
+                <a href={`/market/${sym1}/${sym2}`} onClick={hrefClick}>{`${sym1}/${sym2}`}</a>
             </td>
         </tr>);
     }
@@ -76,10 +77,10 @@ class FilledOrders extends Component {
         return (
             <div>
                 <span style={{float: 'right', fontSize: '85%', marginLeft: '20px'}}>
-                    <a href='/rating' className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
+                    <a href='/rating' onClick={hrefClick} className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
                 </span>
                 <span style={{float: 'right', fontSize: '85%'}}>
-                    <a href='/convert/GOLOS/YMUSDT' className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
+                    <a href='/convert/GOLOS/YMUSDT' onClick={hrefClick} className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
                 </span>
                 <h4 className='uppercase'>{tt('filled_orders_jsx.title')}</h4>
                 <div className="column secondary">
@@ -92,7 +93,7 @@ class FilledOrders extends Component {
                 </table>) : null}
                 {!history.length ? (<Callout>{tt('filled_orders_jsx.empty_NAME', {
                     NAME: account ? account.name : '',
-                })}<a href='/market/GOLOS/YMUSDT'>{tt('filled_orders_jsx.empty2')}</a>.</Callout>) : null}
+                })}<a href='/market/GOLOS/YMUSDT' onClick={hrefClick}>{tt('filled_orders_jsx.empty2')}</a>.</Callout>) : null}
             </div>);
     }
 }

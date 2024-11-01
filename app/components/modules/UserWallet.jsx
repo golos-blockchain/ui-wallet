@@ -20,6 +20,7 @@ import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMe
 import LiteTooltip from 'app/components/elements/LiteTooltip'
 import { blogsUrl } from 'app/utils/blogsUtils'
 import { markNotificationReadWs } from 'app/utils/NotifyApiClient'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -564,9 +565,11 @@ class UserWallet extends React.Component {
                     }
                     <div>{isMyAccount ? <a
                         href='/convert/YMRUB/GOLOS?buy'
+                        onClick={hrefClick}
                         target='_blank'
                         rel='nofollow noreferrer'
                         className="button tiny hollow"
+                        style={{ marginBottom: '0px' }}
                     >{tt('g.buy')}</a> : null}</div>
                 </div>
             </div>

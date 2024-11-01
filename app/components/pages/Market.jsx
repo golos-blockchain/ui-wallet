@@ -15,7 +15,7 @@ import Icon from 'app/components/elements/Icon';
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import DropdownMenu from 'app/components/elements/DropdownMenu';
 
-import { reloadLocation } from 'app/utils/app/RoutingUtils'
+import { reloadLocation, hrefClick } from 'app/utils/app/RoutingUtils'
 import Order from 'app/utils/market/Order'
 import TradeHistory from 'app/utils/market/TradeHistory'
 import { roundUp, roundDown, normalizeAssets } from 'app/utils/market/utils'
@@ -536,7 +536,7 @@ class Market extends Component {
                 </div>
                 <div className="row">
                     <div className="column small-12">
-                    <p className="text-center"><Icon name="info_o" /> <small>Новый интерфейс на <a target="_blank" href="https://dex.golos.app">dex.golos.app</a> или <a target="_blank" href="https://gls.exchange">gls.exchange</a>, а также иные <a href="/exchanges">способы обмена токенов</a>.</small></p>
+                    <p className="text-center"><Icon name="info_o" /> <small>Новый интерфейс на <a target="_blank" href="https://dex.golos.app">dex.golos.app</a> или <a target="_blank" href="https://gls.exchange">gls.exchange</a>, а также иные <a href="/exchanges" onClick={hrefClick}>способы обмена токенов</a>.</small></p>
                     </div>
                 </div>
                 <div className="row">
