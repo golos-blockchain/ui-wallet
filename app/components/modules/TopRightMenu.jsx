@@ -175,7 +175,6 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                 <li className="delim show-for-medium" />
                 {topbutton}
                 {goBlogs}
-                {!vertical && goBlogsPencil}
                 <li className="delim show-for-medium" />
                 <LinkWithDropdown
                     closeOnClickOutside

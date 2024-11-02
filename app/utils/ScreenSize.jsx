@@ -28,7 +28,6 @@ export const withScreenSize = (WrappedComponent) => {
         }
 
         updateSize = () => {
-            console.log('updateSize')
             this.setState({
                 _isSmall: isScreenS(),
                 _isXSmall: isScreenXS(),

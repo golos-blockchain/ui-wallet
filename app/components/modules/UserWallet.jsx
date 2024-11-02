@@ -18,6 +18,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDay, vsEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
+import BalanceHeader from 'app/components/elements/BalanceHeader'
 import { blogsUrl } from 'app/utils/blogsUtils'
 import { markNotificationReadWs } from 'app/utils/NotifyApiClient'
 import { hrefClick } from 'app/utils/app/RoutingUtils'
@@ -97,15 +98,10 @@ class UserWallet extends React.Component {
 
     render() {
         const LIQUID_TOKEN = tt('token_names.LIQUID_TOKEN')
-        const LIQUID_TOKEN_UPPERCASE = tt('token_names.LIQUID_TOKEN_UPPERCASE')
         const DEBT_TOKEN = tt('token_names.DEBT_TOKEN')
         const DEBT_TOKENS = tt('token_names.DEBT_TOKENS')
         const VESTING_TOKEN =  tt('token_names.VESTING_TOKEN')
         const VESTING_TOKEN2 = tt('token_names.VESTING_TOKEN2')
-        const VESTING_TOKENS = tt('token_names.VESTING_TOKENS')
-        const TOKEN_WORTH = tt('token_names.TOKEN_WORTH')
-        const TIP_TOKEN = tt('token_names.TIP_TOKEN')
-        const CLAIM_TOKEN = tt('token_names.CLAIM_TOKEN')
 
         const {showDeposit, depositType, toggleDivestError} = this.state
         const { showConvertDialog, price_per_golos, savings_withdraws, account, current_user, isS, } = this.props;
@@ -311,9 +307,6 @@ class UserWallet extends React.Component {
         const steem_orders_balance_str = numberWithCommas(steemOrders.toFixed(3)) + ' ' + LIQUID_TICKER;
         const sbd_orders_balance_str = numberWithCommas(sbdOrders.toFixed(3)) + ' ' + DEBT_TICKER;
 
-        const steemTip = tt('tips_js.tradeable_tokens_that_may_be_transferred_anywhere_at_anytime') + ' ' + tt('tips_js.LIQUID_TOKEN_can_be_converted_to_VESTING_TOKEN_in_a_process_called_powering_up', {LIQUID_TOKEN, VESTING_TOKEN2, VESTING_TOKENS});
-        const powerTip = tt('tips_js.influence_tokens_which_give_you_more_control_over', {VESTING_TOKEN, VESTING_TOKENS});
-
         const savings_menu = [
             { value: tt('userwallet_jsx.withdraw_LIQUID_TOKEN', {LIQUID_TOKEN}), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'Savings Withdraw' ) },
         ]
@@ -322,7 +315,6 @@ class UserWallet extends React.Component {
         ]
         // set dynamic secondary wallet values
         let sbdInterest = this.props.sbd_interest / 100
-        const sbdMessage = <span>{tt('userwallet_jsx.tokens_worth_about_1_of_LIQUID_TICKER', {TOKEN_WORTH, LIQUID_TICKER, sbdInterest})}</span>
 
         let EMISSION_STAKE = accuEmissionPerDay(account, gprops)
         // fix because payments are per hour
@@ -415,29 +407,14 @@ class UserWallet extends React.Component {
             gbgTip = tt('tips_js.savings_interest')
         }
 
-        let tipTip = <React.Fragment>
-            <span className="secondary">{tt('tips_js.tip_balance_hint')}</span>
-        </React.Fragment>
-
-        let gpTip = <React.Fragment>
-            <span className="secondary">{powerTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}
-            <Link to="/workers">{tt('userwallet_jsx.worker_foundation')}</Link> | {tt('userwallet_jsx.top_dpos')} <a target="_blank" rel="noopener noreferrer" href="https://dpos.space/golos/top/gp">dpos.space <Icon name="extlink" /></a> {tt('g.and')} <a target="_blank" rel="noopener noreferrer" href="https://pisolog.net/stats/accounts/allaccounts">pisolog.net <Icon name="extlink" /></a></span>
-        </React.Fragment>
-
-        let golosTip = <React.Fragment>
-            <span className="secondary">{steemTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}</span>
-        </React.Fragment>
-
-        let savingsTip = <React.Fragment>
-            <span className="secondary">{tt('transfer_jsx.balance_subject_to_3_day_withdraw_waiting_period')}</span>
-        </React.Fragment>
-
         steem_balance_str = <span className='main-balance'>{steem_balance_str}</span>
         steem_tip_balance_str = <span className='main-balance'>{steem_tip_balance_str}</span>
         power_balance_str = <span className='main-balance'>{power_balance_str}</span>
         savings_balance_str = <span className='main-balance'>{savings_balance_str}</span>
         sbd_balance_str = <span className='main-balance'>{sbd_balance_str}</span>
         savings_sbd_balance_str = <span className='main-balance'>{savings_sbd_balance_str}</span>
+
+        const { ClaimBalance, TipBalance, VestingBalance, GolosBalance, GbgBalance, SavingsBalance } = BalanceHeader
 
         return (<div className={"UserWallet top-margin" + (isS ? ' small-screen' : '')}>
             {accountIdleness && <Callout>
@@ -450,8 +427,7 @@ class UserWallet extends React.Component {
 
             {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {CLAIM_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#nakopitelnyi-balans">(?)</a></small></span><br />
-                    {isS ? null : <span className="secondary">{claim_hint}</span>}
+                    <ClaimBalance tipText={claim_hint} isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     <span className='main-balance'>{steem_claim_balance_str}</span>
@@ -469,8 +445,7 @@ class UserWallet extends React.Component {
             </div> : null}
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {TIP_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#tip-balans">(?)</a></small></span><br />
-                    {isS ? null : tipTip}
+                    <TipBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -489,8 +464,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">                    
-                    {VESTING_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#sila-golosa">(?)</a></small></span><br />
-                    {isS ? null : gpTip}
+                    <VestingBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {aprTIP}
@@ -529,8 +503,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {LIQUID_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#golos">(?)</a></small></span><br />
-                    {isS ? null : golosTip}
+                    <GolosBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -575,8 +548,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {DEBT_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#zolotoi">(?)</a></small></span><br />
-                    {isS ? null : <span className="secondary">{sbdMessage}</span>}
+                    <GbgBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -606,8 +578,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {tt('userwallet_jsx.savings')} <br />
-                    {isS ? null : savingsTip}
+                    <SavingsBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
