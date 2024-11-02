@@ -528,7 +528,7 @@ class UserWallet extends React.Component {
                 </div>
             </div>
             <div className="UserWallet__balance row">
-                <div className="column small-12 medium-8">
+                <div className="column small-12 medium-8" title='Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it Test it '>
                     {LIQUID_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#golos">(?)</a></small></span><br />
                     {isS ? null : golosTip}
                 </div>
