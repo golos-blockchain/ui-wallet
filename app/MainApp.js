@@ -108,10 +108,8 @@ async function initState() {
         const doUpdate = Math.random() > 0.5
         if (doUpdate) {
             try {
-                alert('Check updates.')
                 const now = Date.now()
                 $STM_Config.add_notify_site = await checkUpdates()
-                alert((Date.now() - now) + ' ms')
             } catch (err) {
                 console.error('Cannot check updates', err)
                 clearTimeout(splashTimeout)

@@ -8,6 +8,7 @@ import AppPropTypes from 'app/utils/AppPropTypes';
 import Header from 'app/components/modules/Header';
 import Footer from 'app/components/modules/Footer';
 import NewsPopups from 'app/components/elements/NewsPopups'
+import BackButtonController from 'app/components/elements/app/BackButtonController'
 import URLLoader from 'app/components/elements/app/URLLoader';
 import TooltipManager from 'app/components/elements/common/TooltipManager';
 import user from 'app/redux/User';
@@ -355,6 +356,15 @@ class App extends React.Component {
                 <GlobalStyle />
                 {process.env.IS_APP ? <URLLoader /> : null}
                 <NotifyPolling />
+                {process.env.IS_APP ? <BackButtonController handle={({ goBack, goHome }) => {
+                    const { pathname } = location
+                    if (pathname === '/' || pathname.endsWith('/transfers') || pathname.endsWith('/transfers/') ||
+                        (pathname.split('/').length === 2 && pathname.startsWith('/@'))) {
+                        navigator.app.exitApp()
+                        return
+                    }
+                    reloadLocation('/')
+                }} /> : null}
             </div>
 
         );

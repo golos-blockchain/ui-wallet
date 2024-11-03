@@ -34,7 +34,13 @@ export function reloadLocation(href) {
 
 export function hrefClick(e) {
     if (process.env.MOBILE_APP) {
-        const { href, target } = e.target
+        let node, href, target    
+        do {
+            node = node ? node.parentNode : e.target
+            if (!node) break
+            href = node.href
+            target = node.target
+        } while (!href)
         if (!href) return
         e.preventDefault()
         if (target === 'blank' || target === '_blank') {
