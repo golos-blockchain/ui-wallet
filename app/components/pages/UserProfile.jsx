@@ -73,7 +73,12 @@ export default class UserProfile extends React.Component {
             np.location.pathname !== this.props.location.pathname ||
             np.routeParams.accountname !== this.props.routeParams.accountname ||
             np.isS !== this.props.isS ||
-            np.isXS !== this.props.isXS ||
+            np.hideMainMe !== this.props.hideMainMe ||
+            np.hideBlogMe !== this.props.hideBlogMe ||
+            np.hideRewardsMe !== this.props.hideRewardsMe ||
+            np.hideMainFor !== this.props.hideMainFor ||
+            np.hideBlogFor !== this.props.hideBlogFor ||
+            np.hideRewardsFor !== this.props.hideRewardsFor ||
             ns.repLoading !== this.state.repLoading
         )
     }
@@ -152,7 +157,8 @@ export default class UserProfile extends React.Component {
 
     render() {
         const {
-            props: {current_user, current_account, wifShown, global_status, isS, isXS, },
+            props: {current_user, current_account, wifShown, global_status,
+            isS, hideMainMe, hideBlogMe, hideRewardsMe, hideMainFor, hideBlogFor, hideRewardsFor, },
             onPrint
         } = this;
         let { accountname, section, id, action } = this.props.routeParams;
@@ -415,55 +421,51 @@ export default class UserProfile extends React.Component {
           accountjoin = transferFromSteemToGolosDate;
         }
 
-        let hideBlog = isMyAccount && isXS
-        let hideRewards = isMyAccount ? isS : isXS
+        let hideBlog = isMyAccount ? hideBlogMe : hideBlogFor
+        let hideRewards = isMyAccount ? hideRewardsMe : hideRewardsFor
         let blogCounter = isMyAccount && <NotifiCounter fields='comment_reply,mention,referral' />
         let blog
         if (!hideBlog) {
-            if (hideRewards) {
-                let blogMenu = [
-                    //blig,
-                    ...rewardsMenu
-                ]
-                blog = <LinkWithDropdown
-                    closeOnClickOutside
-                    dropdownPosition='bottom'
-                    dropdownAlignment={this.state.linksAlign}
-                    dropdownContent={<VerticalMenu items={blogMenu} />}
-                    >
-                    <a className={`${rewardsClass} UserProfile__menu-item`}>
-                        {tt('g.blog')}
-                        {blogCounter}
-                        <Icon name='dropdown-center' />
-                    </a>
-                </LinkWithDropdown>
-            } else if (!hideBlog) {
-                blog = <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
-                    {tt('g.blog')} {blogCounter}
-                </a>
-            }
+            blog = <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
+                {tt('g.blog')} {blogCounter}
+            </a>
         }
 
+        const hideMain = isMyAccount ? hideMainMe : hideMainFor
+
         let kebab
-        if (isS) {
+        let kebabNotify = ''
+        if (hideMain) {
             let kebabMenu = []
             if (isMyAccount) {
                 kebabMenu = [
                     { link: `/@${accountname}/invites`, label: tt('g.invites'), value: tt('g.invites') },
                     ...permissionsMenu,
                 ]
-                if (isXS && isMyAccount) {
+                if (isMyAccount) {
                     kebabMenu.push({ link: `/@${accountname}/settings`, label: tt('g.settings'), value: tt('g.settings') })
                 }
             }
-            if (hideBlog) {
+            if (hideRewards) {
                 kebabMenu = [
-                    // blog
                     ...rewardsMenu,
-                    // ---
+                    { value: '-' },
                     ...kebabMenu,
                 ]
+                kebabNotify += ',donate,donate_msgs'
             }
+            if (hideBlog) {
+                kebabMenu = [
+                    { link: blogsUrl(`/@`) + accountname, target: blogsTarget(), label: tt('g.blog'), value: tt('g.blog'), addon: blogCounter },
+                    { value: '-' },
+                    ...kebabMenu,
+                ]
+                kebabNotify += ',comment_reply,mention,referral'
+            }
+            if (kebabMenu.length) {
+                if (kebabMenu[kebabMenu.length - 1].value === '-') kebabMenu.pop()
+            }
+            if (kebabNotify[0] === ',') kebabNotify = kebabNotify.slice(1)
             kebab = kebabMenu.length ? <LinkWithDropdown
                 closeOnClickOutside
                 dropdownPosition='bottom'
@@ -472,6 +474,7 @@ export default class UserProfile extends React.Component {
                 >
                 <a className={`UserProfile__menu-item`}>
                     <Icon name='new/more' />
+                    {kebabNotify ? <NotifiCounter fields={kebabNotify} /> : null}
                 </a>
             </LinkWithDropdown> : null
         }
@@ -483,7 +486,7 @@ export default class UserProfile extends React.Component {
                         {tt('g.balances')}
                     </Link>
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
-                        {isS ? tt('g.assets2') : tt('g.assets')}
+                        {hideMain ? tt('g.assets2') : tt('g.assets')}
                     </Link>
                     <div>
                         <LinkWithDropdown
@@ -502,10 +505,10 @@ export default class UserProfile extends React.Component {
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
-                    {!isS && isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
+                    {!hideMain && isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
                         {tt('g.invites')}
                     </Link>}
-                    {!isS && isMyAccount && <LinkWithDropdown
+                    {!hideMain && isMyAccount && <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
                         dropdownAlignment={this.state.linksAlign}
@@ -518,7 +521,7 @@ export default class UserProfile extends React.Component {
                     <div className='UserProfile__filler' />
                     <div>
                         {blog}
-                        {(isMyAccount ? isS : isXS) ? null : <LinkWithDropdown
+                        {hideRewards ? null : <LinkWithDropdown
                             closeOnClickOutside
                             dropdownPosition='bottom'
                             dropdownAlignment={this.state.linksAlign}
@@ -533,7 +536,7 @@ export default class UserProfile extends React.Component {
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
                             <Icon name='new/envelope' /> <NotifiCounter fields='message' />
                         </a> : null}
-                        {isMyAccount && !isXS && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
+                        {isMyAccount && !hideMain && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
                             <Icon name='new/setting' />
                         </Link>}
                         {kebab}

@@ -5,8 +5,16 @@ const isScreenS = () => {
     return res
 }
 
-const isScreenXS = () => {
-    const res = window.matchMedia('screen and (max-width: 27.0em)').matches
+const hideMainMe = '925px'
+const hideBlogMe = '600px'
+const hideRewardsMe = '520px'
+
+const hideMainFor = '404px'
+const hideBlogFor = '354px'
+const hideRewardsFor = '330px'
+
+const isSmaller = (val) => {
+    const res = window.matchMedia('screen and (max-width: ' + val + ')').matches
     return res
 }
 
@@ -30,15 +38,27 @@ export const withScreenSize = (WrappedComponent) => {
         updateSize = () => {
             this.setState({
                 _isSmall: isScreenS(),
-                _isXSmall: isScreenXS(),
+                _hideMainMe: isSmaller(hideMainMe),
+                _hideBlogMe: isSmaller(hideBlogMe),
+                _hideRewardsMe: isSmaller(hideRewardsMe),
+                _hideMainFor: isSmaller(hideMainFor),
+                _hideBlogFor: isSmaller(hideBlogFor),
+                _hideRewardsFor: isSmaller(hideRewardsFor),
             })
         }
 
         render() {
+            const { _hideMainMe, _hideBlogMe, _hideRewardsMe,
+                _hideMainFor, _hideBlogFor, _hideRewardsFor } = this.state
             return (
                 <WrappedComponent
                     isS={this.state._isSmall}
-                    isXS={this.state._isXSmall}
+                    hideMainMe={_hideMainMe}
+                    hideBlogMe={_hideBlogMe}
+                    hideRewardsMe={_hideRewardsMe}
+                    hideMainFor={_hideMainFor}
+                    hideBlogFor={_hideBlogFor}
+                    hideRewardsFor={_hideRewardsFor}
                     {...this.props}
                 />
             )
