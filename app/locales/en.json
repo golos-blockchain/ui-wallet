@@ -1265,6 +1265,8 @@
     "convert_to_VESTING_TOKEN": "Convert to %(VESTING_TOKEN2)s",
     "balance_subject_to_3_day_withdraw_waiting_period": "Balance subject to 3 day withdraw waiting period.",
     "move_funds_to_another_account": "Move funds to another account.",
+    "move_to_tip": "Top up TIP-balance from main one.",
+    "tip_to_liquid_uia": "Transfer from TIP to main balance.",
     "form_title": "Send to user",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Protect funds by requiring a 3 day withdraw waiting period.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Withdraw funds after the required 3 day waiting period.",

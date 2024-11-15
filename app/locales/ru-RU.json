@@ -922,6 +922,8 @@
     "balance_subject_to_3_day_withdraw_waiting_period": "Вывод токенов из сейфа на обычный баланс занимает 3 дня.",
     "form_title": "Передать пользователю",
     "move_funds_to_another_account": "Отправить средства на другой счет.",
+    "move_to_tip": "Пополнить TIP-баланс с основного.",
+    "tip_to_liquid_uia": "Перевести средства с TIP-баланса на основной.",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Защитите средства от вывода 3-х дневным периодом ожидания.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Снять средства после необходимого 3-х дневного периода ожидания.",
     "issue_uia": "Выпустить токены",

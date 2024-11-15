@@ -76,6 +76,8 @@ export default class UserProfile extends React.Component {
             np.hideMainMe !== this.props.hideMainMe ||
             np.hideBlogMe !== this.props.hideBlogMe ||
             np.hideRewardsMe !== this.props.hideRewardsMe ||
+            np.hideUiaInfo !== this.props.hideUiaInfo ||
+            np.smallUias !== this.props.smallUias ||
             np.hideMainFor !== this.props.hideMainFor ||
             np.hideBlogFor !== this.props.hideBlogFor ||
             np.hideRewardsFor !== this.props.hideRewardsFor ||
@@ -158,7 +160,8 @@ export default class UserProfile extends React.Component {
     render() {
         const {
             props: {current_user, current_account, wifShown, global_status,
-            isS, hideMainMe, hideBlogMe, hideRewardsMe, hideMainFor, hideBlogFor, hideRewardsFor, },
+            isS, hideMainMe, hideBlogMe, hideRewardsMe, hideMainFor, hideBlogFor, hideRewardsFor,
+            hideUiaInfo, smallUias, },
             onPrint
         } = this;
         let { accountname, section, id, action } = this.props.routeParams;
@@ -249,8 +252,10 @@ export default class UserProfile extends React.Component {
 
                 <br />
                 {!action && <Assets account={accountImm} isMyAccount={isMyAccount}
-                    showTransfer={this.props.showTransfer} />
-                }
+                    showTransfer={this.props.showTransfer}
+                    isS={isS} hideRewardsMe={hideRewardsMe}
+                    hideUiaInfo={hideUiaInfo} smallUias={smallUias}
+                />}
                 {action === 'update' && <UpdateAsset account={accountImm} symbol={id.toUpperCase()} />}
                 {action === 'transfer' && <TransferAsset account={accountImm} symbol={id.toUpperCase()} />}
                 </div>

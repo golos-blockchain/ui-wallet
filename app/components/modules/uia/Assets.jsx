@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux';
 import { Link } from 'react-router';
+import cn from 'classnames'
 import tt from 'counterpart';
 import { Asset } from 'golos-lib-js/lib/utils';
 
@@ -15,18 +16,23 @@ import DialogManager from 'app/components/elements/common/DialogManager';
 import Icon from 'app/components/elements/Icon';
 import Author from 'app/components/elements/Author';
 import Button from 'app/components/elements/Button';
+import LiteTooltip from 'app/components/elements/LiteTooltip'
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import AssetRules from 'app/components/modules/uia/AssetRules';
 import Reveal from 'react-foundation-components/lib/global/reveal';
 import Tooltip from 'app/components/elements/Tooltip';
 import { normalizeAssets, getTradablesFor } from 'app/utils/market/utils'
 import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
-import { reloadLocation } from 'app/utils/app/RoutingUtils'
+import { reloadLocation, hrefClick, } from 'app/utils/app/RoutingUtils'
 
 class Assets extends Component {
     static propTypes = {
         // HTML
         account: PropTypes.object.isRequired,
+        isS: PropTypes.bool,
+        hideRewardsMe: PropTypes.bool,
+        hideUiaInfo: PropTypes.bool,
+        smallUias: PropTypes.bool,
     }
 
     constructor() {
@@ -74,7 +80,7 @@ class Assets extends Component {
     }
 
     render() {
-        const {account, isMyAccount} = this.props
+        const { account, isMyAccount, isS, hideRewardsMe, hideUiaInfo, smallUias } = this.props
         const account_name = account.get('name');
 
         const { assetRules, showAssetRules, } = this.state;
@@ -124,7 +130,8 @@ class Assets extends Component {
         const presorted = []
         for (const [sym, item] of Object.entries(assets)) {
             item.parsed = Asset(item.balance)
-            item.parsed_sum = item.parsed.plus(Asset(item.tip_balance)).plus(Asset(item.market_balance))
+            item.parsed_tip = Asset(item.tip_balance)
+            item.parsed_sum = item.parsed.plus(item.parsed_tip).plus(Asset(item.market_balance))
             item.parsed_sum = parseFloat(item.parsed_sum.amountFloat)
             item.hideMe = !item.parsed_sum && !item.myCreated && $STM_Config.hidden_assets && $STM_Config.hidden_assets[sym]
             presorted.push([sym, item])
@@ -177,7 +184,7 @@ class Assets extends Component {
 
             if (telegram) {
                 telegram = 'https://t.me/' + encodeURIComponent(telegram)
-                telegram = <a href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px', fill: 'gray' }}>
+                telegram = <a onTouchStart={hrefClick} href={telegram} target='_blank' rel='nofollow noreferrer' style={{ marginLeft: '6px', fill: 'gray' }}>
                     <Icon name='new/telegram' title="Telegram" />
                 </a>
             }
@@ -210,41 +217,97 @@ class Assets extends Component {
 
             const convertDirection = item.parsed.amount ? 'sell' : 'buy'
 
+            const assetInfo = <span className={cn("Assets__info", {
+                small: hideUiaInfo
+            })}>
+                {tt('assets_jsx.creator')}: {hideUiaInfo ? <Link to={'/@' + item.creator} onTouchStart={hrefClick}>
+                    {item.creator}
+                </Link> : <Author author={item.creator} follow={false} />}{telegram}<br/>
+                {tt('market_jsx.market_fee_percent_').trim() + ': ' + longToAsset(item.fee_percent, '', 2).trim() + '%'}<br/>
+                {tt('assets_jsx.supply_count')}:<br/>
+                {item.supply}
+            </span>
+
+            let assetIcons = [
+                <a key='mute' data-sym={sym} onClick={this.muteAsset}><Icon name="eye_gray" size={smallUias ? '1x' : '0_95x'} title={tt('assets_jsx.mute_asset')} /></a>,
+            ]
+            if (hideUiaInfo) {
+                assetIcons.unshift(
+                    <LiteTooltip key='info' t={assetInfo}>
+                        <Icon name="info_o" size={'1x'} />
+                    </LiteTooltip>
+                )
+            }
+
+            const makeBal = (bal) => {
+                if (smallUias) {
+                    bal = bal.split(' ')
+                    bal = <span className='uia-balance'>{bal[0] + ' '}</span>
+                }
+                return bal
+            }
+
+            let tipBal = makeBal(item.tip_balance)
+            let bal = makeBal(item.balance)
+            tipBal = <React.Fragment>
+                {(isMyAccount && !item.allow_override_transfer) ? <FoundationDropdownMenu
+                    dropdownPosition="bottom"
+                    dropdownAlignment="right"
+                    label={tipBal}
+                    menu={tip_menu}
+                /> : tipBal}
+                <br/><small>{tt('assets_jsx.tip_balance')}</small>
+            </React.Fragment>
+
+            const convertBtn = isMyAccount
+                ? <ConvertAssetsBtn sym={sym} disabled={!tradables[0].length} direction={convertDirection} />
+                : undefined
+
+            const balIcon = tradable_with_golos ?
+                <Link style={{fill: "#3e7bc6"}} to={"/market/"+sym+"/GOLOS"}>
+                    <Icon name="trade" title={tt('assets_jsx.trade_asset')} />
+                </Link> : null
+
             my_assets.push(<tr key={sym}>
-                <td>
+                <td style={{ width: smallUias ? '100px' : undefined }}>
                 {description.length ? (<a target="_blank" href={description} rel="noopener noreferrer">
-                {image_url.length ? (<img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>) : null}{sym}</a>) : null}
-                {!description.length ? (<span><img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>{sym}</span>) : null}
-                &nbsp;&nbsp;<span><a data-sym={sym} onClick={this.muteAsset}><Icon name="eye_gray" size="0_95x" title={tt('assets_jsx.mute_asset')} /></a></span>
+                {image_url.length ? (<img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>) : null}{!smallUias && sym}</a>) : null}
+                {!description.length ? (<span><img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>{!smallUias && sym}</span>) : null}
+                {smallUias ? <div>{sym}</div> : <React.Fragment>&nbsp;&nbsp;</React.Fragment>}
+                <div className={cn('Assets__icon_btns', { small: smallUias })}>{assetIcons}</div>
                     <div className="Assets__marginTop2">
-                    {(isMyAccount && item.creator == account_name) && <Link to={`/@${account_name}/assets/${sym}/update`} className="button tiny">
+                    {(isMyAccount && item.creator !== account_name) && <Link to={`/@${account_name}/assets/${sym}/update`}
+                        className={cn("button tiny ", {
+                            'small-margin-bottom': true,
+                            'hollow': hideUiaInfo
+                        })}>
                         {tt('assets_jsx.update_btn')}
                     </Link>}
                     &nbsp;&nbsp;
-                    {(isMyAccount && item.creator == account_name) ? <button
-                        className="button tiny"
+                    {(isMyAccount && item.creator !== account_name) ? <button
+                        className={cn("button tiny", {
+                            'small-margin-bottom': true,
+                        })}
                         onClick={showTransfer.bind(this, account_name, sym, item.precision, 'Issue UIA')}
                     >
                         {tt('assets_jsx.issue_btn')}
                     </button> : null}</div>
                 </td>
                 <td>
-                    {isMyAccount
-                        ? <ConvertAssetsBtn sym={sym} disabled={!tradables[0].length} direction={convertDirection} />
-                        : undefined
-                    }
+                    {smallUias ? null : convertBtn}
                     {isMyAccount ? <FoundationDropdownMenu
                             dropdownPosition="bottom"
                             dropdownAlignment="right"
-                            label={item.balance}
+                            label={bal}
                             menu={balance_menu}
-                        /> : item.balance}
+                        /> : bal}
+                    {smallUias && convertBtn}
                     {orders ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={"/market/" + sym} onClick={e => showOpenOrders(e, sym)}>
                                 <small><Tooltip t={tt('market_jsx.open_orders')}>+ {ordersStr}</Tooltip></small>
                             </Link>
                           </div> : <br/>}
-                    {tradable_with_golos ? <Link style={{fill: "#3e7bc6"}} to={"/market/"+sym+"/GOLOS"}><Icon name="trade" title={tt('assets_jsx.trade_asset')} /></Link> : null}&nbsp;<small>{tt('assets_jsx.balance')}</small>
+                    {!smallUias && balIcon}{!smallUias && <small style={{ marginLeft: '5px' }}>{tt('assets_jsx.balance')}</small>}
                     {isMyAccount && hasDeposit && <button
                         onClick={() => showDeposit(sym, item.creator, deposit)}
                         disabled={depositDisabled}
@@ -255,37 +318,26 @@ class Assets extends Component {
                         disabled={withdrawalDisabled}
                         title={withdrawalDisabled}
                         className='button tiny Assets__inlineBtn'>{tt('assets_jsx.withdrawal')}</button>}
+                    {smallUias && <div style={{ marginTop: '0.5rem'}}>{tipBal}</div>}
                 </td>
-                <td title={item.allow_override_transfer ? tt('assets_jsx.overridable_no_tip') : ''} className={item.allow_override_transfer ? 'Assets__disabled' : ''}>
-
-                    {(isMyAccount && !item.allow_override_transfer) ? <FoundationDropdownMenu
-                            dropdownPosition="bottom"
-                            dropdownAlignment="right"
-                            label={item.tip_balance}
-                            menu={tip_menu}
-                        /> : item.tip_balance}
-                <br/><small>{tt('assets_jsx.tip_balance')}</small>
-                </td>
-                <td>
-                    <span className="Assets__info">
-                    {tt('assets_jsx.creator')}: <Author author={item.creator} follow={false} />{telegram}<br/>
-                    {tt('market_jsx.market_fee_percent_').trim() + ': ' + longToAsset(item.fee_percent, '', 2).trim() + '%'}<br/>
-                    {tt('assets_jsx.supply_count')}:<br/>
-                    {item.supply}
-                    </span>
-                </td>
+                {!smallUias && <td title={item.allow_override_transfer ? tt('assets_jsx.overridable_no_tip') : ''} className={item.allow_override_transfer ? 'Assets__disabled' : ''}>
+                    {tipBal}
+                </td>}
+                {!hideUiaInfo && <td>
+                    {assetInfo}
+                </td>}
             </tr>);
         }
         return (<div>
-            <div className="row">
+            {hideUiaInfo ? null : <div className="row">
                 <div className="column secondary">
                     {tt('assets_jsx.assets_info')} <a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name="extlink" size="1_5x" />
                 <hr />
                 </div>
-            </div>
+            </div>}
             <div className="row">
                 <div className="column small-12">
-                    <h4 className="Assets__header">{this.state.show_full_list ? tt('assets_jsx.all_assets') : tt('assets_jsx.my_assets')}</h4>
+                    {!hideRewardsMe && <h4 className="Assets__header">{this.state.show_full_list ? tt('assets_jsx.all_assets') : tt('assets_jsx.my_assets')}</h4>}
                     <Link style={{marginLeft: "5px"}} to={`/convert/GOLOS/YMUSDT`} className="button float-right">
                         {tt('filled_orders_jsx.quick_convert')}
                     </Link>
