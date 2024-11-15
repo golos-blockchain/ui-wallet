@@ -130,14 +130,21 @@ async function initState() {
             }
         }
 
-        let nodeError = null
+        let nodeError
+        if (!isSettings()) {
+            try {
+                await golos.api.getAccountsAsync(['null'])
+            } catch (err) {
+                console.error(err)
+                nodeError = err
+            }
+        }
 
         clearTimeout(splashTimeout)
         closeSplash()
 
         if (nodeError) {
             showNodeError()
-            throw nodeError
         }
 
         return initialState
