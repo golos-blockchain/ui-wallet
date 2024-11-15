@@ -479,7 +479,7 @@ export default class UserProfile extends React.Component {
                 >
                 <a className={`UserProfile__menu-item`}>
                     <Icon name='new/more' />
-                    {kebabNotify ? <NotifiCounter fields={kebabNotify} /> : null}
+                    {(kebabNotify && isMyAccount) ? <NotifiCounter fields={kebabNotify} /> : null}
                 </a>
             </LinkWithDropdown> : null
         }

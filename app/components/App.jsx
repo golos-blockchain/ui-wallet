@@ -185,6 +185,16 @@ class App extends React.Component {
         }
     }
 
+    componentDidCatch(err, info) {
+        const errStr = (err && err.toString()) ? err.toString() : JSON.stringify(err)
+        const infoStr = (info && info.componentStack) || JSON.stringify(info)
+        if (confirm(';( Ошибка рендеринга. Продолжить работу?\n\n' + errStr + '\n' + infoStr)) {
+            reloadLocation('/')
+            return
+        }
+        throw err
+    }
+
     checkLogin = event => {
         if (event.key === 'autopost2') {
             if (!event.newValue) this.props.logoutUser();
