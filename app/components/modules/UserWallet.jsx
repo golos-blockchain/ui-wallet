@@ -374,11 +374,19 @@ class UserWallet extends React.Component {
             claim_disabled = true
         }
 
-        const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')}>
-            <a href="#" onClick={showPowerCalc}><small>
+        const wrapTooltip = (child, t, props = {}) => {
+            if (process.env.MOBILE_APP) {
+                return child
+            }
+            return <LiteTooltip t={t} {...props}>
+                {child}
+            </LiteTooltip>
+        }
+
+        const emissionStake = wrapTooltip(<a href="#" onClick={showPowerCalc}><small>
                 {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
-            </small></a>
-        </LiteTooltip>
+            </small></a>,
+            tt('tips_js.vesting_emission_per_day_title'))
 
         // general APR, for 10.000 GOLOS Golos Power
         let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
@@ -481,21 +489,21 @@ class UserWallet extends React.Component {
                     <br />
                     {total_received_vesting_shares != 0 ? (
                             <div style={{ paddingRight: isMyAccount ? '0.85rem' : null }} >
-                                <LiteTooltip t={tt('g.received_vesting', {VESTING_TOKEN})}>
+                                {wrapTooltip(
                                     <small><a className='received_vesting' href="#" onClick={showDelegateVestingInfo.bind(this, 'received')}>
                                         + {total_received_vesting_shares_str}
                                         <NotifiCounter fields='delegate_vs' />
-                                    </a></small>
-                                </LiteTooltip>
+                                    </a></small>,
+                                tt('g.received_vesting', {VESTING_TOKEN}))}
                             </div>
                         ) : null}
                     {total_delegated_vesting_shares != 0 ? (
                             <div style={{ paddingRight: isMyAccount ? '0.85rem' : null }} >
-                                <LiteTooltip t={tt('g.delegated_vesting', {VESTING_TOKEN})}>
+                                {wrapTooltip(
                                     <small><a href="#" onClick={showDelegateVestingInfo.bind(this, 'delegated')}>
                                         - {total_delegated_vesting_shares_str}
-                                    </a></small>
-                                </LiteTooltip>
+                                    </a></small>,
+                                tt('g.delegated_vesting', {VESTING_TOKEN}))}
                             </div>
                         ) : null}
                     {isWithdrawScheduled && <div><small><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;{vesting_withdraw_rate_str} {LIQUID_TICKER}&nbsp;<TimeAgoWrapper date={account.get('next_vesting_withdrawal')} /></small></div>}
@@ -523,7 +531,9 @@ class UserWallet extends React.Component {
                     {steemOrders
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/market/GOLOS'} onClick={e => showOpenOrders(e, 'GOLOS')}>
-                                <small><LiteTooltip t={tt('market_jsx.open_orders')}>+ {steem_orders_balance_str}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {steem_orders_balance_str}</React.Fragment>,
+                                    tt('market_jsx.open_orders'))}
+                                </small>
                             </Link>
                          </div>
                         : null
@@ -531,7 +541,9 @@ class UserWallet extends React.Component {
                     {(isMyAccount && nftHold && nftHold.gt(0))
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/@' + account.get('name') + '/nft-orders'} onClick={e => showNftOrders(e)}>
-                                <small><LiteTooltip t={tt('g.nft_orders')}>+ {nftHold.toString()}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {nftHold.toString()}</React.Fragment>,
+                                    tt('g.nft_orders'))}
+                                </small>
                             </Link>
                          </div>
                         : null
@@ -568,7 +580,8 @@ class UserWallet extends React.Component {
                     {sbdOrders 
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/market/GBG'} onClick={e => showOpenOrders(e, 'GBG')}>
-                                <small><LiteTooltip t={tt('market_jsx.open_orders')}>+ {sbd_orders_balance_str}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {sbd_orders_balance_str}</React.Fragment>,
+                                    tt('market_jsx.open_orders'))}</small>
                             </Link>
                           </div>
                         : null
