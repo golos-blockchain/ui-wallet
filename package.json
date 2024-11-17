@@ -150,6 +150,7 @@
     "core-js": "^3.19.1",
     "cross-env": "^7.0.3",
     "folder-hash": "^4.0.4",
+    "gls-wallet-native-core": "file:native_core",
     "jsdom": "^11.11.0",
     "mocha": "^10.1.0",
     "node-watch": "^0.7.1",
@@ -226,7 +227,8 @@
       "cordova-plugin-splashscreen": {},
       "@red-mobile/cordova-plugin-shortcuts-android": {
         "ANDROIDX_CORE_VERSION": "1.3.2"
-      }
+      },
+      "gls-wallet-native-core": {}
     }
   }
 }
