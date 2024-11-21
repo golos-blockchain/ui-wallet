@@ -14,6 +14,7 @@ import { APP_DOMAIN } from 'app/client_config';
 import { translateError } from 'app/utils/ParsersAndFormatters';
 import { authUrl, authRegisterUrl, } from 'app/utils/AuthApiClient';
 import session from 'app/utils/session'
+import LoginAppReminder from 'app/components/elements/app/LoginAppReminder'
 import { openAppSettings } from 'app/components/pages/app/AppSettings'
 
 class LoginForm extends Component {
@@ -257,6 +258,9 @@ class LoginForm extends Component {
                </center>
                <br />
                {form}
+               {(!process.env.MOBILE_APP && !process.env.DESKTOP_APP && !loginBroadcastOperation && !isMemo) && <center>
+                    <LoginAppReminder />
+               </center>}
            </div>
        )
     }

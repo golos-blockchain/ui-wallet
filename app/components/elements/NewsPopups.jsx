@@ -5,6 +5,7 @@ import { api } from 'golos-lib-js'
 
 import CloseButton from 'react-foundation-components/lib/global/close-button'
 
+import Icon from '@elements/Icon';
 import user from 'app/redux/User'
 import { blogsUrl, } from 'app/utils/blogsUtils'
 
@@ -138,6 +139,8 @@ class NewsPopups extends React.Component {
                     }}
                 />
                 {tt('app_reminder.text')}
+                <Icon name='badge-new' size='1_25x' />
+                {tt('app_reminder.text2')}
             </span>
         }
 
