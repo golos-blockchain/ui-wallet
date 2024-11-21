@@ -2,6 +2,8 @@ import React from 'react'
 import tt from 'counterpart'
 import { Formik, Field } from 'formik'
 
+import Icon from 'app/components/elements/Icon'
+
 class AppSettings extends React.Component {
     _onSubmit = (data) => {
         let cfg = { ...$STM_Config }
@@ -22,10 +24,22 @@ class AppSettings extends React.Component {
         cfg.images.use_img_proxy = data.use_img_proxy
         cfg.auth_service.host = data.auth_service
         cfg.notify_service.host = data.notify_service
+        cfg.notify_service.host_ws = data.notify_service_ws
+        if (process.env.MOBILE_APP) {
+            cfg = JSON.stringify(cfg)
+            localStorage.setItem('app_settings', cfg)
+            window.location.href = '/'
+            return
+        }
         window.appSettings.save(cfg)
     }
 
-    _onClose = () => {
+    _onClose = (e) => {
+        e.preventDefault()
+        if (process.env.MOBILE_APP) {
+            window.location.href = '/'
+            return
+        }
         window.close()
     }
 
@@ -36,6 +50,7 @@ class AppSettings extends React.Component {
             use_img_proxy: $STM_Config.images.use_img_proxy,
             auth_service: $STM_Config.auth_service.host,
             notify_service: $STM_Config.notify_service.host,
+            notify_service_ws: $STM_Config.notify_service.host_ws || '',
         }
         this.initialValues = initialValues
     }
@@ -43,6 +58,17 @@ class AppSettings extends React.Component {
     constructor(props) {
         super(props)
         this.makeInitialValues()
+    }
+
+    showLogs = (e) => {
+        e.preventDefault()
+        NativeLogs.getLog(
+            200,
+            false,
+            logs => {
+                alert(logs)
+            }
+        )
     }
 
     _renderNodes(ws_connection_client) {
@@ -81,8 +107,14 @@ class AppSettings extends React.Component {
     }
 
     render() {
+        const { MOBILE_APP } = process.env
         return <div>
-            <h1 style={{marginLeft: '0.5rem', marginTop: '1rem'}}>{tt('g.settings')}</h1>
+            <h1 style={{marginLeft: '0.5rem', marginTop: '1rem'}}>
+                {MOBILE_APP ? <a href='/' style={{ marginRight: '0.5rem' }} onClick={this._onClose}>
+                    <Icon name='chevron-left' />
+                </a> : null}
+                {MOBILE_APP ? tt('app_settings.mobile_title') : tt('g.settings')}
+            </h1>
             <div className='secondary' style={{ paddingLeft: '0.625rem', marginBottom: '0.25rem' }}>
                 {tt('app_settings.to_save_click_button')}
             </div>
@@ -148,6 +180,17 @@ class AppSettings extends React.Component {
                     </div>
                     <div className='row'>
                         <div className='column small-12' style={{paddingTop: 5}}>
+                            {tt('app_settings.notify_service_ws')}
+                            <div className='input-group' style={{marginBottom: '1.25rem'}}>
+                                <Field name='notify_service_ws'
+                                    type='text'
+                                    autoComplete='off'
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    {MOBILE_APP ? null : <div className='row'>
+                        <div className='column small-12' style={{paddingTop: 5}}>
                             {tt('app_settings.elastic_search')}
                             <div className='input-group' style={{marginBottom: '1.25rem'}}>
                                 <Field name='elastic_search'
@@ -156,16 +199,19 @@ class AppSettings extends React.Component {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <div className='row' style={{marginTop: 15}}>
                         <div className='small-12 columns'>
                             <div>
                                 <button type='submit' className='button'>
-                                    {tt('app_settings.save_and_restart')}
+                                    {MOBILE_APP ? tt('g.save') : tt('app_settings.save_and_restart')}
                                 </button>
-                                <button type='button' className='button hollow float-right' onClick={this._onClose}>
+                                {MOBILE_APP ? null :<button type='button' className={'button hollow ' + (MOBILE_APP ? '' : 'float-right')} onClick={this._onClose}>
                                     {tt('app_settings.cancel')}
-                                </button>
+                                </button>}
+                                {MOBILE_APP ? <a href='#' className='float-right' onClick={this.showLogs}>
+                                    {tt('app_settings.logs')}
+                                </a> : null}
                             </div>
                         </div>
                     </div>
@@ -178,4 +224,16 @@ class AppSettings extends React.Component {
 module.exports = {
     path: '/__app_settings',
     component: AppSettings,
+}
+
+module.exports.openAppSettings = function() {
+    if (!process.env.MOBILE_APP) {
+        window.location.href = '/__app_settings'
+        return
+    }
+    const { pathname } = window.location
+    window.location.href = '/#app-settings'
+    if (pathname === '/' && window.appMounted) {
+        window.location.reload() 
+    }
 }

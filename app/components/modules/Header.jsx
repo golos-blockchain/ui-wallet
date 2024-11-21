@@ -140,12 +140,12 @@ class Header extends React.Component {
                     <div className="row align-middle">
                         <div className="columns">
                             <ul className="menu">
-                                <li className="Header__top-logo">
+                                {$STM_Config.logo ? <li className="Header__top-logo">
                                     <Link to={logo_link}><img src={$STM_Config.logo.icon} /></Link>
-                                </li>
-                                <li className="Header__top-steemit show-for-large noPrint">
+                                </li> : null}
+                                {$STM_Config.logo ? <li className="Header__top-steemit show-for-large noPrint">
                                     <Link to={logo_link}><img src={$STM_Config.logo.title} /></Link>
-                                </li>
+                                </li> : null}
                                 <CMCSmall className='show-for-small-only' />
                             </ul>
                         </div>

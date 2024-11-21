@@ -4,6 +4,7 @@ import { libs } from 'golos-lib-js'
 import Icon from 'app/components/elements/Icon'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import tt from 'counterpart'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 
 class CMCBar extends React.Component {
     state = {
@@ -95,7 +96,7 @@ class CMCBar extends React.Component {
                     {price_usd ? price_usd.toFixed(5) + ' $' : null}
                 </span>
                 <span className="CMCBar__link-parent">
-                    <a href="/exchanges" className="CMCBar__link">{tt('g.buy_or_sell')}</a>
+                    <a href="/exchanges" onClick={hrefClick} className="CMCBar__link">{tt('g.buy_or_sell')}</a>
                 </span>
             </span>
             </div>)

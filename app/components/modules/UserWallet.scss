@@ -37,6 +37,23 @@
     margin-bottom: 0px;
 }
 
+.small-margin-bottom {
+    margin-bottom: 0.5rem;
+}
+
+.Assets__icon_btns {
+    &:not(.small) {
+        display: inline-block;
+    }
+    .Icon {
+        margin-right: 0.25rem;
+    }
+}
+
+.uia-balance {
+    font-size: 120%;
+}
+
 .emission_apr {
     cursor: pointer;
     vertical-align: top;
@@ -64,6 +81,12 @@
     .NotifiCounter {
         margin-left: 0.5rem;
         height: 15px;
+    }
+}
+
+.UserWallet.small-screen {
+    .main-balance {
+        font-size: 140%;
     }
 }
 

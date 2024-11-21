@@ -260,6 +260,7 @@
     "reset_password": "Сброс пароля",
     "invites": "Инвайт-чеки",
     "assets": "Активы UIA",
+    "assets2": "UIA",
     "nft": "NFT",
     "nft_tokens": "Токены NFT",
     "nft_collections": "Коллекции NFT",
@@ -759,12 +760,18 @@
     "choose_preset_tips": "Выберите суммы для кнопок вознаграждений",
     "emission_donate_pct": "Процент от вашей суточной эмиссии токенов для вознаграждения",
     "notifications_settings": "Настройки уведомлений на сайте",
+    "notifications_settings2": "Настройки уведомлений",
     "notifications_transfer": "Перевод средств",
     "notifications_donate": "Вознаграждения (донаты)",
     "notifications_reply": "Ответ на комментарий или пост",
     "notifications_mention": "Упоминание @ника в посте или комментарии",
     "notifications_message": "Новое сообщение",
     "notifications_order": "Сработал ордер на бирже",
+    "notifications_bg": "Показывать уведомления в фоне",
+    "notifications_bg_title": "Показывать ли уведомления при свернутом приложении, выключенном экране",
+    "app_settings": "Настройки приложения",
+    "advanced_settings": "Выбор ноды и другие расширенные настройки...",
+    "open": "Открыть",
     "invalid_url": "Недопустимый URL-адрес",
     "invalid_ws": "wss://api-full.golos.id/ws",
     "invalid_ip_port": "Пример: 120.16.10.18:2001",
@@ -921,6 +928,8 @@
     "balance_subject_to_3_day_withdraw_waiting_period": "Вывод токенов из сейфа на обычный баланс занимает 3 дня.",
     "form_title": "Передать пользователю",
     "move_funds_to_another_account": "Отправить средства на другой счет.",
+    "move_to_tip": "Пополнить TIP-баланс с основного.",
+    "tip_to_liquid_uia": "Перевести средства с TIP-баланса на основной.",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Защитите средства от вывода 3-х дневным периодом ожидания.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Снять средства после необходимого 3-х дневного периода ожидания.",
     "issue_uia": "Выпустить токены",
@@ -1569,19 +1578,25 @@
     "wrong_domain_DOMAINS": "Похоже, эта ссылка не с GOLOS Блогов.\nДомены GOLOS Блогов: %(DOMAINS)s\nЭта ссылка будет открыта во внешнем браузере."
   },
   "app_settings": {
+    "mobile_title": "Настройки Кошелька",
     "ws_connection_client": "Адрес ноды GOLOS",
     "img_proxy_prefix": "Использовать прокси для изображений",
     "auth_service": "Golos Auth & Registration Service (для уведомлений)",
     "notify_service": "Golos Notify Service (для уведомлений)",
+    "notify_service_ws": "Golos Notify Service WebSocket (для уведомлений)",
     "messenger_service": "Мессенджер",
     "elastic_search": "Поиск",
     "save_and_restart": "Сохранить и перезапустить",
     "cancel": "Отмена",
     "node_error_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом. Или попробуйте задать другую ноду GOLOS в меню Настройки.",
-    "to_save_click_button": "Чтобы сохранить настройки, нажмите кнопку \"Сохранить и перезапустить\" внизу окна."
+    "node_error_new_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом (или с нодой).",
+    "node_error_new_NODE2": "Выбрать другую ноду",
+    "to_save_click_button": "Чтобы сохранить настройки, нажмите кнопку \"Сохранить и перезапустить\" внизу окна.",
+    "logs": "Логи"
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Скачать"
   }
 }

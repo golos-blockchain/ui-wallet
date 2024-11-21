@@ -18,8 +18,10 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import {numberWithCommas, toAsset, vestsToSteem, steemToVests, accuEmissionPerDay, vsEmissionPerDay} from 'app/utils/StateFunctions';
 import FoundationDropdownMenu from 'app/components/elements/FoundationDropdownMenu';
 import LiteTooltip from 'app/components/elements/LiteTooltip'
+import BalanceHeader from 'app/components/elements/BalanceHeader'
 import { blogsUrl } from 'app/utils/blogsUtils'
 import { markNotificationReadWs } from 'app/utils/NotifyApiClient'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate';
 import Tooltip from 'app/components/elements/Tooltip';
 import Icon from 'app/components/elements/Icon';
@@ -96,18 +98,13 @@ class UserWallet extends React.Component {
 
     render() {
         const LIQUID_TOKEN = tt('token_names.LIQUID_TOKEN')
-        const LIQUID_TOKEN_UPPERCASE = tt('token_names.LIQUID_TOKEN_UPPERCASE')
         const DEBT_TOKEN = tt('token_names.DEBT_TOKEN')
         const DEBT_TOKENS = tt('token_names.DEBT_TOKENS')
         const VESTING_TOKEN =  tt('token_names.VESTING_TOKEN')
         const VESTING_TOKEN2 = tt('token_names.VESTING_TOKEN2')
-        const VESTING_TOKENS = tt('token_names.VESTING_TOKENS')
-        const TOKEN_WORTH = tt('token_names.TOKEN_WORTH')
-        const TIP_TOKEN = tt('token_names.TIP_TOKEN')
-        const CLAIM_TOKEN = tt('token_names.CLAIM_TOKEN')
 
         const {showDeposit, depositType, toggleDivestError} = this.state
-        const { showConvertDialog, price_per_golos, savings_withdraws, account, current_user, } = this.props;
+        const { showConvertDialog, price_per_golos, savings_withdraws, account, current_user, isS, } = this.props;
 
         if (!account || !this.props.gprops) return null;
 
@@ -292,13 +289,13 @@ class UserWallet extends React.Component {
         ]
         const isWithdrawScheduled = new Date(account.get('next_vesting_withdrawal') + 'Z').getTime() > Date.now()
 
-        const steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
-        const steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        let steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        let steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         const steem_claim_balance_str = numberWithCommas(accumulative_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
-        const power_balance_str = numberWithCommas(vesting_steem) + ' ' + LIQUID_TICKER;
-        const savings_balance_str = numberWithCommas(saving_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
-        const sbd_balance_str = numberWithCommas(sbd_balance.toFixed(3)) + ' ' + DEBT_TICKER;
-        const savings_sbd_balance_str = numberWithCommas(sbd_balance_savings.toFixed(3)) + ' ' + DEBT_TICKER;
+        let power_balance_str = numberWithCommas(vesting_steem) + ' ' + LIQUID_TICKER;
+        let savings_balance_str = numberWithCommas(saving_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
+        let sbd_balance_str = numberWithCommas(sbd_balance.toFixed(3)) + ' ' + DEBT_TICKER;
+        let savings_sbd_balance_str = numberWithCommas(sbd_balance_savings.toFixed(3)) + ' ' + DEBT_TICKER;
 
         const received_vesting_shares_str = `${numberWithCommas(received_vesting_shares)} ${LIQUID_TICKER}`;
         const delegated_vesting_shares_str = `${numberWithCommas(delegated_vesting_shares)} ${LIQUID_TICKER}`;
@@ -310,9 +307,6 @@ class UserWallet extends React.Component {
         const steem_orders_balance_str = numberWithCommas(steemOrders.toFixed(3)) + ' ' + LIQUID_TICKER;
         const sbd_orders_balance_str = numberWithCommas(sbdOrders.toFixed(3)) + ' ' + DEBT_TICKER;
 
-        const steemTip = tt('tips_js.tradeable_tokens_that_may_be_transferred_anywhere_at_anytime') + ' ' + tt('tips_js.LIQUID_TOKEN_can_be_converted_to_VESTING_TOKEN_in_a_process_called_powering_up', {LIQUID_TOKEN, VESTING_TOKEN2, VESTING_TOKENS});
-        const powerTip = tt('tips_js.influence_tokens_which_give_you_more_control_over', {VESTING_TOKEN, VESTING_TOKENS});
-
         const savings_menu = [
             { value: tt('userwallet_jsx.withdraw_LIQUID_TOKEN', {LIQUID_TOKEN}), link: '#', onClick: showTransfer.bind( this, LIQUID_TICKER, 'Savings Withdraw' ) },
         ]
@@ -321,7 +315,6 @@ class UserWallet extends React.Component {
         ]
         // set dynamic secondary wallet values
         let sbdInterest = this.props.sbd_interest / 100
-        const sbdMessage = <span>{tt('userwallet_jsx.tokens_worth_about_1_of_LIQUID_TICKER', {TOKEN_WORTH, LIQUID_TICKER, sbdInterest})}</span>
 
         let EMISSION_STAKE = accuEmissionPerDay(account, gprops)
         // fix because payments are per hour
@@ -381,11 +374,19 @@ class UserWallet extends React.Component {
             claim_disabled = true
         }
 
-        const emissionStake = <LiteTooltip t={tt('tips_js.vesting_emission_per_day_title')}>
-            <a href="#" onClick={showPowerCalc}><small>
+        const wrapTooltip = (child, t, props = {}) => {
+            if (process.env.MOBILE_APP) {
+                return child
+            }
+            return <LiteTooltip t={t} {...props}>
+                {child}
+            </LiteTooltip>
+        }
+
+        const emissionStake = wrapTooltip(<a href="#" onClick={showPowerCalc}><small>
                 {tt('tips_js.vesting_emission_per_day', {EMISSION_STAKE: numberWithCommas(EMISSION_STAKE.toFixed(3)) + ' ' + LIQUID_TICKER})}
-            </small></a>
-        </LiteTooltip>
+            </small></a>,
+            tt('tips_js.vesting_emission_per_day_title'))
 
         // general APR, for 10.000 GOLOS Golos Power
         let aprTIP = vsEmissionPerDay(gprops, parseFloat(steemToVests(10000, gprops))) * 365 / 10000 * 100
@@ -414,7 +415,16 @@ class UserWallet extends React.Component {
             gbgTip = tt('tips_js.savings_interest')
         }
 
-        return (<div className="UserWallet top-margin">
+        steem_balance_str = <span className='main-balance'>{steem_balance_str}</span>
+        steem_tip_balance_str = <span className='main-balance'>{steem_tip_balance_str}</span>
+        power_balance_str = <span className='main-balance'>{power_balance_str}</span>
+        savings_balance_str = <span className='main-balance'>{savings_balance_str}</span>
+        sbd_balance_str = <span className='main-balance'>{sbd_balance_str}</span>
+        savings_sbd_balance_str = <span className='main-balance'>{savings_sbd_balance_str}</span>
+
+        const { ClaimBalance, TipBalance, VestingBalance, GolosBalance, GbgBalance, SavingsBalance } = BalanceHeader
+
+        return (<div className={"UserWallet top-margin" + (isS ? ' small-screen' : '')}>
             {accountIdleness && <Callout>
                 <div align="center">{tt('userwallet_jsx.account_idleness')}. <a target="_blank" href="https://wiki.golos.id/users/update#ponizhenie-sily-golosa-pri-neaktivnosti">{tt('g.more_hint')} <Icon name="extlink" /></a>
                 <br /><Icon name="golos" size="2x" /><br />
@@ -425,11 +435,10 @@ class UserWallet extends React.Component {
 
             {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {CLAIM_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#nakopitelnyi-balans">(?)</a></small></span><br />
-                    <span className="secondary">{claim_hint}</span>
+                    <ClaimBalance tipText={claim_hint} isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
-                    {steem_claim_balance_str}
+                    <span className='main-balance'>{steem_claim_balance_str}</span>
                     <div>{isMyAccount ? (<LiteTooltip t={tt('tips_js.claim_min_gp_AMOUNT', { AMOUNT: SUBTRACT })}>
                     <button
                         className="Wallet__claim_button button tiny"
@@ -444,8 +453,7 @@ class UserWallet extends React.Component {
             </div> : null}
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {TIP_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#tip-balans">(?)</a></small></span><br />
-                    <span className="secondary">{tt('tips_js.tip_balance_hint')}</span>
+                    <TipBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -464,9 +472,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">                    
-                    {VESTING_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#sila-golosa">(?)</a></small></span><br />
-                    <span className="secondary">{powerTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}
-                    <Link to="/workers">{tt('userwallet_jsx.worker_foundation')}</Link> | {tt('userwallet_jsx.top_dpos')} <a target="_blank" rel="noopener noreferrer" href="https://dpos.space/golos/top/gp">dpos.space <Icon name="extlink" /></a> {tt('g.and')} <a target="_blank" rel="noopener noreferrer" href="https://pisolog.net/stats/accounts/allaccounts">pisolog.net <Icon name="extlink" /></a></span>
+                    <VestingBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {aprTIP}
@@ -483,21 +489,21 @@ class UserWallet extends React.Component {
                     <br />
                     {total_received_vesting_shares != 0 ? (
                             <div style={{ paddingRight: isMyAccount ? '0.85rem' : null }} >
-                                <LiteTooltip t={tt('g.received_vesting', {VESTING_TOKEN})}>
+                                {wrapTooltip(
                                     <small><a className='received_vesting' href="#" onClick={showDelegateVestingInfo.bind(this, 'received')}>
                                         + {total_received_vesting_shares_str}
                                         <NotifiCounter fields='delegate_vs' />
-                                    </a></small>
-                                </LiteTooltip>
+                                    </a></small>,
+                                tt('g.received_vesting', {VESTING_TOKEN}))}
                             </div>
                         ) : null}
                     {total_delegated_vesting_shares != 0 ? (
                             <div style={{ paddingRight: isMyAccount ? '0.85rem' : null }} >
-                                <LiteTooltip t={tt('g.delegated_vesting', {VESTING_TOKEN})}>
+                                {wrapTooltip(
                                     <small><a href="#" onClick={showDelegateVestingInfo.bind(this, 'delegated')}>
                                         - {total_delegated_vesting_shares_str}
-                                    </a></small>
-                                </LiteTooltip>
+                                    </a></small>,
+                                tt('g.delegated_vesting', {VESTING_TOKEN}))}
                             </div>
                         ) : null}
                     {isWithdrawScheduled && <div><small><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;{vesting_withdraw_rate_str} {LIQUID_TICKER}&nbsp;<TimeAgoWrapper date={account.get('next_vesting_withdrawal')} /></small></div>}
@@ -505,8 +511,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {LIQUID_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#golos">(?)</a></small></span><br />
-                    <span className="secondary">{steemTip.split(".").map((a, index) => {if (a) {return <div key={index}>{a}.</div>;} return null;})}</span>
+                    <GolosBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -526,7 +531,9 @@ class UserWallet extends React.Component {
                     {steemOrders
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/market/GOLOS'} onClick={e => showOpenOrders(e, 'GOLOS')}>
-                                <small><LiteTooltip t={tt('market_jsx.open_orders')}>+ {steem_orders_balance_str}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {steem_orders_balance_str}</React.Fragment>,
+                                    tt('market_jsx.open_orders'))}
+                                </small>
                             </Link>
                          </div>
                         : null
@@ -534,23 +541,26 @@ class UserWallet extends React.Component {
                     {(isMyAccount && nftHold && nftHold.gt(0))
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/@' + account.get('name') + '/nft-orders'} onClick={e => showNftOrders(e)}>
-                                <small><LiteTooltip t={tt('g.nft_orders')}>+ {nftHold.toString()}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {nftHold.toString()}</React.Fragment>,
+                                    tt('g.nft_orders'))}
+                                </small>
                             </Link>
                          </div>
                         : null
                     }
                     <div>{isMyAccount ? <a
                         href='/convert/YMRUB/GOLOS?buy'
+                        onClick={hrefClick}
                         target='_blank'
                         rel='nofollow noreferrer'
                         className="button tiny hollow"
+                        style={{ marginBottom: '0px' }}
                     >{tt('g.buy')}</a> : null}</div>
                 </div>
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {DEBT_TOKEN.toUpperCase()} <span className="secondary"><small><a target="_blank" href="https://wiki.golos.id/users/welcome/wallet#zolotoi">(?)</a></small></span><br />
-                    <span className="secondary">{sbdMessage}</span>
+                    <GbgBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -570,7 +580,8 @@ class UserWallet extends React.Component {
                     {sbdOrders 
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
                             <Link to={'/market/GBG'} onClick={e => showOpenOrders(e, 'GBG')}>
-                                <small><LiteTooltip t={tt('market_jsx.open_orders')}>+ {sbd_orders_balance_str}</LiteTooltip></small>
+                                <small>{wrapTooltip(<React.Fragment>+ {sbd_orders_balance_str}</React.Fragment>,
+                                    tt('market_jsx.open_orders'))}</small>
                             </Link>
                           </div>
                         : null
@@ -580,8 +591,7 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
-                    {tt('userwallet_jsx.savings')} <br />
-                    <span className="secondary">{tt('transfer_jsx.balance_subject_to_3_day_withdraw_waiting_period')}</span>
+                    <SavingsBalance isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     {isMyAccount
@@ -608,7 +618,7 @@ class UserWallet extends React.Component {
                             label={savings_sbd_balance_str}
                             menu={savings_sbd_menu}
                           />
-                        : savings_sbd_balance_str
+                        : <span className='main-balance'>{savings_sbd_balance_str}</span>
                     }
                     <div><LiteTooltip t={gbgTip}>
                         <small>

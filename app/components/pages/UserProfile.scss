@@ -202,6 +202,9 @@
 
 .Assets__info {
   font-size: 90%;
+  &.small {
+    font-size: 100%;
+  }
 }
 
 .Assets__center {
@@ -282,14 +285,6 @@
             padding-left: 20px;
         }
     }
-}
-
-@media screen and (max-width: 400px) {
-  .UserProfile {
-    &__filler {
-      display: none;
-    }
-  }
 }
 
 @media screen and (max-width: 60em) {

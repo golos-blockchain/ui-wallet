@@ -21,6 +21,7 @@ import { ExchangeTypes } from 'shared/getExchangeData'
 import { getExchange, ExchangeErrors } from 'app/utils/market/exchange'
 import transaction from 'app/redux/Transaction'
 import { findModalRoot, hideElement, showElement } from 'app/utils/DomUtils'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 
 class ConvertAssets extends React.Component {
     constructor(props) {
@@ -681,7 +682,7 @@ class ConvertAssets extends React.Component {
                 <button onClick={this.submit} className='button' disabled={disabled}>
                     {direction === 'sell' ? tt('g.sell') : tt('g.buy')}
                 </button>
-                <a href={'/market/' + this.sellSym() + '/' + this.buySym()} className='MarketLink float-right'
+                <a href={'/market/' + this.sellSym() + '/' + this.buySym()} onClick={hrefClick} className='MarketLink float-right'
                         style={{ paddingTop: '0.3rem', paddingRight: '0.1rem' }}>
                     <Icon name='trade' size='1_5x' />
                     <span style={{ verticalAlign: 'middle', marginLeft: '0.4rem' }}>
