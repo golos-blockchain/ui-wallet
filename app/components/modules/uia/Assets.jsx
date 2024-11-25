@@ -276,7 +276,7 @@ class Assets extends Component {
                 {smallUias ? <div>{sym}</div> : <React.Fragment>&nbsp;&nbsp;</React.Fragment>}
                 <div className={cn('Assets__icon_btns', { small: smallUias })}>{assetIcons}</div>
                     <div className="Assets__marginTop2">
-                    {(isMyAccount && item.creator !== account_name) && <Link to={`/@${account_name}/assets/${sym}/update`}
+                    {(isMyAccount && item.creator === account_name) && <Link to={`/@${account_name}/assets/${sym}/update`}
                         className={cn("button tiny ", {
                             'small-margin-bottom': true,
                             'hollow': hideUiaInfo
@@ -284,7 +284,7 @@ class Assets extends Component {
                         {tt('assets_jsx.update_btn')}
                     </Link>}
                     &nbsp;&nbsp;
-                    {(isMyAccount && item.creator !== account_name) ? <button
+                    {(isMyAccount && item.creator === account_name) ? <button
                         className={cn("button tiny", {
                             'small-margin-bottom': true,
                         })}
