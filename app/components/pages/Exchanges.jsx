@@ -32,7 +32,7 @@ class Exchanges extends React.Component {
                                     <Icon name="line" /> <a target="_blank" href={blogsUrl('/@allforyou/golos-delistyat-s-kuny-perekhodim-na-rudex')}>{tt('exchanges_jsx.guide_user')} @allforyou <Icon name='extlink' /></a><br />
                                     <Icon name="line" /> <a target="_blank" href="https://www.youtube.com/results?search_query=%D0%B1%D0%B8%D1%80%D0%B6%D0%B0+rudex&sp=CAI%253D">Пользовательские видеообзоры <Icon name='extlink' /></a><br />
                                     <br />
-                                    <a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.USDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_GPH" className="button">GOLOS-GPH</a>&nbsp;&nbsp;<a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.BTS" className="button">GOLOS-BTS</a>
+                                    <a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_RUDEX.USDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="https://market.rudex.org/#/market/RUDEX.GOLOS_GPH" className="button">GOLOS-GPH</a>
                                     <br />
                                     <a target="_blank" href={blogsUrl('/@alex-pu/dexbot-na-vps-v-dokere-dlya-babushek')}>Настройка</a> и <a target="_blank" href={blogsUrl('/@alex-pu/dexbot-best-long-term-strategy')}>стратегии</a> торгового бота DEXbot, <a target="_blank" href="https://github.com/golos-blockchain/libs/wiki">примеры</a> операций <small>(JavaScript/Python)</small>.
                                 </div>
@@ -53,10 +53,9 @@ class Exchanges extends React.Component {
                                 <div className='landing-exchanges-block-center column large-12 medium-12 small-12'>
                                     <span className='new'>new</span> <Icon name="line" /> <a target="_blank" href={blogsUrl('/@lllll1ll/shlyuz-dlya-trkh-i-steem-na-golos')}>{tt('exchanges_jsx.guide_user')} @lllll1ll</a> <small>(на примере TRON и STEEM)</small> <Icon name='extlink' /><br />
                                     <span className='new'>new</span> <Icon name="line" /> <a target="_blank" href={blogsUrl('/@lllll1ll/instrukciya-po-shlyuzu-s-hive-na-golos')}>{tt('exchanges_jsx.guide_user')} @lllll1ll</a> <small>(на примере HIVE)</small> <Icon name='extlink' /><br />
-                                    <span className='new'>new</span> <Icon name="line" /> <a target="_blank" href={blogsUrl('/@lllll1ll/shlyuz-na-qiwi-dlya-vvoda-i-vyvoda-ybrub')}>{tt('exchanges_jsx.guide_user')} @lllll1ll</a> <small>(RUB через QIWI)</small> <Icon name='extlink' /><br />
                                     <Icon name="line" /> <a target="_blank" href={blogsUrl('/@gloriya/obzor-servisov-dex-c-shlyuzami-usdt-ltc-trx-dash-doge-rub')}>{tt('exchanges_jsx.guide_user')} @gloriya <Icon name='extlink' /></a><br />
                                     <br />
-                                    <a target="_blank" href="/market/GOLOS/YMUSDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMPZM" className="button">GOLOS-PZM</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMHIVE" className="button">GOLOS-HIVE</a><br />
+                                    <a target="_blank" href="/market/GOLOS/YMUSDT" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMPZM" className="button">GOLOS-PZM</a>&nbsp;&nbsp;<a target="_blank" href="/market/GOLOS/YMBTC" className="button">GOLOS-BTC</a><br />
                                     Настройка и стратегии торгового бота DEXbot, <a target="_blank" href="https://github.com/golos-blockchain/libs/wiki">примеры</a> операций <small>(JavaScript/Python)</small>.<br />
                                 </div>
                             </div>
@@ -77,7 +76,7 @@ class Exchanges extends React.Component {
                                     <Icon name="line" /> <a target="_blank" href={blogsUrl('/@docsait/manual-raboty-pulov-goloschain-v-seti-minter')}>{tt('exchanges_jsx.guide_user')} @docsait <Icon name='extlink' /></a><br />
                                     <Icon name="line" /> <a target="_blank" href={blogsUrl('/@denis-skripnik/glsmp')}>{tt('exchanges_jsx.guide_user')} @denis-skripnik <Icon name='extlink' /></a>
                                     <br /><br />
-                                    <a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/BNB" className="button">GOLOS-BNB</a>&nbsp;&nbsp;<a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/USDTE" className="button">GOLOS-USDT</a>&nbsp;&nbsp;<a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/BIP" className="button">GOLOS-BIP</a>
+                                    <a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/BNB" className="button">GOLOS-BNB</a>&nbsp;&nbsp;<a target="_blank" href="https://chainik.io/pool/GOLOSCHAIN/USDTE" className="button">GOLOS-USDT</a>
                                 </div>
                             </div>
                         </div>

@@ -291,11 +291,13 @@ class TransferHistoryRow extends React.Component {
         else if (type === 'unlimit_cost') {
             description_start += tt('transferhistoryrow_jsx.claimed') + data.amount + tt('transferhistoryrow_jsx.from_tip') + tt('transferhistoryrow_jsx.for')
             if (data.target_type === 'comment') {
-                link = data.id1 + '/' + data.id2
+                link = blogsUrl('@' + data.id1 + '/' + data.id2)
                 linkTitle = tt('transferhistoryrow_jsx.comment')
+                linkExternal = true
             } else if (data.target_type === 'vote') {
-                link = data.id1 + '/' + (data.id2 || '')
+                link = blogsUrl('@' + data.id1 + '/' + (data.id2 || ''))
                 linkTitle = tt('transferhistoryrow_jsx.vote')
+                linkExternal = true
             } else {
                 description_start += tt('transferhistoryrow_jsx.action')
             }

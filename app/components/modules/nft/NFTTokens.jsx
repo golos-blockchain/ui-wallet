@@ -111,7 +111,7 @@ class NFTTokens extends Component {
             items = <LoadingIndicator type='circle' />
         } else if (!tokens.length) {
             if (isMyAccount) {
-                items = <span>{tt('nft_tokens_jsx.not_yet')}</span>
+                items = <span>{tt('nft_tokens_jsx.not_yet')} <a href='nft-collections'>{tt('nft_tokens_jsx.not_yet1')}</a>...</span>
             } else {
                 items = <span>{tt('nft_tokens_jsx.not_yet2') + accountName + tt('nft_tokens_jsx.not_yet3')}</span>
             }
@@ -163,7 +163,7 @@ class NFTTokens extends Component {
                 <div className="column small-12">
                     <h4 className="Assets__header">{tt('g.nft_tokens')}</h4>
                     <Link to={`/nft`} className="button float-right">
-                        {tt('g.buy')}
+                        {tt('header_jsx.nft_market')}
                     </Link>
                     <span className='float-right'>&nbsp;&nbsp;</span>
                     <DropdownMenu className='float-right' el='div' items={sortItems} selected={currentSort}>

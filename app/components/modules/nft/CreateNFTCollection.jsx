@@ -306,14 +306,14 @@ class CreateNFTCollection extends Component {
                     <div className='column small-5'>
                         {tt('create_nft_collection_jsx.name') + '*'}
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='name' type='text' maxLength='14' autoFocus={true} 
+                            <Field name='name' type='text' maxLength='14' autoFocus={true} placeholder={tt('create_nft_collection_jsx.name_hint')} 
                                 onChange={(e) => this.onNameChange(e, values, setFieldValue)} />
                         </div>
                     </div>
                     <div className='column small-7 padding-left'>
                         {tt('create_nft_collection_jsx.coll_title') + '*'}
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='title' type='text'
+                            <Field name='title' type='text' placeholder={tt('create_nft_collection_jsx.coll_title_hint')}
                                 onChange={(e) => this.onTitleChange(e, values, setFieldValue)} />
                         </div>
                         {!errors.name && <ErrorMessage name='title' component='div' className='error' />}
@@ -322,13 +322,11 @@ class CreateNFTCollection extends Component {
                 </div>
                 <div>
                     {tt('create_nft_collection_jsx.coll_descr')}
-                    {' '}
-                    {tt('create_nft_collection_jsx.not_required')}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
                         <div className='input-group' style={{marginBottom: 5}}>
-                            <Field name='description' type='text'
+                            <Field name='description' type='text' placeholder={tt('create_nft_collection_jsx.coll_descr_hint')}
                                 onChange={(e) => this.onDescriptionChange(e, values, setFieldValue)} />
                         </div>
                         <ErrorMessage name='description' component='div' className='error' />
@@ -336,8 +334,6 @@ class CreateNFTCollection extends Component {
                 </div>
                 <div>
                     {tt('create_nft_collection_jsx.image')}
-                    {' '}
-                    {tt('create_nft_collection_jsx.not_required')}
                 </div>
                 <div className='row'>
                     <div className='column small-12'>
@@ -351,7 +347,7 @@ class CreateNFTCollection extends Component {
                                     className={'none'}
                                     disableClick multiple={false} accept="image/*"
                                     ref={(node) => { this.dropzone = node; }}>
-                                <Field name='image' type='text' onBlur={this.onImageBlur}
+                                <Field name='image' type='text' onBlur={this.onImageBlur} placeholder={tt('create_nft_collection_jsx.image_hint')}
                                     onChange={(e) => this.onImageChange(e, values, setFieldValue)} />
                             </Dropzone>
                             <img src={values.image || 'empty'} className='image-preview' style={{ visibility: (showImage && values.image) ? 'visible' : 'hidden' }} />

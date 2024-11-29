@@ -7,6 +7,7 @@ import { Asset, } from 'golos-lib-js/lib/utils'
 import PagedDropdownMenu from 'app/components/elements/PagedDropdownMenu'
 import Icon from 'app/components/elements/Icon'
 import { getAssetMeta, getTradablesFor } from 'app/utils/market/utils'
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 class MarketPair extends React.Component {
     static propTypes = {

@@ -181,15 +181,13 @@ class QuickBuy extends React.Component {
                 </DropdownMenu>
             </h3>
             <div className='row header-h1' style={{ marginTop: '1rem' }}>
-                <h1>{tt('quickbuy_jsx.how_to')}</h1>
-            </div>
-            <div className='row' style={{ marginTop: '1.5rem' }}>
-                {this.renderDetails()}
-            </div>
-            <div className='row header-h1' style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>
                 <h1>{tt('quickbuy_jsx.go_step2')}</h1>
             </div>
             {content}
+            <div className='row blue-box' style={{ marginTop: '1.5rem' }}>
+                Например: <br />
+                {this.renderDetails()}
+            </div>
         </div>
     }
 }

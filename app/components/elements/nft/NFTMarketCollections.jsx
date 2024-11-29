@@ -64,7 +64,7 @@ class NFTMarketCollections extends React.Component {
                 }
             }}
             selected={selected}
-            perPage={20}>
+            perPage={13}>
             {selected}
             <Icon name="dropdown-arrow" />
         </PagedDropdownMenu>
