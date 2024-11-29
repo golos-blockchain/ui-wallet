@@ -28,6 +28,13 @@
     "quick_convert": "Quick Convert",
     "open_market": "Go To Market (DEX)"
   },
+  "time_exact_wrapper_jsx": {
+    "days": " d ",
+    "hours": " h",
+    "minutes": " m ",
+    "secs": " s ",
+    "secs2": " s "
+  },
   "g": {
     "golos_fest": "Golos.id News",
     "APP_NAME": "Golos",
@@ -135,10 +142,12 @@
     "reset_password": "Password reset",
     "invites": "Invite checks",
     "assets": "UIA assets",
+    "assets2": "UIA",
     "nft": "NFT",
     "nft_tokens": "NFT tokens",
     "nft_collections": "NFT collections",
     "nft_history": "NFT history",
+    "nft_orders": "NFT orders",
     "help_wallet": "Wallet functions",
     "phone": "phone",
     "post": "Post",    
@@ -532,6 +541,10 @@
     "estimated_author_rewards_last_week": "Estimated author rewards last week",
     "author_rewards_history": "Author Rewards History"
   },
+  "market_multistep": {
+    "using_multi_you_can_receive": "Using \"Smart Exchange\" you can receive ",
+    "try_multi": "Try it >"
+  },
   "quickbuy_jsx": {
     "buy_SYM_with": "Buy %(SYM)s tokens",
     "with_what": "Method:",
@@ -675,7 +688,8 @@
     "mute_asset": "Do not show asset",
     "mute_asset_confirm_TICKER": "Confirm muting of %(TICKER)s? You will be able to unmute this asset in Settings of your profile.",
     "deposit": "Deposit",
-    "withdrawal": "Withdrawal"
+    "withdrawal": "Withdrawal",
+    "address_qr_title": "Address/account"
   },
   "asset_edit_deposit_jsx": {
     "title": "Deposit Rules",
@@ -794,13 +808,35 @@
     "sort_name": "By collection name",
     "cancel": "Cancel",
     "cancel_hint": "Cancel selling",
+    "place_bet": "Place a bet",
+    "place_bet2": "Bet it",
+    "place_offer": "Place an offer",
     "selling_for": "Selling for ",
+    "you_bet_is": "Your bet is ",
+    "min_price_is": "Min price is ",
+    "has_bets": "Bets",
+    "you_offer_is": "Your offer is ",
+    "has_offers": "Offers",
     "buy": "Buy",
     "buy2": "Buy for ",
     "buy_confirm": "Are you sure you want to buy ",
     "buy_confirm2": " for ",
     "your_token": "Your token",
-    "owner": "Owner"
+    "owner": "Owner",
+    "offers": "Offers",
+    "bets": "Bets",
+    "sell_fix_price": "Via fix price",
+    "start_auction": "Start auction",
+    "stop_auction": "Stop auction",
+    "start": "Start",
+    "min_price": "Min bet:",
+    "auction_expiration": "Auction will end after:",
+    "auction_expiration2": "days",
+    "auction_expiration_dev": "secs",
+    "auction_expiration3": "NFT is selling via auction: Auction ending",
+    "auction_hint": "User proposals will be canceled.",
+    "bet_already_exists": "Bet with such price already exists.",
+    "offer_already_exists": "Offer with such price already exists."
   },
   "all_nft_page_jsx": {
     "title": "All NFT on the Golos",
@@ -819,11 +855,17 @@
     "selled2": " selled token to ",
     "selled2m": " for ",
     "bought": " bought token ",
+    "placed_bet": " placed bet",
+    "canceled_bet": " canceled bet",
+    "placed_offer": " placed offer",
+    "canceled_offer": " canceled offer", 
+    "on": " on ",
     "owner_is": "Owner is ",
     "burnt": "This NFT-токен was existing sometime.",
     "burnt2": "But it was burnt.",
     "burnt3": "And all that reminds us of him is a small handful of ashes on our server room...",
-    "msg": "Chat with owner"
+    "msg": "Chat with owner",
+    "cancel_bet": "Cancel bet"
   },
   "nft_token_sell_jsx": {
     "fill_price": "Fill price please"
@@ -840,6 +882,14 @@
       "one": "1 order",
       "other": "%(count)s orders"
     }
+  },
+  "nft_my_orders_jsx": {
+    "offers": "NFT Offers",
+    "offers_empty": "You made no offers no now.",
+    "bets": "Bets In NFT auctions",
+    "bets_empty": "You have no bets in auctions.",
+    "confirm_cancel_offer_TOKEN": "Are you sure you want to cancel your offer on %(TOKEN)s?",
+    "confirm_cancel_bet_TOKEN": "Are you sure you want to cancel your bet on %(TOKEN)s?"
   },
   "invites_jsx": {
     "create_invite": "Create new invite check",
@@ -1037,7 +1087,8 @@
     "nft_issued_for": " for ",
     "nft_issued_cost":  "issue cost is ",
     "nft_sell": " placed order of selling ",
-    "sold": " sold "
+    "sold": " sold ",
+    "via_auction": " (via auction)"
   },
   "savingswithdrawhistory_jsx": {
     "cancel_this_withdraw_request": "Cancel this withdraw request?",
@@ -1157,12 +1208,18 @@
     "choose_preset_tips": "Choose the amounts for the reward buttons",
     "emission_donate_pct": "Donation percent of your daily token emission",
     "notifications_settings": "Notification settings",
+    "notifications_settings2": "Notification settings",
     "notifications_transfer": "Transfer notifications",
     "notifications_donate": "Donate notifications",
     "notifications_reply": "Reply notifications",
     "notifications_mention": "Mention notifications",
     "notifications_message": "Private message notifications",
     "notifications_order": "Market order filled",
+    "notifications_bg": "Show notifications in background",
+    "notifications_bg_title": "Show notification when app hidden, screen is off",
+    "app_settings": "App Settings",
+    "advanced_settings": "Select the blockchain node, and another advanced settings...",
+    "open": "Open",
     "invalid_url": "Invalid URL",
     "name_is_too_long": "Name is too long",
     "name_must_not_begin_with": "Name must not begin with @",
@@ -1224,6 +1281,8 @@
     "convert_to_VESTING_TOKEN": "Convert to %(VESTING_TOKEN2)s",
     "balance_subject_to_3_day_withdraw_waiting_period": "Balance subject to 3 day withdraw waiting period.",
     "move_funds_to_another_account": "Move funds to another account.",
+    "move_to_tip": "Top up TIP-balance from main one.",
+    "tip_to_liquid_uia": "Transfer from TIP to main balance.",
     "form_title": "Send to user",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Protect funds by requiring a 3 day withdraw waiting period.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Withdraw funds after the required 3 day waiting period.",
@@ -1386,6 +1445,10 @@
     "from": "From",
     "to": "To"
   },
+  "wallet_banner_jsx": {
+    "selling": "NFT auction",
+    "selling_title": "Selling NFT: "
+  },
   "workers": {
     "workers_info": "For any work useful for the Golos Blockchain, you can get a reward by submitting an application, describing in detail what was done (development, design, advertising, documentation), anything if this initiative is supported by the community.",
     "chat_workers": "Notifications for proposals",
@@ -1440,30 +1503,43 @@
     "mention_comment": " mentioned you in their comment",
     "message": " sent you a private message"
   },
+  "login_app_reminder": {
+    "or_download_for": "...or download for ",
+    "title": "Click to download for "
+  },
   "app_download": {
-    "title": "Download Golos Desktop"
+    "title": "Download Golos Desktop",
+    "download_for": "Download for",
+    "mobile": "Download Golos Wallet for"
   },
   "app_reminder": {
-    "text": "Install desktop application for Windows or Linux to receive data directly from blockchain"
+    "text": "Install desktop application for Windows, Linux, Android",
+    "text2": "to receive data directly from blockchain"
   },
   "app_goto_url": {
     "goto": "Goto",
     "wrong_domain_DOMAINS": "This address is not belong to GOLOS Blogs.\nGOLOS Blogs domains are: %(DOMAINS)s\nThis address will be opened in external browser."
   },
   "app_settings": {
+    "mobile_title": "Settings of Wallet",
     "ws_connection_client": "GOLOS node URL",
     "img_proxy_prefix": "Use Proxy For Images",
     "auth_service": "Golos Auth & Registration Service (for notifications)",
     "notify_service": "Golos Notify Service (for notifications)",
+    "notify_service_ws": "Golos Notify Service WebSocket (for notifications)",
     "messenger_service": "Messenger",
     "elastic_search": "Search",
     "save_and_restart": "Save and restart",
     "cancel": "Cancel",
-    "node_error_NODE": "Failed to connect to node %(NODE)s. Perhaps it's a problem with the Internet. Or try setting another GOLOS node in the Settings menu.",
-    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window."
+    "node_error_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом. Или попробуйте задать другую ноду GOLOS в меню Настройки.",
+    "node_error_new_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом (или с нодой).",
+    "node_error_new_NODE2": "Выбрать другую ноду",
+    "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window.",
+    "logs": "Logs"
   },
   "app_update": {
-    "notify_VERSION": "New version is available Golos Desktop - %(VERSION)s",
+    "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Download"
   }
 }

@@ -34,6 +34,20 @@
         height: 20px;
         margin-right: 0.25rem;
     }
+    .auction-time {
+        @include themify($themes) {
+          color: themed('textColorPrimary');
+        }
+    }
+    .my-bet-offer {
+        padding-bottom: 3px;
+        cursor: default;
+        .Icon {
+            color: red;
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+    }
 
     .token-title {
         margin-top: 0.25rem;
@@ -51,11 +65,25 @@
     .button:hover {
         background-color: #016aad !important;
     }
-    .button.hollow {
+    .button.hollow.noborder {
         border: 0px;
     }
     .button.hollow:hover {
         background-color: transparent !important;
+    }
+    .sell-button {
+        position: relative;
+        display: inline-block;
+    }
+    .Hint__content {
+        padding: 0px;
+        min-width: 50px;
+        .Hint__inner {
+            .VerticalMenu {
+                white-space: nowrap;
+                width: auto;
+            }
+        }
     }
 }
 

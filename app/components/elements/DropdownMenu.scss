@@ -36,6 +36,9 @@
     transform: translateX(0%);
     transition-delay: 0s;
   }
+  &.align-right > .VerticalMenu {
+    transform: translateX(-50%);
+  }
 
   .DropdownMenu.move-left {
     .VerticalMenu {

@@ -107,6 +107,8 @@ class Header extends React.Component {
                 page_title = tt('header_jsx.nft_collections') + " " + user_title
             } else if (route.params[1] === "nft-history"){
                 page_title = tt('g.nft_history') + " " + user_title
+            } else if (route.params[1] === "nft-orders"){
+                page_title = tt('g.nft_orders') + " " + user_title
             }
         } else if (route.page === 'ConvertAssetsPage') {
             page_title = tt('g.convert_assets')
@@ -138,12 +140,12 @@ class Header extends React.Component {
                     <div className="row align-middle">
                         <div className="columns">
                             <ul className="menu">
-                                <li className="Header__top-logo">
+                                {$STM_Config.logo ? <li className="Header__top-logo">
                                     <Link to={logo_link}><img src={$STM_Config.logo.icon} /></Link>
-                                </li>
-                                <li className="Header__top-steemit show-for-large noPrint">
+                                </li> : null}
+                                {$STM_Config.logo ? <li className="Header__top-steemit show-for-large noPrint">
                                     <Link to={logo_link}><img src={$STM_Config.logo.title} /></Link>
-                                </li>
+                                </li> : null}
                                 <CMCSmall className='show-for-small-only' />
                             </ul>
                         </div>

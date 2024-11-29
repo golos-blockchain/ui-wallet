@@ -143,6 +143,13 @@
     "quick_convert": "Быстрый обмен",
     "open_market": "Перейти к бирже"
   },
+  "time_exact_wrapper_jsx": {
+    "days": " дн. ",
+    "hours": " ч ",
+    "minutes": " мин ",
+    "secs": " сек ",
+    "secs2": " с "
+  },
   "g": {
     "golos_fest": "Новости",
     "APP_NAME": "Голос",
@@ -253,10 +260,12 @@
     "reset_password": "Сброс пароля",
     "invites": "Инвайт-чеки",
     "assets": "Активы UIA",
+    "assets2": "UIA",
     "nft": "NFT",
     "nft_tokens": "Токены NFT",
     "nft_collections": "Коллекции NFT",
     "nft_history": "История NFT",
+    "nft_orders": "Сделки NFT",
     "help_wallet": "Функции кошелька",
     "phone": "телефон",
     "post": "Пост",
@@ -493,7 +502,9 @@
     "min_golos_power_to_emission": "Минимальная сумма СГ (в GBG), с которой пользователь начнёт получать долю от эмиссии на TIP-баланс",
     "unwanted_operation_cost": "Плата за отправку нежелательных операций (если получатель заблокировал отправителя или выбрал Не беспокоить)",
     "unlimit_operation_cost": "Плата за отправку операций при отрицательной репутации, за обход лимитов post/comment/vote-window",
-    "nft_issue_cost": "Плата за выпуск NFT-токена владельцем коллекции (в GBG)"
+    "nft_issue_cost": "Плата за выпуск NFT-токена владельцем коллекции (в GBG)",
+    "private_group_cost": "Плата за создание группы в мессенджере (в GBG)",
+    "private_group_golos_power": "Мин. СГ для общения в группах в мессенджере (в GBG)"
   },
   "header_jsx": {
     "home": "Лента",
@@ -641,6 +652,10 @@
     "sale_agreement": "Договор купли-продажи",
     "telegram_support": "%(APP_NAME_UP)s Техподдержка"
   },
+  "market_multistep": {
+    "using_multi_you_can_receive": "С помощью функции \"Умного обмена\" вы можете получить ",
+    "try_multi": "Попробовать >"
+  },
   "quickbuy_jsx": {
     "buy_SYM_with": "Покупка токенов %(SYM)s за ",
     "with_what": "Способ покупки:",
@@ -745,12 +760,18 @@
     "choose_preset_tips": "Выберите суммы для кнопок вознаграждений",
     "emission_donate_pct": "Процент от вашей суточной эмиссии токенов для вознаграждения",
     "notifications_settings": "Настройки уведомлений на сайте",
+    "notifications_settings2": "Настройки уведомлений",
     "notifications_transfer": "Перевод средств",
     "notifications_donate": "Вознаграждения (донаты)",
     "notifications_reply": "Ответ на комментарий или пост",
     "notifications_mention": "Упоминание @ника в посте или комментарии",
     "notifications_message": "Новое сообщение",
     "notifications_order": "Сработал ордер на бирже",
+    "notifications_bg": "Показывать уведомления в фоне",
+    "notifications_bg_title": "Показывать ли уведомления при свернутом приложении, выключенном экране",
+    "app_settings": "Настройки приложения",
+    "advanced_settings": "Выбор ноды и другие расширенные настройки...",
+    "open": "Открыть",
     "invalid_url": "Недопустимый URL-адрес",
     "invalid_ws": "wss://api-full.golos.id/ws",
     "invalid_ip_port": "Пример: 120.16.10.18:2001",
@@ -907,6 +928,8 @@
     "balance_subject_to_3_day_withdraw_waiting_period": "Вывод токенов из сейфа на обычный баланс занимает 3 дня.",
     "form_title": "Передать пользователю",
     "move_funds_to_another_account": "Отправить средства на другой счет.",
+    "move_to_tip": "Пополнить TIP-баланс с основного.",
+    "tip_to_liquid_uia": "Перевести средства с TIP-баланса на основной.",
     "protect_funds_by_requiring_a_3_day_withdraw_waiting_period": "Защитите средства от вывода 3-х дневным периодом ожидания.",
     "withdraw_funds_after_the_required_3_day_waiting_period": "Снять средства после необходимого 3-х дневного периода ожидания.",
     "issue_uia": "Выпустить токены",
@@ -968,7 +991,8 @@
     "nft_issued_for": " для ",
     "nft_issued_cost":  "за выпуск списано ",
     "nft_sell": " выставил на продажу ",
-    "sold": " продал "
+    "sold": " продал ",
+    "via_auction": " (на аукционе)"
   },
   "user_profile": {
     "unknown_account": "Неизвестный аккаунт",
@@ -1050,7 +1074,8 @@
     "mute_asset": "Не показывать этот актив",
     "mute_asset_confirm_TICKER": "Подтвердить скрытие %(TICKER)s? Вернуть актив можно будет в разделе Настройки вашего профиля.",
     "deposit": "Депозит",
-    "withdrawal": "Вывод"
+    "withdrawal": "Вывод",
+    "address_qr_title": "Адрес/аккаунт"
   },
   "asset_edit_deposit_jsx": {
     "title": "Правила депозита",
@@ -1169,13 +1194,35 @@
     "sort_name": "По имени коллекции",
     "cancel": "Отменить",
     "cancel_hint": "Отменить продажу",
+    "place_bet": "Сделать ставку",
+    "place_bet2": "Ставка",
+    "place_offer": "Предложить цену",
     "selling_for": "Продается за ",
+    "you_bet_is": "Ваша ставка - ",
+    "min_price_is": "Минимальная ставка - ",
+    "has_bets": "Ставки",
+    "you_offer_is": "Вы предлагаете цену - ",
+    "has_offers": "Предложения",
     "buy": "Купить",
     "buy2": "Купить за ",
     "buy_confirm": "Вы уверены, что хотите купить ",
     "buy_confirm2": " за ",
     "your_token": "Ваш токен",
-    "owner": "Владелец"
+    "owner": "Владелец",
+    "offers": "Предложения",
+    "bets": "Ставки",
+    "sell_fix_price": "По фиксированной цене",
+    "start_auction": "Запустить аукцион",
+    "stop_auction": "Остановить аукцион",
+    "start": "Запустить",
+    "min_price": "Минимальная ставка:",
+    "auction_expiration": "Окончание аукциона - через:",
+    "auction_expiration2": "дней",
+    "auction_expiration_dev": "секунд",
+    "auction_expiration3": "NFT продается на аукционе. Окончание аукциона",
+    "auction_hint": "Предложения о покупке, сделанные пользователями самостоятельно, будут отменены.",
+    "bet_already_exists": "Уже есть ставка с такой ценой.",
+    "offer_already_exists": "Уже есть предложение с такой ценой."
   },
   "all_nft_page_jsx": {
     "title": "Все NFT на Golos",
@@ -1194,11 +1241,17 @@
     "selled2": " продал токен ",
     "selled2m": " за ",
     "bought": " купил токен",
+    "placed_bet": " сделал ставку",
+    "canceled_bet": " отменил ставку",
+    "placed_offer": " предложил цену",
+    "canceled_offer": " отменил предложение", 
+    "on": " на ",
     "owner_is": "Владелец - ",
     "burnt": "Этот NFT-токен существовал когда-то.",
     "burnt2": "Но он был сожжен.",
     "burnt3": "И все, что о нем напоминает, это маленькая горстка пепла в нашей серверной...",
-    "msg": "Написать владельцу"
+    "msg": "Написать владельцу",
+    "cancel_bet": "Отменить ставку"
   },
   "nft_token_sell_jsx": {
     "fill_price": "Укажите цену"
@@ -1215,6 +1268,14 @@
       "one": "1 ордер",
       "other": "%(count)s ордеров"
     }
+  },
+  "nft_my_orders_jsx": {
+    "offers": "NFT-предложения",
+    "offers_empty": "У вас на данный момент нет предложений о покупке NFT.",
+    "bets": "Ставки в NFT-аукционах",
+    "bets_empty": "У вас нет ставок в открытых аукционах.",
+    "confirm_cancel_offer_TOKEN": "Вы уверены, что хотите отменить предложение цены за %(TOKEN)s?",
+    "confirm_cancel_bet_TOKEN": "Вы уверены, что хотите отменить ставку на %(TOKEN)s?"
   },
   "invites_jsx": {
     "create_invite": "Создание чека",
@@ -1456,6 +1517,10 @@
     "from": "От кого",
     "to": "Кому"
   },
+  "wallet_banner_jsx": {
+    "selling": "NFT-аукцион",
+    "selling_title": "Продается NFT: "
+  },
   "workers": {
     "workers_info": "За любую полезную работу для блокчейна Голос можно получить вознаграждение подав заявку, описав подробно что было сделано (разработка кода, дизайн, реклама, документация). Словом, всё что угодно, если эту активность поддержит сообщество.",
     "chat_workers": "Уведомления о заявках",
@@ -1510,31 +1575,43 @@
     "mention_comment": " упомянул вас в комментарии",
     "message": " написал вам сообщение"
   },
+  "login_app_reminder": {
+    "or_download_for": "...или скачайте для ",
+    "title": "Нажмите, чтобы скачать для "
+  },
   "app_download": {
     "title": "Скачать Golos Desktop",
-    "download_for": "Скачать для"
+    "download_for": "Скачать для",
+    "mobile": "Скачать Golos Кошелек для"
   },
   "app_reminder": {
-    "text": "Установите десктоп-приложение для Windows или Linux и получайте информацию напрямую с блокчейна"
+    "text": "Установите приложение для Windows, Linux, Android",
+    "text2": "и получайте информацию напрямую с блокчейна"
   },
   "app_goto_url": {
     "goto": "Перейти",
     "wrong_domain_DOMAINS": "Похоже, эта ссылка не с GOLOS Блогов.\nДомены GOLOS Блогов: %(DOMAINS)s\nЭта ссылка будет открыта во внешнем браузере."
   },
   "app_settings": {
+    "mobile_title": "Настройки Кошелька",
     "ws_connection_client": "Адрес ноды GOLOS",
     "img_proxy_prefix": "Использовать прокси для изображений",
     "auth_service": "Golos Auth & Registration Service (для уведомлений)",
     "notify_service": "Golos Notify Service (для уведомлений)",
+    "notify_service_ws": "Golos Notify Service WebSocket (для уведомлений)",
     "messenger_service": "Мессенджер",
     "elastic_search": "Поиск",
     "save_and_restart": "Сохранить и перезапустить",
     "cancel": "Отмена",
     "node_error_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом. Или попробуйте задать другую ноду GOLOS в меню Настройки.",
-    "to_save_click_button": "Чтобы сохранить настройки, нажмите кнопку \"Сохранить и перезапустить\" внизу окна."
+    "node_error_new_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом (или с нодой).",
+    "node_error_new_NODE2": "Выбрать другую ноду",
+    "to_save_click_button": "Чтобы сохранить настройки, нажмите кнопку \"Сохранить и перезапустить\" внизу окна.",
+    "logs": "Логи"
   },
   "app_update": {
-    "notify_VERSION": "Доступна новая версия Golos Desktop - %(VERSION)s",
+    "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",
+    "notify_wallet_VERSION": "Доступна новая версия GOLOS Кошелька - %(VERSION)s",
     "download": "Скачать"
   }
 }

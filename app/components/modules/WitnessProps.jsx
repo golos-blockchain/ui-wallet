@@ -103,6 +103,10 @@ class WitnessProps extends React.Component {
         [
             ['nft_issue_cost', 'gbg'],
         ],
+        [
+            ['private_group_cost', 'gbg'],
+            ['private_group_golos_power', 'gbg'],
+        ],
     ];
 
     wprops_22 = [
@@ -159,7 +163,7 @@ class WitnessProps extends React.Component {
         props.comments_per_window = parseInt(props.comments_per_window);
         updateChainProperties({
             owner: account.name,
-            props: [9, props],
+            props: [10, props],
             errorCallback: (e) => {
                 if (e === 'Canceled') {
                     this.setState({
@@ -271,7 +275,9 @@ export default connect(
                 successCallback()
             }
 
-            const options = {type: 'chain_properties_update', operation, successCallback: success, errorCallback}
+            const options = {type: 'chain_properties_update', operation,
+                username: operation.owner,
+                successCallback: success, errorCallback}
             dispatch(transaction.actions.broadcastOperation(options))
         }
     })

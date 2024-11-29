@@ -10,6 +10,9 @@ import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
 const RELOAD_EACH_MSEC = 30*1000
 
+const BUCKET = 604800 // 604800 - week
+const BUCKET_COUNT = 4 // 4 weeks ~= 1 month
+
 class Rating extends React.Component {
     constructor(props){
         super(props)
@@ -19,7 +22,7 @@ class Rating extends React.Component {
 
     async loadData() {
         const assetList = await api.getAssetsAsync('', [], '', 5000, 'by_symbol_name', { system: true })
-        const pairs = (await api.getMarketPairsAsync({ merge: true, tickers: true, bucket: 604800 })).data
+        const pairs = (await api.getMarketPairsAsync({ merge: true, tickers: true, bucket: BUCKET, bucket_count: BUCKET_COUNT })).data
 
         this.cmc = (await libs.dex.apidexGetAll()).data
 
@@ -104,10 +107,7 @@ class Rating extends React.Component {
 
         const link = '/market/' + sym1 + '/' + sym2
 
-        let image_url = getAssetMeta(asset).image_url
-        if (image_url) {
-            image_url = proxifyNFTImage(image_url)
-        }
+        const image_url = getAssetMeta(asset).image_url
 
         return <Link to={link}><div className='Pair PairTop1'>
             <div className='Pair__logo'>
@@ -163,7 +163,7 @@ class Rating extends React.Component {
 
         let top1 = null
         let pairItems = []
-        if (pairs.length > 1) {
+        if (pairs.length) {
             top1 = this._renderTop1(pairs[0], assetList)
         }
 
@@ -178,10 +178,7 @@ class Rating extends React.Component {
 
             const link = '/market/' + sym1 + '/' + sym2
 
-            let image_url = getAssetMeta(asset).image_url
-            if (image_url) {
-                image_url = proxifyNFTImage(image_url)
-            }
+            const image_url = getAssetMeta(asset).image_url
 
             pairItems.push(<Link to={link} key='link'><div className='Pair'>
                 <div className='Pair__logo'>

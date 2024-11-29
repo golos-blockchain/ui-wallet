@@ -8,6 +8,8 @@
   "description": "Голос Кошелёк — децентрализованный сервис, работающий на базе блокчейна.",
   "main": "dist/electron/electron.js",
   "scripts": {
+    "cordova": "cordova",
+    "preinstall": "node git-install.js",
     "build-version": "./server/build-version.sh",
     "build-hash": "node check_integrity --save",
     "build": "npm run build-hash && NODE_ENV=production ./node_modules/.bin/webpack --config ./webpack/prod.config.js",
@@ -20,9 +22,12 @@
     "dev:local": "./.env.start.local.sh",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "dev:app": "./node_modules/.bin/webpack serve --config ./webpack/dev-app.config.js",
+    "dev:app": "npm run build-hash && ./node_modules/.bin/webpack serve --config ./webpack/dev-app.config.js",
     "build:app": "npm run build-hash && cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/.bin/webpack --config ./webpack/prod-app.config.js",
-    "build:app-entry": "cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/@babel/node/bin/babel-node.js build_app_entry.js"
+    "build:app-entry": "cross-env NODE_ENV=production NODE_CONFIG_ENV=production,desktop ./node_modules/@babel/node/bin/babel-node.js build_app_entry.js",
+    "prebuild:mobile": "cross-env NODE_CONFIG_ENV=production,mobile node ./prebuild_mobile.js",
+    "build:mobile": "npm run build-hash && cross-env NODE_ENV=production NODE_CONFIG_ENV=production,mobile ./node_modules/.bin/webpack --config ./webpack/prod-mobile.config.js --stats-error-details",
+    "postbuild:mobile": "npm run build:app-entry dist && cross-env NODE_CONFIG_ENV=production,mobile node ./postbuild_mobile.js && cd cordova && cordova prepare && cordova run android"
   },
   "author": "Golos <info@golos.id>",
   "license": "MIT",
@@ -48,12 +53,12 @@
     "csstype": "^3.1.1",
     "diff-match-patch": "^1.0.0",
     "file-saver": "^2.0.5",
-    "formik": "https://gitpkg.now.sh/golos-blockchain/formik/packages/formik?b697b6ef3f13c795bb862b35589fffde442ab465",
+    "formik": "./git-deps/formik/packages/formik",
     "foundation-sites": "^6.4.3",
     "fs-extra": "^10.0.1",
     "git-rev-sync": "^3.0.2",
     "golos-dex-lib-js": "^1.0.2",
-    "golos-lib-js": "^0.9.71",
+    "golos-lib-js": "^0.9.73",
     "history": "^2.0.0-rc2",
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
@@ -89,7 +94,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^4.2.12",
-    "react-foundation-components": "git+https://github.com/golos-blockchain/react-foundation-components.git#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1",
+    "react-foundation-components": "./git-deps/react-foundation-components",
     "react-hot-toast": "^2.4.0",
     "react-intl": "^6.2.10",
     "react-is": "^18.2.0",
@@ -125,14 +130,27 @@
     "@babel/plugin-transform-runtime": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-react": "^7.18.6",
+    "@red-mobile/cordova-plugin-shortcuts-android": "^1.0.1",
     "@storybook/addon-actions": "^6.5.14",
     "@storybook/addon-links": "^6.5.14",
     "@storybook/router": "^6.5.14",
     "babel-plugin-styled-components": "^1.5.1",
     "chai": "^4.1.2",
+    "cheerio": "1.0.0-rc.10",
+    "cordova-android": "^10.1.2",
+    "cordova-config": "^0.7.0",
+    "cordova-plugin-advanced-http": "^3.3.1",
+    "cordova-plugin-androidx-adapter": "^1.1.3",
+    "cordova-plugin-backbutton": "^0.3.0",
+    "cordova-plugin-badge": "^0.8.8",
+    "cordova-plugin-device": "^2.1.0",
+    "cordova-plugin-file": "^7.0.0",
+    "cordova-plugin-native-logs": "^1.0.5",
+    "cordova-plugin-splashscreen": "^6.0.1",
     "core-js": "^3.19.1",
     "cross-env": "^7.0.3",
     "folder-hash": "^4.0.4",
+    "gls-wallet-native-core": "file:native_core",
     "jsdom": "^11.11.0",
     "mocha": "^10.1.0",
     "node-watch": "^0.7.1",
@@ -140,10 +158,14 @@
     "sinon": "^1.17.7",
     "terser-webpack-plugin": "^5.3.6",
     "webpack-cli": "^5.0.1",
-    "webpack-merge": "^5.8.0"
+    "webpack-merge": "^5.10.0"
   },
   "optionalDependencies": {
     "fsevents": "*"
+  },
+  "gitDependencies": {
+    "formik": "https://github.com/golos-blockchain/formik/tree/master/packages/formik#b697b6ef3f13c795bb862b35589fffde442ab465",
+    "react-foundation-components": "https://github.com/golos-blockchain/react-foundation-components#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1"
   },
   "engines": {
     "node": ">=8.11.3",
@@ -190,5 +212,23 @@
       "buildResources": "electron"
     },
     "npmRebuild": false
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-advanced-http": {
+        "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
+      },
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-backbutton": {},
+      "cordova-plugin-native-logs": {},
+      "cordova-plugin-splashscreen": {},
+      "@red-mobile/cordova-plugin-shortcuts-android": {
+        "ANDROIDX_CORE_VERSION": "1.3.2"
+      },
+      "gls-wallet-native-core": {}
+    }
   }
 }

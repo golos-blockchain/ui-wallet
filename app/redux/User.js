@@ -9,6 +9,7 @@ const defaultState = fromJS({
     show_transfer_modal: false,
     show_convert_assets_modal: false,
     show_open_orders_modal: false,
+    show_nft_orders_modal: false,
     show_change_account_modal: false,
     show_add_account_modal: false,
     show_app_download_modal: false,
@@ -97,6 +98,8 @@ export default createModule({
         { action: 'SHOW_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', true)  },
         { action: 'HIDE_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', false) },
         { action: 'SET_OPEN_ORDERS_DEFAULTS', reducer: (state, {payload}) => state.set('open_orders_defaults', fromJS(payload)) },
+        { action: 'SHOW_NFT_ORDERS', reducer: state => state.set('show_nft_orders_modal', true)  },
+        { action: 'HIDE_NFT_ORDERS', reducer: state => state.set('show_nft_orders_modal', false) },
         { action: 'SHOW_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', true) },
         { action: 'HIDE_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', false) },
         { action: 'SHOW_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', true) },
@@ -133,7 +136,8 @@ export default createModule({
         },
         {
             action: 'LOGIN_ERROR',
-            reducer: (state, {payload: {error}}) => state.merge({ login_error: error, logged_out: undefined })
+            reducer: (state, {payload: {error, ...rest}}) => state.merge({ login_error: { error, ...rest },
+                logged_out: undefined })
         },
         {
             action: 'LOGOUT',

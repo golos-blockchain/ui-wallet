@@ -39,7 +39,7 @@ class TransferHistoryRow extends React.Component {
         let target_hint = "";
         let data_memo = data.memo;
 
-        const getToken = (token_id) => {
+        const getToken = (token_id, section = '') => {
             const { nft_tokens } = this.props
             let tokenLink
             let tokenTitle
@@ -55,7 +55,7 @@ class TransferHistoryRow extends React.Component {
             if (!tokenTitle) {
                 tokenTitle = '#' + data.token_id
             }
-            tokenLink = <Link to={'/nft-tokens/' + data.token_id} target='_blank' rel='noopener noreferrer'>
+            tokenLink = <Link to={'/nft-tokens/' + data.token_id + (section ? ('#' + section) : '')} target='_blank' rel='noopener noreferrer'>
                 {tokenTitle}
             </Link>
             return { tokenTitle, tokenLink }
@@ -408,7 +408,34 @@ class TransferHistoryRow extends React.Component {
             linkExternal3 = true
             description_end = tt('transferhistoryrow_jsx.for')
             description_end += Asset(data.price).floatString
-        } else {
+            if (!data.actor) {
+                description_end += tt('transferhistoryrow_jsx.via_auction')
+            }
+        } else if (type === 'nft_buy') {
+            if (!data.order_id) {
+                link = data.buyer
+                description_middle = tt('nft_token_page_jsx.placed_bet') + tt('nft_token_page_jsx.on')
+                const { tokenTitle, tokenLink } = getToken(data.token_id)
+                link2 = tokenLink
+                linkExternal2 = true
+                description_middle2 = tt('nft_token_page_jsx.selled2m')
+                description_middle2 += Asset(data.price).floatString
+            } else if (data.token_id && data.name) {
+                link = data.buyer
+                description_middle = tt('nft_token_page_jsx.placed_offer') + ' '
+                description_middle += Asset(data.price).floatString + ' ' + tt('nft_token_page_jsx.selled2m')
+                const { tokenTitle, tokenLink } = getToken(data.token_id, 'offers')
+                link2 = tokenLink
+                linkExternal2 = true
+            }
+        } /*else if (type === 'nft_cancel_order') {
+            link = data.owner
+            description_middle = tt('nft_token_page_jsx.canceled_bet') + tt('nft_token_page_jsx.on')
+            description_middle2 += JSON.stringify(data)
+            const { tokenTitle, tokenLink } = getToken(data.token_id)
+            link2 = tokenLink
+            linkExternal2 = true
+        } */else {
             code_key = JSON.stringify({type, ...data}, null, 2);
         }
 

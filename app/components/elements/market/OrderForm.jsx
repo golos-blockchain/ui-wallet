@@ -7,8 +7,10 @@ import { Asset, AssetEditor } from 'golos-lib-js/lib/utils'
 import transaction from 'app/redux/Transaction';
 import CMCValue from 'app/components/elements/market/CMCValue'
 import MarketInput from 'app/components/elements/market/MarketInput'
-import { DEFAULT_EXPIRE, generateOrderID, roundUp, roundDown, float2str } from 'app/utils/market/utils'
+import { ExchangeTypes } from 'shared/getExchangeData'
+import { getExchange } from 'app/utils/market/exchange'
 import FloatEditor from 'app/utils/market/FloatEditor'
+import { DEFAULT_EXPIRE, generateOrderID, roundUp, roundDown, float2str } from 'app/utils/market/utils'
 
 class OrderForm extends React.Component {
     static propTypes = {
@@ -71,6 +73,7 @@ class OrderForm extends React.Component {
                 total: AssetEditor(total)
             }, () => {
                 this.validate()
+                this.checkMultiStep()
             })
         }
     }
@@ -86,6 +89,7 @@ class OrderForm extends React.Component {
                 total: AssetEditor(total)
             }, () => {
                 this.validate()
+                this.checkMultiStep()
             })
         }
     }
@@ -117,6 +121,7 @@ class OrderForm extends React.Component {
                 price: this.state.price.withVirtChange(res.price)
             }, () => {
                 this.validate()
+                this.checkMultiStep()
             })
         }
     }
@@ -129,6 +134,7 @@ class OrderForm extends React.Component {
             total: AssetEditor(total)
         }, () => {
             this.validate()
+            this.checkMultiStep()
         })
     }
 
@@ -175,6 +181,7 @@ class OrderForm extends React.Component {
             price: price ? this.state.price.withVirtChange(price) : this.state.price
         }, () => {
             this.validate()
+            this.checkMultiStep()
         })
     }
 
@@ -204,6 +211,29 @@ class OrderForm extends React.Component {
                 this.percentDiff(price.float) < -15 :
                 this.percentDiff(price.float) > 15),
             fee
+        })
+    }
+
+    checkMultiStep = () => {
+        const { isSell, onMultiBetter } = this.props
+        if (!onMultiBetter) return
+
+        const { amount, total } = this.state
+        const sellAmount = (isSell ? amount : total).asset.clone()
+        const buyAmount = (isSell ? total : amount).asset.clone()
+        buyAmount.amount = 0
+
+        getExchange(sellAmount, buyAmount,
+            null, // keep it null: it used only if not isSell
+            (data) => {
+                const { bestType, altBanner } = data
+                if (bestType === ExchangeTypes.multi) {
+                    if (altBanner && altBanner.chain) {
+                        onMultiBetter(altBanner.chain.res, sellAmount)
+                        return
+                    }
+                }
+                onMultiBetter(null)
         })
     }
 

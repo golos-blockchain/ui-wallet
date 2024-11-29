@@ -1,3 +1,5 @@
+import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
+
 function roundUp(num, precision) {
     let satoshis = parseFloat(num) * Math.pow(10, precision);
 
@@ -73,6 +75,8 @@ function getAssetMeta(asset) {
         res.image_url = '/images/golos.png'
     } else if (sym === 'GBG') {
         res.image_url = '/images/gold-golos.png'
+    } else {
+        res.image_url = proxifyNFTImage(res.image_url)
     }
     return res
 }
@@ -102,9 +106,9 @@ function getTradablesFor(assets, syms, onlyFirst = false) {
                 continue
             }
 
-            const { market_depth } = value
+            const { market_depth, marketed } = value
             tradableLists[i].push({
-                symbol: key, image_url, market_depth
+                symbol: key, image_url, market_depth, marketed
             })
 
             if (onlyFirst) {

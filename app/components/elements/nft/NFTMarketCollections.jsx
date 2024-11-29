@@ -31,6 +31,10 @@ class NFTMarketCollections extends React.Component {
             ++i
         }
 
+        if (colls.length === 1) {
+            return null
+        }
+
         selected = selected || tt('nft_market_collections_jsx.all_collections')
 
         return <PagedDropdownMenu className='NFTMarketCollections Witnesses__vote-list' el='div' items={colls}
@@ -39,15 +43,23 @@ class NFTMarketCollections extends React.Component {
                 const collImg = (coll && coll.image) || NFTImageStub()
                 const collName = coll ? coll.name : tt('nft_market_collections_jsx.all_collections')
 
+                let sellCount
+                if (coll) {
+                    sellCount = parseInt(coll.sell_order_count)
+                    if (coll.auction_count) {
+                        sellCount += parseInt(coll.auction_count)
+                    }
+                }
+
                 return {
                     ...item,
                     label: <React.Fragment>
                         <NFTSmallIcon image={collImg} />
                         {collName}
                     </React.Fragment>,
-                    addon: (coll && coll.sell_order_count) ?
+                    addon: sellCount ?
                         <span style={{ position: 'absolute', right: '10px' }} title={tt('nft_market_collections_jsx.order_count', {count: coll.sell_order_count})}>
-                            {coll.sell_order_count}
+                            {sellCount}
                         </span> : null,
                 }
             }}

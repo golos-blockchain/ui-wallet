@@ -13,6 +13,7 @@ import VerticalMenu from 'app/components/elements/VerticalMenu';
 import LocaleSelect from 'app/components/elements/LocaleSelect';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import NotifiCounter from 'app/components/elements/NotifiCounter';
+import { openAppSettings } from 'app/components/pages/app/AppSettings'
 import { LIQUID_TICKER, DEBT_TICKER } from 'app/client_config';
 import { vestsToSteem, toAsset } from 'app/utils/StateFunctions';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
@@ -136,6 +137,15 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         { link: 'https://wiki.golos.id/', icon: 'new/wikipedia', value: tt("navigation.wiki"), target: 'blank' },
         { link: 'https://explorer.golos.id/', icon: 'cog', value: tt("navigation.explorer"), target: 'blank' } 
     );
+    if (!loggedIn && process.env.MOBILE_APP) {
+        const openSettings = (e) => {
+            e.preventDefault()
+            openAppSettings()
+        }
+        additional_menu.push(
+            { link: '#', onClick: openSettings, icon: 'new/setting', value: tt("g.settings"), } 
+        )
+    }
     const navAdditional = <LinkWithDropdown
         closeOnClickOutside
         dropdownPosition="bottom"
@@ -153,7 +163,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
         let user_menu = [
             {link: walletLink, icon: 'new/wallet', value: tt('g.wallet'), addon: <NotifiCounter fields="send,receive,delegate_vs" />},
             {link: uiaLink, icon: 'editor/coin', value: tt('g.assets')},
-            {link: nftLink, icon: 'editor-toolbar/picture', value: tt('g.nft_tokens'), addon: <NotifiCounter fields="nft_receive" />},
+            {link: nftLink, icon: 'editor-toolbar/picture', value: tt('g.nft_tokens'), addon: <NotifiCounter fields="nft_receive,nft_token_sold,nft_buy_offer" />},
             {link: ordersLink, icon: 'trade', value: tt('navigation.market2'), addon: <NotifiCounter fields="fill_order" />},
             {link: inviteLink, icon: 'hf/hf19', value: tt('g.invites')},
             {link: blogLink, target: blogsTarget(), icon: 'new/blogging', value: tt('g.blog'), addon: <NotifiCounter fields="comment_reply,mention,new_sponsor,sponsor_inactive,referral" />},
@@ -177,7 +187,6 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                 <li className="delim show-for-medium" />
                 {topbutton}
                 {goBlogs}
-                {!vertical && goBlogsPencil}
                 <li className="delim show-for-medium" />
                 <LinkWithDropdown
                     closeOnClickOutside
@@ -198,7 +207,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
                                 </div>
                             </div>
                         </a>
-                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention,new_sponsor,sponsor_inactive,nft_receive,referral" /></div>
+                        <div className="TopRightMenu__notificounter"><NotifiCounter fields="send,receive,delegate_vs,donate,donate_msgs,message,fill_order,comment_reply,mention,new_sponsor,sponsor_inactive,nft_receive,nft_token_sold,nft_buy_offer,referral" /></div>
                     </li>}
                 </LinkWithDropdown>
                 {navAdditional}

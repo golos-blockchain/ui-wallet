@@ -11,6 +11,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import AssetRules from 'app/components/modules/uia/AssetRules'
 import quickBuyAssets from 'app/quickBuy'
 import { getAssetMeta, } from 'app/utils/market/utils'
+import { reloadLocation } from 'app/utils/app/RoutingUtils'
 
 class QuickBuy extends React.Component {
     state = {
@@ -149,7 +150,7 @@ class QuickBuy extends React.Component {
                                 SYM2: sym2
                             })}
                             onTransfer={() => {
-                                window.location.href = '/convert/' + selected + '/' + sym2
+                                reloadLocation('/convert/' + selected + '/' + sym2)
                             }}
                         /> : null}
                 </div>

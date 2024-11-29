@@ -7,17 +7,29 @@ import { Asset } from 'golos-lib-js/lib/utils'
 import Reveal from 'react-foundation-components/lib/global/reveal'
 
 import Expandable from 'app/components/elements/Expandable'
+import Icon from 'app/components/elements/Icon'
+import Hint from 'app/components/elements/common/Hint'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper'
+import TimeExactWrapper from 'app/components/elements/TimeExactWrapper'
+import VerticalMenu from 'app/components/elements/VerticalMenu'
+import NFTTokenSellPopup from 'app/components/elements/nft/NFTTokenSellPopup'
+import PriceIcon from 'app/components/elements/nft/PriceIcon'
 import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
+import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
+import NFTAuction from 'app/components/modules/nft/NFTAuction'
 import NotFound from 'app/components/pages/NotFound'
 import { msgsHost, msgsLink } from 'app/utils/ExtLinkUtils'
-import { getAssetMeta } from 'app/utils/market/utils'
 import transaction from 'app/redux/Transaction'
 
 class NFTTokenPage extends Component {
     state = {
+    }
+
+    constructor(props) {
+        super(props)
+        this.sellPopupRef = React.createRef()
     }
 
     cancelOrder = async (e) => {
@@ -46,7 +58,7 @@ class NFTTokenPage extends Component {
             console.error(err)
             tokenTitle = '#' + token_id
         }
-        const price = Asset(order.price).floatString
+        const price = Asset(order.price).toString()
 
         await this.props.buyToken(token_id, order.order_id, tokenTitle, price, currentUser, () => {
             this.props.fetchState()
@@ -71,28 +83,81 @@ class NFTTokenPage extends Component {
     }
 
     async loadOps() {
-        const { nft_token, } = this.props
-        const token = nft_token.toJS()
-        const { token_id } = token
-        const ops = await api.getNftTokenOps({
-            token_ids: [ token_id ],
-            from: 0,
-            limit: 500
-        })
-        this.setState({
-            ops: ops[token_id]
-        })
+        try {
+            const { nft_token, } = this.props
+            const token = nft_token.toJS()
+            const { token_id } = token
+            const ops = await api.getNftTokenOps({
+                token_ids: [ token_id ],
+                from: 0,
+                limit: 500
+            })
+            this.setState({
+                ops: ops[token_id]
+            })
+        } catch (err) {
+            console.error('loadOps', err)
+        }
+    }
+
+    async loadOffers() {
+        try {
+            const { nft_token, } = this.props
+            const token = nft_token.toJS()
+            const { token_id, is_auction } = token
+            if (is_auction) return
+            const offers = await api.getNftOrdersAsync({
+                select_token_ids: [ token_id ],
+                limit: 100,
+                type: 'buying'
+            })
+            this.setState({
+                offers
+            })
+        } catch (err) {
+            console.error('loadOffers', err)
+        }
+    }
+
+    async loadBets() {
+        try {
+            const { nft_token, } = this.props
+            const token = nft_token.toJS()
+            const { token_id, is_auction } = token
+            if (!is_auction) return
+            const bets = await api.getNftBetsAsync({
+                select_token_ids: [ token_id ],
+                limit: 100,
+            })
+            this.setState({
+                bets
+            })
+        } catch (err) {
+            console.error('loadBets', err)
+        }
     }
 
     async componentDidMount() {
         if (this.props.nft_token) {
             await this.loadOps()
+            await this.loadOffers()
+            await this.loadBets()
         }
     }
 
     async componentDidUpdate(prevProps) {
         if (this.props.nft_token && !prevProps.nft_token) {
             await this.loadOps()
+            await this.loadOffers()
+            await this.loadBets()
+        }
+    }
+
+    componentWillUnmount() {
+        this._unmount = true
+
+        if (this._onAwayClickListen) {
+            window.removeEventListener('mousedown', this._onAwayClick)
         }
     }
 
@@ -110,7 +175,6 @@ class NFTTokenPage extends Component {
     }
 
     showSell = (e) => {
-        e.preventDefault()
         this.setState({
             showSell: true,
         })
@@ -120,6 +184,36 @@ class NFTTokenPage extends Component {
         this.setState({
             showSell: false,
         })
+    }
+
+    showPlaceOfferBet = (e, minPrice) => {
+        e.preventDefault()
+        this.setState({
+            showPlaceOfferBet: true,
+            minPrice
+        })
+    }
+
+    hidePlaceOfferBet = () => {
+        this.setState({
+            showPlaceOfferBet: false,
+        })
+    }
+
+    showAuction = (e) => {
+        this.setState({
+            showAuction: true,
+        })
+    }
+
+    hideAuction = () => {
+        this.setState({
+            showAuction: false,
+        })
+    }
+
+    isOffers = () => {
+        return window.location.hash === '#offers'
     }
 
     _renderOp = (trx, i) => {
@@ -173,9 +267,11 @@ class NFTTokenPage extends Component {
                     {tt('nft_token_page_jsx.bought')}
                     {!price.eq(0) ? (tt('nft_token_page_jsx.selled2m') + price.floatString) : ''}
                 </div>
+            } else {
+                return null
             }
         }
-        return <tr>
+        return <tr key={i}>
             <td><TimeAgoWrapper date={trx.timestamp} /></td>
             <td>{content}</td>
         </tr>
@@ -194,6 +290,81 @@ class NFTTokenPage extends Component {
         return <table><tbody>
             {rows}
         </tbody></table>
+    }
+
+    _renderOffers = (token, isMy) => {
+        let offers
+        if (isMy) {
+            const offerObjs = this.state.offers
+            if (offerObjs && offerObjs.length) {
+                const sellToken = async (e, offer) => {
+                    e.preventDefault()
+                    await this.props.sellToken(offer, this.props.currentUser, () => {
+                        this.props.fetchState()
+                    }, (err) => {
+                        if (!err || err.toString() === 'Canceled') return
+                        console.error(err)
+                        alert(err.toString())
+                    })
+                }
+
+                const rows = []
+                for (let i = 0; i < offerObjs.length; ++i) {
+                    const offer = offerObjs[i]
+                    rows.push(<tr key={offer.order_id}>
+                        <td>{Asset(offer.price).floatString}</td>
+                        <td><TimeAgoWrapper date={offer.created} /></td>
+                        <td><button className='button' onClick={e => sellToken(e, offer)}>
+                            {tt('g.sell')}
+                        </button></td>
+                    </tr>)
+                }
+                offers = <table style={{ marginBottom: '0rem' }}><tbody>
+                    {rows}
+                </tbody></table>
+            } else {
+                return null
+            }
+
+            const opened = this.isOffers()
+
+            offers = <Expandable opened={opened} title={tt('nft_tokens_jsx.offers')}>
+                {offers}
+            </Expandable>
+        }
+        return offers
+    }
+
+    _renderBets = (token, isMy) => {
+        let bets
+
+        const betObjs = this.state.bets
+        if (betObjs && betObjs.length) {
+            const rows = []
+            for (let i = 0; i < betObjs.length; ++i) {
+                const bet = betObjs[i]
+                rows.push(<tr key={bet.id}>
+                    <td>{Asset(bet.price).floatString}</td>
+                    <td><TimeAgoWrapper date={bet.created} /></td>
+                </tr>)
+            }
+            bets = <table style={{ marginBottom: '0rem' }}><tbody>
+                {rows}
+            </tbody></table>
+        } else {
+            return null
+        }
+
+        bets = <Expandable title={tt('nft_tokens_jsx.bets')}>
+            {bets}
+        </Expandable>
+
+        return bets
+    }
+
+    onSellClick = e => {
+        e.preventDefault()
+        this.sellPopupRef.current.togglePopup()
     }
 
     render() {
@@ -232,15 +403,9 @@ class NFTTokenPage extends Component {
         let last_price
         const price = token.selling && Asset(token.order.price)
         if (price) {
-            const asset = assets[price.symbol]
-            let imageUrl
-            if (asset) {
-                imageUrl = getAssetMeta(asset).image_url
-            }
-            last_price = <span title={price.floatString}>
-                {imageUrl && <img className='price-icon' src={imageUrl} alt={''} />}
-                {(token.selling ? (' ' + tt('nft_tokens_jsx.selling_for')) : '') + price.floatString}
-            </span>
+            last_price = <PriceIcon title={price.floatString} text={a => {
+                return ' ' + (token.selling ? tt('nft_tokens_jsx.selling_for') : '') + a.floatString
+            }} asset={price} assets={assets} />
         }
 
         const dataStr = JSON.stringify(data, null, 2)
@@ -259,7 +424,77 @@ class NFTTokenPage extends Component {
 
         const description = data.description || ''
 
-        const isMy = currentUser && currentUser.get('username') === token.owner
+        const username = currentUser && currentUser.get('username') 
+        const isMy = username === token.owner
+
+        let my_offer = token.my_offer ? Asset(token.my_offer.price) : null
+        if (my_offer) {
+            const cancelOffer = (e) => {
+                this.props.cancelOffer(e, token.my_offer, () => {
+                    this.props.fetchState()
+                }, (err) => {
+                    if (!err || err.toString() === 'Canceled') return
+                    console.error(err)
+                    alert(err.toString())
+                })
+            }
+            my_offer = <div className='my_offer' style={{paddingLeft: last_price ? '0px': '5px'}}>
+                <PriceIcon assets={assets} asset={my_offer} text={a => {
+                    return ' ' + tt('nft_tokens_jsx.you_offer_is') + a.floatString
+                }} style={{marginRight: '5px'}} />
+
+                <button className='button hollow alert' onClick={cancelOffer}>
+                    {tt('nft_tokens_jsx.cancel')}
+                </button>
+            </div>
+        }
+
+        const { auction_min_price, is_auction, my_bet } = token
+
+        let auction
+        if (is_auction) {
+            const cancelAuction = (e) => {
+                this.props.auction(token.token_id, Asset(0, 3, 'GOLOS'), new Date(0), username, () => {
+                    this.props.fetchState()
+                }, (err) => {
+                    if (!err || err.toString() === 'Canceled') return
+                    console.error(err)
+                    alert(err.toString())
+                })
+            }
+            const cancelBet = (e) => {
+                this.props.buyToken(token.token_id, 0, '', '0.000 GOLOS', currentUser, () => {
+                    this.props.fetchState()
+                }, (err) => {
+                    if (!err || err.toString() === 'Canceled') return
+                    console.error(err)
+                    alert(err.toString())
+                })
+            }
+            auction = <div className='my_auction' style={{paddingTop: last_price ? '5px' : '0px', paddingLeft: last_price ? '0px': '5px'}}>
+                <TimeExactWrapper date={token.auction_expiration}
+                    tooltipRender={(tooltip) => tt('nft_tokens_jsx.auction_expiration3') + ': ' + tooltip}
+                    contentRender={(content) => <React.Fragment>
+                        <Icon name='clock' className='space-right' />
+                        {content}
+                    </React.Fragment>}
+                />
+                {isMy ? <PriceIcon assets={assets} asset={token.auction_min_price} text={a => {
+                        return ' >= ' + a.amountFloat + ' ' + a.symbol
+                    }} style={{marginLeft: '5px', marginRight: '5px'}} title={tt('nft_tokens_jsx.min_price_is') + auction_min_price.floatString} />  : null}
+                {isMy ? <button className='button hollow alert' onClick={cancelAuction}>
+                    {tt('nft_tokens_jsx.stop_auction')}
+                </button> : (my_bet ? <span>
+                    <PriceIcon assets={assets} asset={Asset(my_bet.price)} text={a => {
+                        return ' ' + a.floatString
+                    }} style={{marginLeft: '5px', marginRight: '5px'}} title={tt('nft_tokens_jsx.you_bet_is') + Asset(my_bet.price).floatString} />
+                    <button className='button hollow alert' onClick={cancelBet} title={tt('nft_token_page_jsx.cancel_bet')}>
+                        {tt('nft_tokens_jsx.cancel')}
+                    </button></span> : <button className='button' onClick={e => this.showPlaceOfferBet(e, auction_min_price)}>
+                        {tt('nft_tokens_jsx.place_bet')}
+                    </button>)}
+            </div>
+        }
 
         return <div className='row'>
             <div className='NFTTokenPage'>
@@ -297,31 +532,42 @@ class NFTTokenPage extends Component {
                         <Expandable title={tt('userwallet_jsx.history_viewing')}>
                             {this._renderOps(ops)}
                         </Expandable>
+                        {this._renderOffers(token, isMy)}
+                        {this._renderBets(token, isMy)}
                         {!description ? <div style={{ flex: 1, wordWrap: 'break-word' }}>
                         </div> : null}
                         {isMy ? <div className='buttons'>
-                            {last_price}
+                            {last_price || auction}
                             {selling && <button className='button alert hollow button-center' title={tt('nft_tokens_jsx.cancel_hint')} onClick={this.cancelOrder}>
                                 {tt('nft_tokens_jsx.cancel')}
                             </button>}
                             <span style={{ flex: 1}}></span>
-                            {!selling && <button className='button' onClick={this.showSell}>
-                                {tt('g.sell')}
-                            </button>}
-                            {!selling && <button className='button hollow' onClick={this.showTransfer}>
+                            <div className='sell-button'>
+                                {(!selling && !is_auction) && <button className={'button' + (this.isOffers() ? ' hollow' : '')} onClick={this.onSellClick}>
+                                    {tt('g.sell')}
+                                </button>}
+                                <NFTTokenSellPopup ref={this.sellPopupRef} is_auction={is_auction}
+                                    showSell={this.showSell} showAuction={this.showAuction} />
+                            </div>
+                            {!selling && !is_auction && <button className='button hollow' onClick={this.showTransfer}>
                                 {tt('g.transfer')}
                             </button>}
-                            {!selling && <button className='button hollow alert' onClick={this.onBurnClick}>
+                            {!selling && !is_auction && <button className='button hollow alert' onClick={this.onBurnClick}>
                                 {tt('g.burn')}
                             </button>}
                         </div> : <div className='buttons'>
-                            {last_price}
+                            {last_price || auction}
                             {selling && <button className='button button-center' title={tt('nft_tokens_jsx.buy2') + price.floatString} onClick={this.buyToken}>
                                 {tt('nft_tokens_jsx.buy')}
+                            </button>}
+                            {!my_offer && !is_auction && <button className='button hollow' title={tt('nft_tokens_jsx.place_offer')} onClick={e => this.showPlaceOfferBet(e, false)}>
+                                {tt('nft_tokens_jsx.place_offer')}
                             </button>}
                             {!selling && msgsHost() && <a href={msgsLink(token.owner)} target='_blank' rel='noreferrer nofollow' className='button hollow'>{tt('nft_token_page_jsx.msg')}</a>}
                             <span style={{ flex: 1}}></span>
                         </div>}
+                        {my_offer}
+                        {last_price ? auction : null}
                     </div>
                 </div>
             </div>
@@ -341,6 +587,30 @@ class NFTTokenPage extends Component {
                     onClose={this.hideSell}
                     token={token}
                     refetch={this.props.fetchState}
+                />
+            </Reveal>
+
+            <Reveal show={this.state.showPlaceOfferBet} onHide={this.hidePlaceOfferBet} revealStyle={{ width: '450px' }}>
+                <NFTPlaceOfferBet
+                    currentUser={currentUser}
+                    onClose={this.hidePlaceOfferBet}
+                    token={token}
+                    refetch={this.props.fetchState}
+                    minPrice={this.state.minPrice}
+                />
+            </Reveal>
+
+            <Reveal show={this.state.showAuction} onHide={this.hideAuction} revealStyle={{ width: '450px' }}>
+                <NFTAuction
+                    currentUser={currentUser}
+                    onClose={this.hideAuction}
+                    token={token}
+                    refetch={() => {
+                        this.props.fetchState()
+                        this.setState({
+                            offers: []
+                        })
+                    }}
                 />
             </Reveal>
         </div>
@@ -419,7 +689,62 @@ module.exports = {
 
                 dispatch(transaction.actions.broadcastOperation({
                     type: 'nft_buy',
-                    confirm: tt('nft_tokens_jsx.buy_confirm') + tokenTitle + tt('nft_tokens_jsx.buy_confirm2') + price + '?',
+                    confirm: tokenTitle ? 
+                        tt('nft_tokens_jsx.buy_confirm') + tokenTitle + tt('nft_tokens_jsx.buy_confirm2') + price + '?' :
+                        tt('g.are_you_sure'),
+                    username,
+                    operation,
+                    successCallback,
+                    errorCallback
+                }))
+            },
+            cancelOffer: (e, order, successCallback, errorCallback) => {
+                e.preventDefault()
+
+                const operation = {
+                    owner: order.owner,
+                    order_id: order.order_id
+                }
+
+                dispatch(transaction.actions.broadcastOperation({
+                    type: 'nft_cancel_order',
+                    confirm: tt('g.are_you_sure'),
+                    username: order.owner,
+                    operation,
+                    successCallback,
+                    errorCallback
+                }))
+            },
+            sellToken: (offer, currentUser, successCallback, errorCallback) => {
+                const username = currentUser.get('username')
+                const operation = {
+                    seller: username,
+                    token_id: offer.token_id,
+                    buyer: offer.owner,
+                    order_id: offer.order_id,
+                    price: offer.price
+                }
+
+                dispatch(transaction.actions.broadcastOperation({
+                    type: 'nft_sell',
+                    username,
+                    operation,
+                    successCallback,
+                    errorCallback
+                }))
+            },
+            auction: (
+                token_id, min_price, expiration, username, successCallback, errorCallback
+            ) => {
+                const operation = {
+                    owner: username,
+                    token_id,
+                    min_price: min_price.toString(),
+                    expiration: expiration.toISOString().split('.')[0]
+                }
+
+                dispatch(transaction.actions.broadcastOperation({
+                    type: 'nft_auction',
                     username,
                     operation,
                     successCallback,

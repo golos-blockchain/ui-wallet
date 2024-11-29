@@ -59,6 +59,15 @@ export default function transactionErrorReducer(
                     handled = true
                 }
                 break;
+            case  'nft_buy': 
+                if (errorStr.includes('Bet with such price already exists.')) {
+                    errorKey = errorStr = tt('nft_tokens_jsx.bet_already_exists')
+                    handled = true
+                } else if (errorStr.includes('Order with such price already exists.')) {
+                    errorKey = errorStr = tt('nft_tokens_jsx.offer_already_exists')
+                    handled = true
+                }
+                break
             case 'withdraw_vesting':
                 if (
                     errorStr.includes(

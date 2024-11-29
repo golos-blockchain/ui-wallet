@@ -3,6 +3,10 @@ import { browserHistory } from 'react-router'
 
 class URLLoader extends React.Component {
     componentDidMount() {
+        if (process.env.MOBILE_APP) {
+            // Not implemented
+            return
+        }
         window.appNavigation.onRouter((url) => {
             try {
                 let parsed = new URL(url)

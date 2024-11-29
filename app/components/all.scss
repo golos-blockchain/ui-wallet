@@ -25,7 +25,7 @@
 @import "./elements/Userpic";
 @import "./elements/VerticalMenu";
 @import "./elements/WitnessSettings";
-@import "./elements/app/AppReminder";
+@import "./elements/NewsPopups";
 @import "./elements/common/Button/index";
 @import "./elements/common/Input/index";
 @import "./elements/common/RadioButton/index";
@@ -71,10 +71,14 @@
 @import "./modules/Powerdown.scss";
 @import "./modules/QuickBuy.scss";
 @import "./modules/Modals";
+@import "./modules/WalletBanner";
 @import "./modules/nft/NFTCollections";
 @import "./modules/nft/CreateNFTCollection";
 @import "./modules/nft/IssueNFTToken";
+@import "./modules/nft/NFTAuction";
+@import "./modules/nft/NFTMyOrders";
 @import "./modules/nft/NFTTokens";
+@import "./modules/nft/NFTPlaceOfferBet";
 @import "./modules/nft/NFTTokenSell";
 @import "./modules/nft/NFTTokenTransfer";
 

@@ -8,4 +8,9 @@
     height: 3rem;
     display: inline-block;
     vertical-align: top;
+
+    &.mini {
+        width: 2rem !important;
+        height: 2rem !important;
+    }
 }

@@ -27,6 +27,7 @@ import CurationRewards from 'app/components/modules/CurationRewards';
 import AuthorRewards from 'app/components/modules/AuthorRewards';
 import FilledOrders from 'app/components/modules/FilledOrders'
 import NFTHistory from 'app/components/modules/nft/NFTHistory'
+import NFTMyOrders from 'app/components/modules/nft/NFTMyOrders'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import { authUrl, } from 'app/utils/AuthApiClient'
 import { getGameLevel } from 'app/utils/GameUtils'
@@ -46,6 +47,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Userpic from 'app/components/elements/Userpic';
 import Callout from 'app/components/elements/Callout';
 import normalizeProfile, { getLastSeen } from 'app/utils/NormalizeProfile';
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 export default class UserProfile extends React.Component {
     constructor(props) {
@@ -70,6 +72,15 @@ export default class UserProfile extends React.Component {
             np.loading !== this.props.loading ||
             np.location.pathname !== this.props.location.pathname ||
             np.routeParams.accountname !== this.props.routeParams.accountname ||
+            np.isS !== this.props.isS ||
+            np.hideMainMe !== this.props.hideMainMe ||
+            np.hideBlogMe !== this.props.hideBlogMe ||
+            np.hideRewardsMe !== this.props.hideRewardsMe ||
+            np.hideUiaInfo !== this.props.hideUiaInfo ||
+            np.smallUias !== this.props.smallUias ||
+            np.hideMainFor !== this.props.hideMainFor ||
+            np.hideBlogFor !== this.props.hideBlogFor ||
+            np.hideRewardsFor !== this.props.hideRewardsFor ||
             ns.repLoading !== this.state.repLoading
         )
     }
@@ -148,7 +159,9 @@ export default class UserProfile extends React.Component {
 
     render() {
         const {
-            props: {current_user, current_account, wifShown, global_status, },
+            props: {current_user, current_account, wifShown, global_status,
+            isS, hideMainMe, hideBlogMe, hideRewardsMe, hideMainFor, hideBlogFor, hideRewardsFor,
+            hideUiaInfo, smallUias, },
             onPrint
         } = this;
         let { accountname, section, id, action } = this.props.routeParams;
@@ -174,7 +187,7 @@ export default class UserProfile extends React.Component {
             </div>;
         } else {
             return <div className='UserProfile'>
-                <div className='UserProfile__center'>{tt('user_profile.unknown_account')}</div>
+                <div className='UserProfile__center'>{tt('user_profile.unknown_account') + ' ' + window.location.href}</div>
             </div>
         }
 
@@ -230,7 +243,8 @@ export default class UserProfile extends React.Component {
                     showTransfer={this.props.showTransfer}
                     showPowerdown={this.props.showPowerdown}
                     current_user={current_user}
-                    withdrawVesting={this.props.withdrawVesting} />
+                    withdrawVesting={this.props.withdrawVesting}
+                    isS={isS} />
                 { isMyAccount && <div><MarkNotificationRead fields='send,receive' account={account.name} /></div> }
                 </div>;
         } else if( section === 'assets' ) {
@@ -238,8 +252,10 @@ export default class UserProfile extends React.Component {
 
                 <br />
                 {!action && <Assets account={accountImm} isMyAccount={isMyAccount}
-                    showTransfer={this.props.showTransfer} />
-                }
+                    showTransfer={this.props.showTransfer}
+                    isS={isS} hideRewardsMe={hideRewardsMe}
+                    hideUiaInfo={hideUiaInfo} smallUias={smallUias}
+                />}
                 {action === 'update' && <UpdateAsset account={accountImm} symbol={id.toUpperCase()} />}
                 {action === 'transfer' && <TransferAsset account={accountImm} symbol={id.toUpperCase()} />}
                 </div>
@@ -281,7 +297,16 @@ export default class UserProfile extends React.Component {
                     account={account}
                     current_user={current_user}
                 />
-                <MarkNotificationRead fields='nft_token_sold' account={account.name} />
+                <MarkNotificationRead fields='nft_token_sold,nft_buy_offer' account={account.name} />
+            </div>
+        }
+        else if( section === 'nft-orders' ) {
+            nftClass = 'active'
+            tab_content = <div>
+                <NFTMyOrders
+                    account={account}
+                    current_user={current_user}
+                />
             </div>
         }
         else if( section === 'donates-from' ) {
@@ -383,8 +408,11 @@ export default class UserProfile extends React.Component {
         let nftMenu = [
             {link: `/@${accountname}/nft-tokens`, label: tt('g.nft_tokens'), value: tt('g.nft_tokens'), addon: isMyAccount && <NotifiCounter fields='nft_receive' /> },
             {link: `/@${accountname}/nft-collections`, label: tt('g.nft_collections'), value: tt('g.nft_collections')},
-            {link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold' /> },
         ];
+        if (isMyAccount) {
+            nftMenu.push({link: `/@${accountname}/nft-orders`, label: tt('g.nft_orders'), value: tt('g.nft_orders'), })
+        }
+        nftMenu.push({link: `/@${accountname}/nft-history`, label: tt('g.nft_history'), value: tt('g.nft_history'), addon: isMyAccount && <NotifiCounter fields='nft_token_sold,nft_buy_offer' /> })
 
         let permissionsMenu = [
             {link: `/@${accountname}/permissions`, label: tt('g.keys'), value: tt('g.keys')},
@@ -398,6 +426,64 @@ export default class UserProfile extends React.Component {
           accountjoin = transferFromSteemToGolosDate;
         }
 
+        let hideBlog = isMyAccount ? hideBlogMe : hideBlogFor
+        let hideRewards = isMyAccount ? hideRewardsMe : hideRewardsFor
+        let blogCounter = isMyAccount && <NotifiCounter fields='comment_reply,mention,referral' />
+        let blog
+        if (!hideBlog) {
+            blog = <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
+                {tt('g.blog')} {blogCounter}
+            </a>
+        }
+
+        const hideMain = isMyAccount ? hideMainMe : hideMainFor
+
+        let kebab
+        let kebabNotify = ''
+        if (hideMain) {
+            let kebabMenu = []
+            if (isMyAccount) {
+                kebabMenu = [
+                    { link: `/@${accountname}/invites`, label: tt('g.invites'), value: tt('g.invites') },
+                    ...permissionsMenu,
+                ]
+                if (isMyAccount) {
+                    kebabMenu.push({ link: `/@${accountname}/settings`, label: tt('g.settings'), value: tt('g.settings') })
+                }
+            }
+            if (hideRewards) {
+                kebabMenu = [
+                    ...rewardsMenu,
+                    { value: '-' },
+                    ...kebabMenu,
+                ]
+                kebabNotify += ',donate,donate_msgs'
+            }
+            if (hideBlog) {
+                kebabMenu = [
+                    { link: blogsUrl(`/@`) + accountname, target: blogsTarget(), label: tt('g.blog'), value: tt('g.blog'), addon: blogCounter },
+                    { value: '-' },
+                    ...kebabMenu,
+                ]
+                kebabNotify += ',comment_reply,mention,referral'
+            }
+            if (kebabMenu.length) {
+                if (kebabMenu[kebabMenu.length - 1].value === '-') kebabMenu.pop()
+            }
+            if (kebabNotify[0] === ',') kebabNotify = kebabNotify.slice(1)
+            kebab = kebabMenu.length ? <LinkWithDropdown
+                closeOnClickOutside
+                dropdownPosition='bottom'
+                dropdownAlignment={this.state.linksAlign}
+                dropdownContent={<VerticalMenu items={kebabMenu} />}
+                >
+                <a className={`UserProfile__menu-item`}>
+                    <Icon name='new/more' />
+                    {(kebabNotify && isMyAccount) ? <NotifiCounter fields={kebabNotify} /> : null}
+                </a>
+            </LinkWithDropdown> : null
+        }
+
         const top_menu = <div className='row UserProfile__top-menu'>
             <div className='columns'>
                 <div className='UserProfile__menu menu' style={{flexWrap: 'wrap'}}>
@@ -405,7 +491,7 @@ export default class UserProfile extends React.Component {
                         {tt('g.balances')}
                     </Link>
                     <Link className='UserProfile__menu-item' to={`/@${accountname}/assets`} activeClassName='active'>
-                        {tt('g.assets')}
+                        {hideMain ? tt('g.assets2') : tt('g.assets')}
                     </Link>
                     <div>
                         <LinkWithDropdown
@@ -416,7 +502,7 @@ export default class UserProfile extends React.Component {
                             >
                             <a className={`${nftClass} UserProfile__menu-item`} ref={this._onLinkRef}>
                                 {tt('g.nft')}
-                                {isMyAccount && <NotifiCounter fields='nft_receive,nft_token_sold' />}
+                                {isMyAccount && <NotifiCounter fields='nft_receive,nft_token_sold,nft_buy_offer' />}
                                 <Icon name='dropdown-center' />
                             </a>
                         </LinkWithDropdown>
@@ -424,10 +510,10 @@ export default class UserProfile extends React.Component {
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
                         {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
-                    {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
+                    {!hideMain && isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
                         {tt('g.invites')}
                     </Link>}
-                    {isMyAccount && <LinkWithDropdown
+                    {!hideMain && isMyAccount && <LinkWithDropdown
                         closeOnClickOutside
                         dropdownPosition='bottom'
                         dropdownAlignment={this.state.linksAlign}
@@ -439,10 +525,8 @@ export default class UserProfile extends React.Component {
                     </LinkWithDropdown>}
                     <div className='UserProfile__filler' />
                     <div>
-                        <a className='UserProfile__menu-item' href={blogsUrl(`/@`) + accountname} target={blogsTarget()}>
-                            {tt('g.blog')} {isMyAccount && <NotifiCounter fields='comment_reply,mention,referral' />}
-                        </a>
-                        <LinkWithDropdown
+                        {blog}
+                        {hideRewards ? null : <LinkWithDropdown
                             closeOnClickOutside
                             dropdownPosition='bottom'
                             dropdownAlignment={this.state.linksAlign}
@@ -453,13 +537,14 @@ export default class UserProfile extends React.Component {
                                 {isMyAccount && <NotifiCounter fields='donate,donate_msgs' />}
                                 <Icon name='dropdown-center' />
                             </a>
-                        </LinkWithDropdown>
+                        </LinkWithDropdown>}
                         {isMyAccount ? <a target='_blank' rel='noopener noreferrer' className='UserProfile__menu-item' href={msgsLink()} title={tt('g.messages')}>
                             <Icon name='new/envelope' /> <NotifiCounter fields='message' />
                         </a> : null}
-                        {isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
+                        {isMyAccount && !hideMain && <Link className='UserProfile__menu-item' to={`/@${accountname}/settings`} activeClassName='active' title={tt('g.settings')}>
                             <Icon name='new/setting' />
                         </Link>}
+                        {kebab}
                     </div>
                 </div>
             </div>
@@ -622,5 +707,5 @@ module.exports = {
             },
             requestData: (args) => dispatch({type: 'REQUEST_DATA', payload: args}),
         })
-    )(UserProfile)
+    )(withScreenSize(UserProfile))
 };

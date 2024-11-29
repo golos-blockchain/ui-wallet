@@ -12,6 +12,7 @@ import Icon from 'app/components/elements/Icon';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Memo from 'app/components/elements/Memo';
 import TransferWaiter from 'app/components/modules/uia/TransferWaiter'
+import g from 'app/redux/GlobalReducer'
 import transaction from 'app/redux/Transaction';
 import { clearOldAddresses, loadAddress, saveAddress, } from 'app/utils/UIA';
 import getUIAAddress from 'shared/getUIAAddress'
@@ -207,6 +208,12 @@ class AssetRules extends Component {
         });
     }
 
+    showQrTo = (e, addr) => {
+        const { sym } = this.props
+        this.props.showQRKey({type: 'Deposit', text: addr,
+            title: tt('assets_jsx.address_qr_title') + ' (' + sym + ')'})
+    }
+
     _renderTo = (to, to_fixed, username) => {
         let addr = to || to_fixed;
         if (username)
@@ -218,9 +225,12 @@ class AssetRules extends Component {
             </span> 
             <CopyToClipboard text={addr} onCopy={() => this.setState({copied_addr: true})}>
                 <span style={{cursor: 'pointer', paddingLeft: '5px'}}>
-                    <Icon name="copy" size="2x" /> {this.state.copied_addr ? <Icon name="copy_ok" /> : null}
+                    <Icon name="copy" size="2x" /> {this.state.copied_addr ? <span style={{ marginRight: '0.4rem' }}><Icon name="copy_ok" /></span> : null}
                 </span>
             </CopyToClipboard>
+            <div style={{display: "inline-block", paddingTop: 2, paddingRight: 5, cursor: "pointer"}} title='QR' onClick={e => this.showQrTo(e, addr)}>
+                <img src={require("app/assets/images/qrcode.png")} height="32" width="32" />
+            </div>
             <br/>
             </div> : null;
     }
@@ -478,6 +488,9 @@ export default connect(
                 successCallback,
                 errorCallback
             }));
+        },
+        showQRKey: ({type, text, title}) => {
+            dispatch(g.actions.showDialog({name: "qr_key", params: {type, text, title}}))
         }
     })
 )(AssetRules)

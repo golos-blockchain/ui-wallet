@@ -12,6 +12,22 @@
         display: flex;
         width: 100%;
     }
+    .my_bet {
+        padding-left: 5px;
+        padding-top: 5px;
+
+        span {
+            vertical-align: middle;
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+    }
+    .my_offer {
+        padding-top: 10px;
+    }
+    .my_auction {
+        padding-left: 5px;
+    }
 
     img {
         max-width: 320px;
@@ -38,12 +54,24 @@
 
     .button {
         margin: 0px !important;
-        margin-left: 5px !important;
+        margin-top: -4px !important;
+        margin-left: 10px !important;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
-    .button-center {
-        margin-top: -4px !important;
-        margin-left: 10px !important;
+
+    .sell-button {
+        position: relative;
+        display: inline-block;
+    }
+    .Hint__content {
+        padding: 0px;
+        min-width: 50px;
+        .Hint__inner {
+            .VerticalMenu {
+                white-space: nowrap;
+                width: auto;
+            }
+        }
     }
 }
