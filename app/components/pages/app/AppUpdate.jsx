@@ -16,7 +16,7 @@ class AppUpdate extends React.Component {
         let url
         if (process.env.MOBILE_APP) {
             url = new URL(
-                '/messenger-android/' + file,
+                '/wallet-android/' + file,
                 $STM_Config.app_updater.host
             )
         } else {
@@ -61,8 +61,7 @@ class AppUpdate extends React.Component {
     goDownload = (e) => {
         e.preventDefault()
         if (process.env.MOBILE_APP) {
-            alert('api la')
-            window.location.href = new URL('/api/exe/messenger/android/latest', $STM_Config.app_updater.host).toString()
+            window.location.href = new URL('/api/exe/wallet/android/latest', $STM_Config.app_updater.host).toString()
             return
         }
         window.open(this.state.exeUrl, '_blank')
