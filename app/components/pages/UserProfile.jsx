@@ -508,7 +508,7 @@ export default class UserProfile extends React.Component {
                         </LinkWithDropdown>
                     </div>
                     {isMyAccount ? <Link className='UserProfile__menu-item' to={`/@${accountname}/filled-orders`} activeClassName='active'>
-                        {tt('navigation.market2')} <NotifiCounter fields="fill_order" />
+                        {tt('navigation.fill_order')} <NotifiCounter fields="fill_order" />
                     </Link> : null}
                     {!hideMain && isMyAccount && <Link className='UserProfile__menu-item' to={`/@${accountname}/invites`} activeClassName='active'>
                         {tt('g.invites')}

@@ -13,7 +13,7 @@ export default {
     },
  
     "YMPZM": {
-        "text": "Вы можете купить токены PZM на бирже <extlink href=\"https://market.rudex.org/#/market/RUDEX.PZM_RUDEX.USDT\">RuDEX</extlink> или совершить перевод напрямую с <extlink href=\"https://wallet.prizm.space\">кошелька PRIZM</extlink>."
+        "text": "Вы можете купить токены PZM на бирже <extlink href=\"https://market.rudex.org/#/market/RUDEX.PZM_RUDEX.USDT\">RuDEX</extlink> или совершить перевод напрямую с <extlink href=\"https://wallet.prizm.vip\">кошелька PRIZM</extlink>."
     },
  
     "YMHIVE": {
