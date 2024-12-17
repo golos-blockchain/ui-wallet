@@ -46,13 +46,11 @@ class UserWallet extends React.Component {
             return
         }
         const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
-        if (accumulative_balance_steem) {
-            const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
-            this.setState({
-                price_rub: pr.price_rub,
-                price_usd: pr.price_usd
-            })
-        }
+        const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
+        this.setState({
+            price_rub: pr.price_rub,
+            price_usd: pr.price_usd
+        })
     }
 
     componentDidMount() {
@@ -367,9 +365,12 @@ class UserWallet extends React.Component {
             claim_hint = <span>
                 {tt('tips_js.claim_balance_hint1')}
                 {SUBTRACT}
+                {tt('tips_js.claim_balance_hint2')}
+                {accumulative_balance_steem ? tt('tips_js.claim_balance_hint_claim') : tt('tips_js.claim_balance_hint_no_claim')}
                 {tt('tips_js.claim_balance_hint_DAILY', {
                     DAILY
                 })}
+                &nbsp;<Link to="/convert/YMUSDT/GOLOS?buy">{tt('tips_js.buy_tokens')}</Link>
             </span>
             claim_disabled = true
         }
@@ -399,7 +400,7 @@ class UserWallet extends React.Component {
         let gbgAprTip = tt('userwallet_jsx.apr_gbg')
         if (vesting_steem < min_gp_to_curate) {
             gbgPerMonth = 0
-            gbgTip = tt('tips_js.savings_interest_gp_AMOUNT', { AMOUNT: SUBTRACT })
+            gbgTip = [tt('tips_js.savings_interest_gp'), ...SUBTRACT, tt('tips_js.savings_interest_gp2')]
         } else if (gprops.is_forced_min_price) {
             gbgPerMonth = 0
             sbdInterest = 0
@@ -424,6 +425,22 @@ class UserWallet extends React.Component {
 
         const { ClaimBalance, TipBalance, VestingBalance, GolosBalance, GbgBalance, SavingsBalance } = BalanceHeader
 
+        let claimBtn = null
+        if (isMyAccount && accumulative_balance_steem) {
+            claimBtn = <button
+                className="Wallet__claim_button button tiny"
+                disabled={claim_disabled}
+                onClick={claim.bind(this, account.get('accumulative_balance'))}
+            >
+                {tt('g.claim')}
+            </button>
+            if (claim_disabled) {
+                claimBtn = <LiteTooltip t={[tt('tips_js.claim_min_gp'), ...SUBTRACT, tt('tips_js.claim_min_gp2')]}>
+                    {claimBtn}
+                </LiteTooltip>
+            }
+        }
+
         return (<div className={"UserWallet top-margin" + (isS ? ' small-screen' : '')}>
             {accountIdleness && <Callout>
                 <div align="center">{tt('userwallet_jsx.account_idleness')}. <a target="_blank" href="https://wiki.golos.id/users/update#ponizhenie-sily-golosa-pri-neaktivnosti">{tt('g.more_hint')} <Icon name="extlink" /></a>
@@ -433,24 +450,16 @@ class UserWallet extends React.Component {
 
             <TransactionError opType="withdraw_vesting" />
 
-            {accumulative_balance_steem ? <div className="UserWallet__balance row zebra">
+            <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
                     <ClaimBalance tipText={claim_hint} isS={isS} />
                 </div>
                 <div className="column small-12 medium-4">
                     <span className='main-balance'>{steem_claim_balance_str}</span>
-                    <div>{isMyAccount ? (<LiteTooltip t={tt('tips_js.claim_min_gp_AMOUNT', { AMOUNT: SUBTRACT })}>
-                    <button
-                        className="Wallet__claim_button button tiny"
-                        disabled={claim_disabled}
-                        onClick={claim.bind(this, account.get('accumulative_balance'))}
-                    >
-                        {tt('g.claim')}
-                    </button>
-                    </LiteTooltip>) : null}</div>
+                    <div>{claimBtn}</div>
                     {emissionStake}
                 </div>
-            </div> : null}
+            </div>
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
                     <TipBalance isS={isS} />

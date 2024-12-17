@@ -1011,7 +1011,11 @@
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
     "claim_balance_hint1": "If you will add ",
-    "claim_balance_hint_DAILY": " into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "claim_balance_hint2": " into your Golos Power, you will be able ",
+    "claim_balance_hint_claim": "to claim these funda, and ",
+    "claim_balance_hint_no_claim": "",
+    "claim_balance_hint_DAILY": "to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "buy_tokens": "Buy tokens",
     "claim_balance_hint_enough_REQUIRED": "Your Golos Power was not enough to receive emission (required at least %(REQUIRED)s). Emission for that time period is collected on your CLAIM-balance. Now you can claim it on your TIP-balance.",
     "claim_expiration_hint": "The tokens request window will end",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
@@ -1034,8 +1038,10 @@
     "savings_interest": "Interest per month, if you will store this GBG amount in the savings",
     "savings_interest_zero": "Savings interest payments are disabled at now.",
     "savings_interest_debt": "GBG debt do not allows us to pay GBG savings interest.",
-    "savings_interest_gp_AMOUNT": "It is not enough %(AMOUNT)s Golos Power, to receive GBG interest payments.",
-    "claim_min_gp_AMOUNT": "There is not enough %(AMOUNT)s in the Golos Power of the vote to withdraw tokens from the claim-balance."
+    "savings_interest_gp": "It is not enough ",
+    "savings_interest_gp2": " Golos Power, to receive GBG interest payments.",
+    "claim_min_gp": "There is not enough ",
+    "claim_min_gp2": " in the Golos Power of the vote to withdraw tokens from the claim-balance."
   },
   "transferhistoryrow_jsx": {
     "to_savings": "to savings",
