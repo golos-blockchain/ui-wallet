@@ -18,6 +18,7 @@ import PowerCalc from 'app/components/modules/PowerCalc'
 import Powerdown from 'app/components/modules/Powerdown';
 import OpenOrders from 'app/components/modules/OpenOrders';
 import NFTMyOrders from 'app/components/modules/nft/NFTMyOrders'
+import LeaveGolos from 'app/components/modules/LeaveGolos'
 
 let keyIndex = 0;
 
@@ -32,12 +33,14 @@ class Modals extends React.Component {
         show_add_account_modal: PropTypes.bool,
         show_app_download_modal: PropTypes.bool,
         show_power_calc_modal: PropTypes.bool,
+        show_leave_golos_modal: PropTypes.bool,
         hideLogin: PropTypes.func.isRequired,
         hideConfirm: PropTypes.func.isRequired,
         hideTransfer: PropTypes.func.isRequired,
         hidePowerdown: PropTypes.func.isRequired,
         hidePowerCalc: PropTypes.func.isRequired,
         hideAppDownload: PropTypes.func.isRequired,
+        hideLeaveGolos: PropTypes.func.isRequired,
         notifications: PropTypes.object,
         removeNotification: PropTypes.func,
         show_open_orders_modal: PropTypes.bool,
@@ -67,6 +70,7 @@ class Modals extends React.Component {
             show_add_account_modal,
             show_app_download_modal,
             show_power_calc_modal,
+            show_leave_golos_modal,
             hideLogin,
             hideTransfer,
             hideConvertAssets,
@@ -76,6 +80,7 @@ class Modals extends React.Component {
             hideAddAccount,
             hideAppDownload,
             hidePowerCalc,
+            hideLeaveGolos,
             notifications,
             removeNotification,
             show_open_orders_modal,
@@ -139,6 +144,10 @@ class Modals extends React.Component {
                     <CloseButton onClick={hideAppDownload} />
                     <AppDownload />
                 </Reveal>}
+                {show_leave_golos_modal && <Reveal onHide={hideLeaveGolos} show={show_leave_golos_modal}>
+                    <CloseButton onClick={hideLeaveGolos} />
+                    <LeaveGolos />
+                </Reveal>}
             </div>
         );
     }
@@ -162,6 +171,7 @@ export default connect(
             notifications: state.app.get('notifications'),
             show_open_orders_modal: state.user.get('show_open_orders_modal'),
             show_nft_orders_modal: state.user.get('show_nft_orders_modal'),
+            show_leave_golos_modal: state.user.get('show_leave_golos_modal'),
         }
     },
     dispatch => ({
@@ -200,6 +210,10 @@ export default connect(
         hideAppDownload: e => {
             if (e) e.preventDefault()
             dispatch(user.actions.hideAppDownload())
+        },
+        hideLeaveGolos: e => {
+            if (e) e.preventDefault()
+            dispatch(user.actions.hideLeaveGolos())
         },
         // example: addNotification: ({key, message}) => dispatch({type: 'ADD_NOTIFICATION', payload: {key, message}}),
         removeNotification: (key) => dispatch({type: 'REMOVE_NOTIFICATION', payload: {key}}),

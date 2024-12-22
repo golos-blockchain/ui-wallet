@@ -1,4 +1,5 @@
 import React, { Component, } from 'react'
+import cn from 'classnames'
 import tt from 'counterpart'
 import { connect, } from 'react-redux'
 import { Link } from 'react-router'
@@ -22,6 +23,7 @@ import NFTAuction from 'app/components/modules/nft/NFTAuction'
 import NotFound from 'app/components/pages/NotFound'
 import { msgsHost, msgsLink } from 'app/utils/ExtLinkUtils'
 import transaction from 'app/redux/Transaction'
+import user from 'app/redux/User'
 
 class NFTTokenPage extends Component {
     state = {
@@ -159,6 +161,12 @@ class NFTTokenPage extends Component {
         if (this._onAwayClickListen) {
             window.removeEventListener('mousedown', this._onAwayClick)
         }
+    }
+
+    leaveGolos = (e) => {
+        e.preventDefault()
+        const { href } = e.target.closest('a')
+        this.props.showLeaveGolos(href)
     }
 
     showTransfer = (e) => {
@@ -423,6 +431,7 @@ class NFTTokenPage extends Component {
         }
 
         const description = data.description || ''
+        const url = data.url || ''
 
         const username = currentUser && currentUser.get('username') 
         const isMy = username === token.owner
@@ -521,8 +530,16 @@ class NFTTokenPage extends Component {
                                 </Link>
                             </div>
                         </div>
-                        {description ? <div style={{ marginTop: '0.7rem', flex: 1, wordWrap: 'break-word' }}>
+                        {(description || url) ? <div style={{ marginTop: '0.7rem', flex: 1, wordWrap: 'break-word' }}>
                             {description}
+                            {url ? <div className={cn('token-link', {
+                                first: !description
+                            })}>
+                                <a href={url} target='_blank' rel='noreferrer noopener' onClick={this.leaveGolos}>
+                                    <Icon name='editor-toolbar/link' />
+                                    <span className='text'>{url}</span>
+                                </a>
+                            </div> : null}
                         </div> : null}
                         <Expandable title={tt('create_nft_collection_jsx.json_metadata')} style={{ marginTop: '0.5rem' }}>
                             <pre>
@@ -636,6 +653,9 @@ module.exports = {
             fetchState: () => {
                 const pathname = window.location.pathname
                 dispatch({type: 'FETCH_STATE', payload: {pathname}})
+            },
+            showLeaveGolos: (url) => {
+                dispatch(user.actions.showLeaveGolos({ url }))
             },
             burnToken: (
                 token_id, currentUser, successCallback, errorCallback

@@ -344,6 +344,13 @@
     "community_chat": "You can get answers in the community chat",
     "delegate_chat": "and in the delegates chat"
   },
+  "leave_golos_jsx": {
+    "title": "You Leaving Golos",
+    "desc1": "Link you clicked navigates you to:",
+    "desc2": "This resource is not related to Golos services, so we cannot guarantee security. Do not enter keys and password here, if do not trusting this service.",
+    "go": "Go link",
+    "cancel": "Do not go"
+  },
   "navigation": {
     "about": "About",
     "explore": "Explore",
@@ -780,7 +787,10 @@
     "create": "Create",
     "restore_json": "Restore default",
     "json_no_fields": "In JSON missing fields: ",
-    "json_fix": "Add missing fields"
+    "json_fix": "Add missing fields",
+    "url": "Page Link",
+    "url_hint": "https://8bitpunk.com/our-best",
+    "url_error": "Wrong Link."
   },
   "issue_nft_token_jsx": {
     "title": "Issue NFT",
