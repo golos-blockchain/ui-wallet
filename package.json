@@ -57,7 +57,7 @@
     "foundation-sites": "^6.4.3",
     "fs-extra": "^10.0.1",
     "git-rev-sync": "^3.0.2",
-    "golos-dex-lib-js": "^1.0.2",
+    "golos-dex-lib-js": "^1.0.3",
     "golos-lib-js": "^0.9.73",
     "history": "^2.0.0-rc2",
     "immutable": "^3.8.2",

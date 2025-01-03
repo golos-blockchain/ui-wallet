@@ -59,11 +59,16 @@ export default async function getExchangeData(endpoint,
                 amount,
                 direction,
                 symbol,
+                hybrid: {
+                    strategy: 'discrete',
+                    discrete_step: 500,
+                },
                 remain: {
                     multi: 'ignore'
                 },
                 min_to_receive: mtr
             })
+            console.log(resMul)
         } catch (err) {
             console.error('Multi-step getExchange error:', err)
             errMul = err.toString()

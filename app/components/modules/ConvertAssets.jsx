@@ -253,7 +253,7 @@ class ConvertAssets extends React.Component {
         if (chain) {
             let tx
             try {
-                tx = await libs.dex.makeExchangeTx(chain.steps, {
+                tx = await libs.dex.makeExchangeTx(chain, {
                     owner: currentAccount.get('name')
                 })
             } catch (err) {
@@ -263,6 +263,7 @@ class ConvertAssets extends React.Component {
                 return
             }
             console.log('tx', JSON.stringify(tx))
+            alert(JSON.stringify(tx))
 
             this.props.placeOrders(currentAccount.get('name'), tx, confirm, async (orderid) => {
                 await new Promise(resolve => setTimeout(resolve, 4000))

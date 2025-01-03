@@ -4538,17 +4538,17 @@ globule@^1.0.0:
 "gls-wallet-native-core@file:native_core":
   version "1.0.0"
 
-golos-dex-lib-js@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/golos-dex-lib-js/-/golos-dex-lib-js-1.0.2.tgz#e0fe5d29781da8d0830ccb6bcfa5386bc73a2c5d"
-  integrity sha512-wrTzbMdoXlarjFu15liuTdcZjHlPXbdGyMouvCVlMKVqcldUbvi5SMR5egtLBjMKZfmFnFxbFrv798ukGqqSUg==
+golos-dex-lib-js@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/golos-dex-lib-js/-/golos-dex-lib-js-1.0.3.tgz#15c53bbe6399cb30754314d28996f8239f893774"
+  integrity sha512-FLZYZNSPHPyRWJNMKeJUM/wGGITcVACV09qDcAEo+9I1Kzzq/kwLsXfLcdEldFEW6fNcqiKjm4t5TK2mXQWHUQ==
   dependencies:
     golos-lib-js "^0.9.64"
 
 golos-lib-js@^0.9.64:
-  version "0.9.68"
-  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.68.tgz#62f3c4a7755eacfbe6dc2f6ebc3111f2ff74e6dd"
-  integrity sha512-KoQMFHtINYdM0hhe9dKPpWXZLo3MkFXyRxY/zQq0kbBjAwJBU4P1WEMwmPS+MPujjizfvU6nerUOLI4Lj7ChFw==
+  version "0.9.76"
+  resolved "https://registry.yarnpkg.com/golos-lib-js/-/golos-lib-js-0.9.76.tgz#c589b26a8f77916529f2fb6e1020bb87f4cb0a7f"
+  integrity sha512-E9A9BnVoOoPjklxGJVxB3xKgLbLSCaXfW0lN4pipAKuokGEVFy8DPEwlUsFgmY9Jf9JFcwl5h6q2c1dzEuBGkQ==
   dependencies:
     abort-controller "^3.0.0"
     assert "^2.0.0"

@@ -175,7 +175,7 @@ class Assets extends Component {
             let withdrawal = null;
             if (item.json_metadata.startsWith('{')) {
                 let json_metadata = JSON.parse(item.json_metadata)
-                description = json_metadata.description
+                description = json_metadata.description || ''
                 image_url = proxifyNFTImage(json_metadata.image_url)
                 telegram = json_metadata.telegram
                 deposit = json_metadata.deposit;

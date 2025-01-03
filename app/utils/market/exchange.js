@@ -161,6 +161,11 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             const remain = step.remain ? Asset(step.remain) : undefined
             if (!isSell) {
                 reqFixed = Asset(chain.steps[chain.steps.length - 1].receive)
+                const { subchains } = chain
+                if (subchains && subchains[0]) {
+                    const subRec = Asset(subchains[0].steps[0].receive)
+                    reqFixed = reqFixed.plus(subRec)
+                }
             }
 
             if (amMul.amount == 0) {
