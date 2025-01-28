@@ -29,7 +29,11 @@ export function reloadLocation(href) {
         }
         return
     }
-    window.location.href = href
+    if (href) {
+        window.location.href = href
+    } else {
+        window.location.reload()
+    }
 }
 
 export function hrefClick(e) {

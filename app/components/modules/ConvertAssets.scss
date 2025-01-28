@@ -40,6 +40,11 @@
 
     .radio-header {
         line-height: 1.4;
+
+        .LoadingIndicator {
+            top: 0px;
+            vertical-align: middle;
+        }
     }
     .RadioButton__label {
         padding-left: 5px;

@@ -541,7 +541,7 @@ class Market extends Component {
                 </div>
                 <div className="row">
                     <div className="column small-12" style={{background: "rgb(252,84,78)"}}>
-                        <TransactionError opType="limit_order_create" />
+                        <TransactionError opType="limit_order_create" unhandled='detailed' />
                     </div>
                 </div>
                 <div className="row">

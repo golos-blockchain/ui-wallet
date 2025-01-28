@@ -2,6 +2,7 @@ import { api, libs } from 'golos-lib-js'
 import { Asset, _Asset, Price, _Price, fetchEx } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import isEqual from 'lodash/isEqual'
+import throttle from 'lodash/throttle'
 
 import getExchangeData, { MIN_PROFIT_PCT, ExchangeTypes } from 'shared/getExchangeData'
 
@@ -23,7 +24,7 @@ const wrapPrice = (price) => {
     return (price instanceof _Price) ? price : Price(price)
 }
 
-export async function getExchange(sellAmount, buyAmount, myBalance,
+export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
     onData = undefined,
     selected = ExchangeTypes.direct, isSell = true
 ) {
@@ -288,8 +289,39 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             mainBanner,
             newSelected,
             bestType
-        })
+        }, res) // `res` for throttle() correct result
     }
 
     return res
+}
+
+const getExchangeLimited = throttle(getExchangeRaw, 250)
+
+let progressTimer
+
+export async function getExchange(sellAmount, buyAmount, myBalance,
+    onData = undefined, onProgress = undefined,
+    selected = ExchangeTypes.direct, isSell = true
+) {
+    clearTimeout(progressTimer)
+    progressTimer = setTimeout(() => {
+        if (onProgress) onProgress('started')
+    }, 250)
+
+    const result = await new Promise(async (resolve, reject) => {
+        try {
+            await getExchangeLimited(sellAmount, buyAmount, myBalance,
+                (data, res) => {
+                    if (onProgress) onProgress('done')
+                    clearTimeout(progressTimer)
+                    if (onData) onData(data, res)
+                    resolve(res)
+                }, 
+                selected, isSell)
+        } catch (err) {
+            reject(err)
+        }
+    })
+
+    return result
 }

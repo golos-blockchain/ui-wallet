@@ -88,6 +88,15 @@ export default function transactionErrorReducer(
                     );
                 }
                 break;
+            case 'limit_order_create':
+                if (errorStr.includes('Account does not have sufficient funds')) {
+                    errorKey = errorStr = tt('transfer_jsx.insufficient_funds')
+                } else if (errorStr.includes('Account exceeded maximum allowed bandwidth per vesting share')) {
+                    errorKey = errorStr = tt(
+                        'chain_errors.exceeded_maximum_allowed_bandwidth'
+                    )
+                }
+                break
         }
 
         if (errorStr.includes('You are blocked by user')) {

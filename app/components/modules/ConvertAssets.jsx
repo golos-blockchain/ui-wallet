@@ -77,6 +77,14 @@ class ConvertAssets extends React.Component {
         return myBalance
     }
 
+
+    _onProgress = (status) => {
+        console.log(status)
+        this.setState({
+            status
+        })
+    }
+
     onPairChange = async ({ event, link, sym1, asset1, sym2, asset2 }) => {
         if (event) {
             event.preventDefault()
@@ -104,7 +112,6 @@ class ConvertAssets extends React.Component {
         let fee
         let res = await getExchange(sellAmount, buyAmount, myBalance,
             (data) => {
-                fee = data.fee
                 const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 this.setState({
                     warning,
@@ -116,7 +123,7 @@ class ConvertAssets extends React.Component {
                 })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
-            }, exType)
+            }, this._onProgress, exType)
         if (res && !fee) {
             let calc = calcFeeForSell(res, res.gt(0) ? this.state.assets[sym2].fee_percent : 0)
             res = calc.clearBuy
@@ -126,7 +133,7 @@ class ConvertAssets extends React.Component {
         this.setState({
             myBalance,
             sellAmount: AssetEditor(sellAmount),
-            sellError: '',
+            sellError: this.validateSellAmount(sellAmount, myBalance),
             buyAmount: AssetEditor(res || buyAmount),
             fee,
         })
@@ -140,10 +147,10 @@ class ConvertAssets extends React.Component {
                 fee = data.fee
                 const { warning, altBanner, mainBanner, newSelected, bestType, bestPrice, limitPrice, chain, isSell } = data
                 this.setState({ warning, altBanner, mainBanner, bestType,
-                    exType: newSelected || this.state.exType, chain, isSell })
+                    exType: newSelected || this.state.exType, chain, isSell, })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
-            }, exType)
+            }, this._onProgress, exType)
         if (res && res.gt(0)) {
             if (!fee) {
                 let calc = calcFeeForSell(res, assets[buyAmount.asset.symbol].fee_percent)
@@ -168,16 +175,21 @@ class ConvertAssets extends React.Component {
         })
     }
 
+    validateSellAmount = (asset, myBalance) => {
+        let sellError = ''
+        if (!myBalance) myBalance = this.state.myBalance
+        if (myBalance && asset.gt(myBalance)) {
+            sellError = tt('transfer_jsx.insufficient_funds')
+        }
+        return sellError
+    }
+
     onSellAmountChange = (e) => {
         let newAmount = this.state.sellAmount.withChange(e.target.value)
         if (newAmount.hasChange && newAmount.asset.amount >= 0) {
-            let sellError = ''
-            if (newAmount.asset.gt(this.state.myBalance)) {
-                sellError = tt('transfer_jsx.insufficient_funds')
-            }
             this.setState({
                 sellAmount: newAmount,
-                sellError
+                sellError: this.validateSellAmount(newAmount.asset),
             }, () => {
                 this.sellAmountUpdated()
             })
@@ -204,7 +216,7 @@ class ConvertAssets extends React.Component {
                     exType: newSelected || this.state.exType, chain, isSell })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
-            }, exType, false)
+            }, this._onProgress, exType, false)
             if (res) {
                 this.setState({
                     fee: fee || calc.fee
@@ -212,6 +224,7 @@ class ConvertAssets extends React.Component {
                 if (res.gt(0)) {
                     this.setState({
                         sellAmount: AssetEditor(res),
+                        sellError: this.validateSellAmount(res),
                     })
                 }
             }
@@ -505,7 +518,7 @@ class ConvertAssets extends React.Component {
                 this.setState({ warning, altBanner, mainBanner, bestType, chain, isSell })
                 this.bestPrice = bestPrice
                 this.limitPrice = limitPrice
-            }, exType, isSell)
+            }, this._onProgress, exType, isSell)
         if (res) {
             if (!fee) {
                 if (!isSell) {
@@ -559,16 +572,26 @@ class ConvertAssets extends React.Component {
 
     _renderBanner = (banner) => {
         const spans = []
+        let it = 0
         let title
+
+        const { status } = this.state
+        if (status === 'started') {
+            spans.push(<span key={++it} style={{ marginLeft: '3px' }}>
+                <LoadingIndicator type='circle' size='13px' inline={true} /></span>)
+        }
+
         if (banner) {
-            const { isSell } = this.state
+            const { isSell, } = this.state
             const { msg, chain, sell, buy, req } = banner
 
             if (chain) {
                 title = chain.syms.join(' > ')
             }
 
-            let it = 0
+            if (status === 'started') {
+                return { spans, title }
+            }
 
             spans.push(<span key={++it}>{' '}(</span>)
             if (msg) {
@@ -612,7 +635,7 @@ class ConvertAssets extends React.Component {
 
         return <div className={'radio-item' + (bestType === ExchangeTypes.direct ? ' best': '')} style={{ marginTop: '0.5rem' }}>
             <RadioButton id={ExchangeTypes.direct} title={<div className='radio-header'>
-                    <div>
+                    <div style={{ height: '20px' }}>
                         <b>{tt('convert_alt_banner.direct_radio')}</b>
                         <span style={{fontSize: '90%'}}>{spans}</span>
                     </div>
@@ -635,7 +658,7 @@ class ConvertAssets extends React.Component {
  
         return <div className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
             <RadioButton id={ExchangeTypes.multi} title={<div className='radio-header'>
-                    <div>
+                    <div style={{ height: '20px' }}>
                         <b>{tt('convert_alt_banner.chain_radio')}</b>
                         <span style={{fontSize: '90%'}}>{spans}</span>
                     </div>
@@ -646,7 +669,7 @@ class ConvertAssets extends React.Component {
 
     render() {
         const { direction, isDialog, currentAccount } = this.props
-        const { loading, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning, mainBanner,  exType } = this.state
+        const { loading, status, finished, assets, isSubmitting, sellAmount, sellError, buyAmount, warning, mainBanner,  exType } = this.state
         if (loading || !currentAccount) {
             return (<center>
                 <LoadingIndicator type='circle' size='25px' />
@@ -657,9 +680,10 @@ class ConvertAssets extends React.Component {
             return <FinishedOrder finished={finished}
                 finishedAcc={finishedAcc}
                 buyAmount={buyAmount.asset} sellAmount={sellAmount.asset}
-                remainToReceive={remainToReceive} />
+                remainToReceive={remainToReceive}
+                isDialog={isDialog} />
         }
-        const disabled = isSubmitting || !sellAmount.asset.amount || !buyAmount.asset.amount || sellError || (exType === ExchangeTypes.multi && mainBanner && mainBanner.msg)
+        const disabled = (status === 'started') || isSubmitting || !sellAmount.asset.amount || !buyAmount.asset.amount || sellError || (exType === ExchangeTypes.multi && mainBanner && mainBanner.msg)
         return (<div className='ConvertAssets' ref={this.root}>
             <h3>{tt('g.convert_assets')}</h3>
             <div>

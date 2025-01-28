@@ -13,6 +13,7 @@ class TransactionError extends React.Component {
         // HTML properties
         opType: string.isRequired,
         error: string, // additional error (optional)
+        unhandled: string, // (optional)
 
         // Redux connect properties
         addListener: func.isRequired,
@@ -30,20 +31,26 @@ class TransactionError extends React.Component {
         removeListener(opType)
     }
     render() {
-        const{errorKey, exception, error} = this.props
+        const{errorKey, exception, error, unhandled} = this.props
         const cn = "error callout alert"
         if(!errorKey && !exception) {
             if(!error) return <span></span>
                 return (
                     <span className="TransactionError">
-                        <div className={cn}>{error}</div>
+                        <div className={cn}>{error}{JSON.stringify({
+                            errorKey, exception, error
+                        })}</div>
                     </span>
                 )
         }
         const text = (errorKey ? errorKey : exception)
+        let details
+        if (unhandled === 'detailed' && exception) {
+            details = <div>{exception.toString().substring(0, 150)}</div>
+        }
         return (
             <span className="TransactionError">
-                <div className={cn}>{text}</div>
+                <div className={cn}>{text}{details}</div>
             </span>
         )
     }

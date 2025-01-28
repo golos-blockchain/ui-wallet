@@ -984,6 +984,8 @@
     "partly_desc3": "Received amount is on ",
     "not": "Exchange not yet proceed...",
     "not_desc": "Exchange takes more time than usually. Maybe older will proceed in few days. If no, or if you cannot wait, you can ",
+    "also_you_can": "Also you can ",
+    "reset_convert": "convert something again",
     "price_warning": "This price is above than recommended one. Continue?"
  },
   "converttosteem_jsx": {

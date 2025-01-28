@@ -60,8 +60,7 @@ export default async function getExchangeData(endpoint,
                 direction,
                 symbol,
                 hybrid: {
-                    strategy: 'discrete',
-                    discrete_step: 500,
+                    strategy: 'spread',
                 },
                 remain: {
                     multi: 'ignore'
