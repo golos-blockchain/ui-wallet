@@ -61,7 +61,7 @@ class AddAccount extends React.Component {
                     password: ''
                 }}
                 validate={this.validate}
-                validateOnBlur={false}
+                validateOnMount={true}
                 validateOnChange={false}
                 onSubmit={this._onSubmit}
                 >
