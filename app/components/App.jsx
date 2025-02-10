@@ -30,7 +30,7 @@ import DialogManager from 'app/components/elements/common/DialogManager';
 import NotifyPolling from 'app/components/elements/NotifyPolling'
 import AppSettings, { openAppSettings } from 'app/components/pages/app/AppSettings'
 import { init as initAnchorHelper } from 'app/utils/anchorHelper';
-import { fixRouteIfApp, reloadLocation } from 'app/utils/app/RoutingUtils'
+import { fixRouteIfApp, reloadLocation, backRouteFix } from 'app/utils/app/RoutingUtils'
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { getShortcutIntent, onShortcutIntent } from 'app/utils/app/ShortcutUtils'
 import { APP_ICON, VEST_TICKER, } from 'app/client_config';
@@ -123,6 +123,10 @@ class App extends React.Component {
 
             document.addEventListener('pause', this.onPause)
             document.addEventListener('resume', this.onResume)
+
+            document.addEventListener('backbutton', e => {
+                backRouteFix(e)
+            })
 
             this.setState({
                 can_render: true
