@@ -185,7 +185,7 @@ class QuickBuy extends React.Component {
             </div>
             {content}
             <div className='row blue-box' style={{ marginTop: '1.5rem' }}>
-                Например: <br />
+                {tt('quickbuy_jsx.for_example')} <br />
                 {this.renderDetails()}
             </div>
         </div>
@@ -198,7 +198,6 @@ export default connect(
         const currentUser = state.user.getIn(['current'])
         return { ...ownProps, currentUser, };
     },
-
     dispatch => ({
     })
 )(QuickBuy)

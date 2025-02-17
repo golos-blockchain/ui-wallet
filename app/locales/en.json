@@ -562,7 +562,8 @@
     "cancel": "Cancel",
     "cannot_buy_TOKEN": "Cannot buy such token: %(TOKEN)s",
     "no_such_TOKEN": "Cannot buy using such token: %(TOKEN)s",
-    "deposit_unavailable": "Deposit disabled by gateway holder. You can contact him: "
+    "deposit_unavailable": "Deposit disabled by gateway holder. You can contact him: ",
+    "for_example": "For example:"
   },
   "plurals": {
     "reply_count": {
