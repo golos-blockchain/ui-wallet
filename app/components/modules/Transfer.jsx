@@ -141,7 +141,7 @@ class TransferForm extends Component {
             validation: values => { return {
                 to:
                     ! values.to ? tt('g.required') :
-                    (VerifiedExchangeList.includes(values.to) && (isTIP || isClaim)) ? tt('transfer_jsx.verified_exchange_liquid_only') :
+                    (VerifiedExchangeList.includes(values.to) && !toVesting && (isTIP || isClaim)) ? tt('transfer_jsx.verified_exchange_liquid_only') :
                     (VerifiedExchangeList.includes(values.to) && values.memo === '') ? tt('transfer_jsx.verified_exchange_no_memo') :
                     validate_account_name(values.to),
                 amount:
