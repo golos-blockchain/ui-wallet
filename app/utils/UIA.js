@@ -150,3 +150,53 @@ export function clearOldAddresses() {
         console.error('clearOldAddresses', err0);
     }
 }
+
+const GOOD_MAX_DEPO_FEE = 1000 // 10%
+
+export function subtractDepoFee(sellAmount, deposit) {
+    let clearSell
+    let feeAmount = sellAmount.clone()
+    const { fee, } = deposit
+    if (fee) {
+        try {
+            feeAmount.amountFloat = fee.toString()
+
+            clearSell = sellAmount.minus(feeAmount)
+        } catch (err) {
+            console.warn('subtractDepoFee', err)
+            clearSell = sellAmount.clone()
+        }
+    }
+    let warnFee = false
+    if (feeAmount.gt(0) && clearSell.gt(0)) {
+        const goodMax = sellAmount.mul(GOOD_MAX_DEPO_FEE).div(10000)
+        if (feeAmount.gt(goodMax)) {
+            warnFee = true
+        }
+    }
+    return { clearSell, fee: feeAmount, warnFee }
+}
+
+export function includeDepoFee(sellAmount, deposit) {
+    let fullSell
+    let feeAmount = sellAmount.clone()
+    const { fee, } = deposit
+    if (fee) {
+        try {
+            feeAmount.amountFloat = fee.toString()
+
+            fullSell = sellAmount.plus(feeAmount)
+        } catch (err) {
+            console.warn('includeDepoFee', err)
+            fullSell = sellAmount.clone()
+        }
+    }
+    let warnFee = false
+    if (feeAmount.gt(0)) {
+        const goodMax = fullSell.mul(GOOD_MAX_DEPO_FEE).div(10000)
+        if (feeAmount.gt(goodMax)) {
+            warnFee = true
+        }
+    }
+    return { fullSell, fee: feeAmount, warnFee }
+}

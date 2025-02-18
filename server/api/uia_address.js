@@ -8,6 +8,7 @@ export default function useGetAddressHandler(app) {
         let symbol
         let accName
         const errResp = (errorName, logData, errorData) => {
+            if (!Array.isArray(logData)) logData = []
             console.error('/uia_address', errorName, symbol, ...logData)
             ctx.body = { status: 'err',
                 error: errorName,

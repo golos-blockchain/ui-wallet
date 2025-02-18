@@ -1,0 +1,25 @@
+.QuickBuyForm {
+    margin-top: 1rem;
+
+    .min-amount {
+        &.has-error {
+            color: red;
+        }
+    }
+
+    .sell-error {
+        .error {
+            margin-top: 5px;
+            margin-bottom: 0px;
+
+            &:first-child {
+                margin-top: 0px;
+            }
+        }
+        .Icon {
+            vertical-align: top;
+            margin-top: 4px;
+            margin-left: 5px;
+        }
+    }
+}

@@ -553,7 +553,8 @@
     "try_multi": "Try it >"
   },
   "quickbuy_jsx": {
-    "buy_SYM_with": "Buy %(SYM)s tokens",
+    "buy_SYM": "Buy %(SYM)s tokens",
+    "buy_with": "via:",
     "with_what": "Method:",
     "with_what2": "Your choice:",
     "how_to": "Buy:",

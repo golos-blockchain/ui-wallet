@@ -1,7 +1,7 @@
 import config from 'config'
 import { libs } from 'golos-lib-js'
 
-import getExchangeData, { ExchangeTypes } from 'shared/getExchangeData'
+import getExchangeData, { getExchangePath, ExchangeTypes } from 'shared/getExchangeData'
 
 export default function useGetExchangeHandler(app) {
     app.get('/get_exchange/:amount/:symbol/:direction?/:e_type?/:min_to_receive?', async (ctx) => {
@@ -19,5 +19,17 @@ export default function useGetExchangeHandler(app) {
             },
             callParams: () => ctx.params
         }, amount, symbol, direction, eType, min_to_receive)
+    })
+
+    app.get('/get_exchange_path/:buy/:keys', async (ctx) => {
+        try {
+            let { buy, keys } = ctx.params
+            keys = keys.split(',')
+            ctx.body = await getExchangePath(buy, keys, config.get('ws_connection_exchange'))
+        } catch (err) {
+            ctx.body = {
+                err: ((err && err.toString) ? err.toString() : err)
+            }
+        }
     })
 }

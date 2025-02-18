@@ -1,51 +1,79 @@
 .QuickBuy {
-    .VerticalMenu>li>a {
-        padding: .3rem 1rem;
+    .header-inline {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 1rem;
     }
-
-    .selected {
-        height: 28px;
+    .uia {
+        display: inline-block;
+        border: 1px solid rgba(128,128,128,0.45);
+        border-radius: 5px;
         margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        cursor: pointer;
+
+        &.selected {
+            background-color: rgba(208,208,208,0.45);
+            border: 1px solid rgba(128,128,128,0.45);
+        }
+
+        img {
+            width: 28px;
+            height: 28px;
+            margin-right: 0.5rem;
+        }
     }
 
-	.header-h1 {
-		position: relative;
-		margin-bottom: .5rem;
-	}
-	.header-h1 h1 {
-		font-size: 1.1rem;
-		margin-bottom: 0;
-		padding-left: 3rem;
-	}
-	.header-h1 h1::before {
-		content: "";
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 2.2rem;
-		height: 2.2rem;
-		background: lightgray;
-	}
-	.header-h1 h1::after {
-		content: "";
-		position: absolute;
-		left: 0;
-		top: 2rem;
-		width: 100%;
-		height: .2rem;
-		background-color: #4BA2F2;
-	}
-	.blue-box {
-		font-size: 90%;
-		margin: 20px 0 20px;
-		padding: 15px;
-		overflow:hidden;
-		line-height:1.5;
-		display: block;
-	    color:#000000;
-	}
-	.blue-box {
-		background:#d6e8f2;
-		border-bottom:5px solid #5cace2;
-	}
+    .uia:hover {
+        background-color: rgba(208,208,208,0.45);
+        border: 1px solid rgba(128,128,128,0.45);
+    }
+
+    .header-h1 {
+        position: relative;
+        margin-bottom: .5rem;
+    }
+    .header-h1 h1 {
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        padding-left: 3rem;
+    }
+    .header-h1 h1::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2.2rem;
+        height: 2.2rem;
+        background: lightgray;
+    }
+    .header-h1 h1::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 2rem;
+        width: 100%;
+        height: .2rem;
+        background-color: #4BA2F2;
+    }
+    .blue-box {
+        font-size: 90%;
+        margin: 20px 0 20px;
+        padding: 15px;
+        overflow:hidden;
+        line-height:1.5;
+        display: block;
+        color:#000000;
+    }
+    .blue-box {
+        background:#d6e8f2;
+        border-bottom:5px solid #5cace2;
+    }
+
+    .amount-bold {
+        font-weight: 700;
+        font-size: 130%;
+        margin-left: 5px;
+    }
 }

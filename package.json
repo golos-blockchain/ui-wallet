@@ -58,7 +58,7 @@
     "fs-extra": "^10.0.1",
     "git-rev-sync": "^3.0.2",
     "golos-dex-lib-js": "^1.0.3",
-    "golos-lib-js": "^0.9.73",
+    "golos-lib-js": "^0.9.77",
     "history": "^2.0.0-rc2",
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
@@ -164,7 +164,7 @@
     "fsevents": "*"
   },
   "gitDependencies": {
-    "formik": "https://github.com/golos-blockchain/formik/tree/master/packages/formik#b697b6ef3f13c795bb862b35589fffde442ab465",
+    "formik": "https://github.com/golos-blockchain/formik/tree/master/packages/formik#3b21166c33ade760d562091e1fa0b71d172a7aaf",
     "react-foundation-components": "https://github.com/golos-blockchain/react-foundation-components#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1"
   },
   "engines": {

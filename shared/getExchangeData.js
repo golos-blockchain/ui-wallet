@@ -1,4 +1,5 @@
 import { Asset } from 'golos-lib-js/lib/utils'
+import { api } from 'golos-lib-js'
 
 export const MIN_PROFIT_PCT = 5
 
@@ -60,14 +61,13 @@ export default async function getExchangeData(endpoint,
                 direction,
                 symbol,
                 hybrid: {
-                    strategy: 'spread',
+                    strategy: 'discrete',
                 },
                 remain: {
                     multi: 'ignore'
                 },
                 min_to_receive: mtr
             })
-            console.log(resMul)
         } catch (err) {
             console.error('Multi-step getExchange error:', err)
             errMul = err.toString()
@@ -86,4 +86,15 @@ export default async function getExchangeData(endpoint,
             error: err && err.message
         }
     }
+}
+
+export async function getExchangePath(buy, keys, node) {
+    const eapi = new api.Golos()
+    eapi.setWebSocket(node)
+    const path = await eapi.getExchangePathAsync({
+        buy,
+        select_syms: keys,
+        assets: true,
+    })
+    return path
 }

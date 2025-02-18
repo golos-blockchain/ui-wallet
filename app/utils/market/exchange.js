@@ -108,7 +108,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
                 if (isDir) {
                     warDir = tt('convert_assets_jsx.too_low_amount')
                 }
-            } else if (!isSell && amDir.gt(myBalance)) {
+            } else if (myBalance && !isSell && amDir.gt(myBalance)) {
                 amDir.amount = myBalance.amount
                 if (isDir) {
                     limitPrice = Price(req, amDir)
@@ -174,7 +174,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
                 if (!isDir) {
                     warnMul = tt('convert_assets_jsx.too_low_amount')
                 }
-            } else if (!isSell && amMul.gt(myBalance)) {
+            } else if (myBalance && !isSell && amMul.gt(myBalance)) {
                 amMul.amount = myBalance.amount
                 if (!isDir) {
                     limitPrice = Price(req, amMul)
