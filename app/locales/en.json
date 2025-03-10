@@ -988,7 +988,9 @@
     "not_desc": "Exchange takes more time than usually. Maybe older will proceed in few days. If no, or if you cannot wait, you can ",
     "also_you_can": "Also you can ",
     "reset_convert": "convert something again",
-    "price_warning": "This price is above than recommended one. Continue?"
+    "price_warning": "This price is above than recommended one. Continue?",
+    "direct_warning": "Direct exchange is not best as Smart exchange.",
+    "continue_exchange": "Continue?"
  },
   "converttosteem_jsx": {
     "title_FROM_TO": "Convert %(FROM)s to %(TO)s",

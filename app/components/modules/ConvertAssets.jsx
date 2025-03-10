@@ -236,10 +236,10 @@ class ConvertAssets extends React.Component {
         const {
             sellAmount: { asset: sellAmount },
             buyAmount: { asset: buyAmount },
-            chain
+            chain, bestType
         } = this.state
         let minToReceive
-        let confirm
+        let confirm = []
         if (this.limitPrice) {
             minToReceive = sellAmount.mul(this.limitPrice)
             if (minToReceive.eq(0) && buyAmount.ne(0)) {
@@ -248,10 +248,31 @@ class ConvertAssets extends React.Component {
 
             let possible = sellAmount.mul(this.bestPrice)
             if (possible.minus(possible.mul(3000).div(10000)).gt(buyAmount)) {
-                confirm = tt('convert_assets_jsx.price_warning')
+                confirm.push(
+                    tt('convert_assets_jsx.price_warning')
+                )
             }
         } else {
             minToReceive = buyAmount.clone()
+        }
+
+        if (!chain && bestType === ExchangeTypes.multi) {
+            confirm.push(
+                tt('convert_assets_jsx.direct_warning')
+            )
+        }
+        if (confirm.length) {
+            confirm.push(tt('convert_assets_jsx.continue_exchange'))
+        }
+
+        let confirmFunc
+        if (confirm.length) confirmFunc = () => {
+            return confirm.map((item, key) => {
+                const marginBottom = (key < confirm.length - 1) && '5px'
+                return <div key={key} style={{marginBottom}}>
+                    {item}
+                </div>
+            })
         }
 
         this.setState({ loading: true })
@@ -278,7 +299,7 @@ class ConvertAssets extends React.Component {
             console.log('tx', JSON.stringify(tx))
             alert(JSON.stringify(tx))
 
-            this.props.placeOrders(currentAccount.get('name'), tx, confirm, async (orderid) => {
+            this.props.placeOrders(currentAccount.get('name'), tx, confirmFunc, async (orderid) => {
                 await new Promise(resolve => setTimeout(resolve, 4000))
                 const newState = { loading: false, finishedAcc: currentAccount.get('name') }
                 this.setState({
@@ -291,7 +312,7 @@ class ConvertAssets extends React.Component {
 
         console.log('order', sellAmount.toString(), minToReceive.toString())
         this.props.placeOrder(currentAccount.get('name'),
-            sellAmount, minToReceive, confirm, async (orderid) => {
+            sellAmount, minToReceive, confirmFunc, async (orderid) => {
             await new Promise(resolve => setTimeout(resolve, 4000))
             const orders = await api.getOpenOrdersAsync(currentAccount.get('name'),
                 [sellAmount.symbol, minToReceive.symbol])
