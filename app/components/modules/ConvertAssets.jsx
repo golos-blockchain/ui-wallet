@@ -98,14 +98,17 @@ class ConvertAssets extends React.Component {
             return
         }
         let buyAmount = Asset(0, asset2.precision, sym2)
+
         const myBalance = await this.getBalance(sym1, asset1)
 
-        let sellAmount = myBalance.clone()
+        let sellAmount = this.state.sellAmount.asset.clone()
         if (this.props.sellAmount) {
             sellAmount = Asset(this.props.sellAmount)
             this.setState({
                 exType: ExchangeTypes.multi
             })
+        } else if (sellAmount.eq(0) || sellAmount.symbol !== sym1) {
+            sellAmount = myBalance.clone()
         }
 
         const { exType } = this.state
@@ -595,6 +598,7 @@ class ConvertAssets extends React.Component {
         const spans = []
         let it = 0
         let title
+        let addon
 
         const { status } = this.state
         if (status === 'started') {
@@ -633,10 +637,34 @@ class ConvertAssets extends React.Component {
                         spans.push(<b key={++it}>{sell.floatString}</b>)
                     }
                 }
+                if (chain && chain._err_report) {
+                    const addonClick = async (e) => {
+                        e.preventDefault()
+                        let node = this.root.current
+                        node = node && findModalRoot(node)
+                        if (node) {
+                            hideElement(node)
+                        }
+                        await DialogManager.alert(<div>
+                            {tt('convert_alt_banner.err_report')}<br/>
+                            {tt('convert_alt_banner.err_report2')}
+                            {tt('convert_alt_banner.unavail_hint3')}.<br/><br/>
+                            <pre>
+                                {chain._err_report}
+                            </pre>
+                        </div>)
+                        if (node) {
+                            showElement(node, 'block')
+                        }
+                    }
+                    addon = <div className='err_rep' onClick={addonClick} title={tt('convert_alt_banner.err_report_hint')}>
+                        ⚠️
+                    </div>
+                }
             }
             spans.push(<span key={++it}>)</span>)
         }
-        return { spans, title }
+        return { spans, addon, title }
     }
 
     _renderRadioDirect = () => {
@@ -655,13 +683,13 @@ class ConvertAssets extends React.Component {
         const title = this._directChain()
 
         return <div className={'radio-item' + (bestType === ExchangeTypes.direct ? ' best': '')} style={{ marginTop: '0.5rem' }}>
-            <RadioButton id={ExchangeTypes.direct} title={<div className='radio-header'>
-                    <div style={{ height: '20px' }}>
-                        <b>{tt('convert_alt_banner.direct_radio')}</b>
-                        <span style={{fontSize: '90%'}}>{spans}</span>
-                    </div>
-                    <span style={{fontSize: '90%'}}>{title}</span>
-                </div>} disabled={disabled} selectedValue={exType} onChange={this._onRadioChange} />
+            <RadioButton id={ExchangeTypes.direct} title={<div key='header' className='radio-header'>
+                <div style={{ height: '20px' }}>
+                    <b>{tt('convert_alt_banner.direct_radio')}</b>
+                    <span style={{fontSize: '90%'}}>{spans}</span>
+                </div>
+                <span style={{fontSize: '90%'}}>{title}</span>
+            </div>} disabled={disabled} selectedValue={exType} onChange={this._onRadioChange} />
         </div>
     }
 
@@ -675,7 +703,7 @@ class ConvertAssets extends React.Component {
             disabled = altBanner && !!altBanner.msg
         }
 
-        let { spans, title } = this._renderBanner(exType === ExchangeTypes.multi ? mainBanner :altBanner)
+        let { addon, spans, title } = this._renderBanner(exType === ExchangeTypes.multi ? mainBanner :altBanner)
  
         return <div className={'radio-item' + (bestType === ExchangeTypes.multi ? ' best': '')}>
             <RadioButton id={ExchangeTypes.multi} title={<div className='radio-header'>
@@ -685,6 +713,7 @@ class ConvertAssets extends React.Component {
                     </div>
                     <span style={{fontSize: '90%'}}>{title || this._directChain()}</span>
                 </div>} disabled={disabled} selectedValue={exType} onChange={this._onRadioChange} />
+            {addon}
         </div>
     }
 

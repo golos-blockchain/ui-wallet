@@ -63,9 +63,20 @@
             color: black !important;
         }
     }
+    .radio-item {
+        position: relative;
+    }
     .radio-item.best {
         .RadioButton__label {
             background-color: rgb(231, 242, 254);
         }
+    }
+    .err_rep {
+        position: absolute;
+        z-index: 100;
+        top: 0.3rem;
+        right: 0.7rem;
+        font-size: 200%;
+        cursor: pointer;
     }
 }

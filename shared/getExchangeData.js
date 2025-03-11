@@ -35,7 +35,9 @@ const wrapDir = (resMul) => {
 
 export default async function getExchangeData(endpoint,
 	amount, symbol, direction = 'sell', eType = ExchangeTypes.direct,
-	min_to_receive = null) {
+	min_to_receive = null, strategy = null) {
+    if (!strategy) strategy = 'spread'
+
 	const { dex, exNode, callParams } = endpoint
 	try {
         let resDir
@@ -52,7 +54,7 @@ export default async function getExchangeData(endpoint,
                 if (lesser.eq(0)) lesser.amount = 1
                 mtr.multi = lesser
             } else if (eType === ExchangeTypes.direct) {
-                mtr.min_profit_pct = MIN_PROFIT_PCT
+                mtr.min_profit_pct = MIN_PROFIT_PCT * 100
             }
         }
 
@@ -66,7 +68,7 @@ export default async function getExchangeData(endpoint,
                     direction,
                     symbol,
                     hybrid: {
-                        strategy: 'spread',
+                        strategy,
                     },
                     remain: {
                         multi: 'ignore'
@@ -87,7 +89,6 @@ export default async function getExchangeData(endpoint,
                     buySym: symbol,
                     direction,
                 })
-                console.log('...correct res is', resDir)
             }
         }
 
@@ -95,7 +96,8 @@ export default async function getExchangeData(endpoint,
             status: 'ok',
             direct: resDir,
             multi: resMul || null,
-            multi_error: errMul
+            multi_error: errMul,
+            strategy,
         }
     } catch (err) {
         console.error('get_exchange REST fail:', err, callParams && callParams())

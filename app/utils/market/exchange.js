@@ -50,8 +50,11 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
     if (!process.env.IS_APP) {
         try {
             const selectedStr = selected === ExchangeTypes.direct ? 'direct' : 'multi'
-            const url = '/api/v1/get_exchange/' + req.toString() + '/' + res.symbol + '/'
+            let url = '/api/v1/get_exchange/' + req.toString() + '/' + res.symbol + '/'
                 + (isSell ? 'sell' : 'buy') + '/' + selectedStr
+            if (window._strategy) {
+                url += '?strategy=' + window._strategy
+            }
             let resp = await fetchEx(url, {})
             resp = await resp.json()
             resDir = resp.direct
@@ -73,7 +76,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
                     }
                 },
                 req.toString(), res.symbol,
-                (isSell ? 'sell' : 'buy'), selected)
+                (isSell ? 'sell' : 'buy'), selected, null, window._strategy)
             resDir = resp.direct
             resMul = resp.multi
             if (resp.multi_error) multiErr = resp.multi_error
@@ -196,11 +199,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
             if (!isDir) {
                 res = amMul
 
-                if (isSell) {
-                    fee = chain.steps[chain.steps.length - 1].fee
-                } else {
-                    fee = step.fee
-                }
+                fee = chain.steps[chain.steps.length - 1].fee
                 if (fee) {
                     fee = Asset(fee)
                 } else {
