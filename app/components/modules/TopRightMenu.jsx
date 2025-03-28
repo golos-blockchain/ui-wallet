@@ -19,6 +19,7 @@ import { vestsToSteem, toAsset } from 'app/utils/StateFunctions';
 import { authRegisterUrl, } from 'app/utils/AuthApiClient';
 import { blogsUrl, blogsTarget, } from 'app/utils/blogsUtils'
 import { msgsHost, msgsLink, } from 'app/utils/ExtLinkUtils';
+import { isLoginPage } from 'app/utils/session'
 
 const defaultNavigate = (e) => {
     if (e.metaKey || e.ctrlKey) {
@@ -108,11 +109,9 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
 
     const registerUrl = authRegisterUrl() + (invite ? ('?invite=' + invite) : '');
 
-    const isLoginPage = window.location.pathname === '/login' || window.location.pathname === '/'
-
     const additional_menu = []
     if (!loggedIn) {
-        if (!isLoginPage) {
+        if (!isLoginPage()) {
             additional_menu.push(
                 { link: '/login.html', onClick: showLogin, value: tt('g.login'), className: 'show-for-small-only' },
             )
@@ -235,7 +234,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
             {marketItem}
             {witnessItem}
             <li className="delim show-for-medium" />
-            {!probablyLoggedIn && !isLoginPage && !externalTransfer && <li className={scn}>
+            {!probablyLoggedIn && !isLoginPage() && !externalTransfer && <li className={scn}>
               <a href="/login" onClick={showLogin} className={!vertical && 'button small violet hollow'}>{tt('g.login')}</a>
             </li>}
             {!probablyLoggedIn && <li className={scn}>

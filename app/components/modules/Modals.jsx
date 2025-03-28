@@ -71,6 +71,7 @@ class Modals extends React.Component {
             show_app_download_modal,
             show_power_calc_modal,
             show_leave_golos_modal,
+            loginRemind,
             hideLogin,
             hideTransfer,
             hideConvertAssets,
@@ -100,6 +101,7 @@ class Modals extends React.Component {
         return (
             <div>
                 {show_login_modal && <Reveal onBackdropClick={this.onLoginBackdropClick} onHide={hideLogin} show={show_login_modal}>
+                    {loginRemind &&<CloseButton onClick={hideLogin} className='login-close' />}
                     <LoginForm onCancel={hideLogin} />
                 </Reveal>}
                 {show_confirm_modal && <Reveal onHide={hideConfirm} show={show_confirm_modal}>
@@ -157,9 +159,11 @@ export default connect(
     state => {
         const loginDefault = state.user.get('loginDefault');
         const loginUnclosable = loginDefault && loginDefault.get('unclosable');
+        const loginRemind = loginDefault && loginDefault.get('loginRemind')
         return {
             show_login_modal: state.user.get('show_login_modal'),
             loginUnclosable,
+            loginRemind,
             show_confirm_modal: state.transaction.get('show_confirm_modal'),
             show_transfer_modal: state.user.get('show_transfer_modal'),
             show_convert_assets_modal: state.user.get('show_convert_assets_modal'),
@@ -177,6 +181,7 @@ export default connect(
     dispatch => ({
         hideLogin: e => {
             if (e) e.preventDefault();
+            localStorage.setItem('login_closed', Date.now())
             dispatch(user.actions.hideLogin())
         },
         hideConfirm: e => {

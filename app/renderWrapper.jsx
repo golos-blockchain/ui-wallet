@@ -23,6 +23,7 @@ import Translator from 'app/Translator';
 import {routeRegex} from "app/ResolveRoute";
 import {APP_NAME, SEO_TITLE} from 'app/client_config';
 import constants from 'app/redux/constants';
+import session, { isLoginPage } from 'app/utils/session'
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -67,6 +68,15 @@ export default async function renderWrapper(initialState) {
         process.env.NODE_ENV !== 'production' && localStorage['react.strict']
             ? React.StrictMode
             : React.Fragment;
+
+    const currentName = session.load().currentName
+    if (!currentName && !isLoginPage()) {
+        const lastClosed = parseInt(localStorage.getItem('login_closed') || 0)
+        const interval = 24*60*60*1000 // 1 day
+        if ((Date.now() - lastClosed) > interval) {
+            store.dispatch({type: 'user/REQUIRE_LOGIN', payload: {}})
+        }
+    }
 
     return render(
         <Wrapper>

@@ -150,9 +150,10 @@ class LoginForm extends Component {
             isMemo = true;
             postType = tt('loginform_jsx.login_to_message');
         }
-        const title = postType ? postType : tt('g.login');
         const submitLabel = loginBroadcastOperation ? tt('g.sign_in') : tt('g.login');
-        const cancelIsRegister = loginDefault && loginDefault.get('cancelIsRegister');
+        const cancelIsRegister = loginDefault && loginDefault.get('cancelIsRegister')
+        const loginRemind = loginDefault && loginDefault.get('loginRemind')
+        const title = postType ? postType : (loginRemind ? tt('loginform_jsx.login_remind') : tt('g.login'))
         let loginError = this.props.login_error
         let error = password.touched && password.error ? password.error : (loginError && loginError.get('error'))
         if (error === 'account_frozen') {
