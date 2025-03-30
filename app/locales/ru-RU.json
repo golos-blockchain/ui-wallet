@@ -626,7 +626,9 @@
     "market_fee_percent_": "Комиссия ",
     "market_depth_": "глубина рынка",
     "market_pair": "Торговая пара",
-    "orders_canceled": "Ордеры успешно отменены."
+    "orders_canceled": "Ордеры успешно отменены.",
+    "smart_exchange_banner": "Попробуйте новую функцию ",
+    "smart_exchange_banner2": "кросс-рыночного умного обмена!"
   },
   "navigation": {
     "about": "О проекте",

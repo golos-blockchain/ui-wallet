@@ -495,7 +495,9 @@
     "market_fee_percent_": "Trade fee ",
     "market_depth_": "market depth",
     "market_pair": "Market Pair",
-    "orders_canceled": "Selected orders successfully cancelled."
+    "orders_canceled": "Selected orders successfully cancelled.",
+    "smart_exchange_banner": "Try new feature - ",
+    "smart_exchange_banner2": "Cross-market Intelligent Exchange!"
   },
   "user_profile": {
     "unknown_account": "Unknown Account",
