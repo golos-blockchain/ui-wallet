@@ -585,8 +585,8 @@ class Market extends Component {
 
                 {this.renderMultiBetter()}
 
-                <div className="row show-for-medium">
-                    <div className="small-6 columns">
+                <div className="row">
+                    <div className="small-12 medium-6 columns">
                         <h4>{tt('market_jsx.buy_orders')}</h4>
                         <OrderBook
                             sym1={sym1}
@@ -602,7 +602,7 @@ class Market extends Component {
                         />
                     </div>
 
-                    <div className="small-6 columns">
+                    <div className="small-12 medium-6 columns">
                         <h4>{tt('market_jsx.sell_orders')}</h4>
                         <OrderBook
                             sym1={sym1}
