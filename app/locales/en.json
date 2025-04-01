@@ -733,6 +733,7 @@
   "asset_edit_withdrawal_jsx": {
     "title": "Withdrawal Rules",
     "to": "Where to send tokens: ",
+    "max_amount": "Max amount: ",
     "min_amount": "Min amount: ",
     "details": "Additional info: ",
     "unavailable": "Service maintenance",
@@ -761,7 +762,10 @@
     "transfer_way": "Where",
     "transfer_no_memo": "To withdraw funds please fill the memo",
     "no_way_error": "If you set at leas one of these fields, you should also set at least 1 withdrawal method or Details field.",
-    "no_to_error": "If you set withdraw via transfer with memo, please also set, to which account to transfer."
+    "no_to_error": "If you set withdraw via transfer with memo, please also set, to which account to transfer.",
+    "max_amount_url": "API URL for maximum amount (if exists)",
+    "wrong_url": "Wrong URL.",
+    "wrong_url_insecure": "URL should be https://"
   },
   "nft_collections_jsx": {
     "not_yet": "You haven't any own NFT-token collections.",

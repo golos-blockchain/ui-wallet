@@ -12,7 +12,7 @@ import g from 'app/redux/GlobalReducer';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 import runTests, {browserTests} from 'app/utils/BrowserTests';
 import {validate_account_name} from 'app/utils/ChainValidation';
-import { saveMemo, loadMemo, clearOldMemos, } from 'app/utils/UIA';
+import { saveMemo, loadMemo, clearOldMemos, getUIAMaximum, } from 'app/utils/UIA';
 import {countDecimals, formatAmount, checkMemo} from 'app/utils/ParsersAndFormatters';
 import { LIQUID_TICKER, DEBT_TICKER , VESTING_TOKEN2 } from 'app/client_config';
 import VerifiedExchangeList from 'app/utils/VerifiedExchangeList';
@@ -89,6 +89,10 @@ class TransferForm extends Component {
         amount = parseFloat(amount);
         if (minAmount && amount && amount < minAmount)
             return tt('asset_edit_withdrawal_jsx.min_amount') + withdrawal.min_amount + ' ' + this.props.sym;
+        const { maxWithdraw } = this.state
+        if (maxWithdraw && amount && amount > maxWithdraw) {
+            return tt('asset_edit_withdrawal_jsx.max_amount') + maxWithdraw + ' ' + this.props.sym
+        }
         return null;
     };
 
@@ -263,7 +267,7 @@ class TransferForm extends Component {
             </div></div>);
     };
 
-    _setWithdrawalWay(name) {
+    _setWithdrawalWay = async (name) => {
         const { withdrawal, } = this.props.initialValues;
         let way = null;
         for (let w of withdrawal.ways) {
@@ -295,12 +299,24 @@ class TransferForm extends Component {
             memo_postfix.props.onChange(loaded.postfix)
         }
 
+        this.setState({ loading: true })
+        const maxRes = await getUIAMaximum(this.props.sym, name)
+
+        console.log('getUIAMaximum', maxRes)
+        if (maxRes.error && maxRes.error !== 'your_asset_has_no_max_amount_url_in_this_way') {
+            alert(maxRes.error)
+            return
+        }
+
+        this.setState({ loading: false })
+
         this.setState({
             withdrawalWay: name,
             memoPrefix,
             memoInitial,
             memoPostfix: memoPostfix,
             memoPostfixTitle: memoPostfixTitle,
+            maxWithdraw: maxRes.balance || 0,
         })
     };
 

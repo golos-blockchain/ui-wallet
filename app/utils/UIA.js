@@ -1,3 +1,6 @@
+import { fetchEx } from 'golos-lib-js/lib/utils'
+
+import getUIAMaxAmount from 'shared/getUIAMaxAmount'
 
 const wwKey = 'withdrawal.ways';
 const memoLifetimeSec = 30*24*60*60;
@@ -199,4 +202,29 @@ export function includeDepoFee(sellAmount, deposit) {
         }
     }
     return { fullSell, fee: feeAmount, warnFee }
+}
+
+export async function getUIAMaximum(sym, way) {
+    if (!process.env.IS_APP) {
+        const url = '/api/v1/uia/max_amount/' + sym + '/' + way
+        let res = await fetchEx(url, {})
+        res = await res.json()
+        return res
+    } else {
+        let res
+        await getUIAMaxAmount(sym, way, (balance) => {
+            res = {
+                status: 'ok',
+                balance
+            }
+        }, (errorName, logData, errorData) => {
+            console.error(...logData)
+            res = {
+                status: 'err',
+                error: errorName,
+                error_data: errorData,
+            }
+        })
+        return res
+    }
 }

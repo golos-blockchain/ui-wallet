@@ -1,9 +1,33 @@
 import { api } from 'golos-lib-js'
+import { fetchEx } from 'golos-lib-js/lib/utils'
 
 import { rateLimitReq } from 'server/utils/misc'
-import fetchWithTimeout from 'shared/fetchWithTimeout'
+import getUIAMaxAmount from 'shared/getUIAMaxAmount'
 
 export default function useGetAddressHandler(app) {
+    app.get('/uia/max_amount/:symbol/:way', async (ctx) => {
+        let { symbol, way } = ctx.params
+
+        const errResp = (errorName, logData, errorData) => {
+            if (!Array.isArray(logData)) logData = []
+            console.error('/uia/max_amount', errorName, symbol, way, ...logData)
+            ctx.body = { status: 'err',
+                error: errorName,
+                symbol,
+                error_data: errorData,
+            }
+        }
+
+        await getUIAMaxAmount(symbol, way, (balance) => {
+            ctx.body = {
+                status: 'ok',
+                balance,
+            }
+        }, errResp, () => {
+            return rateLimitReq(ctx, ctx.req, 0.5)
+        })
+    })
+
     app.get('/uia_address/:symbol/:account', async (ctx) => {
         let symbol
         let accName
@@ -17,9 +41,6 @@ export default function useGetAddressHandler(app) {
             }
         }
         try {
-            if (rateLimitReq(ctx, ctx.req))
-                return errResp('too_many_requests', [symbol + '/' + accName])
-
             symbol = ctx.params.symbol
             if (!symbol)
                 return errResp('no_symbol_parameter_in_query')
@@ -27,6 +48,10 @@ export default function useGetAddressHandler(app) {
             accName = ctx.params.account
             if (!accName)
                 return errResp('no_account_parameter_in_query')
+
+            if (rateLimitReq(ctx, ctx.req))
+                return errResp('too_many_requests', [symbol + '/' + accName])
+
             let accs
             try {
                 accs = await api.getAccounts([accName])
@@ -63,7 +88,7 @@ export default function useGetAddressHandler(app) {
 
             let resp
             try {
-                resp = await fetchWithTimeout(apiURL, 10000)
+                resp = await fetchEx(apiURL, { timeout: 10000 })
             } catch (err) {
                 return errResp('cannot_connect_gateway', [meta.deposit, err])
             }

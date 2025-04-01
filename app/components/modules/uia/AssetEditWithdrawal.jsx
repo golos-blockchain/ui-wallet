@@ -74,7 +74,7 @@ class AssetEditWithdrawal extends React.Component {
     validateWay = (way) => {
         const spaceStart = /^[ \t]/;
         const spaceEnd = /[ \t]$/;
-        const { name, memo, prefix, } = way;
+        const { name, memo, prefix, max_amount_url, } = way;
         if (prefix) {
             if (spaceStart.test(prefix)) {
                 return tt('asset_edit_withdrawal_jsx.wrong_prefix_start');
@@ -91,6 +91,18 @@ class AssetEditWithdrawal extends React.Component {
                 return tt('asset_edit_withdrawal_jsx.wrong_memo_end');
             } else if (!name) {
                 return tt('asset_edit_withdrawal_jsx.way_name_error');
+            }
+        }
+        if (max_amount_url) {
+            let url
+            try {
+                url = new URL(max_amount_url)
+            } catch (err) {
+                console.warn(err)
+                return tt('asset_edit_withdrawal_jsx.wrong_url')
+            }
+            if (url.protocol !== 'https:') {
+                return tt('asset_edit_withdrawal_jsx.wrong_url_insecure')
             }
         }
         return undefined; 
@@ -192,6 +204,20 @@ class AssetEditWithdrawal extends React.Component {
                                         name='cross'
                                         title={tt('g.remove')}
                                         onClick={() => arrayHelpers.remove(index)} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className='row way-row way-last-row'>
+                            <div className='column small-8'>
+                                <div className='input-group'>
+                                    <Field
+                                        name={`${name}.ways.${index}.max_amount_url`}
+                                        component='input'
+                                        type='text'
+                                        className='input-group-field bold'
+                                        maxLength='512'
+                                        placeholder={tt('asset_edit_withdrawal_jsx.max_amount_url')}
+                                    />
                                 </div>
                             </div>
                         </div>
