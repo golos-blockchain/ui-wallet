@@ -169,6 +169,9 @@ export function subtractDepoFee(sellAmount, deposit) {
             console.warn('subtractDepoFee', err)
             clearSell = sellAmount.clone()
         }
+    } else {
+        feeAmount.amount = 0
+        clearSell = sellAmount.clone()
     }
     let warnFee = false
     if (feeAmount.gt(0) && clearSell.gt(0)) {
@@ -193,6 +196,9 @@ export function includeDepoFee(sellAmount, deposit) {
             console.warn('includeDepoFee', err)
             fullSell = sellAmount.clone()
         }
+    } else {
+        feeAmount.amount = 0
+        fullSell = sellAmount.clone()
     }
     let warnFee = false
     if (feeAmount.gt(0)) {
