@@ -41,7 +41,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
     let fee
 
     let amDir, amMul
-    let warDir, warMul
+    let warDir, warMul, warDisables
     let chain
     let directErr, multiErr
     let altBanner = null, mainBanner = null
@@ -150,9 +150,10 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
 
         if (!chain) {
             if (!isDir) {
-                warMul =  tt('convert_assets_jsx.no_orders_DIRECTION', {
+                warMul =  tt('convert_assets_jsx.no_orders_mul_DIRECTION', {
                     DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
                 })
+                warDisables = true
             }
         } else {
             const step = chain.steps[0]
@@ -175,13 +176,14 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
             if (amMul.amount == 0) {
                 amMul.amount = 1
                 if (!isDir) {
-                    warnMul = tt('convert_assets_jsx.too_low_amount')
+                    warMul = tt('convert_assets_jsx.too_low_amount')
                 }
             } else if (myBalance && !isSell && amMul.gt(myBalance)) {
                 amMul.amount = myBalance.amount
                 if (!isDir) {
                     limitPrice = Price(req, amMul)
-                    warMul = tt('convert_assets_jsx.too_big_price')
+                    warMul = tt('convert_assets_jsx.too_big_price_mul')
+                    warDisables = true
                 }
             } else if (remain) {
                 if (isDir) {
@@ -275,6 +277,7 @@ export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
     if (onData) {
         onData({
             warning: isDir ? warDir : warMul,
+            warDisables,
 
             bestPrice,
             limitPrice,
