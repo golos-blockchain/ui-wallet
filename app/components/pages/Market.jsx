@@ -19,6 +19,7 @@ import { reloadLocation, hrefClick } from 'app/utils/app/RoutingUtils'
 import Order from 'app/utils/market/Order'
 import TradeHistory from 'app/utils/market/TradeHistory'
 import { roundUp, roundDown, normalizeAssets } from 'app/utils/market/utils'
+import AfterTickerBanner from 'app/components/elements/market/AfterTickerBanner'
 import MarketPair from 'app/components/elements/market/MarketPair'
 import OrderBook from 'app/components/elements/market/OrderBook';
 import OrderHistory from 'app/components/elements/market/OrderHistory';
@@ -534,16 +535,15 @@ class Market extends Component {
                         <TickerPriceStat ticker={ticker} trades={trades} symbol={sym2} precision={assetsNorm[sym2].precision} />
                     </div>
                 </div>
-
+                <AfterTickerBanner sym1={sym1} sym2={sym2}/>
                 {/* <div className="row">
                     <div className="column small-12">
                     <p className="text-center"><Icon name="info_o" /> <small>Новый интерфейс на <a target="_blank" href="https://dex.golos.app">dex.golos.app</a> или <a target="_blank" href="https://gls.exchange">gls.exchange</a>, а также иные <a href="/exchanges" onClick={hrefClick}>способы обмена токенов</a>.</small></p>
                     </div>
                 </div> */}
-
                 <div className="row">
                     <div className="column small-12" style={{background: "rgb(252,84,78)"}}>
-                        <TransactionError opType="limit_order_create" />
+                        <TransactionError opType="limit_order_create" unhandled='detailed' />
                     </div>
                 </div>
                 <div className="row">
@@ -587,8 +587,8 @@ class Market extends Component {
 
                 {this.renderMultiBetter()}
 
-                <div className="row show-for-medium">
-                    <div className="small-6 columns">
+                <div className="row">
+                    <div className="small-12 medium-6 columns">
                         <h4>{tt('market_jsx.buy_orders')}</h4>
                         <OrderBook
                             sym1={sym1}
@@ -604,7 +604,7 @@ class Market extends Component {
                         />
                     </div>
 
-                    <div className="small-6 columns">
+                    <div className="small-12 medium-6 columns">
                         <h4>{tt('market_jsx.sell_orders')}</h4>
                         <OrderBook
                             sym1={sym1}

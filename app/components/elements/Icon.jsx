@@ -49,6 +49,7 @@ const icons = new Map([
     ['eye_gray', require('app/assets/icons/eye_gray.svg')],
     ['location', require('app/assets/icons/location.svg')],
     ['info_o', require('app/assets/icons/info_o.svg')],
+    ['info_w', require('app/assets/icons/info_w.svg')],
     ['feedback', require('app/assets/icons/feedback.svg')],
     ['cog', require('app/assets/icons/cog.svg')],
     ['enter', require('app/assets/icons/enter.svg')],

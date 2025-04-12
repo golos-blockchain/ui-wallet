@@ -175,7 +175,7 @@ class Assets extends Component {
             let withdrawal = null;
             if (item.json_metadata.startsWith('{')) {
                 let json_metadata = JSON.parse(item.json_metadata)
-                description = json_metadata.description
+                description = json_metadata.description || ''
                 image_url = proxifyNFTImage(json_metadata.image_url)
                 telegram = json_metadata.telegram
                 deposit = json_metadata.deposit;
@@ -270,9 +270,9 @@ class Assets extends Component {
 
             my_assets.push(<tr key={sym}>
                 <td style={{ width: smallUias ? '100px' : undefined }}>
-                {description.length ? (<a target="_blank" href={description} rel="noopener noreferrer">
-                {image_url.length ? (<img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>) : null}{!smallUias && sym}</a>) : null}
-                {!description.length ? (<span><img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>{!smallUias && sym}</span>) : null}
+                {description ? (<a target="_blank" href={description} rel="noopener noreferrer">
+                {image_url ? (<img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>) : null}{!smallUias && sym}</a>) : null}
+                {!description ? (<span><img className="Assets__marginBottom Assets__marginRight" width="36" height="36" src={image_url}/>{!smallUias && sym}</span>) : null}
                 {smallUias ? <div>{sym}</div> : <React.Fragment>&nbsp;&nbsp;</React.Fragment>}
                 <div className={cn('Assets__icon_btns', { small: smallUias })}>{assetIcons}</div>
                     <div className="Assets__marginTop2">

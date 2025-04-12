@@ -40,6 +40,11 @@
 
     .radio-header {
         line-height: 1.4;
+
+        .LoadingIndicator {
+            top: 0px;
+            vertical-align: middle;
+        }
     }
     .RadioButton__label {
         padding-left: 5px;
@@ -58,9 +63,20 @@
             color: black !important;
         }
     }
+    .radio-item {
+        position: relative;
+    }
     .radio-item.best {
         .RadioButton__label {
             background-color: rgb(231, 242, 254);
         }
+    }
+    .err_rep {
+        position: absolute;
+        z-index: 100;
+        top: 0.15rem;
+        right: 0.7rem;
+        font-size: 200%;
+        cursor: pointer;
     }
 }

@@ -22,7 +22,17 @@ class CMCValue extends React.Component {
         if (!buyAmount) {
             return
         }
-        const { price_usd, price_rub, page_url } = await libs.dex.apidexGetPrices({ sym: buyAmount.symbol })
+
+        let price_usd, price_rub, page_url
+        try {
+            const prices = await libs.dex.apidexGetPrices({ sym: buyAmount.symbol })
+            price_usd = prices.price_usd
+            price_rub = prices.price_rub
+            page_url = prices.page_url
+        } catch (err) {
+            console.error(err)
+        }
+
         const calc = (price) => {
             if (price === null || price === undefined) return null
             return parseFloat(buyAmount.amountFloat) * price

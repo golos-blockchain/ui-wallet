@@ -234,7 +234,9 @@ class OrderForm extends React.Component {
                     }
                 }
                 onMultiBetter(null)
-        })
+            }, (status) => {
+                
+            })
     }
 
     percentDiff = (userPrice) => {

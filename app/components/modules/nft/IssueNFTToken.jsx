@@ -124,13 +124,14 @@ class IssueNFTToken extends Component {
         const title = currentVals.title || values.title
         json_metadata.title = title || ''
 
-        const description = currentVals.description || values.description
-        if (description) {
+        const { description, url, image } = currentVals
+        if (typeof(description) === 'string') {
             json_metadata.description = description
         }
-
-        const image = currentVals.image || values.image
-        if (image) {
+        if (typeof(url) === 'string') {
+            json_metadata.url = url
+        }
+        if (typeof(image) === 'string') {
             json_metadata.image = image
         }
 
@@ -147,6 +148,12 @@ class IssueNFTToken extends Component {
         const description = e.target.value
         setFieldValue('description', description)
         this.updateJSONMetadata(values, setFieldValue, { description })
+    }
+
+    onUrlChange = (e, values, setFieldValue) => {
+        const url = e.target.value
+        setFieldValue('url', url)
+        this.updateJSONMetadata(values, setFieldValue, { url })
     }
 
     onImageChange = (e, values, setFieldValue) => {
@@ -338,6 +345,16 @@ class IssueNFTToken extends Component {
                         </div>
                         <ErrorMessage name='image' component='div' className='error' />
                     </div>
+                </div>
+                <div className='row'>
+                    <Expandable title={tt('create_nft_collection_jsx.url')}>
+                        <div className='column small-12'>
+                            <div className='input-group' style={{marginBottom: 5}}>
+                                <Field name='url' type='text' placeholder={tt('create_nft_collection_jsx.url_hint')}
+                                    onChange={(e) => this.onUrlChange(e, values, setFieldValue)} />
+                            </div>
+                        </div>
+                    </Expandable>
                 </div>
                 <div className='row'>
                     <Expandable title={tt('create_nft_collection_jsx.json_metadata')}>

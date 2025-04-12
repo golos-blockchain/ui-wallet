@@ -25,6 +25,12 @@ class NFTTokenItem extends Component {
         this.sellPopupRef = React.createRef()
     }
 
+    leaveGolos = (e) => {
+        e.preventDefault()
+        const { href } = e.target.closest('a')
+        this.props.showLeaveGolos(href)
+    }
+
     cancelOrder = async (e) => {
         e.preventDefault()
         const { currentUser } = this.props
@@ -274,7 +280,10 @@ class NFTTokenItem extends Component {
                 {myOffer}
                 <div>
                     <h5 className='token-title'>
-                        <FitText text={data.title} maxWidth={200} shrink={40} />
+                        <FitText text={data.title} maxWidth={data.url ? 170 : 200} shrink={data.url ? 35 : 40} />
+                        {data.url ? <a className='token-link' href={data.url} title={data.url} target='_blank' rel='noopener noreferrer' onClick={this.leaveGolos}>
+                            <Icon name='editor-toolbar/link' />
+                        </a> : null}
                     </h5>
                     <span className='token-coll secondary'>
                         <Link to={'/nft-collections/' + token.name} target='_blank' rel='noreferrer nofollow'>
@@ -379,6 +388,9 @@ export default connect(
             dispatch(user.actions.showLogin({
                 loginDefault: { unclosable: false }
             }));
+        },
+        showLeaveGolos: (url) => {
+            dispatch(user.actions.showLeaveGolos({ url }))
         },
     })
 )(NFTTokenItem)

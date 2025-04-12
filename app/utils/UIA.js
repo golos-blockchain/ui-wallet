@@ -1,3 +1,6 @@
+import { fetchEx } from 'golos-lib-js/lib/utils'
+
+import getUIAMaxAmount from 'shared/getUIAMaxAmount'
 
 const wwKey = 'withdrawal.ways';
 const memoLifetimeSec = 30*24*60*60;
@@ -148,5 +151,86 @@ export function clearOldAddresses() {
         setAddresses(addresses);
     } catch (err0) {
         console.error('clearOldAddresses', err0);
+    }
+}
+
+const GOOD_MAX_DEPO_FEE = 1000 // 10%
+
+export function subtractDepoFee(sellAmount, deposit) {
+    let clearSell
+    let feeAmount = sellAmount.clone()
+    const { fee, } = deposit
+    if (fee) {
+        try {
+            feeAmount.amountFloat = fee.toString()
+
+            clearSell = sellAmount.minus(feeAmount)
+        } catch (err) {
+            console.warn('subtractDepoFee', err)
+            clearSell = sellAmount.clone()
+        }
+    } else {
+        feeAmount.amount = 0
+        clearSell = sellAmount.clone()
+    }
+    let warnFee = false
+    if (feeAmount.gt(0) && clearSell.gt(0)) {
+        const goodMax = sellAmount.mul(GOOD_MAX_DEPO_FEE).div(10000)
+        if (feeAmount.gt(goodMax)) {
+            warnFee = true
+        }
+    }
+    return { clearSell, fee: feeAmount, warnFee }
+}
+
+export function includeDepoFee(sellAmount, deposit) {
+    let fullSell
+    let feeAmount = sellAmount.clone()
+    const { fee, } = deposit
+    if (fee) {
+        try {
+            feeAmount.amountFloat = fee.toString()
+
+            fullSell = sellAmount.plus(feeAmount)
+        } catch (err) {
+            console.warn('includeDepoFee', err)
+            fullSell = sellAmount.clone()
+        }
+    } else {
+        feeAmount.amount = 0
+        fullSell = sellAmount.clone()
+    }
+    let warnFee = false
+    if (feeAmount.gt(0)) {
+        const goodMax = fullSell.mul(GOOD_MAX_DEPO_FEE).div(10000)
+        if (feeAmount.gt(goodMax)) {
+            warnFee = true
+        }
+    }
+    return { fullSell, fee: feeAmount, warnFee }
+}
+
+export async function getUIAMaximum(sym, way) {
+    if (!process.env.IS_APP) {
+        const url = '/api/v1/uia/max_amount/' + sym + '/' + way
+        let res = await fetchEx(url, {})
+        res = await res.json()
+        return res
+    } else {
+        let res
+        await getUIAMaxAmount(sym, way, (balance) => {
+            res = {
+                status: 'ok',
+                balance
+            }
+        }, (errorName, logData, errorData) => {
+            console.error(...logData)
+            res = {
+                status: 'err',
+                error: errorName,
+                error_data: errorData,
+            }
+        })
+        return res
     }
 }

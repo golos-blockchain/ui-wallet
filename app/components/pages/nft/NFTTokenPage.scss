@@ -74,4 +74,17 @@
             }
         }
     }
+
+    .token-link {
+        margin-top: 0.5rem;
+
+        &.first {
+            margin-top: 0rem;
+        }
+
+        .text {
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+    }
 }

@@ -14,6 +14,7 @@ const defaultState = fromJS({
     show_add_account_modal: false,
     show_app_download_modal: false,
     show_power_calc_modal: false,
+    show_leave_golos_modal: false,
     pub_keys_used: null,
     locale: DEFAULT_LANGUAGE,
     nightmodeEnabled: false,
@@ -31,6 +32,18 @@ export default createModule({
     name: 'user',
     initialState: defaultState,
     transformations: [
+        {
+            action: 'REQUIRE_LOGIN',
+            reducer: (state, {payload}) => {
+                return state.merge({
+                    show_login_modal: true, 
+                    loginDefault: {
+                        cancelIsRegister: true,
+                        loginRemind: true,
+                    }
+                })
+            }
+        },
         {
             action: 'SHOW_LOGIN',
             reducer: (state, {payload}) => {
@@ -109,6 +122,12 @@ export default createModule({
         { action: 'SHOW_POWER_CALC', reducer: state => state.set('show_power_calc_modal', true) },
         { action: 'HIDE_POWER_CALC', reducer: state => state.set('show_power_calc_modal', false) },
         { action: 'SET_POWER_CALC_DEFAULTS', reducer: (state, {payload}) => state.set('power_calc_defaults', fromJS(payload)) },
+        { action: 'SHOW_LEAVE_GOLOS', reducer: (state, {payload}) => {
+            return state
+                .set('show_leave_golos_modal', true)
+                .set('leave_golos_defaults', fromJS(payload))
+        }},
+        { action: 'HIDE_LEAVE_GOLOS', reducer: state => state.set('show_leave_golos_modal', false) },
         {
             action: 'USERNAME_PASSWORD_LOGIN',
             reducer: state => state, // saga

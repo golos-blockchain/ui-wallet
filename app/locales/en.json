@@ -344,6 +344,13 @@
     "community_chat": "You can get answers in the community chat",
     "delegate_chat": "and in the delegates chat"
   },
+  "leave_golos_jsx": {
+    "title": "You Leaving Golos",
+    "desc1": "Link you clicked navigates you to:",
+    "desc2": "This resource is not related to Golos services, so we cannot guarantee security. Do not enter keys and password here, if do not trusting this service.",
+    "go": "Go link",
+    "cancel": "Do not go"
+  },
   "navigation": {
     "about": "About",
     "explore": "Explore",
@@ -488,7 +495,9 @@
     "market_fee_percent_": "Trade fee ",
     "market_depth_": "market depth",
     "market_pair": "Market Pair",
-    "orders_canceled": "Selected orders successfully cancelled."
+    "orders_canceled": "Selected orders successfully cancelled.",
+    "smart_exchange_banner": "Try new feature - ",
+    "smart_exchange_banner2": "Cross-market Intelligent Exchange!"
   },
   "user_profile": {
     "unknown_account": "Unknown Account",
@@ -546,7 +555,8 @@
     "try_multi": "Try it >"
   },
   "quickbuy_jsx": {
-    "buy_SYM_with": "Buy %(SYM)s tokens",
+    "buy_SYM": "Buy %(SYM)s tokens",
+    "buy_with": "via:",
     "with_what": "Method:",
     "with_what2": "Your choice:",
     "how_to": "Buy:",
@@ -555,7 +565,8 @@
     "cancel": "Cancel",
     "cannot_buy_TOKEN": "Cannot buy such token: %(TOKEN)s",
     "no_such_TOKEN": "Cannot buy using such token: %(TOKEN)s",
-    "deposit_unavailable": "Deposit disabled by gateway holder. You can contact him: "
+    "deposit_unavailable": "Deposit disabled by gateway holder. You can contact him: ",
+    "for_example": "For example:"
   },
   "plurals": {
     "reply_count": {
@@ -722,6 +733,7 @@
   "asset_edit_withdrawal_jsx": {
     "title": "Withdrawal Rules",
     "to": "Where to send tokens: ",
+    "max_amount": "Max amount: ",
     "min_amount": "Min amount: ",
     "details": "Additional info: ",
     "unavailable": "Service maintenance",
@@ -750,7 +762,10 @@
     "transfer_way": "Where",
     "transfer_no_memo": "To withdraw funds please fill the memo",
     "no_way_error": "If you set at leas one of these fields, you should also set at least 1 withdrawal method or Details field.",
-    "no_to_error": "If you set withdraw via transfer with memo, please also set, to which account to transfer."
+    "no_to_error": "If you set withdraw via transfer with memo, please also set, to which account to transfer.",
+    "max_amount_url": "API URL for maximum amount (if exists)",
+    "wrong_url": "Wrong URL.",
+    "wrong_url_insecure": "URL should be https://"
   },
   "nft_collections_jsx": {
     "not_yet": "You haven't any own NFT-token collections.",
@@ -780,7 +795,10 @@
     "create": "Create",
     "restore_json": "Restore default",
     "json_no_fields": "In JSON missing fields: ",
-    "json_fix": "Add missing fields"
+    "json_fix": "Add missing fields",
+    "url": "Page Link",
+    "url_hint": "https://8bitpunk.com/our-best",
+    "url_error": "Wrong Link."
   },
   "issue_nft_token_jsx": {
     "title": "Issue NFT",
@@ -961,7 +979,9 @@
     "too_much_amount3": "). The rest of the funds ",
     "too_much_amount4": " will be added into market queue.",
     "no_orders_DIRECTION": "No tokens in %(DIRECTION)s at current moment. Order will be placed into market queue.",
+    "no_orders_mul_DIRECTION": "No tokens in %(DIRECTION)s at current moment.",
     "too_big_price": "No orders for that price, so exchange can take up to few days.",
+    "too_big_price_mul": "No orders for that price.",
     "order_can_be_canceled": "If exchange will not occur even in the future, you can cancel the order, and funds will be refunded instantly.",
     "coinmarketcap_value": "Value: ",
     "finished": "Exchange is successful!",
@@ -974,7 +994,11 @@
     "partly_desc3": "Received amount is on ",
     "not": "Exchange not yet proceed...",
     "not_desc": "Exchange takes more time than usually. Maybe older will proceed in few days. If no, or if you cannot wait, you can ",
-    "price_warning": "This price is above than recommended one. Continue?"
+    "also_you_can": "Also you can ",
+    "reset_convert": "convert something again",
+    "price_warning": "This price is above than recommended one. Continue?",
+    "direct_warning": "Direct exchange is not best as Smart exchange.",
+    "continue_exchange": "Continue?"
  },
   "converttosteem_jsx": {
     "title_FROM_TO": "Convert %(FROM)s to %(TO)s",
@@ -1002,7 +1026,10 @@
     "unavail_hint": "Refresh page.",
     "unavail_hint2": "If problem repeating, please write to ",
     "unavail_hint3": "community chat",
-    "no_way": "no way"
+    "err_report": "This chain can be better. But Smart exchange algorithm reached some error...",
+    "err_report2": "Write to ",
+    "no_way": "no way",
+    "err_report_hint": "Algorithm reached some error. Click for details..."
   },
   "convert_error": {
     "try_direct": "Try ",
@@ -1011,7 +1038,11 @@
   "tips_js": {
     "tip_balance_hint": "Balance that you use to reward users and that you use to earn rewards for yourself. Tokens from it can also be sent to increase the Golos Power.",
     "claim_balance_hint1": "If you will add ",
-    "claim_balance_hint_DAILY": " into your Golos Power, you will be able to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "claim_balance_hint2": " into your Golos Power, you will be able ",
+    "claim_balance_hint_claim": "to claim these funda, and ",
+    "claim_balance_hint_no_claim": "",
+    "claim_balance_hint_DAILY": "to daily and automatically achieve emission stake (+%(DAILY)s) onto your TIP-balance.",
+    "buy_tokens": "Buy tokens",
     "claim_balance_hint_enough_REQUIRED": "Your Golos Power was not enough to receive emission (required at least %(REQUIRED)s). Emission for that time period is collected on your CLAIM-balance. Now you can claim it on your TIP-balance.",
     "claim_expiration_hint": "The tokens request window will end",
     "tradeable_tokens_that_may_be_transferred_anywhere_at_anytime": "Tradable digital tokens that can be transferred anywhere at any time.",
@@ -1034,8 +1065,10 @@
     "savings_interest": "Interest per month, if you will store this GBG amount in the savings",
     "savings_interest_zero": "Savings interest payments are disabled at now.",
     "savings_interest_debt": "GBG debt do not allows us to pay GBG savings interest.",
-    "savings_interest_gp_AMOUNT": "It is not enough %(AMOUNT)s Golos Power, to receive GBG interest payments.",
-    "claim_min_gp_AMOUNT": "There is not enough %(AMOUNT)s in the Golos Power of the vote to withdraw tokens from the claim-balance."
+    "savings_interest_gp": "It is not enough ",
+    "savings_interest_gp2": " Golos Power, to receive GBG interest payments.",
+    "claim_min_gp": "There is not enough ",
+    "claim_min_gp2": " in the Golos Power of the vote to withdraw tokens from the claim-balance."
   },
   "transferhistoryrow_jsx": {
     "to_savings": "to savings",
@@ -1147,6 +1180,7 @@
     "login_to_comment": "Login to Comment",
     "login_to_message": "Login with Memo Key or Password",
     "login_to_your_steem_account": "Login to your Steem Account",
+    "login_remind": "Golos Wallet: Login",
     "login_with_active_key_USERNAME": "Login with your Active key, please\n\nUsername:\n%(USERNAME)s\n\nActive-key:\n",
     "posting": "Posting",
     "active_or_owner": "Active or Owner",
@@ -1535,7 +1569,8 @@
     "node_error_new_NODE": "Не удалось подключиться к ноде %(NODE)s. Возможно, это проблемы с интернетом (или с нодой).",
     "node_error_new_NODE2": "Выбрать другую ноду",
     "to_save_click_button": "To save settings, click \"Save and restart\" button at bottom of the window.",
-    "logs": "Logs"
+    "logs": "Logs",
+    "version": "Wallet Version"
   },
   "app_update": {
     "notify_VERSION": "Доступна новая версия GOLOS Блогов - %(VERSION)s",

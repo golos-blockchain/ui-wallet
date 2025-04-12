@@ -2,6 +2,7 @@ import { api, libs } from 'golos-lib-js'
 import { Asset, _Asset, Price, _Price, fetchEx } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import isEqual from 'lodash/isEqual'
+import throttle from 'lodash/throttle'
 
 import getExchangeData, { MIN_PROFIT_PCT, ExchangeTypes } from 'shared/getExchangeData'
 
@@ -23,7 +24,7 @@ const wrapPrice = (price) => {
     return (price instanceof _Price) ? price : Price(price)
 }
 
-export async function getExchange(sellAmount, buyAmount, myBalance,
+export async function getExchangeRaw(sellAmount, buyAmount, myBalance,
     onData = undefined,
     selected = ExchangeTypes.direct, isSell = true
 ) {
@@ -40,7 +41,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     let fee
 
     let amDir, amMul
-    let warDir, warMul
+    let warDir, warMul, warDisables
     let chain
     let directErr, multiErr
     let altBanner = null, mainBanner = null
@@ -49,8 +50,11 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     if (!process.env.IS_APP) {
         try {
             const selectedStr = selected === ExchangeTypes.direct ? 'direct' : 'multi'
-            const url = '/api/v1/get_exchange/' + req.toString() + '/' + res.symbol + '/'
+            let url = '/api/v1/get_exchange/' + req.toString() + '/' + res.symbol + '/'
                 + (isSell ? 'sell' : 'buy') + '/' + selectedStr
+            if (window._strategy) {
+                url += '?strategy=' + window._strategy
+            }
             let resp = await fetchEx(url, {})
             resp = await resp.json()
             resDir = resp.direct
@@ -72,7 +76,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                     }
                 },
                 req.toString(), res.symbol,
-                (isSell ? 'sell' : 'buy'), selected)
+                (isSell ? 'sell' : 'buy'), selected, null, window._strategy)
             resDir = resp.direct
             resMul = resp.multi
             if (resp.multi_error) multiErr = resp.multi_error
@@ -107,7 +111,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
                 if (isDir) {
                     warDir = tt('convert_assets_jsx.too_low_amount')
                 }
-            } else if (!isSell && amDir.gt(myBalance)) {
+            } else if (myBalance && !isSell && amDir.gt(myBalance)) {
                 amDir.amount = myBalance.amount
                 if (isDir) {
                     limitPrice = Price(req, amDir)
@@ -146,9 +150,10 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
 
         if (!chain) {
             if (!isDir) {
-                warMul =  tt('convert_assets_jsx.no_orders_DIRECTION', {
+                warMul =  tt('convert_assets_jsx.no_orders_mul_DIRECTION', {
                     DIRECTION: sellAmount.symbol + '/' + buyAmount.symbol
                 })
+                warDisables = true
             }
         } else {
             const step = chain.steps[0]
@@ -161,18 +166,24 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             const remain = step.remain ? Asset(step.remain) : undefined
             if (!isSell) {
                 reqFixed = Asset(chain.steps[chain.steps.length - 1].receive)
+                const { subchains } = chain
+                if (subchains && subchains[0]) {
+                    const subRec = Asset(subchains[0].steps[0].receive)
+                    reqFixed = reqFixed.plus(subRec)
+                }
             }
 
             if (amMul.amount == 0) {
                 amMul.amount = 1
                 if (!isDir) {
-                    warnMul = tt('convert_assets_jsx.too_low_amount')
+                    warMul = tt('convert_assets_jsx.too_low_amount')
                 }
-            } else if (!isSell && amMul.gt(myBalance)) {
+            } else if (myBalance && !isSell && amMul.gt(myBalance)) {
                 amMul.amount = myBalance.amount
                 if (!isDir) {
                     limitPrice = Price(req, amMul)
-                    warMul = tt('convert_assets_jsx.too_big_price')
+                    warMul = tt('convert_assets_jsx.too_big_price_mul')
+                    warDisables = true
                 }
             } else if (remain) {
                 if (isDir) {
@@ -190,11 +201,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             if (!isDir) {
                 res = amMul
 
-                if (isSell) {
-                    fee = chain.steps[chain.steps.length - 1].fee
-                } else {
-                    fee = step.fee
-                }
+                fee = chain.steps[chain.steps.length - 1].fee
                 if (fee) {
                     fee = Asset(fee)
                 } else {
@@ -270,6 +277,7 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
     if (onData) {
         onData({
             warning: isDir ? warDir : warMul,
+            warDisables,
 
             bestPrice,
             limitPrice,
@@ -283,8 +291,39 @@ export async function getExchange(sellAmount, buyAmount, myBalance,
             mainBanner,
             newSelected,
             bestType
-        })
+        }, res) // `res` for throttle() correct result
     }
 
     return res
+}
+
+const getExchangeLimited = throttle(getExchangeRaw, 250)
+
+let progressTimer
+
+export async function getExchange(sellAmount, buyAmount, myBalance,
+    onData = undefined, onProgress = undefined,
+    selected = ExchangeTypes.direct, isSell = true
+) {
+    clearTimeout(progressTimer)
+    progressTimer = setTimeout(() => {
+        if (onProgress) onProgress('started')
+    }, 250)
+
+    const result = await new Promise(async (resolve, reject) => {
+        try {
+            await getExchangeLimited(sellAmount, buyAmount, myBalance,
+                (data, res) => {
+                    if (onProgress) onProgress('done')
+                    clearTimeout(progressTimer)
+                    if (onData) onData(data, res)
+                    resolve(res)
+                }, 
+                selected, isSell)
+        } catch (err) {
+            reject(err)
+        }
+    })
+
+    return result
 }
