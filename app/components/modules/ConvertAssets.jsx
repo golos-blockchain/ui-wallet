@@ -300,7 +300,6 @@ class ConvertAssets extends React.Component {
                 return
             }
             console.log('tx', JSON.stringify(tx))
-            alert(JSON.stringify(tx))
 
             this.props.placeOrders(currentAccount.get('name'), tx, confirmFunc, async (orderid) => {
                 await new Promise(resolve => setTimeout(resolve, 4000))
@@ -637,7 +636,6 @@ class ConvertAssets extends React.Component {
                         spans.push(<b key={++it}>{sell.floatString}</b>)
                     }
                 }
-                if (chain) chain._err_report = true
                 if (chain && chain._err_report) {
                     const addonClick = async (e) => {
                         e.preventDefault()
