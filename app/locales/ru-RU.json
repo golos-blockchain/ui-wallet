@@ -638,6 +638,7 @@
     "sell_LIQUID_TOKEN": "Продать %(LIQUID_TOKEN)s",
     "market": "Внутренняя биржа",
     "market2": "Биржа",
+    "fill_order": "Сделки",
     "currency_market": "Внутренний рынок",
     "change_account_password": "Изменить пароль аккаунта",
     "APP_NAME_api_docs": "%(APP_NAME)s API-документация",

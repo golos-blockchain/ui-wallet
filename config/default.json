@@ -1,9 +1,9 @@
 {
-  "site_domain": "devwallet.golos.today",
+  "site_domain": "wallet.golos.id",
   "chain_id": "782a3039b478c839e4cb0c941ff4eaeb7df40bdd68bd441afd444b9da763de12",
-  "ws_connection_client": "wss://apibeta.golos.today/ws",
-  "ws_connection_server": "wss://apibeta.golos.today/ws",
-  "ws_connection_exchange": "wss://apibeta.golos.today/ws",
+  "ws_connection_client": "wss://api.golos.id/ws",
+  "ws_connection_server": "wss://api.golos.id/ws",
+  "ws_connection_exchange": "wss://api-full.golos.id/ws",
   "helmet": {
     "directives": {
       "defaultSrc": "'self'",
@@ -12,7 +12,7 @@
       "styleSrc": "'self' 'unsafe-inline' fonts.googleapis.com",
       "imgSrc": "* data:",
       "fontSrc": "data: fonts.gstatic.com",
-      "connectSrc": "'self' api.imgur.com wss://apibeta.golos.today *.golos.today golos.app *.golos.app",
+      "connectSrc": "'self' api.imgur.com wss://api.golos.id wss://api-full.golos.id *.golos.today wss://notify.golos.app golos.app *.golos.app",
       "frameAncestors": "'none'"
     }
   },
@@ -30,32 +30,31 @@
     "title": "Обмен личными сообщениями и начало для Golos Messenger"
   },
   "images": {
-    "img_proxy_prefix": "https://devimages.golos.today",
+    "img_proxy_prefix": "https://images.golos.today",
     "img_proxy_backup_prefix": "https://steemitimages.com",
     "upload_image": "https://api.imgur.com/3/image",
     "client_id": "6c09ebf8c548126"
   },
   "blogs_service": {
-    "host": "https://beta.golos.today"
+    "host": "https://golos.id"
   },
   "messenger_service": {
-    "host": "https://devchat.golos.app"
+    "host": "https://chat.golos.app"
   },
   "auth_service": {
-    "host": "https://dev.golos.app",
+    "host": "https://golos.app",
     "custom_client": "blogs"
   },
   "notify_service": {
-    "host": "https://devnotify.golos.app",
-    "host_ws": "wss://devnotify.golos.app/ws"
+    "host": "https://notify.golos.app",
+    "host_ws": "wss://notify.golos.app/ws"
   },
   "apidex_service": {
-    "host": "https://devapi-dex.golos.app",
-    "host_local": "https://devapi-dex.golos.app"
+    "host": "https://api-dex.golos.app",
+    "host_local": "https://api-dex.golos.app"
   },
   "golos_wallet_news": {
     "accounts": {
-      "progolos": true,
       "ecurrex-ru": true
     }
   },
@@ -63,8 +62,6 @@
     "RUDEX": true,
     "PRIZM": true,
     "DOGECOIN": true,
-    "YMZEC": true,
-    "YMWMZ": true,
-    "YMBTC": true
+    "YMWMZ": true
   }
 }

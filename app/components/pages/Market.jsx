@@ -211,10 +211,10 @@ class Market extends Component {
                 buySym: receive.symbol,
             })
         }
-        return <div className='row' style={{ marginTop: '0.5rem', marginBottom: '0.75rem' }}>
+        return <div className='row' style={{ border: '2px dotted green', width: '65%', marginTop: '0.5rem', marginBottom: '0.75rem' }}>
             <div className='column small-12'>
                 <center>
-                    {tt('market_multistep.using_multi_you_can_receive')}
+                    <Icon name="info_o" /> {tt('market_multistep.using_multi_you_can_receive')}
                     {Asset(resMulti).floatString}
                     {'.'}
                     &nbsp;
@@ -536,6 +536,11 @@ class Market extends Component {
                     </div>
                 </div>
                 <AfterTickerBanner sym1={sym1} sym2={sym2}/>
+                {/* <div className="row">
+                    <div className="column small-12">
+                    <p className="text-center"><Icon name="info_o" /> <small>Новый интерфейс на <a target="_blank" href="https://dex.golos.app">dex.golos.app</a> или <a target="_blank" href="https://gls.exchange">gls.exchange</a>, а также иные <a href="/exchanges" onClick={hrefClick}>способы обмена токенов</a>.</small></p>
+                    </div>
+                </div> */}
                 <div className="row">
                     <div className="column small-12" style={{background: "rgb(252,84,78)"}}>
                         <TransactionError opType="limit_order_create" unhandled='detailed' />
