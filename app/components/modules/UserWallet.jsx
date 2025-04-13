@@ -450,7 +450,7 @@ class UserWallet extends React.Component {
 
             <TransactionError opType="withdraw_vesting" />
 
-            <div className="UserWallet__balance row zebra">
+            {vesting_steem < min_gp_to_curate ? <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
                     <ClaimBalance tipText={claim_hint} isS={isS} />
                 </div>
@@ -459,7 +459,7 @@ class UserWallet extends React.Component {
                     <div>{claimBtn}</div>
                     {emissionStake}
                 </div>
-            </div>
+            </div> : null}
             <div className="UserWallet__balance row">
                 <div className="column small-12 medium-8">
                     <TipBalance isS={isS} />
