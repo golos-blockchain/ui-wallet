@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/golos-blockchain/ui-wallet.git"
   },
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Голос Кошелёк — децентрализованный сервис, работающий на базе блокчейна.",
   "main": "dist/electron/electron.js",
   "scripts": {
