@@ -89,7 +89,7 @@ function TopRightMenu({account, savings_withdraws, price_per_golos, globalprops,
     const settingsLink = `/@${username}/settings`;
 
     const witnessItem = <li className={scn}>
-        <Link to="/convert/YMUSDT/GOLOS?buy" title={tt('g.quick_buy')}><Icon name="editor/coin" size="1_25x" /></Link>
+        <Link to="/convert/GOLOS/YMUSDT" title={tt('g.quick_buy')}><Icon name="editor/coin" size="1_25x" /></Link>
       </li>
     ;
 
