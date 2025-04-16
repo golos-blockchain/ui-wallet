@@ -558,7 +558,7 @@ class UserWallet extends React.Component {
                         : null
                     }
                     <div>{isMyAccount ? <a
-                        href='/convert/YMRUB/GOLOS?buy'
+                        href='/convert/YMUSDT/GOLOS?buy'
                         onClick={hrefClick}
                         target='_blank'
                         rel='nofollow noreferrer'
