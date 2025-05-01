@@ -160,7 +160,7 @@
   },
   "gitDependencies": {
     "formik": "https://github.com/golos-blockchain/formik/tree/master/packages/formik#3b21166c33ade760d562091e1fa0b71d172a7aaf",
-    "react-foundation-components": "https://github.com/golos-blockchain/react-foundation-components#ff2e48fd5ec1b587899bd67d686d0889da4e4ab1"
+    "react-foundation-components": "https://github.com/golos-blockchain/react-foundation-components#79301cf4cadec01468ee7aadb37fa8141ffd8324"
   },
   "engines": {
     "node": ">=8.11.3",
