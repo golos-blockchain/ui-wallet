@@ -1,4 +1,4 @@
-import koa_router from 'koa-router';
+import Router from 'koa-router'
 
 const redirects = [
     // example: [/\/about(\d+)-(.+)/, '/about?$0:$1', 302],
@@ -6,7 +6,7 @@ const redirects = [
 ];
 
 export default function useRedirects(app) {
-    const router = koa_router();
+    const router = new Router()
 
     app.use(router.routes());
 

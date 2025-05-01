@@ -1,7 +1,8 @@
 import {fromJS} from 'immutable';
 import createModule from 'redux-modules';
-import {DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY} from 'app/client_config';
-import cookie from "react-cookie";
+import Cookies from 'universal-cookie'
+
+import { DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY } from 'app/client_config'
 
 const defaultState = fromJS({
     current: null,
@@ -21,7 +22,8 @@ const defaultState = fromJS({
 });
 
 if (process.env.BROWSER) {
-    const locale = cookie.load(LOCALE_COOKIE_KEY)
+    const cookies = new Cookies()
+    const locale = cookies.get(LOCALE_COOKIE_KEY)
     if (locale) defaultState.locale = locale;
 
     // TODO Чет нихера не цепляет при первой загрузке
