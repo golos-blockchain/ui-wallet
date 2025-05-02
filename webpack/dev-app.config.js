@@ -69,5 +69,8 @@ module.exports = merge(baseConfig, {
         compress: true,
         port: WEBPACK_PORT,
         hot: true,
+        client: {
+            overlay: false,
+        },
     },
 });
