@@ -120,7 +120,7 @@ class NFTTokenItem extends Component {
         data = data || {} // node allows to use '', null, object, or array
 
         let last_price
-        const price = token.selling && Asset(this.getOrder().price)
+        const price = token.selling && this.getOrder() && Asset(this.getOrder().price)
         if (price) {
             const asset = assets[price.symbol]
             let imageUrl
