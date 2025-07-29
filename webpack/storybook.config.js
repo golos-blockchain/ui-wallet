@@ -47,7 +47,7 @@ module.exports = ({ config, mode, }) =>
                             options: {
                                 plugins: () => [
                                     require('autoprefixer')({
-                                        browsers: ['> 1%', 'last 2 versions'],
+                                        overrideBrowserslist: ['> 1%', 'last 2 versions'],
                                     }),
                                 ],
                                 sourceMap: true,

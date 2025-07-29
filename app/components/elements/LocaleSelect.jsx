@@ -1,9 +1,10 @@
-import { LOCALE_COOKIE_KEY, LANGUAGES } from 'app/client_config';
 import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
-import cookie from "react-cookie";
-import user from 'app/redux/User';
+import Cookies from 'universal-cookie'
+
+import { LOCALE_COOKIE_KEY, LANGUAGES } from 'app/client_config'
+import user from 'app/redux/User'
 
 const HIDE_CHEVRON_WIDTH = 500;
 
@@ -127,7 +128,8 @@ class LocaleSelect extends PureComponent {
     };
 
     onLanguageChange = language => {
-        cookie.save(LOCALE_COOKIE_KEY, language, {path: "/", expires: new Date(Date.now() + 60 * 60 * 24 * 365 * 10 * 1000)});
+        const cookies = new Cookies()
+        cookies.set(LOCALE_COOKIE_KEY, language, {path: "/", expires: new Date(Date.now() + 60 * 60 * 24 * 365 * 10 * 1000)})
         localStorage.setItem('language', language)
         this.props.changeLanguage(language)
         //this.notify()
@@ -184,7 +186,8 @@ export default connect((state, props) => {
     let locale = state.user.get('locale')
 
     if (process.env.BROWSER) {
-        const l = cookie.load(LOCALE_COOKIE_KEY)
+        const cookies = new Cookies()
+        const l = cookies.get(LOCALE_COOKIE_KEY)
         if (l) locale = l;
     }
 

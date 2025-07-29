@@ -4,7 +4,7 @@ import { libs } from 'golos-lib-js'
 import getExchangeData, { getExchangePath, ExchangeTypes } from 'shared/getExchangeData'
 
 export default function useGetExchangeHandler(app) {
-    app.get('/get_exchange/:amount/:symbol/:direction?/:e_type?', async (ctx) => {
+    app.get('/get_exchange/:amount/:symbol{/:direction}{/:e_type}', async (ctx) => {
         const { dex } = libs
 
         const { amount, symbol, direction, e_type, } = ctx.params

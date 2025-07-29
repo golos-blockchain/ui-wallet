@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import { browserHistory } from 'react-router';
 import golos from 'golos-lib-js';
 import tt from 'counterpart';
+import { LinkWithDropdown } from 'react-foundation-components/lib/global/dropdown'
 
 import transaction from 'app/redux/Transaction';
 import user from 'app/redux/User';
@@ -38,7 +39,6 @@ import {repLog10} from 'app/utils/ParsersAndFormatters';
 import { proxifyImageUrl } from 'app/utils/ProxifyUrl';
 import Tooltip from 'app/components/elements/Tooltip';
 import LiteTooltip from 'app/components/elements/LiteTooltip';
-import { LinkWithDropdown } from 'react-foundation-components/lib/global/dropdown';
 import VerticalMenu from 'app/components/elements/VerticalMenu';
 import MarkNotificationRead from 'app/components/elements/MarkNotificationRead';
 import NotifiCounter from 'app/components/elements/NotifiCounter';
@@ -474,7 +474,7 @@ export default class UserProfile extends React.Component {
             kebab = kebabMenu.length ? <LinkWithDropdown
                 closeOnClickOutside
                 dropdownPosition='bottom'
-                dropdownAlignment={this.state.linksAlign}
+                dropdownAlignment='right'
                 dropdownContent={<VerticalMenu items={kebabMenu} />}
                 >
                 <a className={`UserProfile__menu-item`}>
@@ -529,7 +529,7 @@ export default class UserProfile extends React.Component {
                         {hideRewards ? null : <LinkWithDropdown
                             closeOnClickOutside
                             dropdownPosition='bottom'
-                            dropdownAlignment={this.state.linksAlign}
+                            dropdownAlignment='right'
                             dropdownContent={<VerticalMenu items={rewardsMenu} />}
                             >
                             <a className={`${rewardsClass} UserProfile__menu-item`} ref={this._onLinkRef}>

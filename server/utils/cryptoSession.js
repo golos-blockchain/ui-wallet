@@ -1,7 +1,7 @@
 'use strict'
 
 const sodium = require('libsodium-wrappers')
-const session = require('koa-session')
+import session from 'koa-session'
 
 module.exports = function(app, opts) {
   opts = opts || {}

@@ -50,7 +50,7 @@ module.exports = merge(baseConfig, {
                             postcssOptions: {
                                 plugins: [
                                     require('autoprefixer')({
-                                        browsers: ['> 1%', 'last 2 versions'],
+                                        overrideBrowserslist: ['> 1%', 'last 2 versions'],
                                     })
                                 ]
                             },
@@ -69,5 +69,8 @@ module.exports = merge(baseConfig, {
         compress: true,
         port: WEBPACK_PORT,
         hot: true,
+        client: {
+            overlay: false,
+        },
     },
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import cookie from "react-cookie";
 import Dropzone from 'react-dropzone'
 import user from 'app/redux/User';
 import g from 'app/redux/GlobalReducer';
@@ -15,7 +14,6 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import Userpic from 'app/components/elements/Userpic';
 import { openAppSettings } from 'app/components/pages/app/AppSettings'
 import reactForm from 'app/utils/ReactForm'
-import { LANGUAGES, DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY, USER_GENDER } from 'app/client_config'
 import { reloadLocation } from 'app/utils/app/RoutingUtils'
 import { withScreenSize } from 'app/utils/ScreenSize'
 

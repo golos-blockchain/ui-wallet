@@ -31,7 +31,6 @@ export function* watchForUpdateMeta() {
 }
 
 const hook = {
-    preBroadcast_comment,
     preBroadcast_transfer,
     preBroadcast_transfer_to_tip: preBroadcast_transfer,
     preBroadcast_donate,
@@ -316,123 +315,6 @@ function* accepted_account_update({operation}) {
 //         }
 //     }
 // }
-
-import base58 from 'bs58'
-import secureRandom from 'secure-random'
-
-// function* preBroadcast_account_witness_vote({operation, username}) {
-// }
-function* preBroadcast_comment({operation, username}) {
-    if (!operation.author) operation.author = username
-    let permlink = operation.permlink
-    const {author, __config: {originalBody, autoVote, comment_options}} = operation
-    const {parent_author = '', parent_permlink = operation.category } = operation
-    const {title} = operation
-    let {body} = operation
-
-    body = body.trim()
-
-    // TODO Slightly smaller blockchain comments: if body === json_metadata.steem.link && Object.keys(steem).length > 1 remove steem.link ..This requires an adjust of get_state and the API refresh of the comment to put the steem.link back if Object.keys(steem).length >= 1
-
-    let body2
-    if (originalBody) {
-        const patch = createPatch(originalBody, body)
-        // Putting body into buffer will expand Unicode characters into their true length
-        if (patch && patch.length < new Buffer(body, 'utf-8').length)
-            body2 = patch
-    }
-    if (!body2) body2 = body
-    if (!permlink) permlink = yield createPermlink(title, author, parent_author, parent_permlink)
-
-    const md = operation.json_metadata
-    const json_metadata = typeof md === 'string' ? md : JSON.stringify(md)
-    const op = {
-        ...operation,
-        permlink: permlink.toLowerCase(),
-        parent_author, parent_permlink, json_metadata,
-        title: new Buffer((operation.title || '').trim(), 'utf-8'),
-        body: new Buffer(body2, 'utf-8'),
-    }
-
-    const comment_op = [
-        ['comment', op],
-    ]
-
-    // comment_options must come directly after comment
-    if(comment_options) {
-        const isPost = parent_author === '';
-        const {
-            // max_accepted_payout = ["1000000.000", DEBT_TICKER].join(" "),
-            max_accepted_payout = [isPost ? "10000.000" : "1.000", DEBT_TICKER].join(" "),
-            percent_steem_dollars = 0, // 10000 === 100%
-            allow_votes = true,
-            allow_curation_rewards = true,
-            curator_rewards_percent = null,
-        } = comment_options
-
-        const extensions = [];
-
-        // beneficiaries
-        // extensions.push(
-        //     [0, { beneficiaries: [{ account: 'golosio', weight: 1000 }] }]
-        // )
-
-        if (curator_rewards_percent) {
-            extensions.push([ 2, { percent: curator_rewards_percent }])
-        }
-
-        comment_op.push(
-            ['comment_options', {
-                author,
-                permlink,
-                max_accepted_payout,
-                percent_steem_dollars,
-                allow_votes,
-                allow_curation_rewards,
-                extensions,
-            }]
-        )
-    }
-
-    if(autoVote) {
-        const vote = {voter: op.author, author: op.author, permlink: op.permlink, weight: 10000}
-        comment_op.push(['vote', vote])
-    }
-
-    return comment_op
-}
-
-function* createPermlink(title, author, parent_author, parent_permlink) {
-    let permlink
-    if (title && title.trim() !== '') {
-        let s = slug(title)
-        if(s === '') {
-            s = base58.encode(secureRandom.randomBuffer(4))
-        }
-        // ensure the permlink(slug) is unique
-        const slugState = yield call([api, api.getContentAsync], author, s, constants.DEFAULT_VOTE_LIMIT)
-        let prefix
-        if (slugState.body !== '') {
-            // make sure slug is unique
-            prefix = base58.encode(secureRandom.randomBuffer(4)) + '-'
-        } else {
-            prefix = ''
-        }
-        permlink = prefix + s
-    } else {
-        // comments: re-parentauthor-parentpermlink-time
-        const timeStr = new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '')
-        parent_permlink = parent_permlink.replace(/(-\d{8}t\d{9}z)/g, '')
-        permlink = `re-${parent_author}-${parent_permlink}-${timeStr}`
-    }
-    if(permlink.length > 255) {
-        // STEEMIT_MAX_PERMLINK_LENGTH
-        permlink = permlink.substring(permlink.length - 255, permlink.length)
-    }
-    // only letters numbers and dashes shall survive
-    permlink = permlink.toLowerCase().replace(/[^a-z0-9-]+/g, '')
-    return permlink
-}
 
 import diff_match_patch from 'diff-match-patch'
 const dmp = new diff_match_patch()

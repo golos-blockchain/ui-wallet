@@ -1,5 +1,4 @@
 import { call, put, select, fork, cancelled, takeLatest, takeEvery } from 'redux-saga/effects';
-import cookie from "react-cookie";
 import {config, api} from 'golos-lib-js';
 import { Asset } from 'golos-lib-js/lib/utils'
 

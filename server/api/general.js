@@ -1,4 +1,4 @@
-import koa_router from 'koa-router';
+import Router from 'koa-router'
 import koa_body from 'koa-body';
 import config from 'config';
 import recordWebEvent from 'server/record_web_event';
@@ -11,7 +11,7 @@ import useGetExchangeHandler from 'server/api/get_exchange'
 import useGetAddressHandler from 'server/api/uia_address'
 
 export default function useGeneralApi(app) {
-    const router = koa_router({prefix: '/api/v1'});
+    const router = new Router({prefix: '/api/v1'})
     app.use(router.routes());
     const koaBody = koa_body();
 
