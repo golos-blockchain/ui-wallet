@@ -12,6 +12,9 @@ module.exports = {
             "address": "wss://api.aleksw.space/ws"
         },
         {
+            "address": "wss://golos.lexai.top/ws"
+        },
+        {
             "address": "wss://api-golos.blckchnd.com/ws"
         }
     ],
@@ -45,14 +48,12 @@ module.exports = {
         "host_local": "https://devapi-dex.golos.app"
     },
     "app_updater": {
-        "host": "https://devfiles.golos.app"
+        "host": "https://files.golos.app"
     },
     "hidden_assets": {
         "RUDEX": true,
         "PRIZM": true,
         "DOGECOIN": true,
-        "YMZEC": true,
-        "YMWMZ": true,
-        "YMBTC": true
+        "YMWMZ": true
     }
 }

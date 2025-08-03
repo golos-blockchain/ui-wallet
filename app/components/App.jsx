@@ -407,7 +407,7 @@ class App extends React.Component {
                     {this.appSettings ? <AppSettings.component /> : children}
                     {noFooter ? null : <Footer />}
                     <NewsPopups />
-                    <ScrollButton />
+                    {this.appSettings ? null : <ScrollButton />}
                 </div>
                 <Dialogs />
                 <Modals />

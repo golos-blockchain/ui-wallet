@@ -395,6 +395,7 @@ export function* fetchState(location_change_action) {
                     select_token_ids: [parts[1]],
                     state: 'any'
                 }))
+
                 yield markAuctions(state.nft_token)
                 state.nft_token = state.nft_token[0]
                 state.nft_token_loaded = true
@@ -651,7 +652,6 @@ export function* watchFetchNftTokens() {
 export function* fetchNftTokens({ payload: { account, start_token_id, sort, reverse_sort } }) {
     try {
         const limit = 20
-
         const nft_tokens = yield call([api, api.getNftTokensAsync], {
             owner: account,
             collections: false,
