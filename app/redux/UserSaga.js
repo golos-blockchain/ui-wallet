@@ -341,9 +341,7 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
         } else if (!afterLoginRedirectToWelcome) {
             alert(message)
         }
-    }, 2000)
-
-    yield new Promise(resolve => setTimeout(resolve, 40000));
+    }, afterLoginRedirectToWelcome ? 3000 : 10000)
 
     let alreadyAuthorized = false;
     try {
