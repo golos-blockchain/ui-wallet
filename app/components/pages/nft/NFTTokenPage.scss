@@ -7,6 +7,13 @@
         display: flex;
         width: 100%;
     }
+
+    @media screen and (max-width: 39.9375em) {
+        .container {
+            flex-flow: column;
+        }
+    }
+
     .buttons {
         align-self: flex-end;
         display: flex;
