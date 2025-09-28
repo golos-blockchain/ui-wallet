@@ -61,7 +61,7 @@
     "immutable": "^3.8.2",
     "intl": "^1.2.5",
     "jspdf": "^3.0.3",
-    "koa": "^2.16.1",
+    "koa": "^2.16.2",
     "koa-compress": "^5.1.1",
     "koa-conditional-get": "^3.0.0",
     "koa-etag": "^4.0.0",
