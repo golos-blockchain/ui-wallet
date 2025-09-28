@@ -131,7 +131,7 @@
     "babel-plugin-styled-components": "^2.1.4",
     "chai": "^4.1.2",
     "cheerio": "1.0.0-rc.10",
-    "cordova-android": "^10.1.2",
+    "cordova-android": "^11.0.0",
     "cordova-config": "^0.7.0",
     "cordova-plugin-advanced-http": "^3.3.1",
     "cordova-plugin-androidx-adapter": "^1.1.3",
