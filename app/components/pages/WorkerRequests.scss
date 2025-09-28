@@ -1,3 +1,7 @@
+@use "./AddEditWorkerRequest";
+@use "app/components/elements/WorkerFunds";
+@use "./ViewWorkerRequest";
+
 .App-workers {
   max-width: 75rem;
   margin: auto;
@@ -74,7 +78,3 @@
         margin: 10px;
     }
 }
-
-@import "./AddEditWorkerRequest";
-@import "app/components/elements/WorkerFunds";
-@import "./ViewWorkerRequest";
