@@ -69,14 +69,14 @@ npx yarn install
 
 10. Выполните команду (/root/ - это должен быть ваш путь к папке профиля, в ней лежит папка Android):
 ```sh
-export ANDROID_SDK_ROOT=/root/Android/Sdk
+export ANDROID_HOME=/root/Android/Sdk
 ```
 
 11. Установка совместимой системы сборки.
 
 Установите JDK (отдельно от Android Studio):
 ```sh
-sudo apt-get install openjdk-8-jdk
+sudo apt-get install openjdk-11-jdk
 ```
 После этого команда `javac -version` должна выдавать ответ вида: javac 1.8.x
 
@@ -87,7 +87,7 @@ sudo apt-get install gradle
 
 Добавьте /root/Android/Sdk/platform-tools в переменную PATH (для adb, вспомогательное, для сборки не обязательно)
 
-12. Откройте Android Studio, а из нее откройте SDK Manager (кнопка "☰" -> Tools -> SDK Manager). Установите Android build tools 30.0.3.
+12. Откройте Android Studio, а из нее откройте SDK Manager (кнопка "☰" -> Tools -> SDK Manager). Установите Android build tools 32.0.0.
     Для этого слева выбираете **Languages & Frameworks -> Android SDK**, во вкладках сверху выбираете **SDK Tools**, включаете **Show package details**, отключаете **Hide obsolete packages**, после чего выбираете нужную версию Build tools и нажимаете Apply для установки.
 
 13. Если собираетесь автоматически устанавливать и запускать приложение (а не вручную, перекинув apk на устройство), то сделайте следующее. Подключите устройство по USB (разрешив отладку) и убедитесь, что adb видит его, выполнив в командной строке команду

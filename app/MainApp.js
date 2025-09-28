@@ -56,9 +56,7 @@ window.$STM_csrf = null // not used in app
 
 function closeSplash() {
     try {
-        if (process.env.MOBILE_APP) {
-            navigator.splashscreen.hide()
-        } else {
+        if (!process.env.MOBILE_APP) {
             window.appSplash.contentLoaded()
         }
     } catch (err) {
