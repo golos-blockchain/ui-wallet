@@ -1,8 +1,6 @@
 @import "./foundation-settings";
 @import "~foundation-sites/scss/foundation";
 
-@include foundation-everything(true);
-
 @import "./variables";
 @import "./mixins";
 @import "./layout";
@@ -15,6 +13,8 @@
 @import "./notifications";
 
 @import "app/components/all";
+
+@include foundation-everything(true);
 
 #content {
   visibility: initial;
