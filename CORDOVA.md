@@ -80,8 +80,8 @@ sudo apt-get install openjdk-17-jdk
 ```
 После этого команда `javac -version` должна выдавать ответ вида: javac 1.8.x
 
-Установите Gradle (отдельно от Android Studio):
-(https://gradle.org/next-steps/?version=9.1.0&format=bin)[https://gradle.org/next-steps/?version=9.1.0&format=bin]
+Установите Gradle (отдельно от Android Studio):  
+[https://gradle.org/next-steps/?version=9.1.0&format=bin](https://gradle.org/next-steps/?version=9.1.0&format=bin)
 
 И добавьте его в PATH командой такого вида (здесь путь к папке bin распакованного архива):
 ```sh
