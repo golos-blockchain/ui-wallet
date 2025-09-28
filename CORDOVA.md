@@ -76,13 +76,16 @@ export ANDROID_HOME=/root/Android/Sdk
 
 Установите JDK (отдельно от Android Studio):
 ```sh
-sudo apt-get install openjdk-11-jdk
+sudo apt-get install openjdk-17-jdk
 ```
 После этого команда `javac -version` должна выдавать ответ вида: javac 1.8.x
 
 Установите Gradle (отдельно от Android Studio):
+(https://gradle.org/next-steps/?version=9.1.0&format=bin)[https://gradle.org/next-steps/?version=9.1.0&format=bin]
+
+И добавьте его в PATH командой такого вида (здесь путь к папке bin распакованного архива):
 ```sh
-sudo apt-get install gradle
+export PATH=$PATH:/root/Downloads/gradle/bin
 ```
 
 Добавьте /root/Android/Sdk/platform-tools в переменную PATH (для adb, вспомогательное, для сборки не обязательно)
