@@ -34,6 +34,7 @@
   "dependencies": {
     "@appigram/react-rangeslider": "2.2.5",
     "@formatjs/intl-utils": "^3.8.4",
+    "@koa/bodyparser": "^6.0.0",
     "@popperjs/core": "^2.6.0",
     "@xmldom/xmldom": "^0.8.6",
     "assert": "^1.4.1",
@@ -61,7 +62,6 @@
     "intl": "^1.2.5",
     "jspdf": "^3.0.3",
     "koa": "^2.16.1",
-    "koa-body": "^6.0.1",
     "koa-compress": "^5.1.1",
     "koa-conditional-get": "^3.0.0",
     "koa-etag": "^4.0.0",
