@@ -1,0 +1,28 @@
+.FilledOrders {
+    h4 {
+    }
+    .rating-link {
+        float: right;
+        font-size: 85%;
+        margin-left: 20px;
+    }
+    .convert-link {
+        float: right;
+        font-size: 85%;
+    }
+}
+
+@media screen and (max-width: 39.9375em) {
+    .FilledOrders {
+        .rating-link {
+            float: none;
+        }
+        .convert-link {
+            float: none;
+        }
+        .buttons {
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+    }
+}

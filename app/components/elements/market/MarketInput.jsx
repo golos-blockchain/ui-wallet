@@ -5,7 +5,7 @@ class MarketInput extends React.Component {
         const { label, symbol, rowTitle, ...rest } = this.props
         return (<div className="row" title={rowTitle}>
                 <div className="column small-3 large-3" style={{ paddingRight: '0px' }}>
-                    <label>{label}</label>
+                    <label style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</label>
                 </div>
                 <div className="column small-9 large-7">
                     <div className="input-group">

@@ -18,3 +18,17 @@
         margin-bottom: 0rem;
     }
 }
+
+@media screen and (max-width: 39.9375em) {
+    .NFTCollections {
+        .DropdownMenu:not(.show) > .VerticalMenu {
+            min-width: auto;
+        }
+        .DropdownMenu > .VerticalMenu {
+            transform: translateX(-90%);
+        }
+        .DropdownMenu:not(.show) > .VerticalMenu {
+            display: none;
+        }
+    }
+}

@@ -48,6 +48,7 @@
     "approximately": "approximately",
     "all_langs": "All languages",
     "amount": "Amount",
+    "amount_short": "Amount",
     "and": "and",
     "at_least": "at least",
     "or_more": "or more",
@@ -775,7 +776,9 @@
     "name_exists": "Collection with such name is already created by another author",
     "tokens_exist": "Cannot delete collection which has tokens",
     "volume_hint": "Market volume for all time",
-    "price_hint": "Last buy price"
+    "price_hint": "Last buy price",
+    "issue_token": "Issue token",
+    "remove_it": "Remove collection"
   },
   "create_nft_collection_jsx": {
     "title": "Create collection",
