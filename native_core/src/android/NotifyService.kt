@@ -76,7 +76,8 @@ class NotifyService() : Service() {
             prefs.lastTake = takeRes!!.lastTake
             ServiceHelper.savePrefs(applicationContext, prefs)
 
-            for (i in 0..entries.size) {
+            for (i in 0 until entries.size) {
+                Log.e(TAG, "showNotification")
                 showNotification(entries[i])
             }
         } catch (e: Exception) {

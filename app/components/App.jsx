@@ -128,6 +128,12 @@ class App extends React.Component {
                 backRouteFix(e)
             })
 
+            cordova.exec((winParam) => {
+                console.log('initNativeCore ok', winParam)
+            }, (err) => {
+                console.error('initNativeCore err', err)
+            }, 'CorePlugin', 'initNativeCore', []);
+
             this.setState({
                 can_render: true
             })
