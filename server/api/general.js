@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import koa_body from 'koa-body';
+import { bodyParser } from '@koa/bodyparser';
 import config from 'config';
 import recordWebEvent from 'server/record_web_event';
 import {rateLimitReq, } from 'server/utils/misc';
@@ -13,7 +13,7 @@ import useGetAddressHandler from 'server/api/uia_address'
 export default function useGeneralApi(app) {
     const router = new Router({prefix: '/api/v1'})
     app.use(router.routes());
-    const koaBody = koa_body();
+    const koaBody = bodyParser();
 
     router.get('/healthcheck', (ctx) => {
         ctx.status = 200;
@@ -39,7 +39,7 @@ export default function useGeneralApi(app) {
 
     router.post('/login_account', koaBody, (ctx) => {
         const params = ctx.request.body;
-        const {csrf, account} = typeof(params) === 'string' ? JSON.parse(params) : params;
+        const {csrf, account} = params;
         if (!ctx.checkCSRF(csrf)) return;
         console.log('-- /login_account -->', ctx.session.uid, account);
         try {

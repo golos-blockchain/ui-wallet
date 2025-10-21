@@ -9,6 +9,7 @@ import NFTMarketCollections from 'app/components/elements/nft/NFTMarketCollectio
 import NFTTokenItem from 'app/components/elements/nft/NFTTokenItem'
 import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import g from 'app/redux/GlobalReducer'
+import { withScreenSize } from 'app/utils/ScreenSize'
 import session from 'app/utils/session'
 
 class NFTMarketPage extends React.Component {
@@ -48,7 +49,7 @@ class NFTMarketPage extends React.Component {
 
     render() {
         const { currentUser, nft_market_collections, nft_orders, own_nft_orders,
-            nft_tokens, own_nft_tokens, nft_assets, routeParams } = this.props
+            nft_tokens, own_nft_tokens, nft_assets, routeParams, isS } = this.props
 
         let content
         const orders = nft_orders ? nft_orders.toJS().data : null
@@ -123,10 +124,15 @@ class NFTMarketPage extends React.Component {
 
         const { showPlaceOfferBet, tokenIdx } = this.state
 
+        const header = <h4 style={{ display: 'inline-block' }}>{tt('header_jsx.nft_market')}</h4>
+
         return <div className='row'>
             <div className='NFTMarketPage'>
+                {isS && <div style={{ marginTop: '0.25rem' }}>
+                    {header}
+                </div>}
                 <div style={{ marginTop: '0.25rem' }}>
-                    <h4 style={{ display: 'inline-block' }}>{tt('header_jsx.nft_market')}</h4>
+                    {!isS && header}
                     {nft_market_collections &&
                         <NFTMarketCollections nft_market_collections={nft_market_collections} selected={selected} />}
                     <Link to={`/all-nft`} className="button hollow float-right">
@@ -182,5 +188,5 @@ module.exports = {
                 dispatch(g.actions.fetchNftMarket({ account, collectionName, start_order_id, sort, reverse_sort }))
             },
         })
-    )(NFTMarketPage),
+    )(withScreenSize(NFTMarketPage)),
 }

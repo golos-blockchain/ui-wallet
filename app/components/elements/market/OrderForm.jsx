@@ -10,6 +10,7 @@ import MarketInput from 'app/components/elements/market/MarketInput'
 import { ExchangeTypes } from 'shared/getExchangeData'
 import { getExchange } from 'app/utils/market/exchange'
 import FloatEditor from 'app/utils/market/FloatEditor'
+import { withScreenSize } from 'app/utils/ScreenSize'
 import { DEFAULT_EXPIRE, generateOrderID, roundUp, roundDown, float2str } from 'app/utils/market/utils'
 
 class OrderForm extends React.Component {
@@ -268,7 +269,7 @@ class OrderForm extends React.Component {
     }
 
     render() {
-        const { sym1, sym2, account, assets, bestPrice, isSell } = this.props
+        const { sym1, sym2, account, assets, bestPrice, isSell, isS } = this.props
         const { priceWarning, submitDisabled,
             price, amount, total, fee, feePct, insufficient } = this.state
 
@@ -285,7 +286,7 @@ class OrderForm extends React.Component {
 
             <MarketInput
                 rowTitle={(insufficient && isSell) ? tt('g.invalid_amount') : ''}
-                label={tt('g.amount')}
+                label={isS ? tt('g.amount_short') : tt('g.amount')}
                 className={"input-group-field" +
                     ((insufficient && isSell) ? ' balance_warning' : '')}
                 placeholder="0.0"
@@ -421,4 +422,4 @@ export default connect(
     }), null, {
         forwardRef: true
     }
-)(OrderForm)
+)(withScreenSize(OrderForm))

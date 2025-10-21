@@ -42,7 +42,15 @@ module.exports = merge(baseConfig, {
                             },
                         },
                     },
-                    'sass-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sassOptions: {
+                                quietDeps: true,
+                                silenceDeprecations: ['legacy-js-api', 'import'],
+                            }
+                        }
+                    },
                 ],
             },
         ],
@@ -53,4 +61,9 @@ module.exports = merge(baseConfig, {
             new TerserPlugin(),
         ],
     },
+    ignoreWarnings: [
+        (warning) => {
+            return warning.message?.includes('.scss')
+        }
+    ],
 });

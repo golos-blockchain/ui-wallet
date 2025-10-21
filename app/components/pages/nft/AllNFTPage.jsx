@@ -12,6 +12,7 @@ import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
 import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import g from 'app/redux/GlobalReducer'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 class AllNFTPage extends React.Component {
     state = {}
@@ -146,13 +147,15 @@ class AllNFTPage extends React.Component {
             }
         }
 
+        const { isS } = this.props
+
         return (<div className='AllNFTPage'>
             <div className="row">
                 <div className="column small-12">
                     <h4 className="Assets__header">{tt('all_nft_page_jsx.title')}</h4>
                     <span className='float-right'>&nbsp;&nbsp;</span>
                     <DropdownMenu className='float-right' el='div' items={sortItems} selected={currentSort}>
-                        <span title={tt('nft_tokens_jsx.sort')} style={{ display: 'block', marginTop: '5px' }}>
+                        <span title={tt('nft_tokens_jsx.sort')} style={{ display: 'block', fontSize: isS && '120%', marginTop: !isS && '5px' }}>
                             {currentSort}
                             <Icon name='dropdown-arrow' size='0_95x' />
                         </span>
@@ -227,5 +230,5 @@ module.exports = {
                 dispatch(g.actions.fetchNftTokens({ account: '', start_token_id, sort, reverse_sort: sortReversed }))
             },
         })
-    )(AllNFTPage),
+    )(withScreenSize(AllNFTPage)),
 }
