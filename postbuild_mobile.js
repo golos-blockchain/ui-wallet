@@ -52,7 +52,8 @@ console.log('--- Moving react "build" folder to "' + distPath + '/www"')
 
 if (dirExists('dist')) {
     fs.rmSync(distPath + '/www', { recursive: true, force: true });
-    fs.renameSync('dist', distPath + '/www')
+    //fs.renameSync('dist', distPath + '/www')
+    fse.copySync('dist', distPath + '/www') // dev mode
 }
 
 console.log('--- Copying "native_core" folder to "' + distPath + '/native_core"')

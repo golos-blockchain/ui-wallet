@@ -14,6 +14,7 @@ import TimeExactWrapper from 'app/components/elements/TimeExactWrapper'
 import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
 import transaction from 'app/redux/Transaction'
+import { hrefClick } from 'app/utils/app/RoutingUtils'
 import { getAssetMeta } from 'app/utils/market/utils'
 import { proxifyNFTImage } from 'app/utils/ProxifyUrl'
 
@@ -266,7 +267,7 @@ class NFTTokenItem extends Component {
 
         let tokenImage = image.startsWith('http') ? proxifyNFTImage(image) : image
 
-        return <a href={link} target='_blank' rel='noopener noreferrer'>
+        return <a href={link} target={process.env.MOBILE_APP ? undefined : '_blank'} rel='noopener noreferrer' onClick={hrefClick}>
             <div className={'NFTTokenItem ' + (isCollection && isMy ? ' collection' : '')}
                 title={(isCollection && isMy) ? tt('nft_tokens_jsx.your_token') : ''}>
                 <img className='token-image' src={tokenImage} alt='' title={data.title}/>

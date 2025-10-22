@@ -1,2 +1,12 @@
 .NFTTokens {
 }
+
+@media screen and (max-width: 39.9375em) {
+    .NFTTokens {
+        overflow: hidden;
+
+        .DropdownMenu {
+            font-size: 120%;
+        }
+    }
+}

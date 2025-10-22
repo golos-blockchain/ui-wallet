@@ -1,6 +1,7 @@
 import {fromJS, Set, List} from 'immutable'
 import { call, put, select, fork, takeLatest, takeEvery } from 'redux-saga/effects';
 import {accountAuthLookup} from 'app/redux/AuthSaga'
+import appRed from 'app/redux/AppReducer'
 import user from 'app/redux/User'
 import {getAccount} from 'app/redux/SagaShared'
 import {browserHistory} from 'react-router'
@@ -320,6 +321,28 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
     if (!autopost && saveLogin && !operationType)
         yield put(user.actions.saveLogin());
 
+    const loginTm = setTimeout(async () => {
+        const message = 'Вход выполняется дольше обычного.\nВозможно, вам стоит попробовать другое устройство или другой интернет (например, Wi-Fi вместо мобильной сети).'
+        if (window._reduxStore) {
+            const now = Date.now();
+            const lbnKey = 'last_bad_item';
+            const lastBadNet = parseInt(localStorage.getItem(lbnKey) || 0);
+            if (now - lastBadNet >= 10*60*1000) {
+                localStorage.setItem(lbnKey, now);
+                window._reduxStore.dispatch({
+                    type: 'ADD_NOTIFICATION',
+                    payload: {
+                        key: 'bad_net_' + Date.now(),
+                        message,
+                        dismissAfter: 5000
+                    }
+                })
+            }
+        } else if (!afterLoginRedirectToWelcome) {
+            alert(message)
+        }
+    }, afterLoginRedirectToWelcome ? 3000 : 10000)
+
     let alreadyAuthorized = false;
     try {
         const res = yield notifyApiLogin(username, localStorage.getItem('X-Auth-Session'));
@@ -377,7 +400,10 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
         // Does not need to be fatal
         console.error('Server Login Error', error);
     }
-    if (afterLoginRedirectToWelcome) browserHistory.push('/@' + username)
+    clearTimeout(loginTm);
+    if (afterLoginRedirectToWelcome) {
+      browserHistory.push('/@' + username)
+    }
 }
 
 function* changeAccount(action) {

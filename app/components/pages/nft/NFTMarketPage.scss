@@ -2,3 +2,9 @@
     padding: 1rem;
     flex: 1;
 }
+
+@media screen and (max-width: 39.9375em) {
+    .NFTMarketPage {
+        overflow: hidden;
+    }
+}

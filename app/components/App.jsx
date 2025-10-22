@@ -128,6 +128,12 @@ class App extends React.Component {
                 backRouteFix(e)
             })
 
+            cordova.exec((winParam) => {
+                console.log('initNativeCore ok', winParam)
+            }, (err) => {
+                console.error('initNativeCore err', err)
+            }, 'CorePlugin', 'initNativeCore', []);
+
             this.setState({
                 can_render: true
             })
@@ -407,7 +413,7 @@ class App extends React.Component {
                     {this.appSettings ? <AppSettings.component /> : children}
                     {noFooter ? null : <Footer />}
                     <NewsPopups />
-                    <ScrollButton />
+                    {this.appSettings ? null : <ScrollButton />}
                 </div>
                 <Dialogs />
                 <Modals />

@@ -6,7 +6,8 @@ import tt from 'counterpart';
 import { Asset } from 'golos-lib-js/lib/utils';
 import Reveal from 'react-foundation-components/lib/global/reveal';
 
-import Icon from 'app/components/elements/Icon';
+import DropdownMenu from 'app/components/elements/DropdownMenu'
+import Icon from 'app/components/elements/Icon'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import NFTSmallIcon from 'app/components/elements/nft/NFTSmallIcon'
 import CreateNFTCollection from 'app/components/modules/nft/CreateNFTCollection'
@@ -15,6 +16,7 @@ import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
 import transaction from 'app/redux/Transaction'
 import { getAssetMeta } from 'app/utils/market/utils'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 class NFTCollections extends Component {
     state = {}
@@ -50,7 +52,7 @@ class NFTCollections extends Component {
     }
 
     render() {
-        const { account, isMyAccount, nft_collections, nft_assets, fetchState } = this.props
+        const { account, isMyAccount, nft_collections, nft_assets, fetchState, isS } = this.props
         const accountName = account.get('name')
 
         const collections = nft_collections ? nft_collections.toJS() : null
@@ -103,18 +105,35 @@ class NFTCollections extends Component {
                     imageUrl = getAssetMeta(asset).image_url
                 }
 
+                const collLink = <Link to={'/nft-collections/' + name} target='_blank' rel='noreferrer nofollow'>
+                    {name}
+                </Link>;
+
+                let kebab
+                if (isS && isMyAccount) {
+                    const kebabItems = [
+                        { link: '#', value: tt('nft_collections_jsx.issue_token'), onClick: issueIt},
+                        { link: '#', value: tt('nft_collections_jsx.remove_it'), onClick: deleteIt},
+                    ];
+
+                    kebab = <td>
+                        <DropdownMenu el='div' items={kebabItems}>
+                            <Icon name='new/more' size='1_25x' />
+                        </DropdownMenu>
+                    </td>
+                }
+
                 items.push(<tr key={name} className={count % 2 == 0 ? '' : 'zebra'}>
                     <td title={data.title}>
                         <NFTSmallIcon image={image} />
+                        {isS && <div>{collLink}</div>}
                     </td>
-                    <td title={data.title}>
-                        <Link to={'/nft-collections/' + name} target='_blank' rel='noreferrer nofollow'>
-                            {name}
-                        </Link>
-                    </td>
+                    {!isS && <td title={data.title}>
+                        {collLink}
+                    </td>}
                     <td>
                         {tt('nft_tokens_jsx.token_count', { count: token_count })}
-                        {isMyAccount ? <button className='button hollow small' onClick={issueIt}>
+                        {(!isS && isMyAccount) ? <button className='button hollow small' onClick={issueIt}>
                             {tt('transfer_jsx.issue')}
                         </button> : null}
                     </td>
@@ -127,11 +146,12 @@ class NFTCollections extends Component {
                             <span className='price-val'>{price.amountFloat}</span>
                         </div>
                     </td>
-                    <td>
-                        {isMyAccount ? <button disabled={!!token_count} title={token_count ? tt('nft_collections_jsx.tokens_exist') : null} className='button hollow small alert' onClick={deleteIt}>
+                    {(!isS && isMyAccount) ? <td>
+                        <button disabled={!!token_count} title={token_count ? tt('nft_collections_jsx.tokens_exist') : null} className='button hollow small alert' onClick={deleteIt}>
                             {tt('g.delete')}
-                        </button> : null}
-                    </td>
+                        </button>
+                    </td> : null}
+                    {kebab}
                 </tr>)
 
                 ++count
@@ -144,18 +164,27 @@ class NFTCollections extends Component {
 
         const { showCreate, showIssue, issueName, issueNum } = this.state
 
+        const marketLink = <Link to={`/nft`} className="button float-right">
+            {tt('header_jsx.nft_market')}
+        </Link>;
+        const createBtn = isMyAccount && <a href='#' onClick={this.showCreate} className={'button hollow ' + (!isS && 'float-right')}>
+            {tt('nft_collections_jsx.create')}
+        </a>;
+
         return (<div className='NFTCollections'>
             <div className="row">
                 <div className="column small-12">
                     <h4 className="Assets__header">{tt('g.nft_collections')}</h4>
-                    <Link to={`/nft`} className="button float-right">
-                        {tt('header_jsx.nft_market')}
-                    </Link>
-                    {isMyAccount && <a href='#' onClick={this.showCreate} className="button hollow float-right">
-                        {tt('nft_collections_jsx.create')}
-                    </a>}
+                    {!isS && marketLink}
+                    {!isS && createBtn}
                 </div>
             </div>
+            {isS && <div className="row">
+                <div className="column small-12">
+                    {createBtn}
+                    {marketLink}
+                </div>
+            </div>}
             <br />
             <div className="row">
                 <div className="column small-12">
@@ -211,4 +240,4 @@ export default connect(
             }))
         }
     })
-)(NFTCollections)
+)(withScreenSize(NFTCollections))

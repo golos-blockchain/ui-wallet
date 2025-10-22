@@ -53,10 +53,12 @@ export const withScreenSize = (WrappedComponent) => {
         }
 
         render() {
+            const { forwardedRef } = this.props
             const { _hideMainMe, _hideBlogMe, _hideRewardsMe,
                 _hideMainFor, _hideBlogFor, _hideRewardsFor, _hideUiaInfo, _smallUias } = this.state
             return (
                 <WrappedComponent
+                    ref={forwardedRef}
                     isS={this.state._isSmall}
                     hideMainMe={_hideMainMe}
                     hideBlogMe={_hideBlogMe}
@@ -72,5 +74,7 @@ export const withScreenSize = (WrappedComponent) => {
         }
     }
 
-    return ScreenSize
+    return React.forwardRef((props, ref) => {
+        return <ScreenSize {...props} forwardedRef={ref} />
+    });
 }

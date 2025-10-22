@@ -15,6 +15,7 @@ import NFTTokenTransfer from 'app/components/modules/nft/NFTTokenTransfer'
 import NFTTokenSell from 'app/components/modules/nft/NFTTokenSell'
 import NFTPlaceOfferBet from 'app/components/modules/nft/NFTPlaceOfferBet'
 import g from 'app/redux/GlobalReducer'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 class NFTTokens extends Component {
     state = {}
@@ -156,22 +157,34 @@ class NFTTokens extends Component {
             }
         }
 
+        const { isS } = this.props;
+
+        const marketLink = <Link to={`/nft`} className='button float-right'>
+            {tt('header_jsx.nft_market')}
+        </Link>
+        const separator = <span className='float-right'>&nbsp;&nbsp;</span>
+        const sortDropdown = <DropdownMenu className={!isS && 'float-right'} el='div' items={sortItems} selected={currentSort}>
+            <span title={tt('nft_tokens_jsx.sort')} style={{ display: 'block', marginTop: '5px' }}>
+                {currentSort}
+                <Icon name='dropdown-arrow' size='0_95x' />
+            </span>
+        </DropdownMenu>;
+
         return (<div className='NFTTokens'>
             <div className="row">
                 <div className="column small-12">
                     <h4 className="Assets__header">{tt('g.nft_tokens')}</h4>
-                    <Link to={`/nft`} className="button float-right">
-                        {tt('header_jsx.nft_market')}
-                    </Link>
-                    <span className='float-right'>&nbsp;&nbsp;</span>
-                    <DropdownMenu className='float-right' el='div' items={sortItems} selected={currentSort}>
-                        <span title={tt('nft_tokens_jsx.sort')} style={{ display: 'block', marginTop: '5px' }}>
-                            {currentSort}
-                            <Icon name='dropdown-arrow' size='0_95x' />
-                        </span>
-                    </DropdownMenu>
+                    {!isS && marketLink}
+                    {!isS && separator}
+                    {!isS && sortDropdown}
                 </div>
             </div>
+            {isS && <div className="row">
+                <div className="column small-12">
+                    {sortDropdown}
+                    {marketLink}
+                </div>
+            </div>}
             <div className="row">
                 <div className="column small-12">
                     {items}
@@ -242,4 +255,4 @@ export default connect(
             dispatch(g.actions.fetchNftTokens({ account: account.get('name'), start_token_id, sort, reverse_sort: sortReversed }))
         },
     })
-)(NFTTokens)
+)(withScreenSize(NFTTokens))

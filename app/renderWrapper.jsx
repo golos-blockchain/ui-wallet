@@ -51,6 +51,7 @@ export default async function renderWrapper(initialState) {
     window.store = {
         getState: () => { debugger }
     }
+    window._reduxStore = store;
     // Bump transaction (for live UI testing).. Put 0 in now (no effect),
     // to enable browser's autocomplete and help prevent typos.
     window.bump = parseInt(localStorage.getItem('bump') || 0);

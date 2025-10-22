@@ -10,6 +10,7 @@ import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
 import Tooltip from 'app/components/elements/Tooltip';
 import { blogsUrl } from 'app/utils/blogsUtils'
 import { hrefClick } from 'app/utils/app/RoutingUtils'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 class FilledOrders extends Component {
     constructor(props) {
@@ -65,7 +66,7 @@ class FilledOrders extends Component {
     }
 
     render() {
-        const {account, incoming} = this.props;
+        const {account, incoming, isS} = this.props;
 
         let filled_orders = account.filled_orders || [];
         filled_orders = filled_orders.reverse();
@@ -74,18 +75,25 @@ class FilledOrders extends Component {
             return this._renderOrderHistoryRow(operation, index);
         });
 
+        const ratingLink = <span className='rating-link'>
+            <a href='/rating' onClick={hrefClick} className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
+        </span>;
+        const convertLink = <span className='convert-link'>
+            <a href='/convert/GOLOS/YMUSDT' onClick={hrefClick} className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
+        </span>;
+
         return (
-            <div>
-                <span style={{float: 'right', fontSize: '85%', marginLeft: '20px'}}>
-                    <a href='/rating' onClick={hrefClick} className='FilledOrders__market-link'><Icon name='trade' size='2x' /> {tt('filled_orders_jsx.open_market')}</a>
-                </span>
-                <span style={{float: 'right', fontSize: '85%'}}>
-                    <a href='/convert/GOLOS/YMUSDT' onClick={hrefClick} className='FilledOrders__convert-link'><Icon name='sorting' size='2x' /> {tt('filled_orders_jsx.quick_convert')}</a>
-                </span>
+            <div className='FilledOrders'>
+                {!isS && ratingLink}
+                {!isS && convertLink}
                 <h4 className='uppercase'>{tt('filled_orders_jsx.title')}</h4>
-                <div className="column secondary">
-                    {tt('filled_orders_jsx.orders_info')} <a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' /><br /><br />
-                </div>
+                {!isS && <div className="column secondary" class='info'>
+                    {tt('filled_orders_jsx.orders_info')} <a target='_blank' href={blogsUrl('/@allforyou/torguem-na-vnutrennei-birzhe-golosa')}>{tt('g.more_hint')}</a> <Icon name='extlink' size='1_5x' /><br />{!isS && <br />}
+                </div>}
+                {isS && <div class='buttons'>
+                    {convertLink}
+                    {ratingLink}
+                </div>}
                 {history.length ? (<table>
                     <tbody>
                         {history}
@@ -98,4 +106,4 @@ class FilledOrders extends Component {
     }
 }
 
-export default FilledOrders;
+export default withScreenSize(FilledOrders);
