@@ -157,8 +157,17 @@ export default createModule({
         },
         {
             action: 'LOGIN_ERROR',
-            reducer: (state, {payload: {error, ...rest}}) => state.merge({ login_error: { error, ...rest },
-                logged_out: undefined })
+            reducer: (state, {payload: {error, ...rest}}) => state.merge({
+                login_error: { error, ...rest },
+                login_state: 0,
+                logged_out: undefined
+            })
+        },
+        {
+            action: 'LOGIN_STATE',
+            reducer: (state, {payload}) => state.merge({
+                login_state: payload.state,
+            })
         },
         {
             action: 'LOGOUT',

@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import {PrivateKey, PublicKey} from 'golos-lib-js/lib/auth/ecc'
+import tt from 'counterpart';
+
 import transaction from 'app/redux/Transaction'
 import g from 'app/redux/GlobalReducer'
 import user from 'app/redux/User'
@@ -9,13 +11,13 @@ import {validate_account_name} from 'app/utils/ChainValidation';
 import runTests from 'app/utils/BrowserTests';
 import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import reactForm from 'app/utils/ReactForm'
-import tt from 'counterpart';
 import { APP_DOMAIN } from 'app/client_config';
 import { translateError } from 'app/utils/ParsersAndFormatters';
 import { authUrl, authRegisterUrl, } from 'app/utils/AuthApiClient';
 import session from 'app/utils/session'
-import LoginAppReminder from 'app/components/elements/app/LoginAppReminder'
+import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import { openAppSettings } from 'app/components/pages/app/AppSettings'
+import LoginAppReminder from 'app/components/elements/app/LoginAppReminder'
 
 class LoginForm extends Component {
 
@@ -236,10 +238,15 @@ class LoginForm extends Component {
                         <input id="saveLogin" type="checkbox" ref="pw" {...saveLogin.props} onChange={this.saveLoginToggle} disabled={submitting} /></label>
                 </div>}
                 <div>
-                    <br />
-                    <button type="submit" disabled={submitting || disabled} className="button" onClick={this.SignIn}>
-                        {submitLabel}
-                    </button>
+                    {(afterLoginRedirectToWelcome && this.props.login_state) ?
+                        <LoadingIndicator type='circle' size='25px' /> :
+                        <React.Fragment>
+                            <br />
+                            <button type="submit" disabled={submitting || disabled} className="button" onClick={this.SignIn}>
+                                {submitLabel}
+                            </button>
+                        </React.Fragment>
+                    }
                     {!cancelIsRegister && this.props.onCancel && (!isMemo || !loginDefault.get('unclosable')) && <button type="button float-right" disabled={submitting} className="button hollow" onClick={onCancel}>
                         {tt('g.cancel')}
                     </button>}
@@ -300,6 +307,7 @@ export default connect(
     // mapStateToProps
     (state) => {
         const login_error = state.user.get('login_error')
+        const login_state = state.user.get('login_state')
         const currentUser = state.user.get('current')
         const loginBroadcastOperation = state.user.get('loginBroadcastOperation')
 
@@ -338,6 +346,7 @@ export default connect(
         return {
             externalTransfer,
             login_error,
+            login_state,
             loginBroadcastOperation,
             initialValues,
             initialUsername,
