@@ -171,239 +171,246 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
         return
     }
 
-    let userProvidedRole // login via:  username/owner
-    if (username.indexOf('/') > -1) {
-        // "alice/active" will login only with Alices active key
-        [username, userProvidedRole] = username.split('/')
-    }
+    yield put(user.actions.loginState({ state: 1 }))
 
-    const isRole = (role, fn) => (!userProvidedRole || role === userProvidedRole ? fn() : undefined)
-
-    let account
     try {
-        account = yield call(getAccount, username)
-    } catch (err) {
-        console.error(err)
-        yield put(user.actions.loginError({ error: 'Node failure', node: config.get('websocket') }))
-        return
-    }
-    if (!account) {
-        yield put(user.actions.loginError({ error: 'Username does not exist' }))
-        return
-    }
-    if (account.get('frozen')) {
-        account = yield call(getAccount, username, true)
-        if (account.get('frozen')) {
-            yield put(user.actions.loginError({ error: 'account_frozen' }))
-            return
+        let userProvidedRole // login via:  username/owner
+        if (username.indexOf('/') > -1) {
+            // "alice/active" will login only with Alices active key
+            [username, userProvidedRole] = username.split('/')
         }
-    }
 
-    let private_keys
-    try {
-        const private_key = PrivateKey.fromWif(password)
-        login_wif_owner_pubkey = private_key.toPublicKey().toString()
-        private_keys = fromJS({
-            posting_private: isRole('posting', () => private_key),
-            active_private: isRole('active', () => private_key),
-            memo_private: private_key,
-        })
-    } catch (e) {
-        // Password (non wif)
-        login_owner_pubkey = PrivateKey.fromSeed(username + 'owner' + password).toPublicKey().toString()
-        private_keys = fromJS({
-            posting_private: isRole('posting', () => PrivateKey.fromSeed(username + 'posting' + password)),
-            active_private: isRole('active', () => PrivateKey.fromSeed(username + 'active' + password)),
-            memo_private: PrivateKey.fromSeed(username + 'memo' + password),
-        })
-    }
-    if (memoWif)
-        private_keys = private_keys.set('memo_private', PrivateKey.fromWif(memoWif))
+        const isRole = (role, fn) => (!userProvidedRole || role === userProvidedRole ? fn() : undefined)
 
-    yield call(accountAuthLookup, {payload: {account, private_keys, highSecurityLogin, login_owner_pubkey}})
-    let authority = yield select(state => state.user.getIn(['authority', username]))
-    const hasActiveAuth = authority.get('active') === 'full'
-    // Forbid loging in with active key
-    if(!operationType && !highSecurityLogin) {
-        const accountName = account.get('name')
-        authority = authority.set('active', 'none')
-        yield put(user.actions.setAuthority({accountName, auth: authority}))
-    }
-    const fullAuths = authority.reduce((r, auth, type) => (auth === 'full' ? r.add(type) : r), Set())
-    if (!fullAuths.size) {
-        session.logout(username)
-        const owner_pub_key = account.getIn(['owner', 'key_auths', 0, 0]);
-        // const pub_keys = yield select(state => state.user.get('pub_keys_used'))
-        // serverApiRecordEvent('login_attempt', JSON.stringify({name: username, ...pub_keys, cur_owner: owner_pub_key}))
-        // FIXME pls parameterize opaque things like this into a constants file
-        // code like this requires way too much historical knowledge to
-        // understand.
-        if (owner_pub_key === 'STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR') {
-            yield put(user.actions.loginError({ error: 'Hello. Your account may have been compromised. We are working on restoring an access to your account. Please send an email to t@cyber.fund.' }))
-            return
-        }
-        if(login_owner_pubkey === owner_pub_key || login_wif_owner_pubkey === owner_pub_key) {
-            yield put(user.actions.loginError({ error: 'owner_login_blocked' }))
-        } else if(!highSecurityLogin && hasActiveAuth) {
-            yield put(user.actions.loginError({ error: 'active_login_blocked' }))
-        } else {
-            const generated_type = password[0] === 'P' && password.length > 40;
-            serverApiRecordEvent('login_attempt', JSON.stringify({name: username, login_owner_pubkey, owner_pub_key, generated_type}))
-            yield put(user.actions.loginError({ error: 'Incorrect Password' }))
-        }
-        return
-    }
-    if (authority.get('posting') !== 'full')
-        private_keys = private_keys.remove('posting_private')
-
-    const pathname = yield select(state => state.global.get('pathname'))
-    
-    if((!highSecurityLogin || authority.get('active') !== 'full') && !pathname.endsWith('/permissions'))
-        private_keys = private_keys.remove('active_private')
-
-    const owner_pubkey = account.getIn(['owner', 'key_auths', 0, 0])
-    const active_pubkey = account.getIn(['active', 'key_auths', 0, 0])
-    const posting_pubkey = account.getIn(['posting', 'key_auths', 0, 0])
-
-    if (private_keys.get('memo_private') &&
-        account.get('memo_key') !== private_keys.get('memo_private').toPublicKey().toString()
-    )
-        // provided password did not yield memo key
-        private_keys = private_keys.remove('memo_private')
-
-    if(!highSecurityLogin) {
-        if(
-            posting_pubkey === owner_pubkey ||
-            posting_pubkey === active_pubkey
-        ) {
-            yield put(user.actions.loginError({ error: 'This login gives owner or active permissions and should not be used here.  Please provide a posting only login.' }))
-            session.logout(username)
-            return
-        }
-    }
-    const memo_pubkey = private_keys.has('memo_private') ?
-        private_keys.get('memo_private').toPublicKey().toString() : null
-
-    /*if(
-        memo_pubkey === owner_pubkey ||
-        memo_pubkey === active_pubkey
-    )
-        // Memo key could be saved in local storage.. In RAM it is not purged upon LOCATION_CHANGE
-        private_keys = private_keys.remove('memo_private')*/
-
-    // If user is signing operation by operaion and has no saved login, don't save to RAM
-    if(!operationType) {
-        // Keep the posting key in RAM but only when not signing an operation.
-        // No operation or the user has checked: Keep me logged in...
-        yield put(
-            user.actions.setUser({
-                username,
-                private_keys,
-                login_owner_pubkey,
-                vesting_shares: account.get('vesting_shares'),
-                received_vesting_shares: account.get('received_vesting_shares'),
-                delegated_vesting_shares: account.get('delegated_vesting_shares')
-            })
-        )
-    } else {
-        yield put(
-            user.actions.setUser({
-                username,
-                operationType,
-                vesting_shares: account.get('vesting_shares'),
-                received_vesting_shares: account.get('received_vesting_shares'),
-                delegated_vesting_shares: account.get('delegated_vesting_shares')
-            })
-        )
-    }
-
-    const memoAuth = private_keys.get('memo_private') && private_keys.get('memo_private').toWif() === password;
-    if (!autopost && saveLogin && !operationType)
-        yield put(user.actions.saveLogin());
-
-    const loginTm = setTimeout(async () => {
-        const message = 'Вход выполняется дольше обычного.\nВозможно, вам стоит попробовать другое устройство или другой интернет (например, Wi-Fi вместо мобильной сети).'
-        if (window._reduxStore) {
-            const now = Date.now();
-            const lbnKey = 'last_bad_item';
-            const lastBadNet = parseInt(localStorage.getItem(lbnKey) || 0);
-            if (now - lastBadNet >= 10*60*1000) {
-                localStorage.setItem(lbnKey, now);
-                window._reduxStore.dispatch({
-                    type: 'ADD_NOTIFICATION',
-                    payload: {
-                        key: 'bad_net_' + Date.now(),
-                        message,
-                        dismissAfter: 5000
-                    }
-                })
-            }
-        } else if (!afterLoginRedirectToWelcome) {
-            alert(message)
-        }
-    }, afterLoginRedirectToWelcome ? 3000 : 10000)
-
-    let alreadyAuthorized = false;
-    try {
-        const res = yield notifyApiLogin(username, localStorage.getItem('X-Auth-Session'));
-        alreadyAuthorized = (res.status === 'ok');
-    } catch(error) {
-        // Does not need to be fatal
-        console.error('Notify Login Checking Error', error);
-        alreadyAuthorized = null;
-    }
-    if (alreadyAuthorized === false) {
-        let authorized = false;
+        let account
         try {
-            const res = yield authApiLogin(username, null);
-            if (res.already_authorized !== username) {
-                console.log('login_challenge', res.login_challenge);
-
-                const challenge = {token: res.login_challenge};
-                const signatures = signData(JSON.stringify(challenge, null, 0), {
-                    posting: private_keys.get('posting_private'),
-                });
-                const res2 = yield authApiLogin(username, signatures);
-                if (res2.guid) {
-                    localStorage.setItem('guid', res2.guid)
-                }
-                if (res2.status === 'ok') {
-                    authorized = true;
-                } else {
-                    throw new Error(JSON.stringify(res2)); 
-                }
+            account = yield call(getAccount, username)
+        } catch (err) {
+            console.error(err)
+            yield put(user.actions.loginError({ error: 'Node failure', node: config.get('websocket') }))
+            return
+        }
+        if (!account) {
+            yield put(user.actions.loginError({ error: 'Username does not exist' }))
+            return
+        }
+        if (account.get('frozen')) {
+            account = yield call(getAccount, username, true)
+            if (account.get('frozen')) {
+                yield put(user.actions.loginError({ error: 'account_frozen' }))
+                return
             }
+        }
+
+        let private_keys
+        try {
+            const private_key = PrivateKey.fromWif(password)
+            login_wif_owner_pubkey = private_key.toPublicKey().toString()
+            private_keys = fromJS({
+                posting_private: isRole('posting', () => private_key),
+                active_private: isRole('active', () => private_key),
+                memo_private: private_key,
+            })
+        } catch (e) {
+            // Password (non wif)
+            login_owner_pubkey = PrivateKey.fromSeed(username + 'owner' + password).toPublicKey().toString()
+            private_keys = fromJS({
+                posting_private: isRole('posting', () => PrivateKey.fromSeed(username + 'posting' + password)),
+                active_private: isRole('active', () => PrivateKey.fromSeed(username + 'active' + password)),
+                memo_private: PrivateKey.fromSeed(username + 'memo' + password),
+            })
+        }
+        if (memoWif)
+            private_keys = private_keys.set('memo_private', PrivateKey.fromWif(memoWif))
+
+        yield call(accountAuthLookup, {payload: {account, private_keys, highSecurityLogin, login_owner_pubkey}})
+        let authority = yield select(state => state.user.getIn(['authority', username]))
+        const hasActiveAuth = authority.get('active') === 'full'
+        // Forbid loging in with active key
+        if(!operationType && !highSecurityLogin) {
+            const accountName = account.get('name')
+            authority = authority.set('active', 'none')
+            yield put(user.actions.setAuthority({accountName, auth: authority}))
+        }
+        const fullAuths = authority.reduce((r, auth, type) => (auth === 'full' ? r.add(type) : r), Set())
+        if (!fullAuths.size) {
+            session.logout(username)
+            const owner_pub_key = account.getIn(['owner', 'key_auths', 0, 0]);
+            // const pub_keys = yield select(state => state.user.get('pub_keys_used'))
+            // serverApiRecordEvent('login_attempt', JSON.stringify({name: username, ...pub_keys, cur_owner: owner_pub_key}))
+            // FIXME pls parameterize opaque things like this into a constants file
+            // code like this requires way too much historical knowledge to
+            // understand.
+            if (owner_pub_key === 'STM7sw22HqsXbz7D2CmJfmMwt9rimtk518dRzsR1f8Cgw52dQR1pR') {
+                yield put(user.actions.loginError({ error: 'Hello. Your account may have been compromised. We are working on restoring an access to your account. Please send an email to t@cyber.fund.' }))
+                return
+            }
+            if(login_owner_pubkey === owner_pub_key || login_wif_owner_pubkey === owner_pub_key) {
+                yield put(user.actions.loginError({ error: 'owner_login_blocked' }))
+            } else if(!highSecurityLogin && hasActiveAuth) {
+                yield put(user.actions.loginError({ error: 'active_login_blocked' }))
+            } else {
+                const generated_type = password[0] === 'P' && password.length > 40;
+                serverApiRecordEvent('login_attempt', JSON.stringify({name: username, login_owner_pubkey, owner_pub_key, generated_type}))
+                yield put(user.actions.loginError({ error: 'Incorrect Password' }))
+            }
+            return
+        }
+        if (authority.get('posting') !== 'full')
+            private_keys = private_keys.remove('posting_private')
+
+        const pathname = yield select(state => state.global.get('pathname'))
+        
+        if((!highSecurityLogin || authority.get('active') !== 'full') && !pathname.endsWith('/permissions'))
+            private_keys = private_keys.remove('active_private')
+
+        const owner_pubkey = account.getIn(['owner', 'key_auths', 0, 0])
+        const active_pubkey = account.getIn(['active', 'key_auths', 0, 0])
+        const posting_pubkey = account.getIn(['posting', 'key_auths', 0, 0])
+
+        if (private_keys.get('memo_private') &&
+            account.get('memo_key') !== private_keys.get('memo_private').toPublicKey().toString()
+        )
+            // provided password did not yield memo key
+            private_keys = private_keys.remove('memo_private')
+
+        if(!highSecurityLogin) {
+            if(
+                posting_pubkey === owner_pubkey ||
+                posting_pubkey === active_pubkey
+            ) {
+                yield put(user.actions.loginError({ error: 'This login gives owner or active permissions and should not be used here.  Please provide a posting only login.' }))
+                session.logout(username)
+                return
+            }
+        }
+        const memo_pubkey = private_keys.has('memo_private') ?
+            private_keys.get('memo_private').toPublicKey().toString() : null
+
+        /*if(
+            memo_pubkey === owner_pubkey ||
+            memo_pubkey === active_pubkey
+        )
+            // Memo key could be saved in local storage.. In RAM it is not purged upon LOCATION_CHANGE
+            private_keys = private_keys.remove('memo_private')*/
+
+        // If user is signing operation by operaion and has no saved login, don't save to RAM
+        if(!operationType) {
+            // Keep the posting key in RAM but only when not signing an operation.
+            // No operation or the user has checked: Keep me logged in...
+            yield put(
+                user.actions.setUser({
+                    username,
+                    private_keys,
+                    login_owner_pubkey,
+                    vesting_shares: account.get('vesting_shares'),
+                    received_vesting_shares: account.get('received_vesting_shares'),
+                    delegated_vesting_shares: account.get('delegated_vesting_shares')
+                })
+            )
+        } else {
+            yield put(
+                user.actions.setUser({
+                    username,
+                    operationType,
+                    vesting_shares: account.get('vesting_shares'),
+                    received_vesting_shares: account.get('received_vesting_shares'),
+                    delegated_vesting_shares: account.get('delegated_vesting_shares')
+                })
+            )
+        }
+
+        const memoAuth = private_keys.get('memo_private') && private_keys.get('memo_private').toWif() === password;
+        if (!autopost && saveLogin && !operationType)
+            yield put(user.actions.saveLogin());
+
+        const loginTm = setTimeout(async () => {
+            const message = 'Вход выполняется дольше обычного.\nВозможно, вам стоит попробовать другое устройство или другой интернет (например, Wi-Fi вместо мобильной сети).'
+            if (window._reduxStore) {
+                const now = Date.now();
+                const lbnKey = 'last_bad_item';
+                const lastBadNet = parseInt(localStorage.getItem(lbnKey) || 0);
+                if (now - lastBadNet >= 10*60*1000) {
+                    localStorage.setItem(lbnKey, now);
+                    window._reduxStore.dispatch({
+                        type: 'ADD_NOTIFICATION',
+                        payload: {
+                            key: 'bad_net_' + Date.now(),
+                            message,
+                            dismissAfter: 5000
+                        }
+                    })
+                }
+            } else if (!afterLoginRedirectToWelcome) {
+                alert(message)
+            }
+        }, afterLoginRedirectToWelcome ? 3000 : 10000)
+
+        let alreadyAuthorized = false;
+        try {
+            const res = yield notifyApiLogin(username, localStorage.getItem('X-Auth-Session'));
+            alreadyAuthorized = (res.status === 'ok');
         } catch(error) {
             // Does not need to be fatal
-            console.error('Auth Login Error', error);
+            console.error('Notify Login Checking Error', error);
+            alreadyAuthorized = null;
         }
-
-        if (authorized)
+        if (alreadyAuthorized === false) {
+            let authorized = false;
             try {
-                const res = yield notifyApiLogin(username, localStorage.getItem('X-Auth-Session'));
+                const res = yield authApiLogin(username, null);
+                if (res.already_authorized !== username) {
+                    console.log('login_challenge', res.login_challenge);
 
-                if (res.status !== 'ok') {
-                    throw new Error(res); 
+                    const challenge = {token: res.login_challenge};
+                    const signatures = signData(JSON.stringify(challenge, null, 0), {
+                        posting: private_keys.get('posting_private'),
+                    });
+                    const res2 = yield authApiLogin(username, signatures);
+                    if (res2.guid) {
+                        localStorage.setItem('guid', res2.guid)
+                    }
+                    if (res2.status === 'ok') {
+                        authorized = true;
+                    } else {
+                        throw new Error(JSON.stringify(res2)); 
+                    }
                 }
             } catch(error) {
                 // Does not need to be fatal
-                console.error('Notify Login Error', error);
+                console.error('Auth Login Error', error);
             }
-    }
-    try {
-        const offchainData = yield select(state => state.offchain)
-        const serverAccount = offchainData.get('account')
-        if (!serverAccount) {
-            serverApiLogin(username);
+
+            if (authorized)
+                try {
+                    const res = yield notifyApiLogin(username, localStorage.getItem('X-Auth-Session'));
+
+                    if (res.status !== 'ok') {
+                        throw new Error(res); 
+                    }
+                } catch(error) {
+                    // Does not need to be fatal
+                    console.error('Notify Login Error', error);
+                }
         }
-    } catch(error) {
-        // Does not need to be fatal
-        console.error('Server Login Error', error);
+        try {
+            const offchainData = yield select(state => state.offchain)
+            const serverAccount = offchainData.get('account')
+            if (!serverAccount) {
+                serverApiLogin(username);
+            }
+        } catch(error) {
+            // Does not need to be fatal
+            console.error('Server Login Error', error);
+        }
+        clearTimeout(loginTm);
+        if (afterLoginRedirectToWelcome) {
+          browserHistory.push('/@' + username)
+        }
+    } catch (err) {
+        console.error('usernamePasswordLogin2', err);
     }
-    clearTimeout(loginTm);
-    if (afterLoginRedirectToWelcome) {
-      browserHistory.push('/@' + username)
-    }
+    yield put(user.actions.loginState({ state: 0 }))
 }
 
 function* changeAccount(action) {

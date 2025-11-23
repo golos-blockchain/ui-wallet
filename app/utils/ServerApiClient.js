@@ -1,3 +1,5 @@
+import { fetchEx } from 'golos-lib-js/lib/utils'
+
 const request_base = {
     method: 'POST',
     headers: {
@@ -15,7 +17,7 @@ export function serverApiLogin(account) {
     const request = Object.assign({}, request_base, {
         body: JSON.stringify({account, csrf: $STM_csrf}),
     });
-    return fetch('/api/v1/login_account', request).then(r => r.json());
+    return fetchEx('/api/v1/login_account', request).then(r => r.json());
 }
 
 export function serverApiLogout() {
@@ -23,7 +25,7 @@ export function serverApiLogout() {
     const request = Object.assign({}, request_base, {
         body: JSON.stringify({csrf: $STM_csrf}),
     });
-    fetch('/api/v1/logout_account', request);
+    fetchEx('/api/v1/logout_account', request);
     localStorage.removeItem('invite')
 }
 
@@ -36,7 +38,7 @@ export function serverApiRecordEvent(type, val) {
     const request = Object.assign({}, request_base, {
         body: JSON.stringify({csrf: $STM_csrf, type, value})
     });
-    fetch('/api/v1/record_event', request);
+    fetchEx('/api/v1/record_event', request);
 }
 
 let last_page, last_views, last_page_promise;
@@ -54,7 +56,7 @@ export function recordPageView(page, ref, posts) {
     const request = Object.assign({}, request_base, {
         body: JSON.stringify({csrf: $STM_csrf, page, ref, posts}),
     });
-    last_page_promise = fetch(`/api/v1/page_view`, request).then(r => r.json()).then(res => {
+    last_page_promise = fetchEx(`/api/v1/page_view`, request).then(r => r.json()).then(res => {
         last_views = res.views;
         return last_views;
     });
