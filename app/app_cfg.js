@@ -1,2 +1,2 @@
-/* Only Mobile. Do not edit. */
-module.exports = {};
+/* Only Mobile. Generated automatically. Do not edit. */
+module.exports = {}

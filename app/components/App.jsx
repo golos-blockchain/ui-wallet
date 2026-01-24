@@ -112,33 +112,39 @@ class App extends React.Component {
         }
 
         if (process.env.MOBILE_APP) {
-            await this.checkShortcutIntent()
-            onShortcutIntent(intent => {
-                if (intent.extras['gls.wallet.hash'] === '#app-settings') {
-                    openAppSettings()
-                }
-            })
+            try {
+                await this.checkShortcutIntent()
+                onShortcutIntent(intent => {
+                    if (intent.extras['gls.wallet.hash'] === '#app-settings') {
+                        openAppSettings()
+                    }
+                })
 
-            fixRouteIfApp()
+                fixRouteIfApp()
 
-            document.addEventListener('pause', this.onPause)
-            document.addEventListener('resume', this.onResume)
+                document.addEventListener('pause', this.onPause)
+                document.addEventListener('resume', this.onResume)
 
-            document.addEventListener('backbutton', e => {
-                backRouteFix(e)
-            })
+                document.addEventListener('backbutton', e => {
+                    backRouteFix(e)
+                })
 
-            cordova.exec((winParam) => {
-                console.log('initNativeCore ok', winParam)
-            }, (err) => {
-                console.error('initNativeCore err', err)
-            }, 'CorePlugin', 'initNativeCore', []);
+                cordova.exec((winParam) => {
+                    console.log('initNativeCore ok', winParam)
+                }, (err) => {
+                    console.error('initNativeCore err', err)
+                }, 'CorePlugin', 'initNativeCore', []);
 
-            this.setState({
-                can_render: true
-            })
+                this.setState({
+                    can_render: true
+                })
 
-            this.stopService()
+                //before-Firebase
+                //this.stopService()
+            } catch (err) {
+                alert('Mobile init error: ' + err?.toString())
+                throw err
+            }
         }
 
         const { nightmodeEnabled } = this.props;
@@ -216,31 +222,32 @@ class App extends React.Component {
         throw err
     }
 
+    // before-Firebase
     onPause = () => {
-        const { username } = this.props
-        const notifySess = localStorage.getItem('X-Session')
-        const notifyHost = $STM_Config.notify_service.host
-        if (username && notifySess) {
-            const settings = PushNotificationSaga.getScopePresets(username)
-            if (!settings.inBackground) {
-                console.warn('Notify - inBackground false, so do not starting service...')
-                return
-            }
-            if (!settings.bgPresets.length) {
-                console.warn('Notify - all background presets disabled, so do not starting service...')
-                return
-            }
-            const lastTake = 0
-            cordova.exec((winParam) => {
-                console.log('pause ok', winParam)
-            }, (err) => {
-                console.error('pause err', err)
-            }, 'CorePlugin', 'startService', [username, notifySess, settings.bgPresets.join(','), lastTake, notifyHost])
-        }
+    //     const { username } = this.props
+    //     const notifySess = localStorage.getItem('X-Session')
+    //     const notifyHost = $STM_Config.notify_service.host
+    //     if (username && notifySess) {
+    //         const settings = PushNotificationSaga.getScopePresets(username)
+    //         if (!settings.inBackground) {
+    //             console.warn('Notify - inBackground false, so do not starting service...')
+    //             return
+    //         }
+    //         if (!settings.bgPresets.length) {
+    //             console.warn('Notify - all background presets disabled, so do not starting service...')
+    //             return
+    //         }
+    //         const lastTake = 0
+    //         cordova.exec((winParam) => {
+    //             console.log('pause ok', winParam)
+    //         }, (err) => {
+    //             console.error('pause err', err)
+    //         }, 'CorePlugin', 'startService', [username, notifySess, settings.bgPresets.join(','), lastTake, notifyHost])
+    //     }
     }
-
+// 
     onResume = () => {
-        this.stopService()
+    //     this.stopService()
     }
     
     stopService = () => {

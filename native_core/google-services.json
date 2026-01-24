@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "362202953859",
+    "project_id": "glstest-wallet",
+    "storage_bucket": "glstest-wallet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362202953859:android:0ad9f49baa25116f3f83b6",
+        "android_client_info": {
+          "package_name": "gls.wallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBL0SZayWagxfvhDG1_N0acIBHr0qtFYls"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
