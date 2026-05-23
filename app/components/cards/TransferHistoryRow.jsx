@@ -43,7 +43,7 @@ class TransferHistoryRow extends React.Component {
             const { nft_tokens } = this.props
             let tokenLink
             let tokenTitle
-            const token = nft_tokens && nft_tokens.toJS()[data.token_id]
+            const token = nft_tokens && nft_tokens[data.token_id]
             if (token) {
                 try {
                     const meta = JSON.parse(token.json_metadata)
@@ -475,8 +475,8 @@ class TransferHistoryRow extends React.Component {
 export default connect(
     // mapStateToProps
     (state, ownProps) => {
-        const currentUser = state.user.getIn(['current'])
-        const username = currentUser ? currentUser.get('username') : ''
+        const currentUser = state.user.current
+        const username = currentUser ? currentUser.username : ''
 
         const op = ownProps.op
         const type = op[1].op[0]
@@ -488,7 +488,7 @@ export default connect(
             username,
             curation_reward,
             author_reward,
-            nft_tokens: state.global.get('nft_token_map')
+            nft_tokens: state.global.nft_token_map
         }
     },
 )(TransferHistoryRow)

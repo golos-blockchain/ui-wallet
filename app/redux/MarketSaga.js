@@ -1,5 +1,6 @@
 import { fork, call, put, takeLatest } from 'redux-saga/effects';
 import MarketReducer from './MarketReducer';
+import user from './User';
 import {getAccount} from './SagaShared';
 import {api} from 'golos-lib-js';
 
@@ -61,7 +62,7 @@ export function* fetchMarket(location_change_action) {
             hasData = true
         } catch (error) {
             console.error('~~ Saga fetchMarket error ~~>', error);
-            yield put({type: 'global/CHAIN_API_ERROR', error: error.message});
+            yield put({type: 'CHAIN_API_ERROR', error: error.message});
         }
 
         yield call(wait, 3000);
@@ -89,7 +90,7 @@ export function* fetchOpenOrders(set_user_action) {
         }
     } catch (error) {
         console.error('~~ Saga fetchOpenOrders error ~~>', error);
-        yield put({type: 'global/CHAIN_API_ERROR', error: error.message});
+        yield put({type: 'CHAIN_API_ERROR', error: error.message});
     }
 }
 
@@ -99,7 +100,7 @@ export function* reloadMarket(reload_action) {
 }
 
 export function* watchUserLogin() {
-    yield takeLatest('user/SET_USER', fetchOpenOrders);
+    yield takeLatest(user.actions.setUser.type, fetchOpenOrders);
 }
 
 export function* watchLocationChange() {
@@ -107,5 +108,5 @@ export function* watchLocationChange() {
 }
 
 export function* watchMarketUpdate() {
-    yield takeLatest('market/UPDATE_MARKET', reloadMarket);
+    yield takeLatest(MarketReducer.actions.updateMarket.type, reloadMarket);
 }

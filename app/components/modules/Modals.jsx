@@ -90,7 +90,7 @@ class Modals extends React.Component {
             hideNftOrders,
         } = this.props;
 
-        const notifications_array = notifications ? notifications.toArray().map(n => {
+        const notifications_array = notifications ? Object.values(notifications).map(n => {
             if (!n.key) {
                 n.key = ++keyIndex;
             }
@@ -157,25 +157,25 @@ class Modals extends React.Component {
 
 export default connect(
     state => {
-        const loginDefault = state.user.get('loginDefault');
-        const loginUnclosable = loginDefault && loginDefault.get('unclosable');
-        const loginRemind = loginDefault && loginDefault.get('loginRemind')
+        const loginDefault = state.user.loginDefault;
+        const loginUnclosable = loginDefault && loginDefault.unclosable;
+        const loginRemind = loginDefault && loginDefault.loginRemind
         return {
-            show_login_modal: state.user.get('show_login_modal'),
+            show_login_modal: state.user.show_login_modal,
             loginUnclosable,
             loginRemind,
-            show_confirm_modal: state.transaction.get('show_confirm_modal'),
-            show_transfer_modal: state.user.get('show_transfer_modal'),
-            show_convert_assets_modal: state.user.get('show_convert_assets_modal'),
-            show_power_calc_modal: state.user.get('show_power_calc_modal'),
-            show_powerdown_modal: state.user.get('show_powerdown_modal'),
-            show_change_account_modal: state.user.get('show_change_account_modal'),
-            show_add_account_modal: state.user.get('show_add_account_modal'),
-            show_app_download_modal: state.user.get('show_app_download_modal'),
-            notifications: state.app.get('notifications'),
-            show_open_orders_modal: state.user.get('show_open_orders_modal'),
-            show_nft_orders_modal: state.user.get('show_nft_orders_modal'),
-            show_leave_golos_modal: state.user.get('show_leave_golos_modal'),
+            show_confirm_modal: state.transaction.show_confirm_modal,
+            show_transfer_modal: state.user.show_transfer_modal,
+            show_convert_assets_modal: state.user.show_convert_assets_modal,
+            show_power_calc_modal: state.user.show_power_calc_modal,
+            show_powerdown_modal: state.user.show_powerdown_modal,
+            show_change_account_modal: state.user.show_change_account_modal,
+            show_add_account_modal: state.user.show_add_account_modal,
+            show_app_download_modal: state.user.show_app_download_modal,
+            notifications: state.app.notifications,
+            show_open_orders_modal: state.user.show_open_orders_modal,
+            show_nft_orders_modal: state.user.show_nft_orders_modal,
+            show_leave_golos_modal: state.user.show_leave_golos_modal,
         }
     },
     dispatch => ({

@@ -53,10 +53,10 @@ class NFTCollections extends Component {
 
     render() {
         const { account, isMyAccount, nft_collections, nft_assets, fetchState, isS } = this.props
-        const accountName = account.get('name')
+        const accountName = account.name
 
-        const collections = nft_collections ? nft_collections.toJS() : null
-        const assets = nft_assets ? nft_assets.toJS() : null
+        const collections = nft_collections || null
+        const assets = nft_assets || null
 
         let items
         if (!collections) {
@@ -214,8 +214,8 @@ class NFTCollections extends Component {
 export default connect(
     (state, ownProps) => {
         return {...ownProps,
-            nft_collections: state.global.get('nft_collections'),
-            nft_assets: state.global.get('nft_assets')
+            nft_collections: state.global.nft_collections,
+            nft_assets: state.global.nft_assets
         }
     },
     dispatch => ({

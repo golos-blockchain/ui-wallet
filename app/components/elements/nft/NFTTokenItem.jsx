@@ -142,7 +142,7 @@ class NFTTokenItem extends Component {
             { link, target: '_blank', value: tt('g.more_hint') },
         ]
 
-        const isMy = currentUser && currentUser.get('username') === token.owner
+        const isMy = currentUser && currentUser.username === token.owner
 
         if (isMy && !selling) {
             kebabItems.unshift({ link: '#', onClick: e => {
@@ -301,14 +301,14 @@ class NFTTokenItem extends Component {
 export default connect(
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        let currentUser = ownProps.currentUser || state.user.current
         return { ...ownProps, currentUser }
     },
     dispatch => ({
         burnToken: (
             token_id, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const operation = {
                 from: username,
                 to: 'null',
@@ -328,7 +328,7 @@ export default connect(
         cancelOrder: (
             order_id, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const operation = {
                 owner: username,
                 order_id,
@@ -346,7 +346,7 @@ export default connect(
         buyToken: (
             token_id, order_id, tokenTitle, price, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const operation = {
                 buyer: username,
                 name: '',
@@ -369,7 +369,7 @@ export default connect(
         auction: (
             token_id, min_price, expiration, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const operation = {
                 owner: username,
                 token_id,

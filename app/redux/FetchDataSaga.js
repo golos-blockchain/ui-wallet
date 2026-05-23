@@ -146,7 +146,7 @@ export function* fetchState(location_change_action) {
 
     // `ignore_fetch` case should only trigger on initial page load. No need to call
     // fetchState immediately after loading fresh state from the server. Details: #593
-    const server_location = yield select(state => state.offchain.get('server_location'))
+    const server_location = yield select(state => state.offchain.server_location)
     //const ignore_fetch = (pathname === server_location && is_initial_state)
     is_initial_state = false
     //if(ignore_fetch) return
@@ -499,8 +499,8 @@ export function* fetchState(location_change_action) {
         yield put({type: 'FETCH_DATA_END'})
     } catch (error) {
         console.error('~~ Saga fetchState error ~~>', url, error);
-        yield put({type: 'global/FETCHING_STATE', payload: false});
-        yield put({type: 'global/CHAIN_API_ERROR', error: error.message});
+        yield put(GlobalReducer.actions.fetchingState(false));
+        yield put({type: 'CHAIN_API_ERROR', error: error.message});
 
         if (!(yield cancelled())) {
             yield put({type: 'FETCH_DATA_END'})
@@ -516,7 +516,7 @@ export function* fetchData(action) {
 }
 
 export function* watchFetchJsonRequests() {
-    yield takeEvery('global/FETCH_JSON', fetchJson);
+    yield takeEvery(GlobalReducer.actions.fetchJson.type, fetchJson);
 }
 
 /**
@@ -534,21 +534,21 @@ function* fetchJson({payload: {id, url, body, successCallback, skipLoading = fal
             },
             body: body ? JSON.stringify(body) : undefined
         }
-        yield put({type: 'global/FETCHING_JSON', payload: true});
+        yield put(GlobalReducer.actions.fetchingJson(true));
         let result = yield skipLoading ? fetch(url, payload) : call(fetch, url, payload)
         result = yield result.json()
         if (successCallback) result = successCallback(result)
-        yield put({type: 'global/FETCHING_JSON', payload: false});
+        yield put(GlobalReducer.actions.fetchingJson(false));
         yield put(GlobalReducer.actions.fetchJsonResult({id, result}))
     } catch(error) {
         console.error('fetchJson', error)
-        yield put({type: 'global/FETCHING_JSON', payload: false});
+        yield put(GlobalReducer.actions.fetchingJson(false));
         yield put(GlobalReducer.actions.fetchJsonResult({id, error}))
     }
 }
 
 export function* watchFetchExchangeRates() {
-    yield takeEvery('global/FETCH_EXCHANGE_RATES', fetchExchangeRates);
+    yield takeEvery(GlobalReducer.actions.fetchExchangeRates.type, fetchExchangeRates);
 }
 
 export function* fetchExchangeRates() {
@@ -573,7 +573,7 @@ export function* fetchExchangeRates() {
     // xchange rates are outdated or not exists
     console.log('xChange rates are outdated or not exists, fetching...')
 
-    yield put({type: 'global/FETCHING_JSON', payload: true});
+    yield put(GlobalReducer.actions.fetchingJson(true));
 
     let result = yield call(fetch, '/api/v1/rates/');
     result = yield result.json();
@@ -581,7 +581,7 @@ export function* fetchExchangeRates() {
     if (result.error) {
       console.log('~~ Saga fetchExchangeRates error ~~>', '[0] The result is undefined.');
       storeExchangeValues();
-      yield put({type: 'global/FETCHING_XCHANGE', payload: false});
+      yield put(GlobalReducer.actions.fetchingXchange(false));
       return;
     }
     if (
@@ -597,13 +597,13 @@ export function* fetchExchangeRates() {
       console.log('~~ Saga fetchExchangeRates error ~~>', 'The result is undefined.');
       storeExchangeValues();
     }
-    yield put({type: 'global/FETCHING_XCHANGE', payload: false});
+    yield put(GlobalReducer.actions.fetchingXchange(false));
   }
   catch(error) {
     // set default values
     storeExchangeValues();
     console.error('~~ Saga fetchExchangeRates error ~~>', error);
-    yield put({type: 'global/FETCHING_XCHANGE', payload: false});
+    yield put(GlobalReducer.actions.fetchingXchange(false));
   }
 }
 
@@ -615,7 +615,7 @@ function storeExchangeValues(created, gold, pair, picked) {
 }
 
 export function* watchFetchVestingDelegations() {
-    yield takeLatest('global/FETCH_VESTING_DELEGATIONS', fetchVestingDelegations)
+    yield takeLatest(GlobalReducer.actions.fetchVestingDelegations.type, fetchVestingDelegations)
 }
 
 export function* fetchVestingDelegations({ payload: { account, type } }) {
@@ -630,7 +630,7 @@ export function* fetchVestingDelegations({ payload: { account, type } }) {
 }
 
 export function* watchFetchUiaBalances() {
-    yield takeLatest('global/FETCH_UIA_BALANCES', fetchUiaBalances)
+    yield takeLatest(GlobalReducer.actions.fetchUiaBalances.type, fetchUiaBalances)
 }
 
 export function* fetchUiaBalances({ payload: { account } }) {
@@ -646,7 +646,7 @@ export function* fetchUiaBalances({ payload: { account } }) {
 }
 
 export function* watchFetchNftTokens() {
-    yield takeLatest('global/FETCH_NFT_TOKENS', fetchNftTokens)
+    yield takeLatest(GlobalReducer.actions.fetchNftTokens.type, fetchNftTokens)
 }
 
 export function* fetchNftTokens({ payload: { account, start_token_id, sort, reverse_sort } }) {
@@ -714,7 +714,7 @@ export function* fetchNftTokens({ payload: { account, start_token_id, sort, reve
 }
 
 export function* watchFetchNftCollectionTokens() {
-    yield takeLatest('global/FETCH_NFT_COLLECTION_TOKENS', fetchNftCollectionTokens)
+    yield takeLatest(GlobalReducer.actions.fetchNftCollectionTokens.type, fetchNftCollectionTokens)
 }
 
 export function* fetchNftCollectionTokens({ payload: { collectionName, start_token_id, sort, reverse_sort } }) {
@@ -792,7 +792,7 @@ export function* fetchNftCollectionTokens({ payload: { collectionName, start_tok
 }
 
 export function* watchFetchNftMarket() {
-    yield takeLatest('global/FETCH_NFT_MARKET', fetchNftMarket)
+    yield takeLatest(GlobalReducer.actions.fetchNftMarket.type, fetchNftMarket)
 }
 
 export function* fetchNftMarket({ payload: { account, collectionName, start_order_id, sort, reverse_sort } }) {
@@ -908,7 +908,7 @@ export function* fetchNftMarket({ payload: { account, collectionName, start_orde
 }
 
 export function* watchFetchNftMarketCollections() {
-    yield takeLatest('global/FETCH_NFT_MARKET_COLLECTIONS', fetchNftMarketCollections)
+    yield takeLatest(GlobalReducer.actions.fetchNftMarketCollections.type, fetchNftMarketCollections)
 }
 
 export function* fetchNftMarketCollections({ payload: { start_name } }) {
@@ -943,7 +943,7 @@ export function* fetchNftMarketCollections({ payload: { start_name } }) {
 }
 
 export function* watchFetchNftOrders() {
-    yield takeLatest('global/FETCH_NFT_ORDERS', fetchNftOrders)
+    yield takeLatest(GlobalReducer.actions.fetchNftOrders.type, fetchNftOrders)
 }
 
 export function* fetchNftOrders({ payload: { sym } }) {

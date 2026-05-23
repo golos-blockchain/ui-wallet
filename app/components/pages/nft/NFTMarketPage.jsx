@@ -52,13 +52,13 @@ class NFTMarketPage extends React.Component {
             nft_tokens, own_nft_tokens, nft_assets, routeParams, isS } = this.props
 
         let content
-        const orders = nft_orders ? nft_orders.toJS().data : null
-        const own_orders = own_nft_orders ? own_nft_orders.toJS().data : null
-        const tokens = nft_tokens ? nft_tokens.toJS().data : null
-        const own_tokens = own_nft_tokens ? own_nft_tokens.toJS().data : null
-        const assets = nft_assets ? nft_assets.toJS() : {}
+        const orders = nft_orders ? nft_orders.data : null
+        const own_orders = own_nft_orders ? own_nft_orders.data : null
+        const tokens = nft_tokens ? nft_tokens.data : null
+        const own_tokens = own_nft_tokens ? own_nft_tokens.data : null
+        const assets = nft_assets || {}
 
-        const next_from = nft_orders && nft_orders.get('next_from')
+        const next_from = nft_orders && nft_orders.next_from
 
         if (!orders || !own_orders || !tokens || !own_tokens) {
             content = <LoadingIndicator type='circle' />
@@ -105,7 +105,7 @@ class NFTMarketPage extends React.Component {
                 }
             }
 
-            const username = currentUser && currentUser.get('username')
+            const username = currentUser && currentUser.username
 
             content = <div style={{ marginTop: '0.9rem' }}>
                 {items}
@@ -159,15 +159,15 @@ module.exports = {
     path: '/nft(/:name)',
     component: connect(
         (state, ownProps) => {
-            const currentUser = state.user.getIn(['current'])
-            const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')])
+            const currentUser = state.user.current
+            const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username]
 
-            const nft_market_collections = state.global.get('nft_market_collections')
-            const nft_orders = state.global.get('nft_orders')
-            const own_nft_orders = state.global.get('own_nft_orders')
+            const nft_market_collections = state.global.nft_market_collections
+            const nft_orders = state.global.nft_orders
+            const own_nft_orders = state.global.own_nft_orders
             // auctions
-            const nft_tokens = state.global.get('nft_tokens')
-            const own_nft_tokens = state.global.get('own_nft_tokens')
+            const nft_tokens = state.global.nft_tokens
+            const own_nft_tokens = state.global.own_nft_tokens
 
             return {
                 currentUser,
@@ -177,7 +177,7 @@ module.exports = {
                 own_nft_orders,
                 nft_tokens,
                 own_nft_tokens,
-                nft_assets: state.global.get('nft_assets')
+                nft_assets: state.global.nft_assets
             }
         },
         dispatch => ({

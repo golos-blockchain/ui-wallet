@@ -16,11 +16,11 @@ import transaction from 'app/redux/Transaction'
 import session from 'app/utils/session'
 import { reloadLocation } from 'app/utils/app/RoutingUtils'
 
-const wrapAsTable = (immData, onRender, emptyHint) => {
-    immData = immData.get('data').toJS()
+const wrapAsTable = (items, onRender, emptyHint) => {
+    items = items.data
 
     let res = []
-    for (const item of immData) {
+    for (const item of items) {
         res.push(onRender(item))
     }
     if (res.length) {
@@ -240,7 +240,7 @@ class NFTMyOrders extends React.Component {
             </div>
         }
 
-        const assets = nft_assets ? nft_assets.toJS() : {}
+        const assets = nft_assets || {}
 
         return (<div className="UserWallet NFTMyOrders">
             <div className="row">
@@ -262,9 +262,9 @@ export default connect(
         const usernameFromRoute = pathname.split(`/`)[1].substring(1)
         return {
             ...ownProps,
-            my_nft_offers: state.global.get('my_nft_offers'),
-            my_nft_bets: state.global.get('my_nft_bets'),
-            nft_assets: state.global.get('nft_assets'),
+            my_nft_offers: state.global.my_nft_offers,
+            my_nft_bets: state.global.my_nft_bets,
+            nft_assets: state.global.nft_assets,
             usernameFromRoute
         }
     },

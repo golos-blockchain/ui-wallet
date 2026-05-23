@@ -21,8 +21,8 @@ class WitnessSettings extends React.Component {
             name: 'witnessSettings',
             fields: ['url', 'signing_key'],
             initialValues: {
-                url: props.witness_obj.get('url'),
-                signing_key: props.witness_obj.get('signing_key'),
+                url: props.witness_obj.url,
+                signing_key: props.witness_obj.signing_key,
             ...props.witness},
             validation: values => ({
                 url: values.url && !/^https?:\/\//.test(values.url) ? tt('settings_jsx.invalid_url') : null,
@@ -43,9 +43,9 @@ class WitnessSettings extends React.Component {
             fee: '1.000 GOLOS',
             block_signing_key: signing_key.value,
             props: {
-                account_creation_fee: this.props.witness_obj.get('props').get('account_creation_fee'),
-                maximum_block_size: this.props.witness_obj.get('props').get('maximum_block_size'),
-                sbd_interest_rate: this.props.witness_obj.get('props').get('sbd_interest_rate')
+                account_creation_fee: this.props.witness_obj.props.account_creation_fee,
+                maximum_block_size: this.props.witness_obj.props.maximum_block_size,
+                sbd_interest_rate: this.props.witness_obj.props.sbd_interest_rate
             },
             errorCallback: (e) => {
                 if (e === 'Canceled') {
@@ -152,7 +152,7 @@ export default connect(
         return {
                 metaData,
                 witness,
-                witness_obj: state.global.getIn(['witnesses', account.name])
+                witness_obj: state.global.witnesses && state.global.witnesses[account.name]
             };
     },
     // mapDispatchToProps

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import ByteBuffer from 'bytebuffer';
-import { is } from 'immutable';
 import tt from 'counterpart';
 import { api, } from 'golos-lib-js';
 import links from 'app/utils/Links';
@@ -17,6 +16,15 @@ import { formatAsset } from 'app/utils/ParsersAndFormatters';
 import {numberWithCommas, vestsToSteem} from 'app/utils/StateFunctions';
 
 const Long = ByteBuffer.Long;
+
+const setsEqual = (a, b) => {
+    if (a === b) return true;
+    if (!a || !b || a.size !== b.size) return false;
+    for (const item of a) {
+        if (!b.has(item)) return false;
+    }
+    return true;
+};
 
 class Witnesses extends Component {
     static propTypes = {
@@ -36,7 +44,7 @@ class Witnesses extends Component {
 
     shouldComponentUpdate(np, ns) {
         return (
-            !is(np.witnessVotes, this.props.witnessVotes) ||
+            !setsEqual(np.witnessVotes, this.props.witnessVotes) ||
             np.accounts !== this.props.accounts ||
             np.witnesses !== this.props.witnesses ||
             np.currentProxy !== this.props.currentProxy ||
@@ -61,7 +69,7 @@ class Witnesses extends Component {
         let voteList = [];
         for (let vote of nextItems) {
             let rshares = vote.rshares;
-            rshares = vestsToSteem((rshares / oneM).toString() + '.000000 GESTS', this.props.gprops.toJS());
+            rshares = vestsToSteem((rshares / oneM).toString() + '.000000 GESTS', this.props.gprops);
             rshares = formatAsset(rshares + ' GOLOS', false) + ' ' + tt('g.gp');
             voteList.push({
                 _witness,
@@ -78,9 +86,9 @@ class Witnesses extends Component {
         const { witnessVotes, currentProxy, totalVestingShares, witness_vote_size } = this.props;
 
         const { customUsername, proxy, showAfter50 } = this.state;
-        const sorted_witnesses = this.props.witnesses.sort((a, b) =>
-            Long.fromString(String(b.get('votes'))).subtract(
-                Long.fromString(String(a.get('votes'))).toString()
+        const sorted_witnesses = Object.values(this.props.witnesses).sort((a, b) =>
+            Long.fromString(String(b.votes)).subtract(
+                Long.fromString(String(a.votes)).toString()
             )
         );
 
@@ -89,22 +97,22 @@ class Witnesses extends Component {
         let rank = 1;
 
         const witnesses = sorted_witnesses.map(item => {
-            const owner = item.get('owner');
-            const thread = item.get('url');
-            const votes = item.get('votes');
-            const missed = item.get('total_missed');
-            const lastBlock = item.get('last_confirmed_block_num');
-            const lastUpdateFeed = item.get('last_sbd_exchange_update');
-            const priceFeed = item.get('sbd_exchange_rate');
-            const version = item.get('running_version');
-            const signingKey = item.get('signing_key');
-            const props = item.get('props').toJS();
+            const owner = item.owner;
+            const thread = item.url;
+            const votes = item.votes;
+            const missed = item.total_missed;
+            const lastBlock = item.last_confirmed_block_num;
+            const lastUpdateFeed = item.last_sbd_exchange_update;
+            const priceFeed = item.sbd_exchange_rate;
+            const version = item.running_version;
+            const signingKey = item.signing_key;
+            const props = item.props;
 
             let api_node = null;
             let seed_node = null;
-            const acc = this.props.accounts.get(owner);
+            const acc = this.props.accounts[owner];
             try {
-              const metadata = JSON.parse(acc.get('json_metadata'));
+              const metadata = JSON.parse(acc.json_metadata);
               if (metadata.witness) {
                 api_node = metadata.witness.api_node;
                 seed_node = metadata.witness.seed_node;
@@ -114,7 +122,7 @@ class Witnesses extends Component {
 
             //https://github.com/roadscape/db.steemd.com/blob/acabdcb7c7a9c9c4260a464ca86ae4da347bbd7a/app/views/witnesses/index.html.erb#L116
             const oneM = Math.pow(10, 6);
-            const approval = vestsToSteem((votes / oneM).toString() + '.000000 GESTS', this.props.gprops.toJS());
+            const approval = vestsToSteem((votes / oneM).toString() + '.000000 GESTS', this.props.gprops);
             const percentage =
                 100 * (votes / oneM / totalVestingShares.split(' ')[0]);
 
@@ -125,7 +133,7 @@ class Witnesses extends Component {
             const isWitnessesDeactive = /GLS1111111111111111111111111111111114T1Anm/.test(
                 signingKey
             );
-            const noPriceFeed = /0.000 GOLOS/.test(priceFeed.get('base'));
+            const noPriceFeed = /0.000 GOLOS/.test(priceFeed.base);
 
             let lastUpdateFeedClassName;
             if (isOneWeekAgo) {
@@ -154,13 +162,13 @@ class Witnesses extends Component {
             }
 
             let voteList = [];
-            let vote_list = item.get('vote_list');
-            for (let vote of vote_list ? vote_list.toJS() : []) {
+            let vote_list = item.vote_list;
+            for (let vote of vote_list || []) {
                 let rshares = vote.rshares;
-                rshares = vestsToSteem((rshares / oneM).toString() + '.000000 GESTS', this.props.gprops.toJS());
+                rshares = vestsToSteem((rshares / oneM).toString() + '.000000 GESTS', this.props.gprops);
                 rshares = formatAsset(rshares + ' GOLOS', false) + ' ' + tt('g.gp');
                 voteList.push({
-                    _witness: item.get('id'),
+                    _witness: item.id,
                     key: vote.account,
                     value: ' + ' + vote.account,
                     link: '/@' + vote.account,
@@ -226,10 +234,10 @@ class Witnesses extends Component {
                     <td><a target="_blank" href={`https://explorer.golos.id/#block/` + lastBlock}>{lastBlock}</a></td>
                     <td>
                         <div style={{ fontSize: '.9rem' }}>
-                            {priceFeed.get('quote')}
+                            {priceFeed.quote}
                         </div>
                         <div style={{ fontSize: '.9rem' }}>
-                            {priceFeed.get('base')}
+                            {priceFeed.base}
                         </div>
                         <div style={{ fontSize: '.9rem' }}>
                             <TimeAgoWrapper
@@ -273,9 +281,7 @@ class Witnesses extends Component {
         if (witnessVotes) {
             witness_vote_count = witnessVotes.size;
             addlWitnesses = witnessVotes
-                .filter(item => {
-                    return !sorted_witnesses.has(item);
-                })
+                .filter(item => !this.props.witnesses[item])
                 .map(item => {
                     return (
                         <div className="row" key={item}>
@@ -300,8 +306,7 @@ class Witnesses extends Component {
                             </div>
                         </div>
                     );
-                })
-                .toArray();
+                });
         }
 
         return (
@@ -365,7 +370,7 @@ class Witnesses extends Component {
                                         <th>{tt('witnesses_jsx.version')}</th>
                                     </tr>
                                 </thead>
-                                <tbody>{witnesses.toArray()}</tbody>
+                                <tbody>{witnesses}</tbody>
                             </table>
                         </div>
                     </div>
@@ -482,15 +487,15 @@ class Witnesses extends Component {
 
 export default connect(
     state => {
-        const gprops = state.global.get('props');
-        const currentUser = state.user.get('current');
-        const username = currentUser && currentUser.get('username');
+        const gprops = state.global.props;
+        const currentUser = state.user.current;
+        const username = currentUser && currentUser.username;
         const currentAccount =
-            currentUser && state.global.getIn(['accounts', username]);
+            currentUser && state.global.accounts && state.global.accounts[username];
         const witnessVotes =
-            currentAccount && currentAccount.get('witness_votes').toSet();
-        const currentProxy = currentAccount && currentAccount.get('proxy');
-        let witness_vote_size = currentAccount && vestsToSteem(currentAccount.get('vesting_shares'), gprops.toJS());
+            currentAccount && new Set(currentAccount.witness_votes || []);
+        const currentProxy = currentAccount && currentAccount.proxy;
+        let witness_vote_size = currentAccount && vestsToSteem(currentAccount.vesting_shares, gprops);
         if (currentAccount) {
             if (witnessVotes.size > 0) {
                 witness_vote_size /= witnessVotes.size;
@@ -499,15 +504,12 @@ export default connect(
 
         return {
             gprops,
-            accounts: state.global.get('accounts'),
-            witnesses: state.global.get('witnesses'),
+            accounts: state.global.accounts,
+            witnesses: state.global.witnesses,
             username,
             witnessVotes,
             currentProxy,
-            totalVestingShares: state.global.getIn([
-                'props',
-                'total_vesting_shares',
-            ]),
+            totalVestingShares: gprops && gprops.total_vesting_shares,
             witness_vote_size
         };
     },

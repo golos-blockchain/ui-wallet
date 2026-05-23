@@ -50,7 +50,7 @@ class NFTTokenSell extends Component {
     getToken = () => {
         const { nft_tokens, tokenIdx } = this.props
         if (tokenIdx !== undefined) {
-            return nft_tokens.toJS().data[tokenIdx]
+            return nft_tokens.data[tokenIdx]
         }
         return this.props.token
     }
@@ -65,7 +65,7 @@ class NFTTokenSell extends Component {
         const token = this.getToken()
         const { token_id } = token
 
-        const username = currentUser.get('username')
+        const username = currentUser.username
 
         await this.props.sellToken(token_id, values.price, currentUser, () => {
             this.props.onClose()
@@ -201,7 +201,7 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         return { ...ownProps,
-            nft_tokens: state.global.get('nft_tokens'),
+            nft_tokens: state.global.nft_tokens,
         }
     },
 
@@ -209,7 +209,7 @@ export default connect(
         sellToken: (
             token_id, price, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const operation = {
                 seller: username,
                 token_id,

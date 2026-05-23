@@ -1,22 +1,19 @@
-import {fromJS, Map, Set} from 'immutable'
 import { put, call, } from 'redux-saga/effects'
 import { api } from 'golos-lib-js'
+import g from 'app/redux/GlobalReducer'
 
 function* putResults(account, arr) {
     yield put({
-        type: 'global/UPDATE',
+        type: g.actions.update.type,
         payload: {
             key: ['block', 'blocking', account],
-            notSet: Map(),
+            notSet: {},
             updater: m => {
-                m = m.set('loading', false)
-                m = m.update('result', Set(), res => {
-                    for (const acc of arr) {
-                        res = res.add(acc)
-                    }
-                    return res
-                })
-                return m
+                return {
+                    ...m,
+                    loading: false,
+                    result: Array.from(new Set([...(m.result || []), ...arr])),
+                }
             }
         }
     })
@@ -48,11 +45,11 @@ function* listBlockingsLoop(account, from = '', list = []) {
 export function* listBlockings(account) {
     try {
         yield put({
-            type: 'global/UPDATE',
+            type: g.actions.update.type,
             payload: {
                 key: ['block', 'blocking', account],
-                notSet: Map(),
-                updater: m => m.set('loading', true)
+                notSet: {},
+                updater: m => ({ ...m, loading: true })
             }
         })
 
@@ -66,11 +63,11 @@ export function* listBlockings(account) {
 export function* getBlockings(account, namesToCheck) {
     try {
         yield put({
-            type: 'global/UPDATE',
+            type: g.actions.update.type,
             payload: {
                 key: ['block', 'blocking', account],
-                notSet: Map(),
-                updater: m => m.set('loading', true)
+                notSet: {},
+                updater: m => ({ ...m, loading: true })
             }
         })
 

@@ -28,7 +28,7 @@ class FilledOrders extends Component {
         const op = operation[1].op;
 
         const { current_user, } = this.props;
-        let isMyAccount = current_user && current_user.get('username') === op[1].mentioned;
+        let isMyAccount = current_user && current_user.username === op[1].mentioned;
 
         const {
             current_owner,

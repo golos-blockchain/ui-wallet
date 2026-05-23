@@ -42,7 +42,7 @@ export default class WalletBanner extends React.Component {
         const { hot_auctions, account } = this.props
         const { size } = this.state
 
-        let auctions = hot_auctions ? hot_auctions.toJS() : []
+        let auctions = hot_auctions || []
 
         if (auctions.length) {
             /*auctions = [auctions[0],auctions[0],auctions[0],auctions[0] ]
@@ -112,7 +112,7 @@ export default class WalletBanner extends React.Component {
         return <React.Fragment>
             <br />
             {Math.random() > 0.5 ?
-            (<Link to={"/@" + account.get('name') + "/assets"}>
+            (<Link to={"/@" + account.name + "/assets"}>
                 <img src={require("app/assets/images/banners/golosdex.png")} width="800" height="100" />
             </Link>) :
             (<a target='_blank' href={blogsUrl('/@lex/alternativnyi-klient-blogov-golos-desktop-izmeneniya-v-tredakh-kommentariev')}>

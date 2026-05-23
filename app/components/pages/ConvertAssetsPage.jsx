@@ -31,10 +31,10 @@ class ConvertAssetsPage extends React.Component {
 
 module.exports = {
     path: '/convert(/:sym1)(/:sym2)',
-    component: connect(
+        component: connect(
         (state, ownProps) => {
-            const currentUser = state.user.getIn(['current'])
-            const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')])
+            const currentUser = state.user.current
+            const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username]
 
             return {
                 currentAccount,

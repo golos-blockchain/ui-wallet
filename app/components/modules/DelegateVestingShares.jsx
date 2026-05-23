@@ -16,7 +16,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator';
 function calcMaxInterest(cprops) {
     let maxInterestRate = 100;
     if (cprops) {
-        maxInterestRate = Math.min(90, cprops.get('max_delegated_vesting_interest_rate') / 100);
+        maxInterestRate = Math.min(90, cprops.max_delegated_vesting_interest_rate / 100);
     }
     return maxInterestRate;
 }
@@ -47,7 +47,7 @@ class DelegateVestingShares extends React.Component {
 
         const insufficientFunds = (amount) => {
             const { gprops, currentAccount } = this.props
-            const balance = vestsToSteem(currentAccount.get('vesting_shares'), gprops)
+            const balance = vestsToSteem(currentAccount.vesting_shares, gprops)
             return parseFloat(amount) > parseFloat(balance)
         }
 
@@ -85,7 +85,7 @@ class DelegateVestingShares extends React.Component {
 
     balanceValue = () => {
         const { gprops, currentAccount } = this.props
-        return vestsToSteem(currentAccount.get('vesting_shares'), gprops)
+        return vestsToSteem(currentAccount.vesting_shares, gprops)
     }
 
     assetBalanceClick = e => {
@@ -115,7 +115,7 @@ class DelegateVestingShares extends React.Component {
             });
             let delegations = null;
             try {
-                delegations = await golos.api.getVestingDelegationsAsync(currentAccount.get('name'), value, 1, 'delegated');
+                delegations = await golos.api.getVestingDelegationsAsync(currentAccount.name, value, 1, 'delegated');
             } catch (error) {
                 console.error('getVestingDelegationsAsync', error);
             }
@@ -213,7 +213,7 @@ class DelegateVestingShares extends React.Component {
                                 className='input-group-field bold'
                                 type='text'
                                 disabled
-                                value={currentAccount.get('name')}
+                                value={currentAccount.name}
                             />
                         </div>
                     </div>
@@ -361,10 +361,10 @@ const AssetBalance = ({onClick, balanceValue, title}) =>
 export default connect(
 
     (state, ownProps) => {
-        const currentUser = state.user.getIn(['current'])
-        const currentAccount = state.global.getIn(['accounts', currentUser.get('username')])
-        const gprops = state.global.get('props').toJS()
-        const cprops = state.global.get('cprops');
+        const currentUser = state.user.current
+        const currentAccount = state.global.accounts && state.global.accounts[currentUser.username]
+        const gprops = state.global.props
+        const cprops = state.global.cprops;
 
         let interestRate = calcDefaultInterest(cprops);
 
@@ -381,7 +381,7 @@ export default connect(
 
     dispatch => ({
         dispatchSubmit: ({ to, amount, interestRate, emissionInterest, errorCallback, successCallback, gprops, currentAccount }) => {
-            const delegator = currentAccount.get('name');
+            const delegator = currentAccount.name;
             const delegatee = to;
             const vestingShares = `${steemToVests(amount, gprops)} GESTS`;
 

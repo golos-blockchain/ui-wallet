@@ -9,6 +9,7 @@ import Dropzone from 'react-dropzone'
 import Expandable from 'app/components/elements/Expandable'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import transaction from 'app/redux/Transaction'
+import user from 'app/redux/User'
 
 class IssueNFTToken extends Component {
     state = {
@@ -22,7 +23,7 @@ class IssueNFTToken extends Component {
 
     initTo = (currentUser) => {
         if (!currentUser) return
-        const username = currentUser.get('username')
+        const username = currentUser.username
         this.setState({
             token: {
                 ...this.state.token,
@@ -84,7 +85,7 @@ class IssueNFTToken extends Component {
             errorMessage: ''
         })
         const { currentUser, issueName } = this.props
-        const username = currentUser.get('username')
+        const username = currentUser.username
         await this.props.issueToken(issueName, values.to, values.json_metadata, currentUser, () => {
             this.props.fetchState()
             this.props.onClose()
@@ -278,7 +279,7 @@ class IssueNFTToken extends Component {
             }) => {
                 let cost = null
                 if (cprops) {
-                    let issueCost = Asset(cprops.get('nft_issue_cost'))
+                    let issueCost = Asset(cprops.nft_issue_cost)
                     const multiplier = Math.floor(values.json_metadata.length / 1024)
                     issueCost = issueCost.plus(issueCost.mul(multiplier))
                     cost = <div className='row'>
@@ -403,22 +404,19 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        let currentUser = ownProps.currentUser || state.user.current
         if (!currentUser) {
             const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-            currentUser = Map({username: currentUserNameFromRoute});
+            currentUser = {username: currentUserNameFromRoute};
         }
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')]);
-        const cprops = state.global.get('cprops')
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username];
+        const cprops = state.global.cprops
         return { ...ownProps, currentUser, currentAccount, cprops, }
     },
 
     dispatch => ({
         uploadImage: (file, progress) => {
-            dispatch({
-                type: 'user/UPLOAD_IMAGE',
-                payload: {file, progress},
-            })
+            dispatch(user.actions.uploadImage({file, progress}))
         },
         notify: (message, dismiss = 3000) => {
             dispatch({type: 'ADD_NOTIFICATION', payload: {
@@ -430,7 +428,7 @@ export default connect(
         issueToken: (
             name, to, json_metadata, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             let json = JSON.parse(json_metadata)
             json = JSON.stringify(json)
             const operation = {

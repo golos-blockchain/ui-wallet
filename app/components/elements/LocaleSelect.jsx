@@ -183,7 +183,7 @@ class LocaleSelect extends PureComponent {
 }
 
 export default connect((state, props) => {
-    let locale = state.user.get('locale')
+    let locale = state.user.locale
 
     if (process.env.BROWSER) {
         const cookies = new Cookies()
@@ -197,10 +197,7 @@ export default connect((state, props) => {
     };
 }, dispatch => ({
   uploadImage: (file, progress) => {
-    dispatch({
-      type: 'user/UPLOAD_IMAGE',
-      payload: {file, progress},
-    })
+    dispatch(user.actions.uploadImage({file, progress}))
   },
   changeLanguage: (language) => {
     dispatch(user.actions.changeLanguage(language))

@@ -94,10 +94,10 @@ class AllNFTPage extends React.Component {
     render() {
         const { currentUser, nft_tokens, nft_assets, } = this.props
 
-        const tokens = nft_tokens ? nft_tokens.toJS().data : null
-        const assets = nft_assets ? nft_assets.toJS() : {}
+        const tokens = nft_tokens ? nft_tokens.data : null
+        const assets = nft_assets || {}
 
-        const next_from = nft_tokens && nft_tokens.get('next_from')
+        const next_from = nft_tokens && nft_tokens.next_from
 
         let items = []
         if (!tokens) {
@@ -217,12 +217,12 @@ module.exports = {
     path: '/all-nft',
     component: connect(
         (state, ownProps) => {
-            const currentUser = state.user.getIn(['current'])
+            const currentUser = state.user.current
 
             return {
                 currentUser,
-                nft_tokens: state.global.get('nft_tokens'),
-                nft_assets: state.global.get('nft_assets')
+                nft_tokens: state.global.nft_tokens,
+                nft_assets: state.global.nft_assets
             }
         },
         dispatch => ({

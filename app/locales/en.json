@@ -360,6 +360,7 @@
     "sell_LIQUID_TOKEN": "Sell %(LIQUID_TOKEN)s",
     "market": "Market (DEX)",
     "market2": "Market (DEX)",
+    "fill_order": "Filled orders",
     "currency_market": "Currency Market",
     "change_account_password": "Change Account Password",
     "APP_NAME_api_docs": "%(APP_NAME)s API Docs",

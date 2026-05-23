@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom';
-import {Map} from 'immutable';
 import tt from 'counterpart';
 import { Asset } from 'golos-lib-js/lib/utils'
 
@@ -75,7 +74,7 @@ class TransferForm extends Component {
 
     onAdvanced = (e) => {
         e.preventDefault() // prevent form submission!!
-        const username = this.props.currentUser.get('username')
+        const username = this.props.currentUser.username
         this.state.to.props.onChange(username)
         // setTimeout(() => {ReactDOM.findDOMNode(this.refs.amount).focus()}, 300)
         this.setState({advanced: !this.state.advanced})
@@ -117,15 +116,15 @@ class TransferForm extends Component {
             const {currentAccount, uia} = this.props
             const balanceValue =
                 !asset || asset === 'GOLOS' ?
-                    isWithdraw ? currentAccount.get('savings_balance') :
-                        (isTIP ? currentAccount.get('tip_balance') :
-                            (isClaim ? currentAccount.get('accumulative_balance') :
-                                currentAccount.get('balance'))) :
+                    isWithdraw ? currentAccount.savings_balance :
+                        (isTIP ? currentAccount.tip_balance :
+                            (isClaim ? currentAccount.accumulative_balance :
+                                currentAccount.balance)) :
                 asset === 'GBG' ?
-                    isWithdraw ? currentAccount.get('savings_sbd_balance') : currentAccount.get('sbd_balance') :
-                isIssueUIA ? uia.get('can_issue') :
+                    isWithdraw ? currentAccount.savings_sbd_balance : currentAccount.sbd_balance :
+                isIssueUIA ? uia.can_issue :
                 uia ?
-                    (isTIP ? uia.get('tip_balance') : uia.get('balance')) :
+                    (isTIP ? uia.tip_balance : uia.balance) :
                 null
             if(!balanceValue) return false
             const balance = balanceValue.split(' ')[0]
@@ -174,10 +173,10 @@ class TransferForm extends Component {
         const isWithdraw = transferType && transferType === 'Savings Withdraw'
         const isClaim = transferType && transferType === 'Claim'
         const isTIP = transferType && transferType.startsWith('TIP to')
-        return isWithdraw ? currentAccount.get('savings_balance') :
-            (isTIP ? currentAccount.get('tip_balance') :
-                 (isClaim ? currentAccount.get('accumulative_balance') :
-                    currentAccount.get('balance')))
+        return isWithdraw ? currentAccount.savings_balance :
+            (isTIP ? currentAccount.tip_balance :
+                 (isClaim ? currentAccount.accumulative_balance :
+                    currentAccount.balance))
     }
 
     balanceValue() {
@@ -190,13 +189,13 @@ class TransferForm extends Component {
         const isIssueUIA = (transferType === 'Issue UIA')
         return !asset ||
             asset.value === 'GOLOS' ?
-                isWithdraw ? currentAccount.get('savings_balance') : (isTIP ? currentAccount.get('tip_balance') : (isClaim ? currentAccount.get('accumulative_balance') : currentAccount.get('balance'))) :
+                isWithdraw ? currentAccount.savings_balance : (isTIP ? currentAccount.tip_balance : (isClaim ? currentAccount.accumulative_balance : currentAccount.balance)) :
             asset.value === 'GBG' ?
-                isWithdraw ? currentAccount.get('savings_sbd_balance') : currentAccount.get('sbd_balance') :
+                isWithdraw ? currentAccount.savings_sbd_balance : currentAccount.sbd_balance :
             isIssueUIA ?
-                uia.get('can_issue') :
+                uia.can_issue :
             uia ?
-                (isTIP ? uia.get('tip_balance') : uia.get('balance')) :
+                (isTIP ? uia.tip_balance : uia.balance) :
             null
     }
 
@@ -326,7 +325,7 @@ class TransferForm extends Component {
         let memo = this.state.memo.props.value;
         if (!isMemoPrivate) {
             const memoPrivate = currentUser ?
-                currentUser.getIn(['private_keys', 'memo_private']) : null;
+                currentUser.private_keys && currentUser.private_keys.memo_private : null;
             if (!memoPrivate) {
                 if (currentUser && (!this.autoToggleMemoEncrypt || !autoCall)) {
                     loginMemo(currentUser);
@@ -521,7 +520,7 @@ class TransferForm extends Component {
                                 className="input-group-field bold"
                                 type="text"
                                 disabled
-                                value={currentUser.get('username')}
+                                value={currentUser.username}
                             />
                         </div>
                     </div>
@@ -622,14 +621,14 @@ import {connect} from 'react-redux'
 export default connect(
     // mapStateToProps
     (state, ownProps) => {
-        const initialValues = state.user.get('transfer_defaults', Map()).toJS()
+        const initialValues = state.user.transfer_defaults || {}
         const toVesting = initialValues.asset === 'GESTS'
         const {locationBeforeTransitions: {pathname}} = state.routing;
         const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-        const currentUserFromRoute = Map({username: currentUserNameFromRoute});
-        const currentUser = state.user.getIn(['current']) || currentUserFromRoute;
-        const username = currentUser.get('username')
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')])
+        const currentUserFromRoute = {username: currentUserNameFromRoute};
+        const currentUser = state.user.current || currentUserFromRoute;
+        const username = currentUser.username
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username]
 
         if(!toVesting && !initialValues.transferType)
             initialValues.transferType = 'Transfer to Account'
@@ -641,10 +640,10 @@ export default connect(
         if(currentUser && initialValues.to !== username)
             transferToSelf = false // don't hide the to field
 
-        let uias = state.global.get('assets')
+        let uias = state.global.assets
         let uia = undefined;
         if (uias) {
-            uia = uias.get(initialValues.asset)
+            uia = uias[initialValues.asset]
         }
 
         return {...ownProps,
@@ -658,7 +657,7 @@ export default connect(
         loginMemo: (currentUser) => {
             if (!currentUser) return;
             dispatch(user.actions.showLogin({
-                loginDefault: { username: currentUser.get('username'), authType: 'memo', unclosable: false }
+                loginDefault: { username: currentUser.username, authType: 'memo', unclosable: false }
             }));
         },
         setTransferDefaults: ({
@@ -674,7 +673,7 @@ export default connect(
             if(!toVesting && !isUIA && !/Transfer to Account|Transfer to Savings|Savings Withdraw|Claim|Transfer to TIP|TIP to Account|Issue UIA/.test(transferType))
                 throw new Error(`Invalid transfer params: toVesting ${toVesting}, transferType ${transferType}`)
 
-            const username = currentUser.get('username')
+            const username = currentUser.username
             const successCallback = () => {
                 // refresh transfer history
                 let pathname = '';
@@ -685,7 +684,7 @@ export default connect(
                 }
                 dispatch({type: 'FETCH_STATE', payload: {pathname}})
                 if(/Savings Withdraw/.test(transferType)) {
-                    dispatch({type: 'user/LOAD_SAVINGS_WITHDRAW', payload: {}})
+                    dispatch(user.actions.loadSavingsWithdraw())
                 }
                 dispatch(user.actions.hideTransfer())
             }

@@ -151,13 +151,12 @@ class ViewWorkerRequest extends React.Component {
 
 export default connect(
     (state, props) => {
-        const cprops = state.global.get('cprops');
-        const approve_min_percent = cprops ? cprops.get('worker_request_approve_min_percent') : 100
+        const cprops = state.global.cprops;
+        const approve_min_percent = cprops ? cprops.worker_request_approve_min_percent : 100
         const url = props.author + '/' + props.permlink;
-        const req = state.global.get('worker_requests').get(url)
-        const request = req ? req.toJS() : null
-        const gprops = state.global.get('props')
-        const total_vesting_shares = gprops ? gprops.get('total_vesting_shares') : '1000.000000 GESTS';
+        const request = state.global.worker_requests && state.global.worker_requests[url]
+        const gprops = state.global.props
+        const total_vesting_shares = gprops ? gprops.total_vesting_shares : '1000.000000 GESTS';
                 
         return {
           approve_min_percent,

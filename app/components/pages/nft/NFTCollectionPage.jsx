@@ -37,7 +37,7 @@ class NFTCollectionPage extends Component {
         e.preventDefault()
         const { nft_collection, } = this.props
 
-        const coll = nft_collection.toJS()
+        const coll = nft_collection
 
         const { name, token_count } = coll
         this.setState({
@@ -57,7 +57,7 @@ class NFTCollectionPage extends Component {
         e.preventDefault()
 
         const { currentUser, nft_collection } = this.props
-        const coll = nft_collection.toJS()
+        const coll = nft_collection
 
         await this.props.deleteCollection(coll.name, currentUser, () => {
             this.refetch()
@@ -131,7 +131,7 @@ class NFTCollectionPage extends Component {
 
     onBurnClick = async (e) => {
         const { nft_token, currentUser, } = this.props
-        const token = nft_token.toJS()
+        const token = nft_token
         const { token_id } = token
         await this.props.burnToken(token_id, currentUser, () => {
             this.refetch()
@@ -153,16 +153,16 @@ class NFTCollectionPage extends Component {
             </div>
         }
 
-        const coll = nft_collection.toJS()
+        const coll = nft_collection
 
         if (!coll.name) {
             return <NotFound.component />
         }
 
-        const tokens = nft_tokens ? nft_tokens.toJS().data : null
-        const assets = nft_assets ? nft_assets.toJS() : null
+        const tokens = nft_tokens ? nft_tokens.data : null
+        const assets = nft_assets || null
 
-        const next_from = nft_tokens && nft_tokens.get('next_from')
+        const next_from = nft_tokens && nft_tokens.next_from
 
         let items = []
         if (!tokens) {
@@ -185,7 +185,7 @@ class NFTCollectionPage extends Component {
 
         const { showIssue, issueName, issueNum, showTransfer, showSell, showAuction, showPlaceOfferBet, tokenIdx } = this.state
 
-        const isMy = currentUser && currentUser.get('username') === coll.creator
+        const isMy = currentUser && currentUser.username === coll.creator
 
         const { json_metadata, token_count } = coll
 
@@ -277,14 +277,14 @@ module.exports = {
     component: connect(
         // mapStateToProps
         (state, ownProps) => {
-            const currentUser = state.user.getIn(['current'])
+            const currentUser = state.user.current
 
             return { ...ownProps,
                 currentUser,
-                nft_collection: state.global.get('nft_collection'),
-                nft_collection_loaded: state.global.get('nft_collection_loaded'),
-                nft_tokens: state.global.get('nft_tokens'),
-                nft_assets: state.global.get('nft_assets')
+                nft_collection: state.global.nft_collection,
+                nft_collection_loaded: state.global.nft_collection_loaded,
+                nft_tokens: state.global.nft_tokens,
+                nft_assets: state.global.nft_assets
             }
         },
 
@@ -295,7 +295,7 @@ module.exports = {
             deleteCollection: (
                 name, currentUser, successCallback, errorCallback
             ) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     creator: username,
                     name,
@@ -312,7 +312,7 @@ module.exports = {
             burnToken: (
                 token_id, currentUser, successCallback, errorCallback
             ) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     from: username,
                     to: 'null',

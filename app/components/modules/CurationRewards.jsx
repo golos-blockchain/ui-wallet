@@ -66,13 +66,13 @@ class CurationRewards extends React.Component {
 
         let gpDeficit = '';
         if (account.vesting_shares && gprops && cprops) {
-            let gpExists = this.effectiveVestingShares(account, gprops.toJS());
-            let gpMin = cprops.get('min_golos_power_to_curate');
+            let gpExists = this.effectiveVestingShares(account, gprops);
+            let gpMin = cprops.min_golos_power_to_curate;
             if (gpMin) {
                 gpMin = Asset(gpMin)
-                if (feed_price && feed_price.has('base')) {
+                if (feed_price && feed_price.base) {
                     // feed_price can have 0.000 if no feed
-                    const gbgPrice = Price(feed_price.toJS())
+                    const gbgPrice = Price(feed_price)
                     gpMin = gpMin.mul(gbgPrice)
                 }
                 if (gpExists.amount < gpMin.amount) {
@@ -234,9 +234,9 @@ class CurationRewards extends React.Component {
 export default connect(
     // mapStateToProps
     (state, ownProps) => {
-        const gprops = state.global.get('props');
-        const cprops = state.global.get('cprops');
-        const feed_price = state.global.get('feed_price')
+        const gprops = state.global.props;
+        const cprops = state.global.cprops;
+        const feed_price = state.global.feed_price
         return {
             state,
             ...ownProps,

@@ -1,7 +1,6 @@
 import React, { Component, } from 'react';
 import tt from 'counterpart';
 import { connect, } from 'react-redux';
-import { Map, } from 'immutable';
 import { api, } from 'golos-lib-js';
 import { Asset, } from 'golos-lib-js/lib/utils';
 import CloseButton from 'react-foundation-components/lib/global/close-button';
@@ -102,7 +101,7 @@ class AssetRules extends Component {
     async doAPI() {
         const { rules, sym, currentAccount, } = this.props
         try {
-            const acc = currentAccount.get('name')
+            const acc = currentAccount.name
             if (!acc) return
             let retried = 0
             const retryReq = async () => {
@@ -149,7 +148,7 @@ class AssetRules extends Component {
     balanceValue = () => {
         const { currentAccount, } = this.props;
         if (currentAccount) {
-            return currentAccount.get('balance');
+            return currentAccount.balance;
         }
         return '0.000 GOLOS';
     }
@@ -174,7 +173,7 @@ class AssetRules extends Component {
         let stopper;
         let stopStream = api.streamOperations((err, op) => {
             if (op[0] === 'transfer' && op[1].from === to_transfer
-                && op[1].to === currentUser.get('username')) {
+                && op[1].to === currentUser.username) {
                 stopStream();
                 clearTimeout(stopper);
                 saveAddress(sym, rules.creator, op[1].memo);
@@ -237,7 +236,7 @@ class AssetRules extends Component {
 
     _renderParams = () => {
         const { rules, sym, currentUser, embed } = this.props;
-        const username = currentUser.get('username')
+        const username = currentUser.username
         const { min_amount, fee, memo_fixed } = rules
         let details = rules.details
         if (memo_fixed) {
@@ -330,7 +329,7 @@ class AssetRules extends Component {
             return (<div>
                 <CloseButton onClick={onClose} />
                 {header}
-                {this._renderTo(receivedTransfer.memo, null, currentUser.get('username'))}
+                {this._renderTo(receivedTransfer.memo, null, currentUser.username)}
                 {this._renderParams(false)}
             </div>);
         }
@@ -422,7 +421,7 @@ class AssetRules extends Component {
         }
         let memo_fixed = rules.memo_fixed
         if (memo_fixed) {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             memo_fixed = memo_fixed.split('<account>').join(username)
         }
         return (<div>
@@ -456,12 +455,12 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        let currentUser = ownProps.currentUser || state.user.current
         if (!currentUser) {
             const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-            currentUser = Map({username: currentUserNameFromRoute});
+            currentUser = {username: currentUserNameFromRoute};
         }
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')]);
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username];
         return { ...ownProps, currentUser, currentAccount, };
     },
 
@@ -473,7 +472,7 @@ export default connect(
         dispatchTransfer: ({
             to, memo, currentUser, successCallback, errorCallback
         }) => {
-            const username = currentUser.get('username');
+            const username = currentUser.username;
             const operation = {
                 from: username,
                 to,

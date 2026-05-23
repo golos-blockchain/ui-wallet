@@ -20,8 +20,8 @@ class FeedNodes extends React.Component {
             name: 'feedNodes',
             fields: ['api_node', 'seed_node', 'sbd_exchange_rate_base', 'sbd_exchange_rate_quote'],
             initialValues: {
-                sbd_exchange_rate_base: props.witness_obj.get('sbd_exchange_rate').get('base').split(' ')[0],
-                sbd_exchange_rate_quote: props.witness_obj.get('sbd_exchange_rate').get('quote').split(' ')[0],
+                sbd_exchange_rate_base: props.witness_obj.sbd_exchange_rate.base.split(' ')[0],
+                sbd_exchange_rate_quote: props.witness_obj.sbd_exchange_rate.quote.split(' ')[0],
             ...props.witness},
             validation: values => ({
                 api_node: values.api_node && !/^wss?:\/\//.test(values.api_node) && !/^https?:\/\//.test(values.api_node) ? tt('settings_jsx.invalid_ws') : null,
@@ -169,7 +169,7 @@ export default connect(
     // mapStateToProps
     (state, props) => {
         const { username } = props;
-        let account = state.global.getIn(['accounts', username]).toJS();
+        let account = state.global.accounts && state.global.accounts[username];
         let metaData = account ? getMetadataReliably(account.json_metadata) : {}
         const witness = metaData && metaData.witness ? metaData.witness : {}
 
@@ -177,7 +177,7 @@ export default connect(
                 account,
                 metaData,
                 witness,
-                witness_obj: state.global.getIn(['witnesses', account.name])
+                witness_obj: state.global.witnesses && state.global.witnesses[account.name]
             };
     },
     // mapDispatchToProps

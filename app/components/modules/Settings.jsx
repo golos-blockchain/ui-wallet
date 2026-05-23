@@ -5,7 +5,6 @@ import user from 'app/redux/User';
 import g from 'app/redux/GlobalReducer';
 import tt from 'counterpart';
 import throttle from 'lodash/throttle'
-import {fromJS, Set, Map} from 'immutable'
 
 import transaction from 'app/redux/Transaction'
 import { getMetadataReliably } from 'app/utils/NormalizeProfile';
@@ -342,9 +341,9 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const {accountname} = ownProps.routeParams
-        const account = state.global.getIn(['accounts', accountname]).toJS()
-        const current_user = state.user.get('current')
-        const username = current_user ? current_user.get('username') : ''
+        const account = state.global.accounts && state.global.accounts[accountname]
+        const current_user = state.user.current
+        const username = current_user ? current_user.username : ''
         let metaData = account ? getMetadataReliably(account.json_metadata) : {}
         const profile = metaData && metaData.profile ? metaData.profile : {}
 
@@ -360,10 +359,7 @@ export default connect(
     // mapDispatchToProps
     dispatch => ({
         uploadImage: (file, progress) => {
-            dispatch({
-                type: 'user/UPLOAD_IMAGE',
-                payload: {file, progress},
-            })
+            dispatch(user.actions.uploadImage({file, progress}))
         },
         updateAccount: ({successCallback, errorCallback, ...operation}) => {
             const success = () => {

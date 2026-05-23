@@ -49,7 +49,7 @@ class LeaveGolos extends React.Component {
 
 export default connect(
     (state, props) => {
-        const defaults = state.user.get('leave_golos_defaults').toJS()
+        const defaults = state.user.leave_golos_defaults || {}
         const { url } = defaults
         return {
             ...props,

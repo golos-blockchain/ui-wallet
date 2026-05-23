@@ -2,7 +2,6 @@ import React, { Component, } from 'react';
 import tt from 'counterpart';
 import { connect, } from 'react-redux';
 import { Link, } from 'react-router';
-import { Map, } from 'immutable';
 import { api, } from 'golos-lib-js';
 import { Asset, } from 'golos-lib-js/lib/utils';
 import transaction from 'app/redux/Transaction';
@@ -22,7 +21,7 @@ class OpenOrders extends Component {
         const { sym, currentUser, } = this.props;
         let pair = [sym, ''];
         try {
-            const orders = await api.getOpenOrdersAsync(currentUser.get('username'),
+            const orders = await api.getOpenOrdersAsync(currentUser.username,
                 pair);
             this.setState({
                 orders,
@@ -42,7 +41,7 @@ class OpenOrders extends Component {
         const { cancelOrder, sym, currentUser, } = this.props;
         let user = '';
         if (currentUser) {
-            user = currentUser.get('username');
+            user = currentUser.username;
         }
 
         if (!user) {
@@ -60,7 +59,7 @@ class OpenOrders extends Component {
         const { orders, loading, } = this.state;
         let name = '';
         if (currentUser) {
-            name = currentUser.get('username');
+            name = currentUser.username;
         }
         if (loading) {
             return (<div>
@@ -123,11 +122,11 @@ export default connect(
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
         const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-        const currentUserFromRoute = Map({username: currentUserNameFromRoute});
-        const currentUser = state.user.getIn(['current']) || currentUserFromRoute;
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')]);
+        const currentUserFromRoute = {username: currentUserNameFromRoute};
+        const currentUser = state.user.current || currentUserFromRoute;
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username];
 
-        const defaults = state.user.get('open_orders_defaults', Map()).toJS();
+        const defaults = state.user.open_orders_defaults || {};
 
         return { ...ownProps, currentUser, currentAccount, sym: defaults.sym, };
     },

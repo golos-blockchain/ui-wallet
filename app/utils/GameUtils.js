@@ -36,8 +36,8 @@ export function getGameLevel(account, gprops, smallIcon = false) {
     let levelName = null
     let nextLevels = []
     try {
-        let accountJS = account.toJS()
-        let gpropsJS = gprops.toJS()
+        let accountJS = account
+        let gpropsJS = gprops
 
         const total = toAsset(gpropsJS.total_vesting_fund_steem).amount
         let vestingSteem = vestsToSteem(accountJS.vesting_shares, gpropsJS);

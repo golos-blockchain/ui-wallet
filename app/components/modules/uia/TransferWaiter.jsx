@@ -3,7 +3,6 @@ import { connect, } from 'react-redux'
 import tt from 'counterpart'
 import { api } from 'golos-lib-js'
 import { Asset } from 'golos-lib-js/lib/utils'
-import { Map, } from 'immutable'
 
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 
@@ -34,7 +33,7 @@ class TransferWaiter extends React.Component {
 
         const { currentUser } = this.props
         const { sym, onTransfer } = this.props
-        const username = currentUser.get('username')
+        const username = currentUser.username
         const getBalance = async () => {
             const balances = await api.getAccountsBalancesAsync([username], {
                 symbols: [sym]
@@ -113,8 +112,8 @@ export default connect(
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
         const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-        const currentUserFromRoute = Map({username: currentUserNameFromRoute});
-        const currentUser = state.user.getIn(['current']) || currentUserFromRoute;
+        const currentUserFromRoute = {username: currentUserNameFromRoute};
+        const currentUser = state.user.current || currentUserFromRoute;
         return { ...ownProps, currentUser, };
     },
 

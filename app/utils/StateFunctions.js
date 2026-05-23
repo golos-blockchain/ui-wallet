@@ -3,7 +3,7 @@ import constants from 'app/redux/constants';
 import {parsePayoutAmount, repLog10} from 'app/utils/ParsersAndFormatters';
 import {Long} from 'bytebuffer';
 import {VEST_TICKER, LIQUID_TICKER} from 'app/client_config'
-import {Map, Seq, fromJS} from 'immutable';
+import { getIn, toPlain } from 'app/utils/PlainState';
 
 // '1000000' -> '1,000,000'
 export const numberWithCommas = (x) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -16,8 +16,8 @@ export const toAsset = (value) => {
 export function vestsToSp(state, vesting_shares) {
     const {global} = state
     const vests = assetFloat(vesting_shares, VEST_TICKER)
-    const total_vests = assetFloat(global.getIn(['props', 'total_vesting_shares']), VEST_TICKER)
-    const total_vest_steem = assetFloat(global.getIn(['props', 'total_vesting_fund_steem']), LIQUID_TICKER)
+    const total_vests = assetFloat(getIn(global, ['props', 'total_vesting_shares']), VEST_TICKER)
+    const total_vest_steem = assetFloat(getIn(global, ['props', 'total_vesting_fund_steem']), LIQUID_TICKER)
     const vesting_steemf = total_vest_steem * (vests / total_vests);
     const steem_power = vesting_steemf.toFixed(3)
     return steem_power
@@ -56,7 +56,7 @@ export function assetFloat(str, asset) {
 }
 
 export function isFetchingOrRecentlyUpdated(global_status, order, category) {
-    const status = global_status ? global_status.getIn([category || '', order]) : null;
+    const status = global_status ? getIn(global_status, [category || '', order]) : null;
     if (!status) return false;
     if (status.fetching) return true;
     if (status.lastFetch) {
@@ -69,15 +69,8 @@ export function filterTags(tags) {
     return tags.filter(tag => typeof tag === 'string')
 }
 
-export function fromJSGreedy(js) {
-  return typeof js !== 'object' || js === null ? js :
-    Array.isArray(js) ?
-      Seq(js).map(fromJSGreedy).toList() :
-      Seq(js).map(fromJSGreedy).toMap();
-}
-
 export function emissionVestingShares(accountObj) {
-    const acc = accountObj.toJS ? accountObj.toJS() : accountObj
+    const acc = accountObj
     const vs = toAsset(acc.vesting_shares).amount
         - toAsset(acc.emission_delegated_vesting_shares).amount
         + toAsset(acc.emission_received_vesting_shares).amount 
@@ -85,15 +78,15 @@ export function emissionVestingShares(accountObj) {
 }
 
 export function vsEmissionPerDay(gpropsObj, vsFloat, addFloat = 0) {
-    const gprops = gpropsObj.toJS ? gpropsObj.toJS() : gpropsObj
+    const gprops = gpropsObj
     const total = toAsset(gprops.total_vesting_shares).amount + addFloat
     let emission = toAsset(gprops.accumulative_emission_per_day).amount * (vsFloat + addFloat) / total
     return emission
 }
 
 export function accuEmissionPerDay(accountObj, gpropsObj, addFloat = 0) {
-    const acc = accountObj.toJS ? accountObj.toJS() : accountObj
-    const gprops = gpropsObj.toJS ? gpropsObj.toJS() : gpropsObj
+    const acc = accountObj
+    const gprops = gpropsObj
     let vs = emissionVestingShares(acc)
     const emission = vsEmissionPerDay(gpropsObj, vs, addFloat)
     return emission

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { Link } from 'react-router'
 import tt from 'counterpart'
-import { Map } from 'immutable'
 import Reveal from 'react-foundation-components/lib/global/reveal'
 
 import DropdownMenu from 'app/components/elements/DropdownMenu'
@@ -100,12 +99,12 @@ class NFTTokens extends Component {
 
     render() {
         const { currentUser, account, isMyAccount, nft_tokens, nft_assets, } = this.props
-        const accountName = account.get('name')
+        const accountName = account.name
 
-        const tokens = nft_tokens ? nft_tokens.toJS().data : null
-        const assets = nft_assets ? nft_assets.toJS() : {}
+        const tokens = nft_tokens ? nft_tokens.data : null
+        const assets = nft_assets || {}
 
-        const next_from = nft_tokens && nft_tokens.get('next_from')
+        const next_from = nft_tokens && nft_tokens.next_from
 
         let items = []
         if (!tokens) {
@@ -241,20 +240,20 @@ class NFTTokens extends Component {
 export default connect(
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        let currentUser = ownProps.currentUser || state.user.current
         if (!currentUser) {
             const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-            currentUser = Map({username: currentUserNameFromRoute});
+            currentUser = {username: currentUserNameFromRoute};
         }
         return {...ownProps, currentUser,
-            nft_tokens: state.global.get('nft_tokens'),
-            nft_assets: state.global.get('nft_assets')
+            nft_tokens: state.global.nft_tokens,
+            nft_assets: state.global.nft_assets
         }
     },
     dispatch => ({
         fetchNFTTokens: (account, start_token_id, sort, sortReversed) => {
             if (!account) return
-            dispatch(g.actions.fetchNftTokens({ account: account.get('name'), start_token_id, sort, reverse_sort: sortReversed }))
+            dispatch(g.actions.fetchNftTokens({ account: account.name, start_token_id, sort, reverse_sort: sortReversed }))
         },
     })
 )(withScreenSize(NFTTokens))

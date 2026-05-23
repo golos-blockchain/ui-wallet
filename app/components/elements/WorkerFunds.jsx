@@ -34,9 +34,9 @@ class WorkerFunds extends React.Component {
 
 export default connect(
     state => {
-        let workersAcc = state.global.getIn(['accounts', 'workers']);
-        let balance = workersAcc ? workersAcc.get('balance') : '0.000 GOLOS';
-        let sbd_balance = workersAcc ? workersAcc.get('sbd_balance') : '0.000 GOLOS';
+        let workersAcc = state.global.accounts && state.global.accounts.workers;
+        let balance = workersAcc ? workersAcc.balance : '0.000 GOLOS';
+        let sbd_balance = workersAcc ? workersAcc.sbd_balance : '0.000 GOLOS';
         return {
             balance,
             sbd_balance

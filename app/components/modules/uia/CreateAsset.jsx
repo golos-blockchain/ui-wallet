@@ -38,7 +38,7 @@ class CreateAsset extends Component {
 
     initForm(props) {
         const insufficientFunds = (symbol) => {
-            const balanceValue = props.account.get('sbd_balance')
+            const balanceValue = props.account.sbd_balance
             if(!balanceValue) return false
             let minValue = parseFloat(props.asset_creation_fee)
             if (symbol.length == 3) minValue *= 50
@@ -54,11 +54,11 @@ class CreateAsset extends Component {
                 return tt('assets_jsx.symbol_exists');
             }
             if (parts.length > 1 && parts[1].length < 3) return tt('assets_jsx.subsymbol_too_short');
-            const assets = this.props.assets.toJS()
+            const assets = this.props.assets
             if (symbol in assets) return tt('assets_jsx.symbol_exists');
             if (parts.length > 1) {
                 if (parts[0] in assets) {
-                    const username = props.account.get('name')
+                    const username = props.account.name
                     if (assets[parts[0]].creator != username) return tt('assets_jsx.top_symbol_not_your');
                 } else {
                     return tt('assets_jsx.top_symbol_not_exists');
@@ -348,14 +348,14 @@ const AssetBalance = ({onClick, balanceValue}) =>
 export default connect(
     (state, ownProps) => {
         const {account} = ownProps
-        const accountName = account.get('name')
-        const current = state.user.get('current')
-        const username = current && current.get('username')
+        const accountName = account.name
+        const current = state.user.current
+        const username = current && current.username
         const isMyAccount = username === accountName
-        const cprops = state.global.get('cprops');
-        const asset_creation_fee = cprops ? cprops.get('asset_creation_fee') : '0.000 GOLOS'
+        const cprops = state.global.cprops;
+        const asset_creation_fee = cprops ? cprops.asset_creation_fee : '0.000 GOLOS'
         return {...ownProps, isMyAccount, accountName, asset_creation_fee,
-            assets: state.global.get('assets')}
+            assets: state.global.assets}
     },
     dispatch => ({
         createAsset: ({

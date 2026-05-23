@@ -9,7 +9,7 @@ import { NFTImageStub } from 'app/utils/NFTUtils'
 class NFTMarketCollections extends React.Component {
     render() {
         let { nft_market_collections, selected } = this.props
-        const nft_colls = nft_market_collections ? nft_market_collections.toJS().data : []
+        const nft_colls = nft_market_collections ? nft_market_collections.data : []
 
         const colls = []
         colls.push({

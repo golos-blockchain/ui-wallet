@@ -76,8 +76,8 @@ class NotifyPolling extends React.Component {
 
 export default connect(
     (state, ownProps) => {
-        const current = state.user.get('current')
-        const username = current && current.get('username')
+        const current = state.user.current
+        const username = current && current.username
         return { username }
     },
     dispatch => ({

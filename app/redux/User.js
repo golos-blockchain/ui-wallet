@@ -1,10 +1,10 @@
-import {fromJS} from 'immutable';
-import createModule from 'redux-modules';
-import Cookies from 'universal-cookie'
+import { createSlice } from '@reduxjs/toolkit';
+import Cookies from 'universal-cookie';
 
-import { DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY } from 'app/client_config'
+import { DEFAULT_LANGUAGE, LOCALE_COOKIE_KEY } from 'app/client_config';
+import { deepMerge, hasIn, removeIn, setIn } from 'app/utils/PlainState';
 
-const defaultState = fromJS({
+const defaultState = {
     current: null,
     show_login_modal: false,
     show_transfer_modal: false,
@@ -19,197 +19,237 @@ const defaultState = fromJS({
     pub_keys_used: null,
     locale: DEFAULT_LANGUAGE,
     nightmodeEnabled: false,
-});
+};
 
 if (process.env.BROWSER) {
-    const cookies = new Cookies()
-    const locale = cookies.get(LOCALE_COOKIE_KEY)
+    const cookies = new Cookies();
+    const locale = cookies.get(LOCALE_COOKIE_KEY);
     if (locale) defaultState.locale = locale;
 
     // TODO Чет нихера не цепляет при первой загрузке
-    defaultState.nightmodeEnabled = localStorage.getItem('nightmodeEnabled') == 'true' || false
+    defaultState.nightmodeEnabled =
+        localStorage.getItem('nightmodeEnabled') == 'true' || false;
 }
 
-export default createModule({
+const resetState = extra => ({
+    ...defaultState,
+    ...extra,
+});
+
+const userSlice = createSlice({
     name: 'user',
     initialState: defaultState,
-    transformations: [
-        {
-            action: 'REQUIRE_LOGIN',
-            reducer: (state, {payload}) => {
-                return state.merge({
-                    show_login_modal: true, 
-                    loginDefault: {
-                        cancelIsRegister: true,
-                        loginRemind: true,
-                    }
-                })
-            }
+    reducers: {
+        requireLogin(state) {
+            state.show_login_modal = true;
+            state.loginDefault = {
+                cancelIsRegister: true,
+                loginRemind: true,
+            };
         },
-        {
-            action: 'SHOW_LOGIN',
-            reducer: (state, {payload}) => {
-                // https://github.com/mboperator/redux-modules/issues/11
-                if (typeof payload === 'function') payload = undefined
-                let operation, loginDefault
-                if (payload) {
-                    operation = fromJS(payload.operation)
-                    loginDefault = fromJS(payload.loginDefault)
-                }
-                return state.merge({show_login_modal: true, loginBroadcastOperation: operation, loginDefault})
-            }
+        showLogin(state, { payload }) {
+            if (typeof payload === 'function') payload = undefined;
+            state.show_login_modal = true;
+            state.loginBroadcastOperation = payload && payload.operation;
+            state.loginDefault = payload && payload.loginDefault;
         },
+        hideLogin(state) {
+            state.show_login_modal = false;
+            state.loginBroadcastOperation = undefined;
+            state.loginDefault = undefined;
+        },
+        saveLoginConfirm(state, { payload }) {
+            state.saveLoginConfirm = payload;
+        },
+        saveLogin() {},
+        getAccount() {},
+        loadSavingsWithdraw() {},
+        lookupPreviousOwnerAuthority() {},
+        uploadImage() {},
+        removeHighSecurityKeys(state) {
+            if (!hasIn(state, ['current', 'private_keys'])) return;
 
-        { action: 'HIDE_LOGIN', reducer: state =>
-            state.merge({show_login_modal: false, loginBroadcastOperation: undefined, loginDefault: undefined}) },
-        { action: 'SAVE_LOGIN_CONFIRM', reducer: (state, {payload}) => state.set('saveLoginConfirm', payload) },
-        { action: 'SAVE_LOGIN', reducer: (state) => state }, // Use only for low security keys (like posting only keys)
-        { action: 'GET_ACCOUNT', reducer: (state) => state },
-        { action: 'REMOVE_HIGH_SECURITY_KEYS', reducer: (state) => {
-            if(!state.hasIn(['current', 'private_keys'])) return state
-            let empty = false
-            state = state.updateIn(['current', 'private_keys'], private_keys => {
-                if(!private_keys) return null
-                if(private_keys.has('active_private'))
-                    console.log('removeHighSecurityKeys')
-                private_keys = private_keys.delete('active_private')
-                empty = private_keys.size === 0
-                return private_keys
-            })
-            if(empty) {
-                // User logged in with Active key then navigates away from the page
-                // LOGOUT
-                return defaultState.merge({logged_out: true})
+            const privateKeys = state.current.private_keys;
+            if (!privateKeys) {
+                state.current.private_keys = null;
+                return;
             }
-            const username = state.getIn(['current', 'username'])
-            state = state.setIn(['authority', username, 'active'], 'none')
-            state = state.setIn(['authority', username, 'owner'], 'none')
-            return state
-        }},
-        { action: 'CHANGE_CURRENCY', reducer: (state, {payload}) => {
-            return state.set('currency', payload)}
-        },
-        { action: 'CHANGE_LANGUAGE', reducer: (state, {payload}) => {
-            return state.set('locale', payload)}
-        },
-        { action: 'TOGGLE_NIGHTMODE', reducer: (state) => {
-            const nightmodeEnabled = localStorage.getItem('nightmodeEnabled') == 'true' || false
 
-            localStorage.setItem('nightmodeEnabled', !nightmodeEnabled)
-            return state.set('nightmodeEnabled', !nightmodeEnabled)
-          }
-        },
-        { action: 'SHOW_TRANSFER', reducer: state => state.set('show_transfer_modal', true) },
-        { action: 'HIDE_TRANSFER', reducer: state => state.set('show_transfer_modal', false) },
-        { action: 'SET_TRANSFER_DEFAULTS', reducer: (state, {payload}) => state.set('transfer_defaults', fromJS(payload)) },
-        { action: 'CLEAR_TRANSFER_DEFAULTS', reducer: (state) => state.remove('transfer_defaults') },
-        { action: 'SHOW_CONVERT_ASSETS', reducer: state => state.set('show_convert_assets_modal', true) },
-        { action: 'HIDE_CONVERT_ASSETS', reducer: state => state.set('show_convert_assets_modal', false) },
-        { action: 'SET_CONVERT_ASSETS_DEFAULTS', reducer: (state, {payload}) => state.set('convert_assets_defaults', fromJS(payload)) },
-        { action: 'SHOW_POWERDOWN', reducer: state =>  state.set('show_powerdown_modal', true) },
-        { action: 'HIDE_POWERDOWN', reducer: state => state.set('show_powerdown_modal', false) },
-        { action: 'SET_POWERDOWN_DEFAULTS', reducer: (state, {payload}) => state.set('powerdown_defaults', fromJS(payload)) },
-        { action: 'CLEAR_POWERDOWN_DEFAULTS', reducer: state => state.remove('powerdown_defaults') },
-        { action: 'SHOW_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', true)  },
-        { action: 'HIDE_OPEN_ORDERS', reducer: state => state.set('show_open_orders_modal', false) },
-        { action: 'SET_OPEN_ORDERS_DEFAULTS', reducer: (state, {payload}) => state.set('open_orders_defaults', fromJS(payload)) },
-        { action: 'SHOW_NFT_ORDERS', reducer: state => state.set('show_nft_orders_modal', true)  },
-        { action: 'HIDE_NFT_ORDERS', reducer: state => state.set('show_nft_orders_modal', false) },
-        { action: 'SHOW_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', true) },
-        { action: 'HIDE_CHANGE_ACCOUNT', reducer: state => state.set('show_change_account_modal', false) },
-        { action: 'SHOW_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', true) },
-        { action: 'HIDE_ADD_ACCOUNT', reducer: state => state.set('show_add_account_modal', false) },
-        { action: 'SHOW_APP_DOWNLOAD', reducer: state => state.set('show_app_download_modal', true) },
-        { action: 'HIDE_APP_DOWNLOAD', reducer: state => state.set('show_app_download_modal', false) },
-        { action: 'SHOW_POWER_CALC', reducer: state => state.set('show_power_calc_modal', true) },
-        { action: 'HIDE_POWER_CALC', reducer: state => state.set('show_power_calc_modal', false) },
-        { action: 'SET_POWER_CALC_DEFAULTS', reducer: (state, {payload}) => state.set('power_calc_defaults', fromJS(payload)) },
-        { action: 'SHOW_LEAVE_GOLOS', reducer: (state, {payload}) => {
-            return state
-                .set('show_leave_golos_modal', true)
-                .set('leave_golos_defaults', fromJS(payload))
-        }},
-        { action: 'HIDE_LEAVE_GOLOS', reducer: state => state.set('show_leave_golos_modal', false) },
-        {
-            action: 'USERNAME_PASSWORD_LOGIN',
-            reducer: state => state, // saga
-        },
-        {
-            action: 'CHANGE_ACCOUNT',
-            reducer: state => state, // saga
-        },
-        {
-            action: 'SET_USER',
-            reducer: (state, {payload}) => {
-                if (payload.vesting_shares)
-                    payload.vesting_shares = parseFloat(payload.vesting_shares);
-                if (payload.delegated_vesting_shares)
-                    payload.delegated_vesting_shares = parseFloat(payload.delegated_vesting_shares);
-                if (payload.received_vesting_shares)
-                    payload.received_vesting_shares = parseFloat(payload.received_vesting_shares);
-                    
-                return state.mergeDeep({ current: payload, show_login_modal: false, loginBroadcastOperation: undefined, loginDefault: undefined, logged_out: undefined })
+            if (privateKeys.active_private) {
+                console.log('removeHighSecurityKeys');
             }
-        },
-        {
-            action: 'CLOSE_LOGIN',
-            reducer: (state) => state.merge({ login_error: undefined, show_login_modal: false, loginBroadcastOperation: undefined, loginDefault: undefined })
-        },
-        {
-            action: 'LOGIN_ERROR',
-            reducer: (state, {payload: {error, ...rest}}) => state.merge({
-                login_error: { error, ...rest },
-                login_state: 0,
-                logged_out: undefined
-            })
-        },
-        {
-            action: 'LOGIN_STATE',
-            reducer: (state, {payload}) => state.merge({
-                login_state: payload.state,
-            })
-        },
-        {
-            action: 'LOGOUT',
-            reducer: () => {
-                return defaultState.merge({logged_out: true})
-            }
-        },
-        // {
-        //     action: 'ACCEPTED_COMMENT',
-        //     // User can only post 1 comment per minute
-        //     reducer: (state) => state.merge({ current: {lastComment: Date.now()} })
-        // },
+            delete privateKeys.active_private;
 
-        {
-            action: 'KEYS_ERROR',
-            reducer: (state, {payload: {error}}) => state.merge({ keys_error: error })
+            if (Object.keys(privateKeys).length === 0) {
+                return resetState({ logged_out: true });
+            }
+
+            const username = state.current.username;
+            if (!state.authority) state.authority = {};
+            if (!state.authority[username]) state.authority[username] = {};
+            state.authority[username].active = 'none';
+            state.authority[username].owner = 'none';
         },
-        // { action: 'UPDATE_PERMISSIONS', reducer: state => {
-        //     return state // saga
-        // }},
-        { // AuthSaga
-            action: 'ACCOUNT_AUTH_LOOKUP',
-            reducer: state => state
+        changeCurrency(state, { payload }) {
+            state.currency = payload;
         },
-        { // AuthSaga
-            action: 'SET_AUTHORITY',
-            reducer: (state, {payload: {accountName, auth, pub_keys_used}}) => {
-                state = state.setIn(['authority', accountName], fromJS(auth))
-                if(pub_keys_used)
-                    state = state.set('pub_keys_used', pub_keys_used)
-                return state
-            },
+        changeLanguage(state, { payload }) {
+            state.locale = payload;
         },
-        { action: 'HIDE_CONNECTION_ERROR_MODAL', reducer: state => state.set('hide_connection_error_modal', true) },
-        {
-            action: 'SET',
-            reducer: (state, {payload: {key, value}}) => {
-                key = Array.isArray(key) ? key : [key]
-                return state.setIn(key, fromJS(value))
+        toggleNightmode(state) {
+            const nightmodeEnabled =
+                localStorage.getItem('nightmodeEnabled') == 'true' || false;
+
+            localStorage.setItem('nightmodeEnabled', !nightmodeEnabled);
+            state.nightmodeEnabled = !nightmodeEnabled;
+        },
+        showTransfer(state) {
+            state.show_transfer_modal = true;
+        },
+        hideTransfer(state) {
+            state.show_transfer_modal = false;
+        },
+        setTransferDefaults(state, { payload }) {
+            state.transfer_defaults = payload;
+        },
+        clearTransferDefaults(state) {
+            delete state.transfer_defaults;
+        },
+        showConvertAssets(state) {
+            state.show_convert_assets_modal = true;
+        },
+        hideConvertAssets(state) {
+            state.show_convert_assets_modal = false;
+        },
+        setConvertAssetsDefaults(state, { payload }) {
+            state.convert_assets_defaults = payload;
+        },
+        showPowerdown(state) {
+            state.show_powerdown_modal = true;
+        },
+        hidePowerdown(state) {
+            state.show_powerdown_modal = false;
+        },
+        setPowerdownDefaults(state, { payload }) {
+            state.powerdown_defaults = payload;
+        },
+        clearPowerdownDefaults(state) {
+            delete state.powerdown_defaults;
+        },
+        showOpenOrders(state) {
+            state.show_open_orders_modal = true;
+        },
+        hideOpenOrders(state) {
+            state.show_open_orders_modal = false;
+        },
+        setOpenOrdersDefaults(state, { payload }) {
+            state.open_orders_defaults = payload;
+        },
+        showNftOrders(state) {
+            state.show_nft_orders_modal = true;
+        },
+        hideNftOrders(state) {
+            state.show_nft_orders_modal = false;
+        },
+        showChangeAccount(state) {
+            state.show_change_account_modal = true;
+        },
+        hideChangeAccount(state) {
+            state.show_change_account_modal = false;
+        },
+        showAddAccount(state) {
+            state.show_add_account_modal = true;
+        },
+        hideAddAccount(state) {
+            state.show_add_account_modal = false;
+        },
+        showAppDownload(state) {
+            state.show_app_download_modal = true;
+        },
+        hideAppDownload(state) {
+            state.show_app_download_modal = false;
+        },
+        showPowerCalc(state) {
+            state.show_power_calc_modal = true;
+        },
+        hidePowerCalc(state) {
+            state.show_power_calc_modal = false;
+        },
+        setPowerCalcDefaults(state, { payload }) {
+            state.power_calc_defaults = payload;
+        },
+        showLeaveGolos(state, { payload }) {
+            state.show_leave_golos_modal = true;
+            state.leave_golos_defaults = payload;
+        },
+        hideLeaveGolos(state) {
+            state.show_leave_golos_modal = false;
+        },
+        usernamePasswordLogin() {
+        },
+        changeAccount() {},
+        setUser(state, { payload }) {
+            if (payload.vesting_shares)
+                payload.vesting_shares = parseFloat(payload.vesting_shares);
+            if (payload.delegated_vesting_shares)
+                payload.delegated_vesting_shares = parseFloat(
+                    payload.delegated_vesting_shares
+                );
+            if (payload.received_vesting_shares)
+                payload.received_vesting_shares = parseFloat(
+                    payload.received_vesting_shares
+                );
+
+            state.current = deepMerge(state.current, payload);
+            state.show_login_modal = false;
+            state.loginBroadcastOperation = undefined;
+            state.loginDefault = undefined;
+            state.logged_out = undefined;
+        },
+        closeLogin(state) {
+            state.login_error = undefined;
+            state.show_login_modal = false;
+            state.loginBroadcastOperation = undefined;
+            state.loginDefault = undefined;
+        },
+        loginError(state, { payload: { error, ...rest } }) {
+            state.login_error = { error, ...rest };
+            state.login_state = 0;
+            state.logged_out = undefined;
+        },
+        loginState(state, { payload }) {
+            state.login_state = payload.state;
+        },
+        logout() {
+            return resetState({ logged_out: true });
+        },
+        keysError(state, { payload: { error } }) {
+            state.keys_error = error;
+        },
+        accountAuthLookup() {},
+        setAuthority(state, { payload: { accountName, auth, pub_keys_used } }) {
+            if (!state.authority) state.authority = {};
+            state.authority[accountName] = auth;
+            if (pub_keys_used) {
+                state.pub_keys_used = pub_keys_used;
             }
         },
-        { action: 'NOTIFICATION_CHANNEL_CREATED', reducer: state => state.set('notification_channel_created', true) },
-        { action: 'NOTIFICATION_CHANNEL_DESTROYED', reducer: state => state.set('notification_channel_created', false) },
-    ]
+        hideConnectionErrorModal(state) {
+            state.hide_connection_error_modal = true;
+        },
+        set(state, { payload: { key, value } }) {
+            setIn(state, Array.isArray(key) ? key : [key], value);
+        },
+        remove(state, { payload: { key } }) {
+            removeIn(state, Array.isArray(key) ? key : [key]);
+        },
+        notificationChannelCreated(state) {
+            state.notification_channel_created = true;
+        },
+        notificationChannelDestroyed(state) {
+            state.notification_channel_created = false;
+        },
+    },
 });
+
+export default userSlice;

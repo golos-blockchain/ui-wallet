@@ -37,7 +37,7 @@ class NFTTokenPage extends Component {
     cancelOrder = async (e) => {
         e.preventDefault()
         const { nft_token, currentUser, } = this.props
-        const token = nft_token.toJS()
+        const token = nft_token
         const { order } = token
         await this.props.cancelOrder(order.order_id, currentUser, () => {
             this.props.fetchState()
@@ -51,7 +51,7 @@ class NFTTokenPage extends Component {
     buyToken = async (e) => {
         e.preventDefault()
         const { nft_token, currentUser, } = this.props
-        const token = nft_token.toJS()
+        const token = nft_token
         const { token_id, order, json_metadata } = token
         let tokenTitle
         try {
@@ -73,7 +73,7 @@ class NFTTokenPage extends Component {
 
     onBurnClick = async (e) => {
         const { nft_token, currentUser, } = this.props
-        const token = nft_token.toJS()
+        const token = nft_token
         const { token_id } = token
         await this.props.burnToken(token_id, currentUser, () => {
             this.props.fetchState()
@@ -87,7 +87,7 @@ class NFTTokenPage extends Component {
     async loadOps() {
         try {
             const { nft_token, } = this.props
-            const token = nft_token.toJS()
+            const token = nft_token
             const { token_id } = token
             const ops = await api.getNftTokenOps({
                 token_ids: [ token_id ],
@@ -105,7 +105,7 @@ class NFTTokenPage extends Component {
     async loadOffers() {
         try {
             const { nft_token, } = this.props
-            const token = nft_token.toJS()
+            const token = nft_token
             const { token_id, is_auction } = token
             if (is_auction) return
             const offers = await api.getNftOrdersAsync({
@@ -124,7 +124,7 @@ class NFTTokenPage extends Component {
     async loadBets() {
         try {
             const { nft_token, } = this.props
-            const token = nft_token.toJS()
+            const token = nft_token
             const { token_id, is_auction } = token
             if (!is_auction) return
             const bets = await api.getNftBetsAsync({
@@ -382,7 +382,7 @@ class NFTTokenPage extends Component {
 
         const { nft_token, nft_assets, currentUser } = this.props
 
-        const token = nft_token.toJS()
+        const token = nft_token
 
         if (!token.name) {
             return <NotFound.component />
@@ -398,7 +398,7 @@ class NFTTokenPage extends Component {
             </div>
         }
 
-        const assets = nft_assets.toJS()
+        const assets = nft_assets || {}
 
         const { json_metadata, image, selling } = token
 
@@ -433,7 +433,7 @@ class NFTTokenPage extends Component {
         const description = data.description || ''
         const url = data.url || ''
 
-        const username = currentUser && currentUser.get('username') 
+        const username = currentUser && currentUser.username
         const isMy = username === token.owner
 
         let my_offer = token.my_offer ? Asset(token.my_offer.price) : null
@@ -639,13 +639,13 @@ module.exports = {
     component: connect(
         // mapStateToProps
         (state, ownProps) => {
-            const currentUser = state.user.getIn(['current'])
+            const currentUser = state.user.current
 
             return { ...ownProps,
                 currentUser,
-                nft_token: state.global.get('nft_token'),
-                nft_token_loaded: state.global.get('nft_token_loaded'),
-                nft_assets: state.global.get('nft_assets')
+                nft_token: state.global.nft_token,
+                nft_token_loaded: state.global.nft_token_loaded,
+                nft_assets: state.global.nft_assets
             }
         },
 
@@ -660,7 +660,7 @@ module.exports = {
             burnToken: (
                 token_id, currentUser, successCallback, errorCallback
             ) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     from: username,
                     to: 'null',
@@ -680,7 +680,7 @@ module.exports = {
             cancelOrder: (
                 order_id, currentUser, successCallback, errorCallback
             ) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     owner: username,
                     order_id,
@@ -698,7 +698,7 @@ module.exports = {
             buyToken: (
                 token_id, order_id, tokenTitle, price, currentUser, successCallback, errorCallback
             ) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     buyer: username,
                     name: '',
@@ -736,7 +736,7 @@ module.exports = {
                 }))
             },
             sellToken: (offer, currentUser, successCallback, errorCallback) => {
-                const username = currentUser.get('username')
+                const username = currentUser.username
                 const operation = {
                     seller: username,
                     token_id: offer.token_id,

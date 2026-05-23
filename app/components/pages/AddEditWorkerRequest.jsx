@@ -228,7 +228,7 @@ class AddEditWorkerRequest extends React.Component {
 
 export default connect(
     state => {
-        const cprops = state.global.get('cprops').toJS();
+        const cprops = state.global.cprops;
         return {
             cprops
         };

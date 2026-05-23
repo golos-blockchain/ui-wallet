@@ -458,20 +458,20 @@ export default connect(
     state => {
         let nightmodeEnabled = process.env.BROWSER ? localStorage.getItem('nightmodeEnabled') == 'true' || false : false
 
-        const currentUser = state.user.get('current')
+        const currentUser = state.user.current
 
         return {
-            error: state.app.get('error'),
+            error: state.app.error,
             new_visitor:
                 !currentUser &&
-                !state.offchain.get('account') &&
-                state.offchain.get('new_visit'),
-            username: currentUser && currentUser.get('username'),
+                !state.offchain.account &&
+                state.offchain.new_visit,
+            username: currentUser && currentUser.username,
             nightmodeEnabled: nightmodeEnabled,
         };
     },
     dispatch => ({
-        loginUser: () => dispatch(user.actions.usernamePasswordLogin()),
+        loginUser: () => dispatch(user.actions.usernamePasswordLogin({})),
         logoutUser: () => dispatch(user.actions.logout()),
         depositSteem: () => {
             dispatch(

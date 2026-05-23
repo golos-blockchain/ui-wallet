@@ -1,5 +1,4 @@
 import { fork, call, put, select, takeEvery } from 'redux-saga/effects';
-import {fromJS, Set, Map, List} from 'immutable'
 import {getAccount, getContent, getWorkerRequest} from 'app/redux/SagaShared'
 import {findSigningKey} from 'app/redux/AuthSaga'
 import g from 'app/redux/GlobalReducer'
@@ -12,6 +11,7 @@ import {PrivateKey, PublicKey} from 'golos-lib-js/lib/auth/ecc'
 import {api, broadcast, auth, memo} from 'golos-lib-js'
 import constants from './constants';
 import tt from 'counterpart';
+import { getIn } from 'app/utils/PlainState';
 
 
 export function* transactionWatches() {
@@ -21,13 +21,13 @@ export function* transactionWatches() {
 }
 
 export function* watchForBroadcast() {
-    yield takeEvery('transaction/BROADCAST_OPERATION', broadcastOperation);
+    yield takeEvery(tr.actions.broadcastOperation.type, broadcastOperation);
 }
 export function* watchForUpdateAuthorities() {
-    yield takeEvery('transaction/UPDATE_AUTHORITIES', updateAuthorities);
+    yield takeEvery(tr.actions.updateAuthorities.type, updateAuthorities);
 }
 export function* watchForUpdateMeta() {
-    yield takeEvery('transaction/UPDATE_META', updateMeta);
+    yield takeEvery(tr.actions.updateMeta.type, updateMeta);
 }
 
 const hook = {
@@ -52,12 +52,12 @@ function* encryptMemoIfNeed(memoStr, to) {
     memoStr = toStringUtf8(memoStr);
     memoStr = memoStr.trim();
     const memo_private = yield select(
-        state => state.user.getIn(['current', 'private_keys', 'memo_private'])
+        state => getIn(state.user, ['current', 'private_keys', 'memo_private'])
     );
     if(!memo_private) throw new Error('Unable to encrypt memo, missing memo private key');
     const account = yield call(getAccount, to);
     if(!account) throw new Error(`Unknown to account ${to}`);
-    const memo_key = account.get('memo_key');
+    const memo_key = account.memo_key;
     memoStr = '# ' + memoStr;
     memoStr = memo.encode(memo_private, memo_key, memoStr);
     return memoStr;
@@ -155,7 +155,7 @@ function* broadcastOperation(
 }
 
 function* broadcastPayload({payload: {operations, keys, username, hideErrors, successCallback, errorCallback}}) {
-    for (const [type] of operations) // see also transaction/ERROR
+    for (const [type] of operations) // see also tr.actions.error
         yield put(tr.actions.remove({key: ['TransactionError', type]}))
 
     {
@@ -280,13 +280,11 @@ function* accepted_worker_request_vote({operation}) {
 
 function* accepted_withdraw_vesting({operation}) {
     let [account] = yield call([api, api.getAccountsAsync], [operation.account])
-    account = fromJS(account)
     yield put(g.actions.receiveAccount({account}))
 }
 
 function* accepted_account_update({operation}) {
     let [account] = yield call([api, api.getAccountsAsync], [operation.account])
-    account = fromJS(account)
     yield put(g.actions.receiveAccount({account}))
 
     // bug, fork, etc.. the folowing would be mis-leading
@@ -305,9 +303,9 @@ function* accepted_account_update({operation}) {
 // function* error_account_update({operation}) {
 //     const {account} = operation
 //     const stateUser = yield select(state => state.user)
-//     const username = stateUser.getIn(['current', 'username'])
+//     const username = stateUser.current && stateUser.current.username
 //     if (username === account) {
-//         const pending_private_key = stateUser.getIn(['current', 'pending_private_key'])
+//         const pending_private_key = stateUser.current && stateUser.current.pending_private_key
 //         if (pending_private_key) {
 //             // remove pending key
 //             const update = { pending_private_key: undefined }
@@ -431,7 +429,7 @@ function* updateAuthorities({payload: {accountName, signingKey, auths, twofa, on
         if (authType === 'memo') {
             account.memo_key = newAuthPubkey
         } else {
-            authority = fromJS(account[authType]).toJS()
+            authority = {...account[authType]}
             authority.key_auths = []
             authority.key_auths.push([newAuthPubkey, authority.weight_threshold])
             // const key_auths = authority.key_auths
@@ -450,11 +448,11 @@ function* updateAuthorities({payload: {accountName, signingKey, auths, twofa, on
 
             // Add twofaAccount with full authority
             // if(twofa && authType === 'owner') {
-            //     let account_auths = fromJS(authority.account_auths)
-            //     if(!account_auths.find(v => v.get(0) === twofaAccount)) {
-            //         account_auths = account_auths.push(fromJS([twofaAccount, authority.weight_threshold]))
+            //     const account_auths = authority.account_auths || []
+            //     if(!account_auths.find(v => v[0] === twofaAccount)) {
+            //         account_auths.push([twofaAccount, authority.weight_threshold])
             //     }
-            //     authority.account_auths = account_auths.toJS()
+            //     authority.account_auths = account_auths
             // }
         }
         ops2[authType] = authority ? authority : account[authType]

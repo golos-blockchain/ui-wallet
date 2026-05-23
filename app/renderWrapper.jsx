@@ -11,13 +11,14 @@ import {
 } from 'react-router';
 import { Provider } from 'react-redux';
 import RootRoute from 'app/RootRoute';
-import {createStore, applyMiddleware, compose} from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { browserHistory } from 'react-router';
 import { useScroll } from 'react-router-scroll';
 import createSagaMiddleware from 'redux-saga';
 import { syncHistoryWithStore } from 'react-router-redux';
 import rootReducer from 'app/redux/RootReducer';
 import rootSaga from 'app/redux/RootSaga';
+import user from 'app/redux/User';
 import {component as NotFound} from 'app/components/pages/NotFound';
 import Translator from 'app/Translator';
 import {routeRegex} from "app/ResolveRoute";
@@ -27,23 +28,22 @@ import session, { isLoginPage } from 'app/utils/session'
 
 const sagaMiddleware = createSagaMiddleware();
 
-let middleware;
-
-if (process.env.BROWSER && process.env.NODE_ENV === 'development') {
-    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-    middleware = composeEnhancers(
-        applyMiddleware(sagaMiddleware)
-    );
-} else {
-    middleware = applyMiddleware(sagaMiddleware);
-}
-
 const onRouterError = (error) => {
     console.error('onRouterError', error);
 };
 
 export default async function renderWrapper(initialState) {
-    const store = createStore(rootReducer, initialState, middleware);
+    const store = configureStore({
+        reducer: rootReducer,
+        preloadedState: initialState,
+        middleware: getDefaultMiddleware =>
+            getDefaultMiddleware({
+                thunk: false,
+                immutableCheck: false,
+                serializableCheck: false,
+            }).concat(sagaMiddleware),
+        devTools: process.env.BROWSER && process.env.NODE_ENV === 'development',
+    });
     sagaMiddleware.run(rootSaga)
 
     const history = syncHistoryWithStore(browserHistory, store);
@@ -75,7 +75,7 @@ export default async function renderWrapper(initialState) {
         const lastClosed = parseInt(localStorage.getItem('login_closed') || 0)
         const interval = 24*60*60*1000 // 1 day
         if ((Date.now() - lastClosed) > interval) {
-            store.dispatch({type: 'user/REQUIRE_LOGIN', payload: {}})
+            store.dispatch(user.actions.requireLogin())
         }
     }
 

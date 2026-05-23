@@ -4,7 +4,6 @@ import golos, { api, libs } from 'golos-lib-js'
 import { Asset, AssetEditor, Price } from 'golos-lib-js/lib/utils'
 import tt from 'counterpart'
 import { connect, } from 'react-redux'
-import { Map, } from 'immutable'
 import { Link, browserHistory } from 'react-router'
 
 import AssetBalance from 'app/components/elements/AssetBalance'
@@ -67,11 +66,11 @@ class ConvertAssets extends React.Component {
         const { currentAccount } = this.props
         let myBalance = this.state.myBalance
         if (sym1 === 'GOLOS') {
-            myBalance = Asset(currentAccount.get('balance'))
+            myBalance = Asset(currentAccount.balance)
         } else if (sym1 === 'GBG') {
-            myBalance = Asset(currentAccount.get('sbd_balance'))
+            myBalance = Asset(currentAccount.sbd_balance)
         } else {
-            const res = await api.getAccountsBalancesAsync([currentAccount.get('name')])
+            const res = await api.getAccountsBalancesAsync([currentAccount.name])
             myBalance = res[0][sym1] ? Asset(res[0][sym1].balance) : Asset(0, asset1.precision, sym1)
         }
         return myBalance
@@ -291,7 +290,7 @@ class ConvertAssets extends React.Component {
             let tx
             try {
                 tx = await libs.dex.makeExchangeTx(chain, {
-                    owner: currentAccount.get('name')
+                    owner: currentAccount.name
                 })
             } catch (err) {
                 alert('makeExchangeTx error:\n' + err.toString() + '\n\n'
@@ -301,9 +300,9 @@ class ConvertAssets extends React.Component {
             }
             console.log('tx', JSON.stringify(tx))
 
-            this.props.placeOrders(currentAccount.get('name'), tx, confirmFunc, async (orderid) => {
+            this.props.placeOrders(currentAccount.name, tx, confirmFunc, async (orderid) => {
                 await new Promise(resolve => setTimeout(resolve, 4000))
-                const newState = { loading: false, finishedAcc: currentAccount.get('name') }
+                const newState = { loading: false, finishedAcc: currentAccount.name }
                 this.setState({
                     ...newState,
                     finished: 'full',
@@ -313,10 +312,10 @@ class ConvertAssets extends React.Component {
         }
 
         console.log('order', sellAmount.toString(), minToReceive.toString())
-        this.props.placeOrder(currentAccount.get('name'),
+        this.props.placeOrder(currentAccount.name,
             sellAmount, minToReceive, confirmFunc, async (orderid) => {
             await new Promise(resolve => setTimeout(resolve, 4000))
-            const orders = await api.getOpenOrdersAsync(currentAccount.get('name'),
+            const orders = await api.getOpenOrdersAsync(currentAccount.name,
                 [sellAmount.symbol, minToReceive.symbol])
             let found
             for (let order of orders){
@@ -325,7 +324,7 @@ class ConvertAssets extends React.Component {
                     break
                 }
             }
-            const newState = { loading: false, finishedAcc: currentAccount.get('name') }
+            const newState = { loading: false, finishedAcc: currentAccount.name }
             if (!found) {
                 this.setState({
                     ...newState,
@@ -770,10 +769,10 @@ class ConvertAssets extends React.Component {
 
 export default connect(
     (state, ownProps) => {
-        const defaults = state.user.get('convert_assets_defaults', Map()).toJS();
+        const defaults = state.user.convert_assets_defaults || {};
 
-        const currentUser = state.user.getIn(['current'])
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')])
+        const currentUser = state.user.current
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username]
 
         const isDialog = !!defaults.direction
 

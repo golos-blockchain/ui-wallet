@@ -66,7 +66,7 @@ export default class UserProfile extends React.Component {
 
         return (
             np.current_user !== this.props.current_user ||
-            np.accounts.get(account) !== this.props.accounts.get(account) ||
+            np.accounts[account] !== this.props.accounts[account] ||
             np.wifShown !== this.props.wifShown ||
             np.global_status !== this.props.global_status ||
             np.loading !== this.props.loading ||
@@ -109,12 +109,12 @@ export default class UserProfile extends React.Component {
 
     voteRep = (weight) => {
         let { accountname } = this.props.routeParams;
-        let rep = this.props.accounts.get(accountname).get('reputation');
+        let rep = this.props.accounts[accountname].reputation;
         this.setState({
             repLoading: true,
         }, () => {
             const { current_user, } = this.props;
-            const username = current_user ? current_user.get('username') : null;
+            const username = current_user ? current_user.username : null;
             this.props.voteRep({
                 voter: username, 
                 author: accountname,
@@ -125,7 +125,7 @@ export default class UserProfile extends React.Component {
                         this.props.reloadAccounts([accountname, username]);
                         setTimeout(() => {
                             const now = Date.now();
-                            const newRep = this.props.accounts.get(accountname).get('reputation');
+                            const newRep = this.props.accounts[accountname].reputation;
                             if (newRep === rep && now - refreshStart < 5000) {
                                 refresh();
                                 return;
@@ -167,20 +167,18 @@ export default class UserProfile extends React.Component {
         let { accountname, section, id, action } = this.props.routeParams;
         // normalize account from cased params
         accountname = accountname.toLowerCase();
-        const username = current_user ? current_user.get('username') : null
-        // const gprops = this.props.global.getIn( ['props'] ).toJS();
+        const username = current_user ? current_user.username : null
+        // const gprops = this.props.global.props;
         if( !section ) section = 'transfers';
 
-        // const isMyAccount = current_user ? current_user.get('username') === accountname : false;
-
         // Loading status
-        const status = global_status ? global_status.getIn([section, 'by_author']) : null;
+        const status = global_status && global_status[section] ? global_status[section].by_author : null;
         const fetching = (status && status.fetching) || this.props.loading;
 
         let account
-        let accountImm = this.props.accounts.get(accountname);
-        if( accountImm ) {
-            account = accountImm.toJS();
+        let accountObj = this.props.accounts[accountname];
+        if( accountObj ) {
+            account = accountObj;
         } else if (fetching) {
             return <div className='UserProfile loader'>
                 <div className='UserProfile__center'><LoadingIndicator type='circle' size='40px' /></div>
@@ -202,7 +200,7 @@ export default class UserProfile extends React.Component {
         let downvoteRep = this.downvoteRep;
 
         if (current_account && typeof(BigInt) !== 'undefined') { // Safari < 14
-            const current_rep = BigInt(current_account.get('reputation'));
+            const current_rep = BigInt(current_account.reputation);
             if (current_rep < 0) {
                 cannotUpvote = tt('reputation_panel_jsx.cannot_vote_neg_rep');
                 cannotDownvote = cannotUpvote;
@@ -221,13 +219,11 @@ export default class UserProfile extends React.Component {
 
         let level = null
         if (this.props.gprops) {
-            let { levelUrl, levelTitle, levelName } = getGameLevel(accountImm, this.props.gprops)
+            let { levelUrl, levelTitle, levelName } = getGameLevel(accountObj, this.props.gprops)
             level = (<LiteTooltip t={levelTitle}><img className="GameLevel" src={levelUrl} alt={levelName} /></LiteTooltip>)
         }
 
         let tab_content = null;
-
-        // const global_status = this.props.global.get('status');
 
         let rewardsClass = '', walletClass = '', permissionsClass = '', nftClass = ''
         if (!section || section === 'transfers') {
@@ -239,7 +235,7 @@ export default class UserProfile extends React.Component {
             tab_content = <div>
                 <UserWallet
                     transferDetails={{immediate: hasAllParams, ...query}}
-                    account={accountImm}
+                    account={accountObj}
                     showTransfer={this.props.showTransfer}
                     showPowerdown={this.props.showPowerdown}
                     current_user={current_user}
@@ -251,29 +247,29 @@ export default class UserProfile extends React.Component {
             tab_content = <div>
 
                 <br />
-                {!action && <Assets account={accountImm} isMyAccount={isMyAccount}
+                {!action && <Assets account={accountObj} isMyAccount={isMyAccount}
                     showTransfer={this.props.showTransfer}
                     isS={isS} hideRewardsMe={hideRewardsMe}
                     hideUiaInfo={hideUiaInfo} smallUias={smallUias}
                 />}
-                {action === 'update' && <UpdateAsset account={accountImm} symbol={id.toUpperCase()} />}
-                {action === 'transfer' && <TransferAsset account={accountImm} symbol={id.toUpperCase()} />}
+                {action === 'update' && <UpdateAsset account={accountObj} symbol={id.toUpperCase()} />}
+                {action === 'transfer' && <TransferAsset account={accountObj} symbol={id.toUpperCase()} />}
                 </div>
         } else if( section === 'create-asset' && isMyAccount ) {
             tab_content = <div>
 
                 <br />
-                <CreateAsset account={accountImm} />
+                <CreateAsset account={accountObj} />
                 </div>;
         } else if( section === 'nft-collections' ) {
             nftClass = 'active'
             tab_content = <div>
-                <NFTCollections account={accountImm} isMyAccount={isMyAccount} />
+                <NFTCollections account={accountObj} isMyAccount={isMyAccount} />
                 </div>
         } else if( section === 'nft-tokens' ) {
             nftClass = 'active'
             tab_content = <div>
-                <NFTTokens account={accountImm} isMyAccount={isMyAccount} />
+                <NFTTokens account={accountObj} isMyAccount={isMyAccount} />
                 <MarkNotificationRead fields='nft_receive' account={account.name} />
             </div>
         } else if( section === 'curation-rewards' ) {
@@ -348,7 +344,7 @@ export default class UserProfile extends React.Component {
             tab_content = <div>
 
                 <br />
-                <UserKeys account={accountImm} />
+                <UserKeys account={accountObj} />
                 { isMyAccount && <div><MarkNotificationRead fields='send,receive' account={account.name} /></div>}
                 </div>;
         } 
@@ -356,7 +352,7 @@ export default class UserProfile extends React.Component {
             tab_content = <div>
 
                 <br />
-                <Invites account={accountImm} />
+                <Invites account={accountObj} />
                 </div>;
         } 
         else if( section === 'password' ) {
@@ -364,7 +360,7 @@ export default class UserProfile extends React.Component {
             tab_content = <div>
 
                     <br />
-                    <PasswordReset account={accountImm} />
+                    <PasswordReset account={accountObj} />
                 </div>
         }
         else if( section === 'witness' ) {
@@ -630,20 +626,20 @@ module.exports = {
     path: '@:accountname(/:section)(/:id)(/:action)',
     component: connect(
         state => {
-            const wifShown = state.global.get('UserKeys_wifShown')
-            const current_user = state.user.get('current')
-            const current_account = current_user && state.global.getIn(['accounts', current_user.get('username')])
-            const gprops = state.global.get('props')
+            const wifShown = state.global.UserKeys_wifShown
+            const current_user = state.user.current
+            const current_account = current_user && state.global.accounts && state.global.accounts[current_user.username]
+            const gprops = state.global.props
 
             return {
-                discussions: state.global.get('discussion_idx'),
+                discussions: state.global.discussion_idx,
                 current_user,
                 current_account,
                 gprops,
                 wifShown,
-                loading: state.app.get('loading'),
-                global_status: state.global.get('status'),
-                accounts: state.global.get('accounts'),
+                loading: state.app.loading,
+                global_status: state.global.status,
+                accounts: state.global.accounts,
             };
         },
         dispatch => ({

@@ -1,81 +1,44 @@
-import { fromJS } from 'immutable';
-import createModule from 'redux-modules';
+import { createSlice } from '@reduxjs/toolkit';
 
 import transactionErrorReducer from './Transaction_Error';
+import { removeIn, setIn } from 'app/utils/PlainState';
 
-export default createModule({
+const transactionSlice = createSlice({
     name: 'transaction',
-    initialState: fromJS({
+    initialState: {
         operations: [],
         status: { key: '', error: false, busy: false },
         errors: null,
-    }),
-    transformations: [
-        {
-            action: 'CONFIRM_OPERATION',
-            reducer: (state, { payload }) => {
-                const operation = fromJS(payload.operation);
-                const confirm = payload.confirm;
-                const warning = payload.warning;
-                return state.merge({
-                    show_confirm_modal: true,
-                    confirmBroadcastOperation: operation,
-                    confirmErrorCallback: payload.errorCallback,
-                    confirm,
-                    warning,
-                });
-            },
+    },
+    reducers: {
+        confirmOperation(state, { payload }) {
+            state.show_confirm_modal = true;
+            state.confirmBroadcastOperation = payload.operation;
+            state.confirmErrorCallback = payload.errorCallback;
+            state.confirm = payload.confirm;
+            state.warning = payload.warning;
         },
-        {
-            action: 'HIDE_CONFIRM',
-            reducer: state =>
-                state.merge({
-                    show_confirm_modal: false,
-                    confirmBroadcastOperation: undefined,
-                    confirm: undefined,
-                }),
+        hideConfirm(state) {
+            state.show_confirm_modal = false;
+            state.confirmBroadcastOperation = undefined;
+            state.confirm = undefined;
         },
-        {
-            // An error will end up in QUEUE
-            action: 'BROADCAST_OPERATION',
-            reducer: state => {
-                //, {payload: {type, operation, keys}}
-                return state;
-            },
+        broadcastOperation() {},
+        updateAuthorities() {},
+        updateMeta() {},
+        error: transactionErrorReducer,
+        deleteError(state, { payload: { key } }) {
+            if (state.errors) {
+                delete state.errors[key];
+            }
         },
-        {
-            // An error will end up in QUEUE
-            action: 'UPDATE_AUTHORITIES',
-            reducer: state => state,
+        set(state, { payload: { key, value } }) {
+            setIn(state, Array.isArray(key) ? key : [key], value);
         },
-        {
-            // An error will end up in QUEUE
-            action: 'UPDATE_META',
-            reducer: state => state,
+        remove(state, { payload: { key } }) {
+            removeIn(state, Array.isArray(key) ? key : [key]);
         },
-        {
-            action: 'ERROR',
-            reducer: transactionErrorReducer,
-        },
-        {
-            action: 'DELETE_ERROR',
-            reducer: (state, { payload: { key } }) => {
-                return state.deleteIn(['errors', key]);
-            },
-        },
-        {
-            action: 'SET',
-            reducer: (state, { payload: { key, value } }) => {
-                key = Array.isArray(key) ? key : [key];
-                return state.setIn(key, fromJS(value));
-            },
-        },
-        {
-            action: 'REMOVE',
-            reducer: (state, { payload: { key } }) => {
-                key = Array.isArray(key) ? key : [key];
-                return state.removeIn(key);
-            },
-        },
-    ],
+    },
 });
+
+export default transactionSlice;

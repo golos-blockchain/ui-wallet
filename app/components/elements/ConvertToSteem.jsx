@@ -22,7 +22,7 @@ function floatToAsset(value, from) {
 }
 
 function calcFee(value, cprops) {
-    const percent = cprops ? cprops.toJS().convert_fee_percent : 0;
+    const percent = cprops ? cprops.convert_fee_percent : 0;
     const fee = value.mul(parseInt(percent)).div(10000);
     return fee;
 }
@@ -113,7 +113,7 @@ class ConvertToSteem extends React.Component {
 
         let feePercent = 0;
         if (cprops && from === 'GOLOS') {
-            feePercent = parseFloat(cprops.get('convert_fee_percent')) / 100;
+            feePercent = parseFloat(cprops.convert_fee_percent) / 100;
         }
 
         return (
@@ -204,17 +204,17 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const { from, to } = ownProps;
-        const current = state.user.get('current');
-        const username = current.get('username');
-        const account = state.global.getIn(['accounts', username]);
-        const balance = account.get('balance');
-        const sbd_balance = account.get('sbd_balance');
-        const cprops = state.global.get('cprops');
+        const current = state.user.current;
+        const username = current.username;
+        const account = state.global.accounts && state.global.accounts[username];
+        const balance = account.balance;
+        const sbd_balance = account.sbd_balance;
+        const cprops = state.global.cprops;
         const max = parseFloat(Asset(from === DEBT_TICKER ? sbd_balance : balance).amountFloat);
         return {
             ...ownProps,
             owner: username,
-            feed: state.global.get('feed_price').toJS(),
+            feed: state.global.feed_price,
             cprops,
             maxBalance: max,
         };

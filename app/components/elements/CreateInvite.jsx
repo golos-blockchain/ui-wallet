@@ -71,7 +71,7 @@ class CreateInvite extends Component {
 
     initForm(props) {
         const insufficientFunds = (amount) => {
-            const balanceValue = props.account.get('balance')
+            const balanceValue = props.account.balance
             if(!balanceValue) return false
             return parseFloat(amount) > parseFloat(balanceValue.split(' ')[0])
         }
@@ -124,7 +124,7 @@ class CreateInvite extends Component {
 
     balanceValue() {
         const {account} = this.props
-        return formatAsset(account.get('balance'), true, false, '')
+        return formatAsset(account.balance, true, false, '')
     }
 
     assetBalanceClick = e => {
@@ -327,12 +327,12 @@ const AssetBalance = ({onClick, balanceValue}) =>
 export default connect(
     (state, ownProps) => {
         const {account} = ownProps
-        const accountName = account.get('name')
-        const current = state.user.get('current')
-        const username = current && current.get('username')
+        const accountName = account.name
+        const current = state.user.current
+        const username = current && current.username
         const isMyAccount = username === accountName
-        const cprops = state.global.get('cprops');
-        const min_invite_balance = cprops && cprops.get('min_invite_balance')
+        const cprops = state.global.cprops;
+        const min_invite_balance = cprops && cprops.min_invite_balance
         return {...ownProps, isMyAccount, accountName, min_invite_balance}
     },
     dispatch => ({

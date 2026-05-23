@@ -32,7 +32,7 @@ class DelegateVestingSharesInfo extends React.Component {
             return <center><LoadingIndicator type="circle" /></center>
 
         let isMyAccount = currentUser === account
-        const delegatedVesting = delegated_vesting.toJS()
+        const delegatedVesting = delegated_vesting
 
         const rows = Object.keys(delegatedVesting).map(k => {
             const c = delegatedVesting[k]
@@ -124,21 +124,23 @@ export default connect(
 
     (state, ownProps) => {
         const { account, type } = ownProps
-        const delegated_vesting = state.global.getIn([ 'accounts', account, `${type}_vesting` ])
-        const gprops = state.global.get('props').toJS()
-        const current_user = state.user.get('current')
+        const delegated_vesting = state.global.accounts &&
+            state.global.accounts[account] &&
+            state.global.accounts[account][`${type}_vesting`]
+        const gprops = state.global.props
+        const current_user = state.user.current
 
         return {
             ...ownProps,
             delegated_vesting,
             gprops,
-            currentUser: current_user ? current_user.get('username') : null
+            currentUser: current_user ? current_user.username : null
         }
     },
 
     dispatch => ({
         fetchVestingDelegations: (account, type) => {
-            dispatch({ type: 'global/FETCH_VESTING_DELEGATIONS', payload: { account, type } })
+            dispatch(g.actions.fetchVestingDelegations({ account, type }))
         },
 
         cancelDelegation: (delegator, delegatee, success) => {

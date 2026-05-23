@@ -9,6 +9,7 @@ import { Asset } from 'golos-lib-js/lib/utils'
 
 import transaction from 'app/redux/Transaction';
 import user from 'app/redux/User'
+import market from 'app/redux/MarketReducer'
 import {longToAsset} from 'app/utils/ParsersAndFormatters';
 import TransactionError from 'app/components/elements/TransactionError';
 import Icon from 'app/components/elements/Icon';
@@ -363,7 +364,7 @@ class Market extends Component {
             }, {});
         }
 
-        let account = this.props.account ? this.props.account.toJS() : null;
+        let account = this.props.account || null;
         let open_orders = this.props.open_orders;
         let orderbook = aggOrders(normalizeOrders(this.props.orderbook));
 
@@ -641,21 +642,21 @@ class Market extends Component {
 
 export default connect(
     state => {
-        const username = state.user.getIn(['current', 'username']);
-        const assets = state.market.get('assets') || null
-        let feed = state.global.get('feed_price')
-        feed = feed ? feed.toJS() : null
+        const current = state.user.current;
+        const username = current && current.username;
+        const assets = state.market.assets || null
+        let feed = state.global.feed_price
         return {
-            orderbook: state.market.get('orderbook'),
+            orderbook: state.market.orderbook,
             open_orders: process.env.BROWSER
-                ? state.market.get('open_orders')
+                ? state.market.open_orders
                 : [],
-            ticker: state.market.get('ticker'),
+            ticker: state.market.ticker,
             account: username
-                ? state.global.getIn(['accounts', username])
+                ? state.global.accounts && state.global.accounts[username]
                 : null,
             assets,
-            history: state.market.get('history'),
+            history: state.market.history,
             user: username,
             feed,
         };
@@ -672,10 +673,7 @@ export default connect(
             });
         },
         reload: (username, pathname) => {
-            dispatch({
-                type: 'market/UPDATE_MARKET',
-                payload: { username: username, pathname: pathname },
-            });
+            dispatch(market.actions.updateMarket({ username: username, pathname: pathname }));
         },
         cancelOrder: (owner, orderid, successCallback) => {
             const confirm = tt('market_jsx.order_cancel_confirm', {

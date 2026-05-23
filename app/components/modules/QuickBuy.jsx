@@ -3,7 +3,6 @@ import { connect, } from 'react-redux'
 import { Link } from 'react-router'
 import tt from 'counterpart'
 import { api } from 'golos-lib-js'
-import { Map, } from 'immutable'
 
 import Author from 'app/components/elements/Author'
 import Icon from 'app/components/elements/Icon'
@@ -277,7 +276,7 @@ class QuickBuy extends React.Component {
 export default connect(
     // mapStateToProps
     (state, ownProps) => {
-        const currentUser = state.user.getIn(['current'])
+        const currentUser = state.user.current
         return { ...ownProps, currentUser, };
     },
     dispatch => ({

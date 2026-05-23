@@ -120,7 +120,7 @@ class WitnessProps extends React.Component {
             instance: this,
             name: 'witnessProps',
             fields: this.prop_names,
-            initialValues: props.witness_obj.toJS().props,
+            initialValues: props.witness_obj.props,
             validation: values => ({
             })
         });
@@ -197,7 +197,6 @@ class WitnessProps extends React.Component {
         const {
             props: {current_user, json_metadata},
         } = this;
-        //const username = current_user ? current_user.get('username') : null
 
         const {state} = this
 
@@ -264,7 +263,7 @@ export default connect(
         const { account } = props;
 
         return {
-                witness_obj: state.global.getIn(['witnesses', account.name])
+                witness_obj: state.global.witnesses && state.global.witnesses[account.name]
             };
     },
     // mapDispatchToProps

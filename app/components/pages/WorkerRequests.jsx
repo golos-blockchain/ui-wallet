@@ -75,7 +75,7 @@ class WorkerRequests extends React.Component {
       new_state.current_author = routeParams.username;
       new_state.current_permlink = routeParams.slug;
     }
-    let total_vesting_shares = this.props.gprops.get('total_vesting_shares');
+    let total_vesting_shares = this.props.gprops.total_vesting_shares;
     total_vesting_shares = parseInt(total_vesting_shares.split(' ')[0].replace('.', ''));
     this.setState({
       total_vesting_shares,
@@ -111,8 +111,8 @@ class WorkerRequests extends React.Component {
     if (start_author) results = results.slice(1);
     const last = results.slice(-1)[0];
     for (let req of results) {
-      req.upvote_total = vestsToSteem(longToAsset(req.upvote_total, 'VESTS', 6), this.props.gprops.toJS());
-      const stake_total = vestsToSteem(longToAsset(req.stake_total, 'VESTS', 6), this.props.gprops.toJS());
+      req.upvote_total = vestsToSteem(longToAsset(req.upvote_total, 'VESTS', 6), this.props.gprops);
+      const stake_total = vestsToSteem(longToAsset(req.stake_total, 'VESTS', 6), this.props.gprops);
       req.downvote_total = stake_total - req.upvote_total;
       req.upvote_percent = parseInt(req.upvote_total / stake_total * 100);
       req.downvote_percent = 100 - req.upvote_percent;
@@ -382,16 +382,16 @@ class WorkerRequests extends React.Component {
 
 export default connect(
     state => {
-        const gprops = state.global.get('props');
-        const currentUser = state.user.get('current');
+        const gprops = state.global.props;
+        const currentUser = state.user.current;
         let account = null;
         let posting_key = null;
         if (currentUser) {
-          account = currentUser.get('username');
-          posting_key = currentUser.get('private_keys').get('posting_private');
+          account = currentUser.username;
+          posting_key = currentUser.private_keys && currentUser.private_keys.posting_private;
         }
-        const cprops = state.global.get('cprops');
-        const approve_min_percent = cprops ? cprops.get('worker_request_approve_min_percent') : 100
+        const cprops = state.global.cprops;
+        const approve_min_percent = cprops ? cprops.worker_request_approve_min_percent : 100
         return {
             gprops,
             account,

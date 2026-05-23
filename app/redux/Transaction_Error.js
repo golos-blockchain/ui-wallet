@@ -1,4 +1,3 @@
-import { fromJS, Map } from 'immutable';
 import tt from 'counterpart';
 
 export default function transactionErrorReducer(
@@ -115,12 +114,10 @@ export default function transactionErrorReducer(
             return state;
         }
 
-        if (state.hasIn(['TransactionError', type + '_listener'])) {
+        if (state.TransactionError && state.TransactionError[type + '_listener']) {
             if (!hideErrors) {
-                state = state.setIn(
-                    ['TransactionError', type],
-                    fromJS({ key: errorKey, exception: errorStr })
-                );
+                if (!state.TransactionError) state.TransactionError = {};
+                state.TransactionError[type] = { key: errorKey, exception: errorStr };
             }
         } else {
             if (error.message) {
@@ -189,13 +186,10 @@ export default function transactionErrorReducer(
             }
 
             if (!hideErrors) {
-                state = state.update('errors', errors => {
-                    if (errors) {
-                        return errors.set(errorKey, errorStr);
-                    } else {
-                        return Map({ [errorKey]: errorStr });
-                    }
-                });
+                if (!state.errors) {
+                    state.errors = {};
+                }
+                state.errors[errorKey] = errorStr;
             }
         }
     }

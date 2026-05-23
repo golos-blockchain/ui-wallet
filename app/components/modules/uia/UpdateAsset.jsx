@@ -179,7 +179,7 @@ class UpdateAsset extends Component {
     render() {
         const {props: {account, isMyAccount, cprops, symbol, asset}} = this;
         const { initialValues, successMessage, errorMessage, } = this.state;
-        const account_name = account.get('name');
+        const account_name = account.name;
         if (!initialValues) return (<div></div>)
 
         return (<div>
@@ -315,14 +315,14 @@ const AssetBalance = ({onClick, balanceValue}) =>
 export default connect(
     (state, ownProps) => {
         const {account} = ownProps
-        const accountName = account.get('name')
-        const current = state.user.get('current')
-        const username = current && current.get('username')
+        const accountName = account.name
+        const current = state.user.current
+        const username = current && current.username
         const isMyAccount = username === accountName
-        const cprops = state.global.get('cprops');
+        const cprops = state.global.cprops;
         let asset = null
-        let assets = state.global.get('assets')
-        asset = assets && assets.toJS()[ownProps.symbol]
+        let assets = state.global.assets
+        asset = assets && assets[ownProps.symbol]
         return {...ownProps, isMyAccount, accountName,
             asset}
     },

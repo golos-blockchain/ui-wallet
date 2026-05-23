@@ -63,7 +63,7 @@ export default connect(
     (state, ownProps) => {
         // const {text} = ownProps
         const formId = ownProps.formId
-        const metaLinkData = state.global.getIn(['metaLinkData', formId])
+        const metaLinkData = state.global.metaLinkData && state.global.metaLinkData[formId]
         return {metaLinkData, ...ownProps};
     },
     dispatch => ({

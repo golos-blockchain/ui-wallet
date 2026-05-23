@@ -8,6 +8,7 @@ import Dropzone from 'react-dropzone'
 import Expandable from 'app/components/elements/Expandable'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import transaction from 'app/redux/Transaction'
+import user from 'app/redux/User'
 
 const UINT32_MAX = '4294967295'
 
@@ -71,7 +72,7 @@ class CreateNFTCollection extends Component {
             errorMessage: ''
         })
         const { currentUser } = this.props
-        const username = currentUser.get('username')
+        const username = currentUser.username
         await this.props.createCollection(values.name, values.json_metadata, values.max_token_count, currentUser, () => {
             this.props.fetchState()
             this.props.onClose()
@@ -424,21 +425,18 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         const {locationBeforeTransitions: {pathname}} = state.routing;
-        let currentUser = ownProps.currentUser || state.user.getIn(['current']) 
+        let currentUser = ownProps.currentUser || state.user.current
         if (!currentUser) {
             const currentUserNameFromRoute = pathname.split(`/`)[1].substring(1);
-            currentUser = Map({username: currentUserNameFromRoute});
+            currentUser = {username: currentUserNameFromRoute};
         }
-        const currentAccount = currentUser && state.global.getIn(['accounts', currentUser.get('username')]);
+        const currentAccount = currentUser && state.global.accounts && state.global.accounts[currentUser.username];
         return { ...ownProps, currentUser, currentAccount, };
     },
 
     dispatch => ({
         uploadImage: (file, progress) => {
-            dispatch({
-                type: 'user/UPLOAD_IMAGE',
-                payload: {file, progress},
-            })
+            dispatch(user.actions.uploadImage({file, progress}))
         },
         notify: (message, dismiss = 3000) => {
             dispatch({type: 'ADD_NOTIFICATION', payload: {
@@ -450,7 +448,7 @@ export default connect(
         createCollection: (
             name, json_metadata, max_token_count, currentUser, successCallback, errorCallback
         ) => {
-            const username = currentUser.get('username')
+            const username = currentUser.username
             let json = JSON.parse(json_metadata)
             json = JSON.stringify(json)
             const operation = {

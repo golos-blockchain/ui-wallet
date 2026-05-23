@@ -81,7 +81,7 @@ class Assets extends Component {
 
     render() {
         const { account, isMyAccount, isS, hideRewardsMe, hideUiaInfo, smallUias } = this.props
-        const account_name = account.get('name');
+        const account_name = account.name;
 
         const { assetRules, showAssetRules, } = this.state;
 
@@ -123,7 +123,7 @@ class Assets extends Component {
             if (!mutedUIA) mutedUIA = [];
         }
 
-        const assets = this.props.assets.toJS()
+        const assets = this.props.assets
 
         const assetsNorm = normalizeAssets(assets)
 
@@ -375,7 +375,7 @@ class Assets extends Component {
 export default connect(
     (state, ownProps) => {
         return {...ownProps,
-            assets: state.global.get('assets')
+            assets: state.global.assets
         }
     },
     dispatch => ({

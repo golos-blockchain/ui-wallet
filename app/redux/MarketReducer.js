@@ -1,59 +1,48 @@
-import {Map} from 'immutable';
-import createModule from 'redux-modules';
+import { createSlice } from '@reduxjs/toolkit';
 
-
-export default createModule({
+const marketSlice = createSlice({
     name: 'market',
-    initialState: Map({status: {}}),
-    transformations: [
-        {
-            action: 'RECEIVE_ORDERBOOK',
-            reducer: (state, action) => {
-                return state.set('orderbook', action.payload);
-            }
+    initialState: { status: {} },
+    reducers: {
+        updateMarket() {},
+        receiveOrderbook(state, action) {
+            state.orderbook = action.payload;
         },
-        {
-            action: 'RECEIVE_TICKER',
-            reducer: (state, action) => {
-                return state.set('ticker', action.payload);
-            }
+        receiveTicker(state, action) {
+            state.ticker = action.payload;
         },
-        {
-            action: 'RECEIVE_OPEN_ORDERS',
-            reducer: (state, action) => {
-                return state.set('open_orders', action.payload);
-            }
+        receiveOpenOrders(state, action) {
+            state.open_orders = action.payload;
         },
-        {
-            action: 'UPSERT_ASSETS',
-            reducer: (state, action) => {
-                const assets = state.get('assets')
-                if (assets) {
-                    let action_assets = Object.entries(action.payload)
-                    let state_assets = Object.entries(assets)
-                    let more_assets = action_assets.length > state_assets.length ? action_assets : state_assets
-                    let lower_assets = action_assets.length > state_assets.length ? assets : action.payload
+        upsertAssets(state, action) {
+            if (state.assets) {
+                const actionAssets = Object.entries(action.payload);
+                const stateAssets = Object.entries(state.assets);
+                const moreAssets =
+                    actionAssets.length > stateAssets.length
+                        ? actionAssets
+                        : stateAssets;
+                const lowerAssets =
+                    actionAssets.length > stateAssets.length
+                        ? state.assets
+                        : action.payload;
 
-                    let new_assets = {}
-                    for (let [key, value] of more_assets) {
-                        new_assets[key] = {...value, ...lower_assets[key]}
-                    }
-                    return state.set('assets', new_assets);
+                const newAssets = {};
+                for (const [key, value] of moreAssets) {
+                    newAssets[key] = { ...value, ...lowerAssets[key] };
                 }
-                return state.set('assets', action.payload);
+                state.assets = newAssets;
+            } else {
+                state.assets = action.payload;
             }
         },
-        {
-            action: 'RECEIVE_TRADE_HISTORY',
-            reducer: (state, action) => {
-                return state.set('history', action.payload);
-            }
+        receiveTradeHistory(state, action) {
+            state.history = action.payload;
         },
-        {
-            action: 'APPEND_TRADE_HISTORY',
-            reducer: (state, action) => {
-                return state.set('history', [...action.payload, ...state.get('history')]);
-            }
-        }
-    ]
+        appendTradeHistory(state, action) {
+            state.history = [...action.payload, ...(state.history || [])];
+        },
+    },
 });
+
+export default marketSlice;

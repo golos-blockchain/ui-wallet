@@ -191,16 +191,16 @@ class Powerdown extends React.Component {
 
 export default connect(
     (state, ownProps) => {
-        const values = state.user.get('powerdown_defaults');
-        const account = values.get('account');
-        const to_withdraw = parseFloat(values.get('to_withdraw')) / 1e6;
-        const withdrawn = parseFloat(values.get('withdrawn')) / 1e6;
+        const values = state.user.powerdown_defaults || {};
+        const account = values.account;
+        const to_withdraw = parseFloat(values.to_withdraw) / 1e6;
+        const withdrawn = parseFloat(values.withdrawn) / 1e6;
         const vesting_shares = assetFloat(
-            values.get('vesting_shares'),
+            values.vesting_shares,
             VEST_TICKER
         );
         const delegated_vesting_shares = assetFloat(
-            values.get('delegated_vesting_shares'),
+            values.delegated_vesting_shares,
             VEST_TICKER
         );
         const available_shares =
@@ -215,7 +215,7 @@ export default connect(
             to_withdraw,
             vesting_shares,
             withdrawn,
-            gprops: state.global.get('props').toJS()
+            gprops: state.global.props
         };
     },
 

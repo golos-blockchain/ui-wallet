@@ -67,7 +67,7 @@ class NFTAuction extends Component {
     getToken = () => {
         const { nft_tokens, tokenIdx } = this.props
         if (tokenIdx !== undefined) {
-            return nft_tokens.toJS().data[tokenIdx]
+            return nft_tokens.data[tokenIdx]
         }
         return this.props.token
     }
@@ -82,7 +82,7 @@ class NFTAuction extends Component {
         const token = this.getToken()
         const { token_id } = token
 
-        const username = currentUser.get('username')
+        const username = currentUser.username
 
         let expirationSec = parseInt(values.expiration)
         if (!isDev()) {
@@ -247,7 +247,7 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         return { ...ownProps,
-            nft_tokens: state.global.get('nft_tokens'),
+            nft_tokens: state.global.nft_tokens,
         }
     },
 

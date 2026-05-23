@@ -1,5 +1,5 @@
 import PureRenderMixin from 'react-addons-pure-render-mixin'
-import {Iterable} from 'immutable'
+import { toPlain } from 'app/utils/PlainState'
 
 /**
     Wrapper for PureRenderMixin.
@@ -30,7 +30,7 @@ export default function (instance, name) {
 export function compare(name, a, b) {
     const aKeys = new Set(a && Object.keys(a))
     const bKeys = new Set(b && Object.keys(b))
-    const ab = new Set([...aKeys, ...aKeys])
+    const ab = new Set([...aKeys, ...bKeys])
     ab.forEach(key => {
         const hasA = aKeys.has(key)
         const hasB = bKeys.has(key)
@@ -41,10 +41,10 @@ export function compare(name, a, b) {
         const aKey = a[key]
         const bKey = b[key]
         if (typeof aKey !== 'function' && typeof bKey !== 'function') { //functions are too verbose
-            console.log(key, 'was', a && toJS(aKey))
-            console.log(key, 'is', b && toJS(bKey))
+            console.log(key, 'was', a && toComparable(aKey))
+            console.log(key, 'is', b && toComparable(bKey))
         }
     })
 }
 
-const toJS = o => (Iterable.isIterable(o) ? o.toJS() : o)
+const toComparable = o => toPlain(o)

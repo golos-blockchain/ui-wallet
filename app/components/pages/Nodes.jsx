@@ -3,14 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import ByteBuffer from 'bytebuffer';
-import { is } from 'immutable';
 import tt from 'counterpart';
-import links from 'app/utils/Links';
-import Button from 'app/components/elements/Button';
-import Icon from 'app/components/elements/Icon';
-import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper';
-import transaction from 'app/redux/Transaction';
-import g from 'app/redux/GlobalReducer';
 import "./Nodes.scss";
 
 const Long = ByteBuffer.Long;
@@ -29,9 +22,9 @@ class Nodes extends Component {
     }
 
     render() {
-        const sorted_witnesses = this.props.witnesses.sort((a, b) =>
-            Long.fromString(String(b.get('votes'))).subtract(
-                Long.fromString(String(a.get('votes'))).toString()
+        const sorted_witnesses = Object.values(this.props.witnesses).sort((a, b) =>
+            Long.fromString(String(b.votes)).subtract(
+                Long.fromString(String(a.votes)).toString()
             )
         );
 
@@ -41,10 +34,10 @@ class Nodes extends Component {
         let seed_raw_nodes = [];
 
         sorted_witnesses.forEach(item => {
-            const owner = item.get('owner');
-            const acc = this.props.accounts.get(owner);
+            const owner = item.owner;
+            const acc = this.props.accounts[owner];
             try {
-              const metadata = JSON.parse(acc.get('json_metadata'));
+              const metadata = JSON.parse(acc.json_metadata);
               if (metadata.witness) {
                 let api_node = metadata.witness.api_node;
                 let seed_node = metadata.witness.seed_node;
@@ -101,8 +94,8 @@ class Nodes extends Component {
 export default connect(
     state => {
         return {
-            accounts: state.global.get('accounts'),
-            witnesses: state.global.get('witnesses'),
+            accounts: state.global.accounts,
+            witnesses: state.global.witnesses,
         };
     },
     dispatch => {

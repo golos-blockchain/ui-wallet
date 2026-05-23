@@ -106,7 +106,7 @@ class NFTPlaceOfferBet extends Component {
     getToken = () => {
         const { nft_tokens, tokenIdx } = this.props
         if (tokenIdx !== undefined) {
-            return nft_tokens.toJS().data[tokenIdx]
+            return nft_tokens.data[tokenIdx]
         }
         return this.props.token
     }
@@ -121,7 +121,7 @@ class NFTPlaceOfferBet extends Component {
         const token = this.getToken()
         const { token_id, name } = token
 
-        const username = currentUser.get('username')
+        const username = currentUser.username
 
         const order_id = this.isBet() ? 0 : generateOrderID()
         await this.props.placeBet(token_id, values.price, name, order_id, username, () => {
@@ -277,7 +277,7 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         return { ...ownProps,
-            nft_tokens: state.global.get('nft_tokens'),
+            nft_tokens: state.global.nft_tokens,
         }
     },
 

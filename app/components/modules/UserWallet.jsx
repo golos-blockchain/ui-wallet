@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import g from 'app/redux/GlobalReducer';
 import tt from 'counterpart';
-import {List} from 'immutable';
 import { libs, } from 'golos-lib-js'
 import { Asset, } from 'golos-lib-js/lib/utils'
 import CloseButton from 'react-foundation-components/lib/global/close-button'
@@ -45,7 +44,7 @@ class UserWallet extends React.Component {
         if (!account || this.state.price_rub) {
             return
         }
-        const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
+        const accumulative_balance_steem = parseFloat(account.accumulative_balance.split(' ')[0])
         const pr = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
         this.setState({
             price_rub: pr.price_rub,
@@ -90,7 +89,7 @@ class UserWallet extends React.Component {
 
     readNotifications = (account) => {
         setTimeout(() => {
-            markNotificationReadWs(account.get('name'), ['delegate_vs'])
+            markNotificationReadWs(account.name, ['delegate_vs'])
         }, 500)
     }
 
@@ -106,18 +105,18 @@ class UserWallet extends React.Component {
 
         if (!account || !this.props.gprops) return null;
 
-        const gprops = this.props.gprops.toJS();
-        const vesting_steem = vestsToSteem(account.get('vesting_shares'), gprops);
-        const received_vesting_shares = vestsToSteem(account.get('received_vesting_shares'), gprops);
-        const delegated_vesting_shares = vestsToSteem(account.get('delegated_vesting_shares'), gprops);
-        const emission_received_vesting_shares = vestsToSteem(account.get('emission_received_vesting_shares'), gprops)
-        const emission_delegated_vesting_shares = vestsToSteem(account.get('emission_delegated_vesting_shares'), gprops)
+        const gprops = this.props.gprops;
+        const vesting_steem = vestsToSteem(account.vesting_shares, gprops);
+        const received_vesting_shares = vestsToSteem(account.received_vesting_shares, gprops);
+        const delegated_vesting_shares = vestsToSteem(account.delegated_vesting_shares, gprops);
+        const emission_received_vesting_shares = vestsToSteem(account.emission_received_vesting_shares, gprops)
+        const emission_delegated_vesting_shares = vestsToSteem(account.emission_delegated_vesting_shares, gprops)
         const total_received_vesting_shares = (parseFloat(received_vesting_shares) + parseFloat(emission_received_vesting_shares)).toFixed(3)
         const total_delegated_vesting_shares = (parseFloat(delegated_vesting_shares) + parseFloat(emission_delegated_vesting_shares)).toFixed(3)
 
-        let isMyAccount = current_user && current_user.get('username') === account.get('name');
+        let isMyAccount = current_user && current_user.username === account.name;
         
-        const lastActiveOperation = account.get('last_active_operation');
+        const lastActiveOperation = account.last_active_operation;
         const lastActiveOp = new Date(lastActiveOperation).getTime();
         const accountIdleness = lastActiveOp < new Date().setDate(new Date().getDate() - 180);
 
@@ -126,21 +125,21 @@ class UserWallet extends React.Component {
         const showTransfer = (asset, transferType, e) => {
             e.preventDefault();
             this.props.showTransfer({
-                to: (isMyAccount ? null : account.get('name')),
+                to: (isMyAccount ? null : account.name),
                 asset, transferType
             });
         };
 
-        const savings_balance = account.get('savings_balance');
-        const savings_sbd_balance = account.get('savings_sbd_balance');
+        const savings_balance = account.savings_balance;
+        const savings_sbd_balance = account.savings_sbd_balance;
 
         const powerDown = (cancel, e) => {
             e.preventDefault()
-            const name = account.get('name');
+            const name = account.name;
             if (cancel) {
                 const vesting_shares = cancel
                     ? '0.000000 GESTS'
-                    : account.get('vesting_shares');
+                    : account.vesting_shares;
                 this.setState({toggleDivestError: null});
                 const errorCallback = e2 => {
                     this.setState({ toggleDivestError: e2.toString() })
@@ -155,14 +154,11 @@ class UserWallet extends React.Component {
                     successCallback
                 })
             } else {
-                const to_withdraw = account.get('to_withdraw');
-                const withdrawn = account.get('withdrawn');
-                const vesting_shares = account.get('vesting_shares');
-                let delegated_vesting_shares = Asset(account.get(
-                    'delegated_vesting_shares'
-                )).plus(Asset(account.get(
-                    'emission_delegated_vesting_shares'
-                ))).toString()
+                const to_withdraw = account.to_withdraw;
+                const withdrawn = account.withdrawn;
+                const vesting_shares = account.vesting_shares;
+                let delegated_vesting_shares = Asset(account.delegated_vesting_shares)
+                    .plus(Asset(account.emission_delegated_vesting_shares)).toString()
                 this.props.showPowerdown({
                     account: name,
                     to_withdraw,
@@ -175,19 +171,19 @@ class UserWallet extends React.Component {
 
         const showDelegateVesting = (e) => {
             e.preventDefault()
-            const name = account.get('name')
+            const name = account.name
             this.props.delegateVesting(name)
         }
 
         const showDelegateVestingInfo = (type, e) => {
             e.preventDefault()
-            const name = account.get('name')
+            const name = account.name
             this.props.showDelegatedVesting(name, type)
         }
 
         const claim = (amount, e) => {
             e.preventDefault()
-            const name = account.get('name')
+            const name = account.name
             this.props.claim(name, amount)
         }
 
@@ -195,7 +191,7 @@ class UserWallet extends React.Component {
         let savings_pending = 0, savings_sbd_pending = 0;
         if(savings_withdraws) {
             savings_withdraws.forEach(withdraw => {
-                const [amount, asset] = withdraw.get('amount').split(' ');
+                const [amount, asset] = withdraw.amount.split(' ');
                 if(asset === LIQUID_TICKER)
                     savings_pending += parseFloat(amount);
                 else {
@@ -208,18 +204,18 @@ class UserWallet extends React.Component {
         // Sum conversions
         let conversionValue = 0;
         const currentTime = (new Date()).getTime();
-        const conversions = account.get('other_history', List()).reduce( (out, item) => {
-            if(item.getIn([1, 'op', 0], "") !== 'convert') return out;
+        const conversions = (account.other_history || []).reduce( (out, item) => {
+            if(item[1].op[0] !== 'convert') return out;
 
-            const timestamp = new Date(item.getIn([1, 'timestamp'])).getTime();
+            const timestamp = new Date(item[1].timestamp).getTime();
             const finishTime = timestamp + (86400000 * 3.5); // add 3.5day conversion delay
             if(finishTime < currentTime) return out;
 
-            const amount = parseFloat(item.getIn([1, 'op', 1, 'amount']).replace(' ' + DEBT_TICKER, ''));
+            const amount = parseFloat(item[1].op[1].amount.replace(' ' + DEBT_TICKER, ''));
             conversionValue += amount;
 
             return out.concat([
-                <div key={item.get(0)}>
+                <div key={item[0]}>
                     <LiteTooltip t={tt('userwallet_jsx.conversion_complete_tip') + ": " + new Date(finishTime).toLocaleString()}>
                         <span>(+{tt('userwallet_jsx.in_conversion', {amount: numberWithCommas(amount.toFixed(3)) + ' ' + DEBT_TICKER})})</span>
                     </LiteTooltip>
@@ -227,32 +223,32 @@ class UserWallet extends React.Component {
             ]);
         }, [])
 
-        const tip_balance_steem = parseFloat(account.get('tip_balance').split(' ')[0]);
-        const accumulative_balance_steem = parseFloat(account.get('accumulative_balance').split(' ')[0])
-        const balance_steem = parseFloat(account.get('balance').split(' ')[0]);
+        const tip_balance_steem = parseFloat(account.tip_balance.split(' ')[0]);
+        const accumulative_balance_steem = parseFloat(account.accumulative_balance.split(' ')[0])
+        const balance_steem = parseFloat(account.balance.split(' ')[0]);
         const saving_balance_steem = parseFloat(savings_balance.split(' ')[0]);
-        const divesting = parseFloat(account.get('vesting_withdraw_rate').split(' ')[0]) > 0.000000;
-        const sbd_balance = parseFloat(account.get('sbd_balance'))
+        const divesting = parseFloat(account.vesting_withdraw_rate.split(' ')[0]) > 0.000000;
+        const sbd_balance = parseFloat(account.sbd_balance)
         const sbd_balance_savings = parseFloat(savings_sbd_balance.split(' ')[0]);
 
-        const sbdOrders = parseFloat(account.get('market_sbd_balance'));
-        const steemOrders = parseFloat(account.get('market_balance'));
-        let nftHold = account.get('nft_hold_balance')
+        const sbdOrders = parseFloat(account.market_sbd_balance);
+        const steemOrders = parseFloat(account.market_balance);
+        let nftHold = account.nft_hold_balance
         nftHold = nftHold && Asset(nftHold)
 
         /// transfer log
         let idx = 0
-        const transfer_log = account.get('transfer_history', [])
+        const transfer_log = (account.transfer_history || [])
         .map(item => {
-            const data = item.getIn([1, 'op', 1]);
-            const type = item.getIn([1, 'op', 0]);
+            const data = item[1].op[1];
+            const type = item[1].op[0];
             
             // Filter out rewards
             if (type === "curation_reward" || type === "author_reward" || type === "donate") return null;
             
             if(data.sbd_payout === '0.000 GBG' && data.vesting_payout === '0.000000 GESTS') return null
 
-            return <TransferHistoryRow key={idx++} op={item.toJS()} context={account.get('name')} />;
+            return <TransferHistoryRow key={idx++} op={item} context={account.name} />;
         }).filter(el => !!el).reverse();
 
         let tip_menu = [
@@ -285,7 +281,7 @@ class UserWallet extends React.Component {
             { value: tt('userwallet_jsx.transfer_to_savings'), link: '#', onClick: showTransfer.bind( this, DEBT_TICKER, 'Transfer to Savings' ) },
             { value: tt('userwallet_jsx.convert_to_LIQUID_TOKEN', {LIQUID_TOKEN}), link: '#', onClick: showConvertDialog.bind(this, DEBT_TICKER, LIQUID_TICKER) },
         ]
-        const isWithdrawScheduled = new Date(account.get('next_vesting_withdrawal') + 'Z').getTime() > Date.now()
+        const isWithdrawScheduled = new Date(account.next_vesting_withdrawal + 'Z').getTime() > Date.now()
 
         let steem_balance_str = numberWithCommas(balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
         let steem_tip_balance_str = numberWithCommas(tip_balance_steem.toFixed(3)) + ' ' + LIQUID_TICKER;
@@ -320,7 +316,7 @@ class UserWallet extends React.Component {
             EMISSION_STAKE = 0
         }
 
-        const vesting_withdraw_rate_str = vestsToSteem(account.get('vesting_withdraw_rate'), gprops);
+        const vesting_withdraw_rate_str = vestsToSteem(account.vesting_withdraw_rate, gprops);
 
         const showOpenOrders = (e, sym) => {
             e.preventDefault();
@@ -334,7 +330,7 @@ class UserWallet extends React.Component {
 
         const showPowerCalc = (e) => {
             e.preventDefault()
-            this.props.showPowerCalc({ account: account.get('name') })
+            this.props.showPowerCalc({ account: account.name })
         }
 
         const { min_gp_to_curate } = this.props
@@ -430,7 +426,7 @@ class UserWallet extends React.Component {
             claimBtn = <button
                 className="Wallet__claim_button button tiny"
                 disabled={claim_disabled}
-                onClick={claim.bind(this, account.get('accumulative_balance'))}
+                onClick={claim.bind(this, account.accumulative_balance)}
             >
                 {tt('g.claim')}
             </button>
@@ -515,7 +511,7 @@ class UserWallet extends React.Component {
                                 tt('g.delegated_vesting', {VESTING_TOKEN}))}
                             </div>
                         ) : null}
-                    {isWithdrawScheduled && <div><small><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;{vesting_withdraw_rate_str} {LIQUID_TICKER}&nbsp;<TimeAgoWrapper date={account.get('next_vesting_withdrawal')} /></small></div>}
+                    {isWithdrawScheduled && <div><small><Icon name="hf/hf11" /> {tt('userwallet_jsx.next_power_down_to_happen')}&nbsp;{vesting_withdraw_rate_str} {LIQUID_TICKER}&nbsp;<TimeAgoWrapper date={account.next_vesting_withdrawal} /></small></div>}
                 </div>
             </div>
             <div className="UserWallet__balance row">
@@ -549,7 +545,7 @@ class UserWallet extends React.Component {
                     }
                     {(isMyAccount && nftHold && nftHold.gt(0))
                         ? <div style={{paddingRight: isMyAccount ? "0.85rem" : null}}>
-                            <Link to={'/@' + account.get('name') + '/nft-orders'} onClick={e => showNftOrders(e)}>
+                            <Link to={'/@' + account.name + '/nft-orders'} onClick={e => showNftOrders(e)}>
                                 <small>{wrapTooltip(<React.Fragment>+ {nftHold.toString()}</React.Fragment>,
                                     tt('g.nft_orders'))}
                                 </small>
@@ -638,11 +634,11 @@ class UserWallet extends React.Component {
             </div>
             <div className="UserWallet__balance row zebra">
                 <div className="column small-12 medium-8">
-                    {tt('userwallet_jsx.assets_issued')} &nbsp;<Link to={"/@" + account.get('name') + "/assets"}><img src={require("app/assets/images/ymusdt.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymhive.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymprizm.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymrub.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymsteem.jpg")} width="24" height="24" /></Link>&nbsp; {tt('userwallet_jsx.others')}...<br />
+                    {tt('userwallet_jsx.assets_issued')} &nbsp;<Link to={"/@" + account.name + "/assets"}><img src={require("app/assets/images/ymusdt.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymhive.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymprizm.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymrub.jpg")} width="24" height="24" /> <img src={require("app/assets/images/ymsteem.jpg")} width="24" height="24" /></Link>&nbsp; {tt('userwallet_jsx.others')}...<br />
                     <span className="secondary">{tt('userwallet_jsx.trade_gateways')}.</span>
                 </div>
                 <div className="column small-12 medium-4">
-                    <Link to={"/@" + account.get('name') + "/assets"}><small>{tt('userwallet_jsx.go_to_assets')}</small></Link>
+                    <Link to={"/@" + account.name + "/assets"}><small>{tt('userwallet_jsx.go_to_assets')}</small></Link>
                 </div>
             </div>
 
@@ -661,7 +657,7 @@ class UserWallet extends React.Component {
             <div className="row">
                 <div className="column small-12">
                     {/** history */}
-                    <span className="secondary" style={{ float: 'right' }}><Icon name="new/search" /> {tt('userwallet_jsx.history_viewing')}: <a target="_blank" href={"https://explorer.golos.id/#account/" + account.get('name')}>explorer <Icon name="extlink" /></a> / <a target="_blank" rel="noopener noreferrer" href={"https://gapi.golos.today/api/account_history/get_account_history?account=" + account.get('name')}>gapi <Icon name="extlink" /></a></span>
+                    <span className="secondary" style={{ float: 'right' }}><Icon name="new/search" /> {tt('userwallet_jsx.history_viewing')}: <a target="_blank" href={"https://explorer.golos.id/#account/" + account.name}>explorer <Icon name="extlink" /></a> / <a target="_blank" rel="noopener noreferrer" href={"https://gapi.golos.today/api/account_history/get_account_history?account=" + account.name}>gapi <Icon name="extlink" /></a></span>
                     <h4>{tt('userwallet_jsx.history')}</h4>
                     <table>
                         <tbody>
@@ -678,21 +674,21 @@ export default connect(
     // mapStateToProps
     (state, ownProps) => {
         let price_per_golos = undefined
-        const feed_price = state.global.get('feed_price')
-        if(feed_price && feed_price.has('base') && feed_price.has('quote')) {
-            const {base, quote} = feed_price.toJS()
+        const feed_price = state.global.feed_price
+        if(feed_price && feed_price.base && feed_price.quote) {
+            const {base, quote} = feed_price
             if(/ GBG$/.test(base) && / GOLOS$/.test(quote))
                 price_per_golos = parseFloat(base.split(' ')[0]) / parseFloat(quote.split(' ')[0])
         }
-        const savings_withdraws = state.user.get('savings_withdraws')
-        const gprops = state.global.get('props');
-        const sbd_interest = gprops ? gprops.get('sbd_interest_rate') : 0
-        const cprops = state.global.get('cprops')
-        const hot_auctions = state.global.get('hot_auctions')
+        const savings_withdraws = state.user.savings_withdraws
+        const gprops = state.global.props;
+        const sbd_interest = gprops ? gprops.sbd_interest_rate : 0
+        const cprops = state.global.cprops
+        const hot_auctions = state.global.hot_auctions
 
         let min_gp_to_curate = 0
         if (price_per_golos && cprops) {
-            let min_gbg = cprops.get('min_golos_power_to_emission')
+            let min_gbg = cprops.min_golos_power_to_emission
             if (min_gbg) {
                 min_gbg = parseFloat(min_gbg)
                 min_gp_to_curate = min_gbg / price_per_golos + 0.001

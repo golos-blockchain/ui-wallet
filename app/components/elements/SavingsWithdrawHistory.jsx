@@ -4,6 +4,7 @@ import shouldComponentUpdate from 'app/utils/shouldComponentUpdate'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import TimeAgoWrapper from 'app/components/elements/TimeAgoWrapper'
 import transaction from 'app/redux/Transaction'
+import user from 'app/redux/User'
 import Memo from 'app/components/elements/Memo'
 import tt from 'counterpart';
 
@@ -33,8 +34,8 @@ class SavingsWithdrawHistory extends React.Component {
     initActions(props = this.props) {
         const {savings_withdraws} = props
         savings_withdraws.forEach(withdraw => {
-            const fro = withdraw.get('from')
-            const request_id = withdraw.get('request_id')
+            const fro = withdraw.from
+            const request_id = withdraw.request_id
             this['cancel_' + request_id] = () => {
                 const {cancelWithdraw} = props
                 this.setState({['loading_' + request_id]: true})
@@ -52,11 +53,11 @@ class SavingsWithdrawHistory extends React.Component {
 
     render() {
         const {savings_withdraws} = this.props
-        if(!savings_withdraws || !savings_withdraws.count()) return null
+        if(!savings_withdraws || !savings_withdraws.length) return null
         this.initActions()
         let idx = 0
         const rows = savings_withdraws.map(withdraw => {
-            const {complete, amount, to, from, memo, request_id} = withdraw.toJS()
+            const {complete, amount, to, from, memo, request_id} = withdraw
             const dest = to === from ? tt('g.to') + " " + to : tt('g.from') + " " + from + " " + tt('g.to') + " " +  to
             const loading = this.state['loading_' + request_id]
             return <tr key={idx++}>
@@ -90,8 +91,9 @@ import {connect} from 'react-redux'
 
 export default connect(
     (state, ownProps) => {
-        const username = state.user.getIn(['current', 'username'])
-        const savings_withdraws = state.user.get('savings_withdraws')
+        const current = state.user.current
+        const username = current && current.username
+        const savings_withdraws = state.user.savings_withdraws
         return {
             ...ownProps,
             username,
@@ -100,10 +102,7 @@ export default connect(
     },
     dispatch => ({
         loadHistory: () => {
-            dispatch({
-                type: 'user/LOAD_SAVINGS_WITHDRAW',
-                payload: {},
-            })
+            dispatch(user.actions.loadSavingsWithdraw())
         },
         cancelWithdraw: (from, request_id, success, errorCallback) => {
             const confirm = tt('savingswithdrawhistory_jsx.cancel_this_withdraw_request')

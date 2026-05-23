@@ -4,7 +4,6 @@ import tt from 'counterpart'
 import { connect } from 'react-redux'
 import golos, { libs } from 'golos-lib-js'
 import { Asset } from 'golos-lib-js/lib/utils'
-import { Map } from 'immutable'
 
 import DropdownMenu from 'app/components/elements/DropdownMenu'
 import user from 'app/redux/User'
@@ -27,7 +26,7 @@ class PowerCalc extends React.Component {
             return
         }
         const gl = getGameLevel(currentAccount, gprops)
-        let amount = vestsToSteem(currentAccount.get('vesting_shares'), gprops.toJS())
+        let amount = vestsToSteem(currentAccount.vesting_shares, gprops)
         amount = parseFloat(amount) / 4
         if (amount < 1) amount = 100
         this.setState({
@@ -69,7 +68,7 @@ class PowerCalc extends React.Component {
         const am = parseFloat(amount)
         let addFloat = 0
         if (!isNaN(am) && am > 0) {
-            const vests = steemToVests(am, gprops.toJS())
+            const vests = steemToVests(am, gprops)
             addFloat = parseFloat(vests)
         }
         let willAchieve = accuEmissionPerDay(currentAccount, gprops, addFloat)
@@ -183,10 +182,10 @@ class PowerCalc extends React.Component {
 
 export default connect(
     (state, props) => {
-        const initialValues = state.user.get('power_calc_defaults', Map()).toJS()
+        const initialValues = state.user.power_calc_defaults || {}
         const { account } = initialValues
-        const currentAccount = account && state.global.getIn(['accounts', account])
-        const gprops = state.global.get('props')
+        const currentAccount = account && state.global.accounts && state.global.accounts[account]
+        const gprops = state.global.props
         return {
             ...props,
             gprops,
