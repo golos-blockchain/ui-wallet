@@ -60,7 +60,7 @@
     "helmet": "^8.1.0",
     "history": "^2.0.0-rc2",
     "intl": "^1.2.5",
-    "jspdf": "^3.0.3",
+    "jspdf": "^4.2.1",
     "koa": "^2.16.2",
     "koa-compress": "^5.1.1",
     "koa-conditional-get": "^3.0.0",
