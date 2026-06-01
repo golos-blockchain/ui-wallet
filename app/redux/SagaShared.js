@@ -3,6 +3,7 @@ import g from 'app/redux/GlobalReducer'
 import tr from 'app/redux/Transaction'
 import constants from './constants';
 import { api } from 'golos-lib-js';
+import { addNotification } from 'app/utils/NotificationService';
 
 export function* sharedWatches() {
     yield fork(watchTransactionErrors)
@@ -29,7 +30,7 @@ function* showTransactionErrorNotification() {
     if (errors) {
         for (const [key, message] of Object.entries(errors)) {
             if (message !== 'Duplicate transaction check failed')
-                yield put({ type: 'ADD_NOTIFICATION', payload: { key, message } });
+                addNotification({ key, message });
             yield put(tr.actions.deleteError({ key }));
         }
     }

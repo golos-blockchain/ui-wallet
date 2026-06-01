@@ -78,3 +78,7 @@ export const withScreenSize = (WrappedComponent) => {
         return <ScreenSize {...props} forwardedRef={ref} />
     });
 }
+
+export {
+    isScreenS
+};

@@ -27,6 +27,7 @@ import OrderHistory from 'app/components/elements/market/OrderHistory';
 import PriceChart from 'app/components/elements/market/PriceChart';
 import TickerPriceStat from 'app/components/elements/market/TickerPriceStat';
 import OrderForm from 'app/components/elements/market/OrderForm'
+import { addNotification } from 'app/utils/NotificationService';
 import './Market.scss';
 
 const BY_TYPE = 'type'
@@ -663,13 +664,10 @@ export default connect(
     },
     dispatch => ({
         notify: message => {
-            dispatch({
-                type: 'ADD_NOTIFICATION',
-                payload: {
-                    key: 'mkt_' + Date.now(),
-                    message: message,
-                    dismissAfter: 5000,
-                },
+            addNotification({
+                key: 'mkt_' + Date.now(),
+                message: message,
+                dismissAfter: 5000,
             });
         },
         reload: (username, pathname) => {

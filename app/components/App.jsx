@@ -334,6 +334,20 @@ class App extends React.Component {
         localStorage.setItem('infobox', JSON.stringify(infoBox));
     }
 
+    _renderToaster = () => {
+        if (!process.env.BROWSER) return null;
+        return <Toaster
+            position='bottom-left' 
+            containerStyle={{
+                bottom: 30,
+                left: 30,
+            }}
+            toastOptions={{
+                className: 'gls-toast'
+            }}
+        />;
+    }
+
     render() {
         if (process.env.MOBILE_APP && !this.state.can_render) {
             return null
@@ -409,7 +423,7 @@ class App extends React.Component {
                 }
                 onMouseMove={this.onEntropyEvent}
             >
-                {process.env.BROWSER ? <Toaster position='bottom-left' /> : null}
+                {this._renderToaster()}
                 {noHeader ? null : (miniHeader ? <MiniHeader /> : <Header />)}
                 <div className={cn('App__content' +
                     (noHeader ? ' no-header' : ''), {

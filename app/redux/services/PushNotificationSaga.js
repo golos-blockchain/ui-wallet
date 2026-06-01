@@ -8,6 +8,7 @@ import { notificationSubscribe, notificationUnsubscribe, notificationTake,
     firebaseRegisterWs, firebaseUnregisterWs,
 } from 'app/utils/NotifyApiClient';
 import session from 'app/utils/session'
+import { addNotification } from 'app/utils/NotificationService';
 
 const wait = ms => (
     new Promise(resolve => {
@@ -62,13 +63,10 @@ async function fcmGetToken() {
 }
 
 function* showError(err) {
-    yield put({
-        type: 'ADD_NOTIFICATION',
-        payload: {
-            key: 'err_' + Date.now(),
-            message: err,
-            dismissAfter: 3000,
-        }
+    addNotification({
+        key: 'err_' + Date.now(),
+        message: err,
+        dismissAfter: 3000,
     });
 }
 
@@ -172,13 +170,10 @@ function* onUserLogin(action) {
             continue;
         }
         for (let task of tasks) {
-            yield put({
-                type: 'ADD_NOTIFICATION',
-                payload: {
-                    message: (t) => NotifyContent(t, task),
-                    custom: true,
-                    dismissAfter: 10000,
-                }
+            addNotification({
+                message: (t) => NotifyContent(t, task),
+                custom: true,
+                dismissAfter: 10000,
             });
         }
     }

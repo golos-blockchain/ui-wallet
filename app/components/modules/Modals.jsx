@@ -41,8 +41,6 @@ class Modals extends React.Component {
         hidePowerCalc: PropTypes.func.isRequired,
         hideAppDownload: PropTypes.func.isRequired,
         hideLeaveGolos: PropTypes.func.isRequired,
-        notifications: PropTypes.object,
-        removeNotification: PropTypes.func,
         show_open_orders_modal: PropTypes.bool,
         show_nft_orders_modal: PropTypes.bool,
         hideOpenOrders: PropTypes.func.isRequired,
@@ -82,21 +80,11 @@ class Modals extends React.Component {
             hideAppDownload,
             hidePowerCalc,
             hideLeaveGolos,
-            notifications,
-            removeNotification,
             show_open_orders_modal,
             show_nft_orders_modal,
             hideOpenOrders,
             hideNftOrders,
         } = this.props;
-
-        const notifications_array = notifications ? Object.values(notifications).map(n => {
-            if (!n.key) {
-                n.key = ++keyIndex;
-            }
-            n.onClick = () => removeNotification(n.key);
-            return n;
-        }) : [];
 
         return (
             <div>
@@ -172,7 +160,6 @@ export default connect(
             show_change_account_modal: state.user.show_change_account_modal,
             show_add_account_modal: state.user.show_add_account_modal,
             show_app_download_modal: state.user.show_app_download_modal,
-            notifications: state.app.notifications,
             show_open_orders_modal: state.user.show_open_orders_modal,
             show_nft_orders_modal: state.user.show_nft_orders_modal,
             show_leave_golos_modal: state.user.show_leave_golos_modal,
@@ -220,9 +207,7 @@ export default connect(
             if (e) e.preventDefault()
             dispatch(user.actions.hideLeaveGolos())
         },
-        // example: addNotification: ({key, message}) => dispatch({type: 'ADD_NOTIFICATION', payload: {key, message}}),
-        removeNotification: (key) => dispatch({type: 'REMOVE_NOTIFICATION', payload: {key}}),
-        
+
         hideOpenOrders: e => {
             if (e) e.preventDefault();
             dispatch(user.actions.hideOpenOrders())

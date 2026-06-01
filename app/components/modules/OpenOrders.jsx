@@ -6,6 +6,7 @@ import { api, } from 'golos-lib-js';
 import { Asset, } from 'golos-lib-js/lib/utils';
 import transaction from 'app/redux/Transaction';
 import LoadingIndicator from 'app/components/elements/LoadingIndicator';
+import { addNotification } from 'app/utils/NotificationService';
 
 class OpenOrders extends Component {
     state = {
@@ -133,13 +134,10 @@ export default connect(
 
     dispatch => ({
         notify: message => {
-            dispatch({
-                type: 'ADD_NOTIFICATION',
-                payload: {
-                    key: 'mkt_' + Date.now(),
-                    message: message,
-                    dismissAfter: 5000,
-                },
+            addNotification({
+                key: 'mkt_' + Date.now(),
+                message: message,
+                dismissAfter: 5000,
             });
         },
         cancelOrder: (owner, orderid, sym, successCallback) => {

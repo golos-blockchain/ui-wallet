@@ -11,6 +11,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import tt from 'counterpart';
 import { DEBT_TICKER, LIQUID_TOKEN, LIQUID_TICKER } from 'app/client_config';
 import { Asset } from 'golos-lib-js/lib/utils';
+import { addNotification } from 'app/utils/NotificationService';
 
 function floatToAsset(value, from) {
     value = parseFloat(value);
@@ -239,11 +240,11 @@ export default connect(
 
                 successCallback: () => {
                     success()
-                    dispatch({type: 'ADD_NOTIFICATION', payload:
-                        {key: 'convert_sd_to_steem_' + Date.now(),
-                         message: tt('g.order_placed') + ': ' + conf,
-                         dismissAfter: 5000}
-                    })
+                    addNotification({
+                        key: 'convert_sd_to_steem_' + Date.now(),
+                        message: tt('g.order_placed') + ': ' + conf,
+                        dismissAfter: 5000
+                    });
                 },
                 errorCallback: () => {error()}
             }))

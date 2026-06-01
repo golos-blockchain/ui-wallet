@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import merge from 'lodash/merge';
 import { emptyContent } from 'app/redux/EmptyState';
 import constants from './constants';
 import { deepMerge, getIn, removeIn, setIn, updateIn } from 'app/utils/PlainState';
@@ -102,22 +103,22 @@ const globalSlice = createSlice({
         },
         receiveState(state, action) {
             const payload = action.payload || {};
-            const res = deepMerge(state, payload);
 
-            delete res.nft_collections;
-            if (res.nft_token) {
-                delete res.nft_token.my_offer;
-                delete res.nft_token.my_bet;
+            delete state.nft_collections;
+            if (state.nft_token) {
+                delete state.nft_token.my_offer;
+                delete state.nft_token.my_bet;
             }
+
+            merge(state, payload);
+
             if (
                 !payload.nft_tokens &&
                 typeof window !== 'undefined' &&
                 !window.location.pathname.endsWith('/nft-tokens')
             ) {
-                delete res.nft_tokens;
+                delete state.nft_tokens;
             }
-
-            return res;
         },
         receiveAccount(state, { payload: { account } }) {
             if (!state.accounts) state.accounts = {};

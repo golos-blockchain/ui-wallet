@@ -12,6 +12,7 @@ import {api, broadcast, auth, memo} from 'golos-lib-js'
 import constants from './constants';
 import tt from 'counterpart';
 import { getIn } from 'app/utils/PlainState';
+import { addNotification } from 'app/utils/NotificationService';
 
 
 export function* transactionWatches() {
@@ -64,7 +65,10 @@ function* encryptMemoIfNeed(memoStr, to) {
 }
 const toStringUtf8 = o => (o ? Buffer.isBuffer(o) ? o.toString('utf-8') : o.toString() : o)
 
-function* preBroadcast_transfer({operation}) {
+function* preBroadcast_transfer(payload) {
+    const orig = payload.operation;
+    let operation = {...orig};
+
     let memoStr = operation.memo;
     if (memoStr && operation._memo_private) {
         operation.memo = yield encryptMemoIfNeed(memoStr, operation.to);
@@ -73,7 +77,13 @@ function* preBroadcast_transfer({operation}) {
     return operation
 }
 
-function* preBroadcast_donate({operation}) {
+function* preBroadcast_donate(payload) {
+    const orig = payload.operation;
+    let operation = {
+        ...orig,
+        memo: {...orig.memo},
+    };
+
     let memoStr = operation.memo && operation.memo.comment;
     if (memoStr && operation._memo_private) {
         operation.memo.comment = yield encryptMemoIfNeed(memoStr, operation.to);
@@ -82,7 +92,11 @@ function* preBroadcast_donate({operation}) {
     return operation
 }
 
-function* preBroadcast_vote({operation, username}) {
+function* preBroadcast_vote(payload) {
+    const { username } = payload;
+    const orig = payload.operation;
+    let operation = {...orig};
+
     if (!operation.voter) operation.voter = username
     const {voter, author, permlink, weight} = operation
     // give immediate feedback
@@ -90,7 +104,12 @@ function* preBroadcast_vote({operation, username}) {
     yield put(g.actions.voted({username: voter, author, permlink, weight}))
     return operation
 }
-function* preBroadcast_account_witness_vote({operation, username}) {
+
+function* preBroadcast_account_witness_vote(payload) {
+    const { username } = payload;
+    const orig = payload.operation;
+    let operation = {...orig};
+
     if (!operation.account) operation.account = username
     const {account, witness, approve} = operation
     yield put(g.actions.updateAccountWitnessVote({account, witness, approve}))
@@ -210,11 +229,11 @@ function* broadcastPayload({payload: {operations, keys, username, hideErrors, su
             }
             const config = operation.__config
             if (config && config.successMessage) {
-                yield put({type: 'ADD_NOTIFICATION', payload: {
+                addNotification({
                     key: "trx_" + Date.now(),
                     message: config.successMessage,
                     dismissAfter: 5000
-                }})
+                });
             }
         }
         if (successCallback) try { successCallback() } catch (error) { console.error(error) }

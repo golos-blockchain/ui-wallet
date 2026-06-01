@@ -10,6 +10,7 @@ import Expandable from 'app/components/elements/Expandable'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import transaction from 'app/redux/Transaction'
 import user from 'app/redux/User'
+import { addNotification } from 'app/utils/NotificationService';
 
 class IssueNFTToken extends Component {
     state = {
@@ -419,11 +420,11 @@ export default connect(
             dispatch(user.actions.uploadImage({file, progress}))
         },
         notify: (message, dismiss = 3000) => {
-            dispatch({type: 'ADD_NOTIFICATION', payload: {
+            addNotification({
                 key: "settings_" + Date.now(),
                 message,
-                dismissAfter: dismiss}
-            })
+                dismissAfter: dismiss
+            });
         },
         issueToken: (
             name, to, json_metadata, currentUser, successCallback, errorCallback

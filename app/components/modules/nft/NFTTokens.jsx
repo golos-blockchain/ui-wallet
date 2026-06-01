@@ -24,9 +24,7 @@ class NFTTokens extends Component {
     }
 
     componentDidMount() {
-        if (!this.props.nft_tokens) {
-            this.refetch()
-        }
+        this.refetch()
     }
 
     refetch = () => {

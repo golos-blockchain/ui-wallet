@@ -9,6 +9,7 @@ import Expandable from 'app/components/elements/Expandable'
 import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import transaction from 'app/redux/Transaction'
 import user from 'app/redux/User'
+import { addNotification } from 'app/utils/NotificationService';
 
 const UINT32_MAX = '4294967295'
 
@@ -439,11 +440,11 @@ export default connect(
             dispatch(user.actions.uploadImage({file, progress}))
         },
         notify: (message, dismiss = 3000) => {
-            dispatch({type: 'ADD_NOTIFICATION', payload: {
+            addNotification({
                 key: "settings_" + Date.now(),
                 message,
-                dismissAfter: dismiss}
-            })
+                dismissAfter: dismiss
+            });
         },
         createCollection: (
             name, json_metadata, max_token_count, currentUser, successCallback, errorCallback

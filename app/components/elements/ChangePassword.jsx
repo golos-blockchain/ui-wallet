@@ -11,6 +11,7 @@ import LoadingIndicator from 'app/components/elements/LoadingIndicator'
 import {validate_account_name} from 'app/utils/ChainValidation'
 import KeyFile from 'app/utils/KeyFile';
 import { APP_NAME } from 'app/client_config';
+import { addNotification } from 'app/utils/NotificationService';
 
 const {string, oneOf} = PropTypes
 
@@ -313,10 +314,10 @@ export default connect(
             }))
         },
         notify: (message) => {
-            dispatch({type: 'ADD_NOTIFICATION', payload: {
+            addNotification({
                 key: 'chpwd_' + Date.now(),
                 message,
-                dismissAfter: 5000}
+                dismissAfter: 5000
             });
         },
     })

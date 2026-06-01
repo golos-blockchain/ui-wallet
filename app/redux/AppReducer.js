@@ -1,14 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import tt from 'counterpart';
 
-import { showToast, showCustomToast } from 'app/components/elements/Notifications/ToastUtils'
-
 const defaultState = {
     requests: {},
     loading: false,
     error: '',
     location: {},
-    notifications: null,
     ignoredLoadingRequestCount: 0,
     notificounters: {
         total: 0,
@@ -43,26 +40,6 @@ const appSlice = createSlice({
             })
             .addCase('FETCH_DATA_END', state => {
                 state.loading = false;
-            })
-            .addCase('ADD_NOTIFICATION', (state, action) => {
-                const { payload } = action;
-                const opts = {
-                    dismissAfter: payload.dismissAfter,
-                    action: payload.action,
-                };
-                if (payload.key) {
-                    opts.id = payload.key;
-                }
-                if (payload.custom) {
-                    showCustomToast(payload.message, opts);
-                } else {
-                    showToast(payload.message, opts);
-                }
-            })
-            .addCase('REMOVE_NOTIFICATION', (state, action) => {
-                if (state.notifications) {
-                    delete state.notifications[action.payload.key];
-                }
             })
             .addCase('UPDATE_NOTIFICOUNTERS', (state, action) => {
                 if (!action.payload) {

@@ -15,6 +15,7 @@ import { openAppSettings } from 'app/components/pages/app/AppSettings'
 import reactForm from 'app/utils/ReactForm'
 import { reloadLocation } from 'app/utils/app/RoutingUtils'
 import { withScreenSize } from 'app/utils/ScreenSize'
+import { addNotification } from 'app/utils/NotificationService';
 
 class Settings extends React.Component {
 
@@ -371,10 +372,10 @@ export default connect(
             dispatch(transaction.actions.broadcastOperation(options))
         },
         notify: (message, dismiss = 3000) => {
-            dispatch({type: 'ADD_NOTIFICATION', payload: {
+            addNotification({
                 key: "settings_" + Date.now(),
                 message,
-                dismissAfter: dismiss}
+                dismissAfter: dismiss
             });
         }
     })

@@ -15,6 +15,7 @@ import PushNotificationSaga from 'app/redux/services/PushNotificationSaga';
 import uploadImageWatch from './UserSaga_UploadImage';
 import session from 'app/utils/session'
 import { getIn } from 'app/utils/PlainState'
+import { addNotification } from 'app/utils/NotificationService';
 
 export function* userWatches() {
     yield fork(watchRemoveHighSecurityKeys); // keep first to remove keys early when a page change happens
@@ -330,14 +331,11 @@ function* usernamePasswordLogin2({payload: {username, password, saveLogin,
                 const lastBadNet = parseInt(localStorage.getItem(lbnKey) || 0);
                 if (now - lastBadNet >= 10*60*1000) {
                     localStorage.setItem(lbnKey, now);
-                    window._reduxStore.dispatch({
-                        type: 'ADD_NOTIFICATION',
-                        payload: {
-                            key: 'bad_net_' + Date.now(),
-                            message,
-                            dismissAfter: 5000
-                        }
-                    })
+                    addNotification({
+                        key: 'bad_net_' + Date.now(),
+                        message,
+                        dismissAfter: 5000
+                    });
                 }
             } else if (!afterLoginRedirectToWelcome) {
                 alert(message)

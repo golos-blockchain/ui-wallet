@@ -15,7 +15,6 @@
 @import "./elements/LiteTooltip";
 @import "./elements/LoadingIndicator";
 @import "./elements/Notifications/NotifyContent";
-@import "./elements/Notifications/ToastUtils";
 @import "./elements/NotifiCounter";
 @import "./elements/PagedDropdownMenu";
 @import "./elements/QrKeyView";
@@ -97,3 +96,5 @@
 @import "./pages/nft/NFTCollectionPage";
 @import "./pages/nft/NFTMarketPage";
 @import "./pages/nft/NFTTokenPage";
+
+@import "../utils/NotificationService";
