@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import ByteBuffer from 'bytebuffer';
 import tt from 'counterpart';
 import { api, } from 'golos-lib-js';
+import isEqual from 'lodash/isEqual';
 import links from 'app/utils/Links';
 import Button from 'app/components/elements/Button';
 import Icon from 'app/components/elements/Icon';
@@ -16,15 +17,6 @@ import { formatAsset } from 'app/utils/ParsersAndFormatters';
 import {numberWithCommas, vestsToSteem} from 'app/utils/StateFunctions';
 
 const Long = ByteBuffer.Long;
-
-const setsEqual = (a, b) => {
-    if (a === b) return true;
-    if (!a || !b || a.size !== b.size) return false;
-    for (const item of a) {
-        if (!b.has(item)) return false;
-    }
-    return true;
-};
 
 class Witnesses extends Component {
     static propTypes = {
@@ -44,7 +36,7 @@ class Witnesses extends Component {
 
     shouldComponentUpdate(np, ns) {
         return (
-            !setsEqual(np.witnessVotes, this.props.witnessVotes) ||
+            !isEqual(np.witnessVotes, this.props.witnessVotes) ||
             np.accounts !== this.props.accounts ||
             np.witnesses !== this.props.witnesses ||
             np.currentProxy !== this.props.currentProxy ||
@@ -140,7 +132,7 @@ class Witnesses extends Component {
                 lastUpdateFeedClassName = 'error';
             }
 
-            const myVote = witnessVotes ? witnessVotes.has(owner) : null;
+            const myVote = witnessVotes ? witnessVotes.includes(owner) : null;
             const classUp =
                 'Voting__button Voting__button-up' +
                 (myVote === true ? ' Voting__button--upvoted' : '');
@@ -279,7 +271,7 @@ class Witnesses extends Component {
         let addlWitnesses = false;
 
         if (witnessVotes) {
-            witness_vote_count = witnessVotes.size;
+            witness_vote_count = witnessVotes.length;
             addlWitnesses = witnessVotes
                 .filter(item => !this.props.witnesses[item])
                 .map(item => {
@@ -411,7 +403,7 @@ class Witnesses extends Component {
                                                 this._accountWitnessVote(
                                                     customUsername,
                                                     witnessVotes
-                                                        ? !witnessVotes.has(
+                                                        ? !witnessVotes.includes(
                                                               customUsername
                                                           )
                                                         : true,
@@ -492,13 +484,12 @@ export default connect(
         const username = currentUser && currentUser.username;
         const currentAccount =
             currentUser && state.global.accounts && state.global.accounts[username];
-        const witnessVotes =
-            currentAccount && new Set(currentAccount.witness_votes || []);
+        const witnessVotes = (currentAccount && currentAccount.witness_votes) || [];
         const currentProxy = currentAccount && currentAccount.proxy;
         let witness_vote_size = currentAccount && vestsToSteem(currentAccount.vesting_shares, gprops);
         if (currentAccount) {
             if (witnessVotes.size > 0) {
-                witness_vote_size /= witnessVotes.size;
+                witness_vote_size /= witnessVotes.length;
             }
         }
 

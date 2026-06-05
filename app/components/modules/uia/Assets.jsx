@@ -5,6 +5,7 @@ import { Link } from 'react-router';
 import cn from 'classnames'
 import tt from 'counterpart';
 import { Asset } from 'golos-lib-js/lib/utils';
+import cloneDeep from 'lodash/cloneDeep';
 
 import ConvertAssetsBtn from 'app/components/elements/market/ConvertAssetsBtn'
 import { blogsUrl } from 'app/utils/blogsUtils'
@@ -123,7 +124,7 @@ class Assets extends Component {
             if (!mutedUIA) mutedUIA = [];
         }
 
-        const assets = this.props.assets
+        const assets = cloneDeep(this.props.assets);
 
         const assetsNorm = normalizeAssets(assets)
 

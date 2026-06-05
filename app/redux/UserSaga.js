@@ -561,7 +561,7 @@ function* lookupPreviousOwnerAuthority({payload: {}}) {
     yield put(user.actions.setUser({previous_owner_authority}))
 }
 
-function* getAccountHandler({ payload: { usernames, resolve, reject }}) {
+function* getAccountHandler({ payload: { usernames, resolve, reject } = {} }) {
     if (!usernames) {
         const current = yield select(state => state.user.current)
         if (!current) return
