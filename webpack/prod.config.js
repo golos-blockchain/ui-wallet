@@ -47,7 +47,7 @@ module.exports = merge(baseConfig, {
                         options: {
                             sassOptions: {
                                 quietDeps: true,
-                                silenceDeprecations: ['legacy-js-api', 'import'],
+                                silenceDeprecations: ['import'],
                             }
                         }
                     },
