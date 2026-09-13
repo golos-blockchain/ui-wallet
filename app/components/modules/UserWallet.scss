@@ -1,11 +1,12 @@
+@use '@styles/themes' as t;
+
 .UserWallet__balance {
   padding-bottom: 1rem;
   padding-top: 1rem;
 
   &.UserWallet__balance.zebra {
-      @include themify($themes) {
-        background: themed('zebra')
-      }
+      @include t.themify(t.$themes) using ($theme) {
+        background: t.themed('zebra', $theme);}
   }
 }
 
