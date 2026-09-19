@@ -16,6 +16,7 @@ import { browserHistory } from 'react-router';
 import { useScroll } from 'react-router-scroll';
 import createSagaMiddleware from 'redux-saga';
 import { syncHistoryWithStore } from 'react-router-redux';
+import g from 'app/redux/GlobalReducer'
 import rootReducer from 'app/redux/RootReducer';
 import rootSaga from 'app/redux/RootSaga';
 import user from 'app/redux/User';
@@ -71,11 +72,16 @@ export default async function renderWrapper(initialState) {
             : React.Fragment;
 
     const currentName = session.load().currentName
-    if (!currentName && !isLoginPage()) {
-        const lastClosed = parseInt(localStorage.getItem('login_closed') || 0)
-        const interval = 24*60*60*1000 // 1 day
-        if ((Date.now() - lastClosed) > interval) {
-            store.dispatch(user.actions.requireLogin())
+    if (!currentName) {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('dialog') === 'change-password') {
+            store.dispatch(g.actions.showDialog({ name: 'changePassword', params: { username: params.get('name') || null } }))
+        } else if (!isLoginPage()) {
+            const lastClosed = parseInt(localStorage.getItem('login_closed') || 0)
+            const interval = 24*60*60*1000 // 1 day
+            if ((Date.now() - lastClosed) > interval) {
+                store.dispatch(user.actions.requireLogin())
+            }
         }
     }
 

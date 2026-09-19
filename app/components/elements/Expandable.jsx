@@ -1,36 +1,29 @@
-import React, { Component, } from 'react';
-import Icon from 'app/components/elements/Icon';
+import React, { useState, useEffect } from 'react'
 
-class Expandable extends Component {
-    state = {
-        opened: false,
-    };
+import Icon from 'app/components/elements/Icon'
 
-    componentDidMount() {
-        this.setState({
-            opened: !!this.props.opened
-        })
+const Expandable = ({ title, opened: initialOpened = false, children, ...rest }) => {
+    const [opened, setOpened] = useState(false)
+
+    useEffect(() => {
+        setOpened(!!initialOpened)
+    }, [initialOpened])
+
+    const onToggleExpander = () => {
+        setOpened(prev => !prev)
     }
 
-    onToggleExpander = () => {
-        this.setState({
-            opened: !this.state.opened,
-        })
-    };
-
-    render() {
-        const { title, ...rest } = this.props;
-        const { opened, } = this.state;
-        return (<div className={'Expandable' + (opened ? ' opened' : '')} {...rest}>
-            <div className='Expander' onClick={this.onToggleExpander}>
+    return (
+        <div className={'Expandable' + (opened ? ' opened' : '')} {...rest}>
+            <div className='Expander' onClick={onToggleExpander}>
                 <Icon name={opened ? 'chevron-up-circle' : 'chevron-down-circle'} size='2x' />
-                <h5 style={{ paddingLeft: '0.5rem', }}>{title}</h5>
+                <h5 style={{ paddingLeft: '0.5rem' }}>{title}</h5>
             </div>
             <div className='Expandable__content'>
-                {this.props.children}
+                {children}
             </div>
-        </div>);
-    }
+        </div>
+    )
 }
 
-export default Expandable;
+export default Expandable

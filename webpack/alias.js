@@ -17,4 +17,5 @@ module.exports = {
     '@modules': resolvePath('components', 'modules'),
     '@pages': resolvePath('components', 'pages'),
     '@utils': resolvePath('utils'),
+    '@styles': path.join(__dirname, '..', 'app', 'assets', 'stylesheets'), // for using in .scss files
 };

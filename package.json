@@ -101,7 +101,7 @@
     "react-scroll-up": "^1.4.0",
     "react-tooltip-lite": "^1.12.0",
     "redux-saga": "^0.16.0",
-    "sass-loader": "^13.2.0",
+    "sass-loader": "^16.0.8",
     "secure-random": "^1.1.1",
     "speakingurl": "^9.0.0",
     "string-to-stream": "^1.1.1",

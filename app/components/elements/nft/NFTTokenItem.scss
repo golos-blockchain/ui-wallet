@@ -1,3 +1,5 @@
+@use '@styles/themes' as t;
+
 .NFTTokenItem {
     display: inline-block;
     border: 1px solid rgba(128,128,128,0.45);
@@ -35,8 +37,8 @@
         margin-right: 0.25rem;
     }
     .auction-time {
-        @include themify($themes) {
-          color: themed('textColorPrimary');
+        @include t.themify(t.$themes) using ($theme) {
+          color: t.themed('textColorPrimary', $theme);
         }
     }
     .my-bet-offer {

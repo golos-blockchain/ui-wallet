@@ -1,3 +1,5 @@
+@use '@styles/themes' as t;
+
 .WalletBanner {
     .nft-auction {
         display: inline-block;
@@ -35,8 +37,8 @@
                 bottom: 0px;
 
                 text-align: left;
-                @include themify($themes) {
-                    color: themed('textColorPrimary');
+                @include t.themify(t.$themes) using ($theme) {
+                    color: t.themed('textColorPrimary', $theme);
                 }
             }
         }

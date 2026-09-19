@@ -6,31 +6,28 @@ import HintIcon from 'app/components/elements/common/HintIcon/HintIcon'
 import radioOn from './radio-on.svg'
 import radioOff from './radio-off.svg'
 
-export default class RadioButton extends React.PureComponent {
-
-    _onClick = e => {
+const RadioButton = ({ title, hint, id, name, disabled, selectedValue, className, onChange }) => {
+    const onClick = (e) => {
         e.preventDefault()
-        const { id, name, onChange } = this.props
         if (onChange) {
             onChange(id, name)
         }
     }
 
-    render() {
-        const { title, hint, id, name, disabled, selectedValue, className} = this.props
-        return <div key={id} className={cn('RadioButton__item', { RadioButton_disabled: disabled }, className)}>
+    return (
+        <div key={id} className={cn('RadioButton__item', { RadioButton_disabled: disabled }, className)}>
             <label
-                className="RadioButton__label"
+                className='RadioButton__label'
                 onClick={
                     disabled
                         ? null
-                        : this._onClick
+                        : onClick
                 }
             >
                 <input
-                    type="radio"
+                    type='radio'
                     name={name}
-                    className="RadioButton__input"
+                    className='RadioButton__input'
                     disabled={disabled}
                     checked={id === selectedValue}
                 />
@@ -49,15 +46,28 @@ export default class RadioButton extends React.PureComponent {
                                 : radioOff,
                     }}
                 />
-                <span className="RadioButton__label-text">
+                <span className='RadioButton__label-text'>
                     {title}
                 </span>
             </label>
             {hint ? (
-                <span className="RadioButton__hint">
+                <span className='RadioButton__hint'>
                     <HintIcon hint={hint} />
                 </span>
             ) : null}
         </div>
-    }
+    )
 }
+
+RadioButton.propTypes = {
+    title: PropTypes.string,
+    hint: PropTypes.string,
+    id: PropTypes.string,
+    name: PropTypes.string,
+    disabled: PropTypes.bool,
+    selectedValue: PropTypes.string,
+    className: PropTypes.string,
+    onChange: PropTypes.func,
+}
+
+export default RadioButton

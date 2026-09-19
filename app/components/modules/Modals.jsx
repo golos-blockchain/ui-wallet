@@ -19,6 +19,7 @@ import Powerdown from 'app/components/modules/Powerdown';
 import OpenOrders from 'app/components/modules/OpenOrders';
 import NFTMyOrders from 'app/components/modules/nft/NFTMyOrders'
 import LeaveGolos from 'app/components/modules/LeaveGolos'
+import { withScreenSize } from 'app/utils/ScreenSize'
 
 let keyIndex = 0;
 
@@ -59,6 +60,7 @@ class Modals extends React.Component {
 
     render() {
         const {
+            isS,
             show_login_modal,
             show_confirm_modal,
             show_transfer_modal,
@@ -86,55 +88,66 @@ class Modals extends React.Component {
             hideNftOrders,
         } = this.props;
 
+        let modalStyle = {
+        };
+
+        if (!isS) {
+            modalStyle = {
+                borderRadius: '8px',
+                boxShadow: '0 0 19px 3px rgba(0,0,0, 0.2)',
+                ...modalStyle,
+            }
+        }
+
         return (
             <div>
-                {show_login_modal && <Reveal onBackdropClick={this.onLoginBackdropClick} onHide={hideLogin} show={show_login_modal}>
+                {show_login_modal && <Reveal onBackdropClick={this.onLoginBackdropClick} onHide={hideLogin} show={show_login_modal} revealStyle={{ ...modalStyle }}>
                     {loginRemind &&<CloseButton onClick={hideLogin} className='login-close' />}
                     <LoginForm onCancel={hideLogin} />
                 </Reveal>}
-                {show_confirm_modal && <Reveal onHide={hideConfirm} show={show_confirm_modal}>
+                {show_confirm_modal && <Reveal onHide={hideConfirm} show={show_confirm_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideConfirm} />
                     <ConfirmTransactionForm onCancel={hideConfirm} />
                 </Reveal>}
-                {show_transfer_modal && <Reveal onHide={hideTransfer} show={show_transfer_modal}>
+                {show_transfer_modal && <Reveal onHide={hideTransfer} show={show_transfer_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideTransfer} />
                     <Transfer />
                 </Reveal>}
-                {show_convert_assets_modal && <Reveal onHide={hideConvertAssets} show={show_convert_assets_modal}>
+                {show_convert_assets_modal && <Reveal onHide={hideConvertAssets} show={show_convert_assets_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideConvertAssets} />
                     <ConvertAssets modal={true} />
                 </Reveal>}
                 {show_powerdown_modal && (
-                    <Reveal onHide={hidePowerdown} show={show_powerdown_modal}>
+                    <Reveal onHide={hidePowerdown} show={show_powerdown_modal} revealStyle={{ ...modalStyle }}>
                         <CloseButton onClick={hidePowerdown} />
                         <Powerdown />
                     </Reveal>
                 )}
-                {show_open_orders_modal && <Reveal onHide={hideOpenOrders} show={show_open_orders_modal} size="large" revealClassName="OpenOrders">
+                {show_open_orders_modal && <Reveal onHide={hideOpenOrders} show={show_open_orders_modal} revealStyle={{ ...modalStyle }} size="large" revealClassName="OpenOrders">
                     <CloseButton onClick={hideOpenOrders} />
                     <OpenOrders />
                 </Reveal>}
-                {show_nft_orders_modal && <Reveal onHide={hideNftOrders} show={show_nft_orders_modal} size="large" revealClassName="NFTOrders">
+                {show_nft_orders_modal && <Reveal onHide={hideNftOrders} show={show_nft_orders_modal} revealStyle={{ ...modalStyle }} size="large" revealClassName="NFTOrders">
                     <CloseButton onClick={hideNftOrders} />
                     <NFTMyOrders isModal={true} />
                 </Reveal>}
-                {show_change_account_modal && <Reveal onHide={hideChangeAccount} show={show_change_account_modal} revealStyle={{ width: '400px' }}>
+                {show_change_account_modal && <Reveal onHide={hideChangeAccount} show={show_change_account_modal} revealStyle={{ ...modalStyle, width: '400px' }}>
                     <CloseButton onClick={hideChangeAccount} />
                     <ChangeAccount />
                 </Reveal>}
-                {show_add_account_modal && <Reveal onHide={hideAddAccount} show={show_add_account_modal}>
+                {show_add_account_modal && <Reveal onHide={hideAddAccount} show={show_add_account_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideAddAccount} />
                     <AddAccount />
                 </Reveal>}
-                {show_power_calc_modal && <Reveal onHide={hidePowerCalc} show={show_power_calc_modal}>
+                {show_power_calc_modal && <Reveal onHide={hidePowerCalc} show={show_power_calc_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hidePowerCalc} />
                     <PowerCalc />
                 </Reveal>}
-                {show_app_download_modal && <Reveal onHide={hideAppDownload} show={show_app_download_modal}>
+                {show_app_download_modal && <Reveal onHide={hideAppDownload} show={show_app_download_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideAppDownload} />
                     <AppDownload />
                 </Reveal>}
-                {show_leave_golos_modal && <Reveal onHide={hideLeaveGolos} show={show_leave_golos_modal}>
+                {show_leave_golos_modal && <Reveal onHide={hideLeaveGolos} show={show_leave_golos_modal} revealStyle={{ ...modalStyle }}>
                     <CloseButton onClick={hideLeaveGolos} />
                     <LeaveGolos />
                 </Reveal>}
@@ -217,4 +230,4 @@ export default connect(
             dispatch(user.actions.hideNftOrders())
         },
     })
-)(Modals)
+)(withScreenSize(Modals))

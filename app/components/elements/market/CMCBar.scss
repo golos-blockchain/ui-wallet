@@ -1,3 +1,5 @@
+@use '@styles/themes' as t;
+
 .CMCBar {
     margin-top: 7px;
     color: #2572ba;
@@ -17,8 +19,8 @@
 
     .CMCBar__price-usd {
         margin-right: 1rem;
-        @include themify($themes) {
-            color: themed('textColorSecondary');
+        @include t.themify(t.$themes) using ($theme) {
+            color: t.themed('textColorSecondary', $theme);
         }
     }
 
