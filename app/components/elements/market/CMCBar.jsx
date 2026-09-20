@@ -27,7 +27,7 @@ class CMCBar extends React.Component {
 
     async componentDidMount() {
         let res = await libs.dex.apidexGetPrices({ sym: 'GOLOS' })
-        if (res.price_rub) {
+        if (res.price_rub || res.price_usd) {
             const price_change = this.getPriceChange(res)
             this.setState({
                 loaded: true,
@@ -78,22 +78,26 @@ class CMCBar extends React.Component {
                 </a>
             </span> : null
 
+        const formatUsd = price_usd ? price_usd.toFixed(5) + ' $' : null;
+
         return (<div className="CMCBar" onMouseMove={this.mouseEnter} onMouseOut={this.mouseOut}>
             <span style={{ fontSize: '16px' }}>
                 <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
                     <Icon name={mouse ? 'trade_color2' : 'trade_color1'} className='CMCBar__icon' />
                 </a>
                 {header}
-                <span className="CMCBar__price">
+                {(price_rub || price_change) ? <span className="CMCBar__price">
                     <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
                         {price_rub ? price_rub.toFixed(5) + ' ₽' : null} 
                     </a>            
                     <span className="CMCBar__price-change">
                         {(price_change && price_change.toFixed) ? <span style={{ color: price_change < 0 ? '#d94040' : '#009600' }}>{' '}({price_change.toFixed(2)}%)</span> : null}
                     </span>
-                </span>   
-                <span className="CMCBar__price-usd">
-                    {price_usd ? price_usd.toFixed(5) + ' $' : null}
+                </span> : null}
+                <span className={price_rub ? "CMCBar__price-usd" : 'CMCBar__price'}>
+                    {(!price_rub && page_url) ? <a href={page_url} target="_blank" rel='noopener nofollow' title='coinmarketcap.com'>
+                      {formatUsd}
+                    </a> : formatUsd}
                 </span>
                 <span className="CMCBar__link-parent">
                     <a href="/exchanges" onClick={hrefClick} className="CMCBar__link">{tt('g.buy_or_sell')}</a>
